@@ -1,0 +1,5 @@
+image: <docker-registry>:<port>/karavi-topology:latest
+# comma seperated list of provisioner names (ex: csi-vxflexos.dellemc.com)
+provisioner_names: csi-vxflexos.dellemc.com
+service:
+  type: ClusterIP

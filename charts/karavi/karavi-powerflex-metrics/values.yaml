@@ -1,0 +1,25 @@
+powerflex_endpoint:
+# base64 user and password
+powerflex_user:
+powerflex_password:
+
+image: <docker-registry>:<port>/karavi-powerflex-metrics:latest
+collector_addr: otel-collector:55680
+# comma seperated list of provisioner names (ex: csi-vxflexos.dellemc.com)
+provisioner_names: csi-vxflexos.dellemc.com
+# set sdc_metrics_enabled to "false" to disable collection of SDC metrics
+sdc_metrics_enabled: "true"
+# set polling frequency to the PowerFlex array to get metrics data
+sdc_poll_frequency_seconds: 10
+volume_poll_frequency_seconds: 10
+# set volume_metrics_enabled to "false" to disable collection of Volume metrics
+volume_metrics_enabled: "true"
+# set storage_class_pool_metrics_enabled to "false" to disable collection of storage class/pool metrics
+storage_class_pool_metrics_enabled: "true"
+# set the polling frequency to configure the interval which storage class/pool metrics are gathered
+storage_class_pool_poll_frequency_seconds: 10
+# set the the default max concurrent queries to powerflex
+concurrent_powerflex_queries: 10 
+# set the default endpoint for powerflex service
+endpoint: karavi-powerflex-metrics
+
