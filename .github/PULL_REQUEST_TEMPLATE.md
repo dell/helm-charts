@@ -31,7 +31,7 @@ even continue reviewing your changes.
 
 #### Checklist
 [Place an '[x]' (no spaces) in all applicable fields. Please remove unrelated fields.]
-- [ ] [DCO](https://github.com/helm-charts/blob/master/CONTRIBUTING.md) signed
+- [ ] [DCO](https://github.com/helm-charts/blob/main/CONTRIBUTING.md) signed
 - [ ] Chart Version bumped
 - [ ] Variables are documented in the README.md
 - [ ] Title of the PR starts with chart name (e.g. `[charts/charts_dir/mychartname]`)

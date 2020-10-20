@@ -36,17 +36,17 @@ When opening a Bug please include the following information to help with debuggi
 An Issue __must__ be created before submitting any pull request. Any pull request that is created should be linked to an Issue.
 
 ## Branching Strategy
-We are following a scaled trunk branching strategy where short-lived branches are created off of the master branch. When coding is complete, the branch is merged back into master after being approved in a pull request code review.
+We are following a scaled trunk branching strategy where short-lived branches are created off of the main branch. When coding is complete, the branch is merged back into main after being approved in a pull request code review.
 
 Steps to create a branch for a bug fix or feature:
 1. Fork the repository.
-2. Create a branch off of the master branch. The branch name should be descriptive and include the chart name, the bug fix it contains or the release # associated with the version update being made to the chart.
+2. Create a branch off of the main branch. The branch name should be descriptive and include the chart name, the bug fix it contains or the release # associated with the version update being made to the chart.
 3. Update the chart and commit to your branch.  Note: The chart version must be updated if any change is made to the chart.  See [Versioning](./charts/VERSIONING.md) 
-4. If other code changes have merged into the upstream master branch, perform a rebase of those changes into your branch.
-5. Open a pull request between your branch and the upstream master branch.  This will trigger a GitHub action to lint the chart in question.
+4. If other code changes have merged into the upstream main branch, perform a rebase of those changes into your branch.
+5. Open a pull request between your branch and the upstream main branch.  This will trigger a GitHub action to lint the chart in question.
 6. Once your pull request has merged, GitHub actions will take care of creating a chart release, packaging the chart, and making the new version available in the Helm repo.
 
-Release branches will be created from the master branch near the time of a planned release when all features are completed. Only critical bug fixes will be merged into the feature branch at this time. All other bug fixes and features can continue to be merged into the master branch. When a feature branch is stable, the branch will be tagged for release and the release branch will be deleted.
+Release branches will be created from the main branch near the time of a planned release when all features are completed. Only critical bug fixes will be merged into the feature branch at this time. All other bug fixes and features can continue to be merged into the main branch. When a feature branch is stable, the branch will be tagged for release and the release branch will be deleted.
 
 ## Code Reviews
 
