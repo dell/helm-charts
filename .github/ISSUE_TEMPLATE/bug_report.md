@@ -1,10 +1,9 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: '[name of the chart e.g. stable/chart] issue title'
-labels: ''
+title: '[name of the chart e.g. charts_dir/chart (if applicable)] issue title'
+labels: bug, needs-triage
 assignees: ''
-
 ---
 
 <!-- Thanks for filing an issue! Before hitting the button, please answer these questions. It's helpful to search the existing GitHub issues first. It's likely that another user has already reported the issue you're facing, or it's a known issue that we're already aware of
