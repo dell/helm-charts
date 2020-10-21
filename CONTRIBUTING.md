@@ -48,6 +48,15 @@ Steps to create a branch for a bug fix or feature:
 
 Release branches will be created from the main branch near the time of a planned release when all features are completed. Only critical bug fixes will be merged into the feature branch at this time. All other bug fixes and features can continue to be merged into the main branch. When a feature branch is stable, the branch will be tagged for release and the release branch will be deleted.
 
+## Branch Naming Convention
+
+|  Branch Type |  Example                          |  Comment                                  |
+|--------------|-----------------------------------|-------------------------------------------|
+|  main        |  main                             |                                           |
+|  Release     |  release-1.0                      |  hotfix: release-1.1 patch: release-1.0.1 |
+|  Feature     |  feature-9-olp-support            |  "9" referring to GitHub issue ID         |
+|  Bug Fix     |  bugfix-110-remove-docker-compose |  "110" referring to GitHub issue ID       |
+
 ## Code Reviews
 
 All submissions, including submissions by project members, require review. We
