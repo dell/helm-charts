@@ -71,7 +71,8 @@ Make sure you have your user name and e-mail set.  This will be required for you
 * Setting up your e-mail address [reference](https://help.github.com/articles/setting-your-commit-email-address-in-git/)
 
 Once Git and your GitHub account have been properly configured, you can add the -S flag to the git commits:
-```$ git commit -S -m your commit message
+```console
+$ git commit -S -m your commit message
 # Creates a signed commit
 ```
 
