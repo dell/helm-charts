@@ -19,19 +19,18 @@ will run across your changes and do some initial checks and linting. These check
 very quickly. Please check the results. We would like these checks to pass before we
 even continue reviewing your changes.
 -->
-#### Is this a new chart
+#### Is this a new chart?
+Yes/No
 
 #### What this PR does / why we need it:
 
-#### Which issue this PR fixes
-*(optional, in `fixes #<issue number>(, fixes #<issue_number>, ...)` format, will close that issue when PR gets merged)*
-  - fixes #
+#### Which issue(s) is this PR associated with:
+  - #Issue_Number
 
 #### Special notes for your reviewer:
 
-#### Checklist
+#### Checklist:
 [Place an '[x]' (no spaces) in all applicable fields. Please remove unrelated fields.]
-- [ ] [DCO](https://github.com/helm-charts/blob/master/CONTRIBUTING.md) signed
 - [ ] Chart Version bumped
-- [ ] Variables are documented in the README.md
-- [ ] Title of the PR starts with chart name (e.g. `[charts/charts_dir/mychartname]`)
+- [ ] Variables are documented in the chart README.md
+- [ ] Title of the PR starts with the chart name (e.g. `[charts_dir/mychartname]`) if applicable
