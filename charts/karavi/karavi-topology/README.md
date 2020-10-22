@@ -35,3 +35,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `image`                   | Location of the karavi-topology Docker image                                                                                                        | `<docker-registry>:<port>/karavi-topology:latest`|
 | `provisioner_names`       | Provisioner Names used to filter the Persistent Volumes created on the Kubernetes cluster (must be a comma-separated list)    | ` csi-vxflexos.dellemc.com`                                                   |
 | `service.type`            | Kubernetes service type	    | `ClusterIP`                                                   |
+
+## Supported Kubernetes Versions
+
+This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even though they are outside the target supported window.
+
+To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
