@@ -48,3 +48,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `volume_metrics_enabled`                        | Enable PowerFlex Volume Metrics Collection                         | `true`                                       |
 | `storage_class_pool_metrics_enabled`                        | Enable PowerFlex  Storage Class/Pool Metrics Collection                         | `true`                                       |
 | `endpoint`                        | Endpoint for pod leader election                       | `karavi-powerflex-metrics`                                       |
+
+## Supported Kubernetes Versions
+
+This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even though they are outside the target supported window.
+
+To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.

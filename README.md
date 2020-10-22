@@ -20,9 +20,7 @@ For more information about installing and using Helm, see the
 
 ## Where to Find Us
 
-For general Dell Helm Chart discussions join the #TODO
-
-For issues and support for Dell Helm and Charts #TODO
+For general discussions, issues or support for Dell Helm Charts contact karavi@dell.com
 
 ## How Do I Install These Charts?
 ```console
@@ -45,12 +43,3 @@ Individual charts can be maintained by one or more users of [OWNERS](OWNERS). Wh
 
 For information related to the review procedure used by the Chart repository maintainers, see [Merge approval and release process](CONTRIBUTING.md).
 
-### Stale Pull Requests and Issues
-
-Pull Requests and Issues that have no activity for 30 days automatically become stale. After 30 days of being stale, without activity, they become rotten. Pull Requests and Issues can rot for 30 days and then they are automatically closed. This is the standard stale process handling for all repositories on the Kubernetes GitHub organization.
-
-## Supported Kubernetes Versions
-
-This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even though they are outside the target supported window.
-
-To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
