@@ -10,6 +10,9 @@ You may obtain a copy of the License at
 
 ## Dell Community Kubernetes Helm Charts
 
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![License](https://img.shields.io/github/license/dell/helm-charts)](LICENSE)
+
 The source for Dell Helm charts [Dell Helm Hub](https://github.com/dell/helm-charts).
 
 For more information about installing and using Helm, see the
