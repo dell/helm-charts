@@ -1,7 +1,7 @@
-# This workflow will create a Github release for updated helm-charts
+# This Github action will create a Github release for updated helm-charts
 name: charts-release-action
 
-# Triggers the workflow on push/merge to the main branch
+# Triggers the action on push/merge to the main branch
 on:
   push:
     branches: [ main ]
@@ -22,6 +22,7 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"    
      
+     # Run the helm chart release command
       - name: Run karavi chart-releaser
         uses: helm/chart-releaser-action@v1.0.0
         env:
