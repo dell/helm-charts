@@ -19,7 +19,6 @@ storage_class_pool_metrics_enabled: "true"
 # set the polling frequency to configure the interval which storage class/pool metrics are gathered
 storage_class_pool_poll_frequency_seconds: 10
 # set the the default max concurrent queries to powerflex
-concurrent_powerflex_queries: 10 
+concurrent_powerflex_queries: 10
 # set the default endpoint for powerflex service
 endpoint: karavi-powerflex-metrics
-
