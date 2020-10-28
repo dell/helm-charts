@@ -17,7 +17,7 @@ Karavi can be deployed using Helm.
 To install the helm chart:
 ```console
 $ helm repo add dell github.com/dell/helm-charts
-$ helm install karavi/karavi -n karavi --create-namespace --render-subchart-notes
+$ helm install karavi -n karavi --create-namespace --render-subchart-notes
 ```
 After installation, the following deployments will be in Kubernetes:
 - [karavi-topology](../karavi-topology/README.md)
