@@ -1,8 +1,0 @@
-karavi-topology:
-  enabled: true 
-
-karavi-powerflex-metrics:
-  enabled: true
-  powerflex_endpoint: 
-  powerflex_user: 
-  powerflex_password: 
