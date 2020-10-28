@@ -1,0 +1,5 @@
+target-branch: main
+charts:
+ - charts/karavi
+validate-chart-schema: ***REMOVED***
+validate-maintainers: ***REMOVED***
