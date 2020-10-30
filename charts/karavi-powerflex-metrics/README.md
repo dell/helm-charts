@@ -56,4 +56,4 @@ This chart repository supports the latest and previous minor versions of Kuberne
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
 ## Karavi helm chat versioning workflow
-See the versioning [Karavi workflow](../karavi/VERSIONING_WORKFLOW.md)
+See the versioning [karavi-powerflex-metrics workflow](../karavi-powerflex-metrics/VERSIONING_WORKFLOW.md)
