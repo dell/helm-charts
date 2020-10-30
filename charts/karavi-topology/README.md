@@ -42,5 +42,5 @@ This chart repository supports the latest and previous minor versions of Kuberne
 
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
-## Karavi-topology helm chat versioning workflow
+## Karavi Topology Metrics Helm Chart Versioning Workflow
 See the versioning [karavi-topology workflow](../karavi-topology/VERSIONING_WORKFLOW.md)
