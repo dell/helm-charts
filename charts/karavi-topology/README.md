@@ -41,3 +41,6 @@ The command removes all the Kubernetes components associated with the chart and 
 This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even though they are outside the target supported window.
 
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
+
+## Karavi-topology helm chat versioning workflow
+See the versioning [karavi-topology workflow](../karavi-topology/VERSIONING_WORKFLOW.md)
