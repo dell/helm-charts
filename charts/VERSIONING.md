@@ -1,5 +1,4 @@
 # Versioning
-
 This versioning strategy applies to Dell Helm Charts.
 
 Artifacts published must belong to one of the following categories:
