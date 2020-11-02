@@ -14,6 +14,6 @@ Maintainers can use the new release by running the following commands:
 
 ```bash
    helm repo add dell https://github.com/dell/helm-charts
-   helm install dell/karavi-powerflex-metrics –-version “1.10.0” –n karavi-powerflex-metrics
+   helm install dell/karavi-powerflex-metrics --version "1.10.0" -n karavi-powerflex-metrics
 
    ```

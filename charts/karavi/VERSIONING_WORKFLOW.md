@@ -22,6 +22,6 @@ Maintainers can use the new release by running the following commands:
 
 ```bash
    helm repo add dell https://github.com/dell/helm-charts
-   helm install dell/karavi –-version “1.10.0” –n karavi
+   helm install dell/karavi --version "1.10.0" -n karavi
 
    ```

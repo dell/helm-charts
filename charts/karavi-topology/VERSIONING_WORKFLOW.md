@@ -14,6 +14,6 @@ Maintainers can use the new release by running the following commands:
 
 ```bash
    helm repo add dell https://github.com/dell/helm-charts
-   helm install dell/karavi-topology –-version “1.10.0” –n karavi-topology
+   helm install dell/karavi-topology --version "1.10.0" -n karavi-topology
 
    ```
