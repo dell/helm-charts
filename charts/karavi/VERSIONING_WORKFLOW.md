@@ -11,10 +11,10 @@ This versioning workflow applies to Karavi Helm Charts. This workflow is trigger
 * Ensure the associated helm chart version aligns with the new release 
 
 ## New Release of Parent Karavi helm chart
-Update the main chat so that the dependency on any service is going to change to be the latest one.
+Update the main chart so that the dependency on any service is going to change to be the latest one.
 * Create A PR
 * Ensure that the dependency on the `karavi-1.10.0.tgz` file will become the new release.
-* Update the main Karavi helm chat to `1.10.0`
+* Update the main Karavi helm chart to `1.10.0`
 * Merge PR into main branch
 
 ## Consume New Release
