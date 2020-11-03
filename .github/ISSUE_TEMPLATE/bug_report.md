@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: '[name of the chart e.g. charts_dir/chart (if applicable)] issue title'
+title: '[BUG]: [chart name (if applicable)]: bug title'
 labels: type/bug, needs-triage
 assignees: ''
 ---
