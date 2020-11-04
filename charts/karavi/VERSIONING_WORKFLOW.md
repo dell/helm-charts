@@ -1,5 +1,5 @@
 # Workflow
-This versioning workflow applies to Karavi Helm Charts. This workflow is triggered either when there is  a new release in any karavi service or when there is an internal change in any of the child services that Karavi depends on. When either scenario occurs, a maintainer must release a new helm chart for that associated change. The steps include:
+This versioning workflow applies to the Karavi Helm Charts. This workflow is triggered either when there is  a new release in any karavi service or when there is an internal change in any of the child services that Karavi depends on. When either scenario occurs, a maintainer must release a new helm chart for that associated change. The steps include:
 ## Create New Version
 * Create a branch
 * Update the [Chart.yaml](../karavi/Chart.yaml) file with the new version number and also with the app version aligning with the service release number. For example, if the new release number was version 2.0.0, a maintainer must release an updated version  using appVersion: 2.0.0. NOTE that if this workflow is triggered by the changes made in the Karavi PowerFlex Metrics Helm Chart, the appVersion does not change. Moreover, a maintanier can decide on use any version as described in [versioning](../VERSIONING.md) notes. For this illustration, we will assume a maintainer uses: 1.10.0
