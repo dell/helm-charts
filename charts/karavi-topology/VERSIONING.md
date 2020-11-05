@@ -82,7 +82,7 @@ This versioning workflow applies to the Karavi Topology Helm Chart. This workflo
         appVersion: "1.0"
         description: The open-source solution that provides Kubernetes administrators insight into storage usage and performance for containerized applications using Dell products.
         name: karavi-topology
-        version: 0.2.0
+        version: 0.2.0 # updated to 0.2.0
      ```     
    - **New Release of [Karavi Topology](https://github.com/dell/karavi-topology) Service:**
      When there is a new release of Karavi Topology, for instance when a new Karavi Topology service of version: `1.2.0` is released, the maintainer should first update the Karavi Helm Chart version number according to the [Versioning Strategy](#versioning-strategy). Secondly, the `appVersion` MUST be updated to match the new Karavi Topology service release. In our example, the Karavi Topology service has a new release of version `1.2.0`. Before any update, the Chart.yaml may look like this: 
@@ -99,7 +99,7 @@ This versioning workflow applies to the Karavi Topology Helm Chart. This workflo
         appVersion: "1.2.0" # updated to 1.2.0 to match the new service released
         description: The open-source solution that provides Kubernetes administrators insight into storage usage and performance for containerized applications using Dell products.
         name: karavi-topology
-        version: 0.2.0 #updated to 0.2.0
+        version: 0.2.0 # updated to 0.2.0
      ```
 3) Create and merge PR into main branch
 4) Github action will automatically make a new release given that there is a new chart version. The action packages and publishes an artifact,  making it available for consumption. Given the example above, in either scenerio, the GitHub action will produce a release called `karavi-topology-0.2.0`.
