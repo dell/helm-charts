@@ -5,15 +5,15 @@ community for anyone who wants to use the project or contribute to it. There are
 just a few small guidelines you need to follow. 
 
 # Table of Content:
-* [Introduction](#Introduction)
-* [Issues](#Issues)
-* [Branching Strategy](#Branching-strategy)
-* [Code reviews](#Code-reviews)
-* [Signing your commits](#Signing-your-commits)
-* [Code Style](#Code-Style)
-* [TODOs in the code](#TODOs-in-the-code)
-* [Testing](#Testing)
-* [I/O Workload](#IO-Workload)
+- [How to Contribute](#how-to-contribute)
+- [Table of Content:](#table-of-content)
+  - [Introduction](#introduction)
+  - [Issues](#issues)
+  - [Branching Strategy](#branching-strategy)
+  - [Branch Naming Convention](#branch-naming-convention)
+  - [Code Reviews](#code-reviews)
+  - [Signing your commits](#signing-your-commits)
+    - [Signing a commit](#signing-a-commit)
 
 ## Introduction
 
@@ -41,7 +41,7 @@ We are following a scaled trunk branching strategy where short-lived branches ar
 Steps to create a branch for a bug fix or feature:
 1. Fork the repository.
 2. Create a branch off of the main branch. The branch name should be descriptive and include the chart name, the bug fix it contains or the release # associated with the version update being made to the chart.
-3. Update the chart and commit to your branch.  Note: The chart version must be updated if any change is made to the chart.  See [Versioning](./charts/VERSIONING.md) 
+3. Update the chart and commit to your branch.  Note: The chart version must be updated if any change is made to the chart.  See the `Versioning.md` file in the chart you wanted to update.
 4. If other code changes have merged into the upstream main branch, perform a rebase of those changes into your branch.
 5. Open a pull request between your branch and the upstream main branch.  This will trigger a GitHub action to lint the chart in question.
 6. Once your pull request has merged, GitHub actions will take care of creating a chart release, packaging the chart, and making the new version available in the Helm repo.
