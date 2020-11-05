@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: '[name of the chart e.g. charts_dir/chart (if applicable)] issue title'
+title: '[FEATURE]: [chart name (if applicable)]: feature title'
 labels: type/feature-request, needs-triage
 assignees: ''
 
