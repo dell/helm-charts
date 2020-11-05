@@ -2,23 +2,19 @@
 
 Become one of the contributors to this project! We thrive to build a welcoming and open community for anyone who wants to use the project or contribute to it. There are just a few small guidelines you need to follow. To help us create a safe and positive community experience for all, we require all participants to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
 
-# Table of Content:
-- [How to Contribute](#how-to-contribute)
-- [Table of Content:](#table-of-content)
-  - [Become a contributor](#become-a-contributor)
-  - [Report bugs](#report-bugs)
-  - [Feature request](#feature-request)
-  - [Answering questions](#answering-questions)
-  - [Triage issues](#triage-issues)
-  - [Your first contribution](#your-first-contribution)
-  - [Pull requests](#pull-requests)
-  - [Commit message format](#commit-message-format)
-  - [Branching Strategy](#branching-strategy)
-  - [Branch Naming Convention](#branch-naming-convention)
-  - [Code Reviews](#code-reviews)
-  - [Signing your commits](#signing-your-commits)
-    - [Signing a commit](#signing-a-commit)
-  - [TODOs in the code](#todos-in-the-code)
+# Table of Contents:
+* [Become a contributor](#Become-a-contributor)
+* [Report bugs](#Report-bugs)
+* [Feature request](#Feature-request)
+* [Answering questions](#Answering-questions)
+* [Triage issues](#Triage-issues)
+* [Your first contribution](#Your-first-contribution)
+* [Pull requests](#Pull-requests)
+* [Commit message format](#Commit-message-format)
+* [Branching Strategy](#Branching-strategy)
+* [Code reviews](#Code-reviews)
+* [Signing your commits](#Signing-your-commits)
+* [TODOs in the code](#TODOs-in-the-code)
 
 ## Become a contributor
 
