@@ -105,7 +105,7 @@ This versioning workflow applies to the Karavi Helm Chart. This workflow is trig
         condition: karavi-powerflex-metrics.enabled
      ```     
    - **New Release of any of the child Karavi Helm Chart:**
-     When there is a new release of any child Karavi Helm Chart, for instance when a new Karavi Powerflex Metrics version: `1.2.0` is released, the maintainer should first determine update the Karavi Helm Chart version number according to the [Versioning Strategy](#versioning-strategy). Secondly, the dependency on the specific child helm chart that has a new release must be updated as well. In our example, the Karavi Powerflex Metrics has a new release of version `1.2.0`. Before any update, the Chart.yaml may look like this: 
+     When there is a new release of any child Karavi Helm Chart, for instance when a new Karavi Powerflex Metrics version: `1.2.0` is released, the maintainer should first update the Karavi Helm Chart version number according to the [Versioning Strategy](#versioning-strategy). Secondly, the dependency on the specific child helm chart that has a new release must be updated as well. In our example, the Karavi Powerflex Metrics has a new release of version `1.2.0`. Before any update, the Chart.yaml may look like this: 
      ```yaml
       apiVersion: v2
       name: karavi
@@ -146,6 +146,5 @@ This versioning workflow applies to the Karavi Helm Chart. This workflow is trig
 * Given the example above, users can utilize the new release by running the following commands:
 ```bash
    helm repo add dell https://github.com/dell/helm-charts
-   helm install karavi --version "0.2.0" -n karavi
-
+   helm install karavi --version "0.2.0" -n karavi --create-namespace --render-subchart-notes
    ```
