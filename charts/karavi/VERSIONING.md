@@ -1,16 +1,14 @@
-# Versioning
 
-## Table of Content
-- [Versioning](#versioning)
-  - [Table of Content](#table-of-content)
-  - [Versioning Strategy](#versioning-strategy)
-    - [Major releases](#major-releases)
-    - [Minor releases](#minor-releases)
-    - [Patch releases](#patch-releases)
-    - [Preleases](#preleases)
-      - [References](#references)
-  - [Versioning Workflow](#versioning-workflow)
-    - [Consume New Release](#consume-new-release)
+# Versioning <!-- omit in toc -->
+## Table of Content <!-- omit in toc -->
+- [Versioning Strategy](#versioning-strategy)
+  - [Major releases](#major-releases)
+  - [Minor releases](#minor-releases)
+  - [Patch releases](#patch-releases)
+  - [Preleases](#preleases)
+    - [References](#references)
+- [Versioning Workflow](#versioning-workflow)
+  - [Consume New Release](#consume-new-release)
 
 ## Versioning Strategy
 This versioning strategy applies to Dell Helm Charts.
@@ -69,8 +67,8 @@ Dell Helm Charts follow Semantic Versioning as defined on [http://semver.org/](h
 ## Versioning Workflow
 This versioning workflow applies to the Karavi Helm Chart. This workflow is triggered either when there is a change to the Karavi Helm Chart or when there is a new release of any of the child Karavi Helm Charts. When either scenario occurs, a maintainer must release a new helm chart for that associated change. The steps include:
 
-* [Create a branch](../../CONTRIBUTING.md)
-* Update the [Chart.yaml](../karavi/Chart.yaml) file, depending on the scenario that triggered this workflow. These scenarios include:
+1) [Create a branch](../../CONTRIBUTING.md)
+2) Update the [Chart.yaml](../karavi/Chart.yaml) file, depending on the scenario that triggered this workflow. These scenarios include:
    - **Change to the Karavi Helm Chart:**
      If any changes are made in Karavi Helm Chart, for instance when the [values.yaml](../karavi/values.yaml) file is modified, the Karavi Helm Chart version number must be change according to the [Versioning Strategy](#versioning-strategy). For instance, consider the current Chart.yaml below: 
      ```yaml
@@ -124,7 +122,7 @@ This versioning workflow applies to the Karavi Helm Chart. This workflow is trig
         repository: "file://../karavi-powerflex-metrics"
         condition: karavi-powerflex-metrics.enabled
      ```
-    If after reviewing the versioning strategy, the maintainer concludes that the new version of the Karavi Helm Chart should be `0.2.0`, Chart.yaml becomes:
+     If after reviewing the versioning strategy,  the maintainer concludes that the new version of the Karavi Helm Chart should be `0.2.0`, Chart.yaml becomes:
      ```yaml
       apiVersion: v2
       name: karavi
@@ -141,8 +139,8 @@ This versioning workflow applies to the Karavi Helm Chart. This workflow is trig
         repository: "file://../karavi-powerflex-metrics"
         condition: karavi-powerflex-metrics.enabled
      ```
-* Create and merge PR into main branch
-* Github action will automatically make a new release given that there is a new chart version. The action packages and publishes an artifact,  making it available for consumption. Given the example above, in either scenerio, the GitHub action will produce a release called `karavi-0.2.0`.
+3) Create and merge PR into main branch
+4) Github action will automatically make a new release given that there is a new chart version. The action packages and publishes an artifact,  making it available for consumption. Given the example above, in either scenerio, the GitHub action will produce a release called `karavi-0.2.0`.
 
 ### Consume New Release
 * Given the example above, users can utilize the new release by running the following commands:
