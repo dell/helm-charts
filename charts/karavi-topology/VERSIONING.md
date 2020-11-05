@@ -1,5 +1,5 @@
 # Versioning <!-- omit in toc -->
-## Table of Content <!-- omit in toc -->
+## Table of Contents <!-- omit in toc -->
 - [Versioning Strategy](#versioning-strategy)
   - [Major releases](#major-releases)
   - [Minor releases](#minor-releases)
