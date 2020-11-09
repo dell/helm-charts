@@ -43,3 +43,5 @@ Individual charts can be maintained by one or more users of [OWNERS](OWNERS). Wh
 
 For information related to the review procedure used by the Chart repository maintainers, see [Merge approval and release process](CONTRIBUTING.md).
 
+## Versioning
+
