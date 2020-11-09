@@ -56,4 +56,4 @@ This chart repository supports the latest and previous minor versions of Kuberne
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
 ## Karavi PowerFlex Metrics Helm Chart Versioning
-See the Karavi PowerFlex Metrics Helm chart [Versioning](./VERSIONING_WORKFLOW.md)
+See the Karavi PowerFlex Metrics Helm chart [versioning workflow](./VERSIONING_WORKFLOW.md)
