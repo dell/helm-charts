@@ -18,10 +18,13 @@ Karavi Powerflex Metrics can be deployed using Helm.  The chart must be configur
 To install the helm chart:
 ```console
 $ helm repo add dell github.com/dell/helm-charts
-$ helm install karavi-powerflex-metrics --namespace karavi --create-namespace
+$ helm install dell/karavi-powerflex-metrics --namespace karavi --create-namespace
 ```
 After installation, there will be a Deployment of a PowerFlex Metrics service in Kubernetes.
 The PowerFlex Metrics service will automatically start to gather PowerFlex metrics and push them to the OpenTelemetry collector.
+
+#### Offline Chart Installation
+To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Helm Chart Installer](../karavi/installer/README.md). When creating the offline bundle, use `dell/karavi-powerflex-metrics` as the chart name.
 
 #### Uninstalling the Chart
 To uninstall/delete the deployment:
