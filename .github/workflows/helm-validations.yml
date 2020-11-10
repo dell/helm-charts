@@ -5,6 +5,8 @@ name: helm-validations
 on:
   pull_request:
     branches: [ main ]
+    paths:
+    - '**.yaml'
 
 jobs:
   # This job will run helm lint and version increment check on updated charts
