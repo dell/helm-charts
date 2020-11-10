@@ -15,6 +15,7 @@ Become one of the contributors to this project! We thrive to build a welcoming a
 * [Code reviews](#Code-reviews)
 * [Signing your commits](#Signing-your-commits)
 * [TODOs in the code](#TODOs-in-the-code)
+* [Code Quality](#Code-quality)
 
 ## Become a contributor
 
@@ -88,6 +89,7 @@ To increase the chance of having your pull request accepted, make sure your pull
 - The pull request closes one related issue.
 - The pull request contains necessary tests that verify the intended behavior.
 - If your pull request has conflicts, rebase your branch onto the master branch.
+- Code validation checks must pass.
 
 If the pull request fixes a bug:
 
@@ -149,3 +151,9 @@ $ git commit -S -m your commit message
 
 ## TODOs in the code
 We don't like TODOs in the code. It is really best if you sort out all issues you can see with the changes before we check the changes in.
+
+## Code Quality
+In order to maintain code quality, we have defined quality gates that are automatically checked in every Pull Request. Any failed checks will block merging the Pull Request changes to the main branch. The contributor will need to update the code to address the failed checks. When the changes are committed to the Pull Request, the checks will rerun automatically. After all the checks have passed, merging to the main branch will be enabled. The following checks are used for the helm-charts repository:
+* Validate linting using [helm-lint](https://helm.sh/docs/helm/helm_lint/) on updated charts.
+* Check for version increment on updated charts. For more information, see [Versioning.](./charts/VERSIONING.md) 
+* Validate [dependency](https://helm.sh/docs/helm/helm_dependency/) versions on parent charts. 
