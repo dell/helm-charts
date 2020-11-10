@@ -7,8 +7,6 @@ You may obtain a copy of the License at
 
     http://www.apache.org/licenses/LICENSE-2.0
 -->
-
-
 ## Dell Community Kubernetes Helm Chart for Karavi Topology
 
 Karavi Topology can be deployed using Helm.
