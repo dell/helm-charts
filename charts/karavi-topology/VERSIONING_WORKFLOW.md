@@ -1,3 +1,12 @@
+<!--
+Copyright (c) 2020 Dell Inc., or its subsidiaries. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+-->
 # Versioning Workflow
 
 This versioning workflow applies to the Karavi Topology Helm chart. This workflow is triggered when there is a new release of [karavi-topology](https://github.com/dell/karavi-topology) or when there is a change made to the Karavi Topology Topology Helm chart. When either scenario occurs, a maintainer must release a new Helm chart for that associated change. The steps include:
