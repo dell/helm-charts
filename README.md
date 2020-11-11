@@ -20,7 +20,7 @@ For more information about installing and using Helm, see the
 
 ## Where to Find Us
 
-For general discussions, issues or support for Dell Helm Charts contact karavi@dell.com
+For general discussions, issues or support for Dell Helm Charts contact the team and community on the [mailing lists](mailto:karavi@dell.com?subject=[Dell-Helms-Charts]%20<replace%20me%20with%20more%20specific%20subject>)
 
 ## How Do I Install These Charts?
 ```console
@@ -43,3 +43,6 @@ Individual charts can be maintained by one or more users of [OWNERS](OWNERS). Wh
 
 For information related to the review procedure used by the Chart repository maintainers, see [Merge approval and release process](CONTRIBUTING.md).
 
+## Versioning Strategy
+
+Dell Helm Charts follow Semantic Versioning as defined on [http://semver.org/](http://semver.org).

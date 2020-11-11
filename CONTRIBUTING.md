@@ -1,8 +1,18 @@
+<!--
+Copyright (c) 2020 Dell Inc., or its subsidiaries. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+-->
+
 # How to Contribute
 
 Become one of the contributors to this project! We thrive to build a welcoming and open community for anyone who wants to use the project or contribute to it. There are just a few small guidelines you need to follow. To help us create a safe and positive community experience for all, we require all participants to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
 
-# Table of Content:
+# Table of Contents:
 * [Become a contributor](#Become-a-contributor)
 * [Report bugs](#Report-bugs)
 * [Feature request](#Feature-request)
@@ -15,6 +25,7 @@ Become one of the contributors to this project! We thrive to build a welcoming a
 * [Code reviews](#Code-reviews)
 * [Signing your commits](#Signing-your-commits)
 * [TODOs in the code](#TODOs-in-the-code)
+* [Code Quality](#Code-quality)
 
 ## Become a contributor
 
@@ -88,6 +99,7 @@ To increase the chance of having your pull request accepted, make sure your pull
 - The pull request closes one related issue.
 - The pull request contains necessary tests that verify the intended behavior.
 - If your pull request has conflicts, rebase your branch onto the master branch.
+- Code validation checks must pass.
 
 If the pull request fixes a bug:
 
@@ -109,7 +121,7 @@ We are following a scaled trunk branching strategy where short-lived branches ar
 Steps to create a branch for a bug fix or feature:
 1. Fork the repository.
 2. Create a branch off of the main branch. The branch name should be descriptive and include the chart name, the bug fix it contains or the release # associated with the version update being made to the chart.
-3. Update the chart and commit to your branch.  Note: The chart version must be updated if any change is made to the chart.  See [Versioning](./charts/VERSIONING.md) 
+3. Update the chart and commit to your branch.  Note: The chart version must be updated if any change is made to the chart.
 4. If other code changes have merged into the upstream main branch, perform a rebase of those changes into your branch.
 5. Open a pull request between your branch and the upstream main branch.  This will trigger a GitHub action to lint the chart in question.
 6. Once your pull request has merged, GitHub actions will take care of creating a chart release, packaging the chart, and making the new version available in the Helm repo.
@@ -149,3 +161,9 @@ $ git commit -S -m your commit message
 
 ## TODOs in the code
 We don't like TODOs in the code. It is really best if you sort out all issues you can see with the changes before we check the changes in.
+
+## Code Quality
+In order to maintain code quality, we have defined quality gates that are automatically checked in every Pull Request. Any failed checks will block merging the Pull Request changes to the main branch. The contributor will need to update the code to address the failed checks. When the changes are committed to the Pull Request, the checks will rerun automatically. After all the checks have passed, merging to the main branch will be enabled. The following checks are used for the helm-charts repository:
+* Validate linting using [helm-lint](https://helm.sh/docs/helm/helm_lint/) on updated charts.
+* Check for version increment on updated charts. 
+* Validate [dependency](https://helm.sh/docs/helm/helm_dependency/) versions on parent charts. 
