@@ -5,14 +5,27 @@ name: helm-validations
 on:
   pull_request:
     branches: [ main ]
-    paths:
-    - '**.yaml'
 
 jobs:
+  # This job will check to see if any .yaml file is modified
+  check_files:
+    runs-on: ubuntu-latest
+    outputs:
+     run_tests: ${{ steps.diff.outputs.run_tests }}
+    steps:
+     - uses: actions/checkout@v2
+     - name: Check for files changed
+       id: diff
+       run: |
+            git fetch origin $GITHUB_BASE_REF --depth=1
+            git diff --name-only origin/$GITHUB_BASE_REF.. | grep \.yaml$ && echo '::set-output name=run_tests::true' || true
+ 
   # This job will run helm lint and version increment check on updated charts
   lint:
     runs-on: ubuntu-latest
-
+    # Only run job when .yaml file is changed
+    needs: check_files
+    if: needs.check_files.outputs.run_tests == 'true'
     steps:
       # Check out the repo
       - name: Checkout
@@ -31,6 +44,9 @@ jobs:
  # This job checks that dependency versions have been updated on the main karavi chart
   dependency:
     runs-on: ubuntu-latest
+    # Only run job when .yaml file is changed
+    needs: check_files
+    if: needs.check_files.outputs.run_tests == 'true'
     steps:
       # Check out the repo
       - name: Checkout
