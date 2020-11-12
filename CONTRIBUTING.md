@@ -19,15 +19,14 @@ Become one of the contributors to this project! We thrive to build a welcoming a
 * [Answering questions](#Answering-questions)
 * [Triage issues](#Triage-issues)
 * [Your first contribution](#Your-first-contribution)
-* [Pull requests](#Pull-requests)
-* [Commit message format](#Commit-message-format)
 * [Branching Strategy](#Branching-strategy)
-* [Code reviews](#Code-reviews)
 * [Signing your commits](#Signing-your-commits)
+* [Pull requests](#Pull-requests)
+* [Code reviews](#Code-reviews)
 * [TODOs in the code](#TODOs-in-the-code)
 * [Code Quality](#Code-quality)
 
-## Become a contributor
+# Become a contributor
 
 You can contribute to Dell Community Kubernetes Helm Charts in several ways. Here are some examples:
 
@@ -37,7 +36,7 @@ You can contribute to Dell Community Kubernetes Helm Charts in several ways. Her
 - Write technical documentation and blog posts, for users and contributors.
 - Help others by answering questions about Dell Community Kubernetes Helm Charts.
 
-## Report bugs
+# Report bugs
 
 We aim to track and document everything related to this repo via the Issues page. The code and documentation are released with no warranties or SLAs and are intended to be supported through a community driven process.
 
@@ -54,17 +53,17 @@ When opening a Bug please include the following information to help with debuggi
 
 An Issue __must__ be created before submitting any pull request. Any pull request that is created should be linked to an Issue.
 
-## Feature request
+# Feature request
 
 If you have an idea of how to improve Dell Community Kubernetes Helm Charts, submit a [feature request](https://github.com/dell/helm-charts/issues/new?template=feature_request.md).
 
-## Answering questions
+# Answering questions
 
 If you have a question and you can't find the answer in the documentation or issues, the next step is to submit a [question](https://github.com/dell/helm-charts/issues/new?template=ask-a-question.md)
 
 We'd love your help answering questions being asked by other Dell Community Kubernetes Helm Charts users.
 
-## Triage issues
+# Triage issues
 
 Triage helps ensure that issues resolve quickly by:
 
@@ -77,7 +76,7 @@ If you don't have the knowledge or time to code, consider helping with _issue tr
 
 Read more about the ways you can [Triage issues](ISSUE_TRIAGE.md).
 
-## Your first contribution
+# Your first contribution
 
 Unsure where to begin contributing to Dell Community Kubernetes Helm Charts? Start by browsing issues labeled `beginner friendly` or `help wanted`.
 
@@ -86,7 +85,59 @@ Unsure where to begin contributing to Dell Community Kubernetes Helm Charts? Sta
 
 When you're ready to contribute, it's time to create a pull request.
 
-## Pull requests
+# Branching Strategy
+We are following a scaled trunk branching strategy where short-lived branches are created off of the main branch. When coding is complete, the branch is merged back into main after being approved in a pull request code review.
+
+## Branch Naming Convention
+
+|  Branch Type |  Example                          |  Comment                                  |
+|--------------|-----------------------------------|-------------------------------------------|
+|  main        |  main                             |                                           |
+|  Release     |  release-1.0                      |  hotfix: release-1.1 patch: release-1.0.1 |
+|  Feature     |  feature-9-olp-support            |  "9" referring to GitHub issue ID         |
+|  Bug Fix     |  bugfix-110-remove-docker-compose |  "110" referring to GitHub issue ID       |
+
+#### Branch Types
+- A Release branch is a branch created from main that will be solely used for release a Karavi version. Only critical bug fixes will be merged into this branch.
+- Bug Fix branch is a branch which is created for the purpose of fixing the given defect/issue.
+- Feature branch is created for a feature development purpose.
+
+## Steps to create a branch for a bug fix or feature:
+1. Fork the repository.
+2. Create a branch off of the main branch. The branch name should follow [branch naming convention](#branch-naming-convention).
+3. Write code, add tests, and commit to your branch. Optionally, add feature flags to disable any new features that are not yet ready for the release.
+4. If other code changes have merged into the upstream main branch, perform a rebase of those changes into your branch.
+5. Open a [pull request](#pull-requests) between your branch and the upstream main branch.
+6. Once your pull request has merged, your branch can be deleted.
+
+Release branches will be created from the main branch near the time of a planned release when all features are completed. Only critical bug fixes will be merged into the release branch at this time. All other bug fixes and features can continue to be merged into the main branch. When the release branch is stable, the branch will be tagged for release.
+
+# Signing your commits
+
+We require that developers sign off their commits to certify that they have permission to contribute the code in a pull request. This way of certifying is commonly known as the [Developer Certificate of Origin (DCO)](https://developercertificate.org/). We encourage all contributors to read the DCO text before signing a commit and making contributions.
+
+GitHub will prevent a pull request from being merged if there are any unsigned commits.
+
+## Signing a commit
+
+GPG (GNU Privacy Guard) will be used to sign commits.  Follow the instructions [here](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/signing-commits) to create a GPG key and configure your GitHub account to use that key.
+
+Make sure you have your user name and e-mail set.  This will be required for your signed commit to be properly verified.  Check the following references:
+
+* Setting up your github user name [reference](https://help.github.com/articles/setting-your-username-in-git/)
+* Setting up your e-mail address [reference](https://help.github.com/articles/setting-your-commit-email-address-in-git/)
+
+Once Git and your GitHub account have been properly configured, you can add the -S flag to the git commits:
+```console
+$ git commit -S -m your commit message
+# Creates a signed commit
+```
+
+## Commit message format
+
+Karavi uses the guidelines for commit messages outlined in [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
+
+# Pull requests
 
 If this is your first time contributing to an open-source project on GitHub, make sure you read about [Creating a pull request](https://help.github.com/en/articles/creating-a-pull-request).
 
@@ -111,58 +162,14 @@ We use the pull request title when we generate change logs for releases. As such
 
 Make sure that the title for your pull request uses the same format as the subject line in the commit message.
 
-## Commit message format
-
-Dell Community Kubernetes Helm Charts uses the guidelines for commit messages outlined in [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/)
-
-## Branching Strategy
-We are following a scaled trunk branching strategy where short-lived branches are created off of the main branch. When coding is complete, the branch is merged back into main after being approved in a pull request code review.
-
-Steps to create a branch for a bug fix or feature:
-1. Fork the repository.
-2. Create a branch off of the main branch. The branch name should be descriptive and include the chart name, the bug fix it contains or the release # associated with the version update being made to the chart.
-3. Update the chart and commit to your branch.  Note: The chart version must be updated if any change is made to the chart.
-4. If other code changes have merged into the upstream main branch, perform a rebase of those changes into your branch.
-5. Open a pull request between your branch and the upstream main branch.  This will trigger a GitHub action to lint the chart in question.
-6. Once your pull request has merged, GitHub actions will take care of creating a chart release, packaging the chart, and making the new version available in the Helm repo.
-
-## Branch Naming Convention
-
-|  Branch Type |  Example                          |  Comment                                  |
-|--------------|-----------------------------------|-------------------------------------------|
-|  main        |  main                             |                                           |
-|  Feature     |  feature-9-olp-support            |  "9" referring to GitHub issue ID         |
-|  Bug Fix     |  bugfix-110-remove-docker-compose |  "110" referring to GitHub issue ID       |
-
-## Code Reviews
+# Code Reviews
 
 All submissions, including submissions by project members, require review. We use GitHub pull requests for this purpose. Consult [GitHub Help](https://help.github.com/articles/about-pull-requests/) for more information on using pull requests.
 
-## Signing your commits
-
-We require that developers sign off their commits to certify that they have permission to contribute the code in a pull request. This way of certifying is commonly known as the [Developer Certificate of Origin (DCO)](https://developercertificate.org/). We encourage all contributors to read the DCO text before signing a commit and making contributions.
-
-GitHub will prevent a pull request from being merged if there are any unsigned commits.
-
-### Signing a commit
-
-GPG (GNU Privacy Guard) will be used to sign commits.  Follow the instructions [here](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/signing-commits) to create a GPG key and configure your GitHub account to use that key.
-
-Make sure you have your user name and e-mail set.  This will be required for your signed commit to be properly verified.  Check the following references:
-
-* Setting up your github user name [reference](https://help.github.com/articles/setting-your-username-in-git/)
-* Setting up your e-mail address [reference](https://help.github.com/articles/setting-your-commit-email-address-in-git/)
-
-Once Git and your GitHub account have been properly configured, you can add the -S flag to the git commits:
-```console
-$ git commit -S -m your commit message
-# Creates a signed commit
-```
-
-## TODOs in the code
+# TODOs in the code
 We don't like TODOs in the code. It is really best if you sort out all issues you can see with the changes before we check the changes in.
 
-## Code Quality
+# Code Quality
 In order to maintain code quality, we have defined quality gates that are automatically checked in every Pull Request. Any failed checks will block merging the Pull Request changes to the main branch. The contributor will need to update the code to address the failed checks. When the changes are committed to the Pull Request, the checks will rerun automatically. After all the checks have passed, merging to the main branch will be enabled. The following checks are used for the helm-charts repository:
 * Validate linting using [helm-lint](https://helm.sh/docs/helm/helm_lint/) on updated charts.
 * Check for version increment on updated charts. 
