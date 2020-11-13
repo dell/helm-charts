@@ -1,3 +1,17 @@
+{{- $certificateFileNotDefined := printf "Certificate file was not defined. Refer to the Helm Chart documentation." -}}
+{{- $_ := required $certificateFileNotDefined (.Values.certificateFile) }}
+
+{{- $privateKeyFileNotDefined := printf "Private key file was not defined. Refer to the Helm Chart documentation." -}}
+{{- $_ := required $privateKeyFileNotDefined (.Values.privateKeyFile) }}
+
+{{- $certificateFile := .Values.certificateFile -}}
+{{- $certificateErrorMsg := printf "Unable to find certificate key file %s. Refer to the Helm Chart documentation." $certificateFile -}}
+{{- $certificateFileContents := required $certificateErrorMsg (.Files.Get $certificateFile) }}
+
+{{- $privateKeyFile := .Values.privateKeyFile -}}
+{{- $privateKeyErrorMsg := printf "Unable to find private key file %s. Refer to the Helm Chart documentation." $privateKeyFile -}}
+{{- $privateKeyFileContents := required $privateKeyErrorMsg (.Files.Get $privateKeyFile) }}
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -14,6 +28,16 @@ spec:
   selector:
     app.kubernetes.io/name: karavi_topology
     app.kubernetes.io/instance: {{ .Release.Name }}
+
+---
+
+apiVersion: v1
+data:
+  localhost.crt: {{ $certificateFileContents | b64enc }}
+  localhost.key: {{ $privateKeyFileContents | b64enc }}
+kind: Secret
+metadata:
+  name: karavi-topology-secret
 
 ---
 
@@ -37,6 +61,10 @@ spec:
         app.kubernetes.io/name: karavi_topology
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      volumes:
+        - name: karavi-topology-secret-volume
+          secret:
+            secretName: karavi-topology-secret
       serviceAccount: {{ .Release.Name }}-topology-controller
       containers:
       - name: karavi-topology
@@ -45,5 +73,8 @@ spec:
         env:
         - name: PROVISIONER_NAMES
           value: {{ .Values.provisioner_names }}
+        volumeMounts:
+        - name: karavi-topology-secret-volume
+          mountPath: "/certs"
       restartPolicy: Always
 status: {}
