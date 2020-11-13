@@ -1,9 +1,15 @@
-powerflex_endpoint: https://10.247.66.156
-# base64 user and password
-powerflex_user: YWRtaW4=
-powerflex_password: UGFzc3dvcmQxMjM=
+otelCollector:
+  image: otel/opentelemetry-collector:0.9.0
+  cert_file: # Required: Path to a valid certifcate file
+  key_file:  # Required: Path to a valid key file
 
-image: 10.247.66.155:5000/karavi-powerflex-metrics:latest
+
+powerflex_endpoint:
+# base64 user and password
+powerflex_user:
+powerflex_password:
+
+image: <docker-registry>:<port>/karavi-powerflex-metrics:latest
 collector_addr: otel-collector:55680
 # comma seperated list of provisioner names (ex: csi-vxflexos.dellemc.com)
 provisioner_names: csi-vxflexos.dellemc.com
@@ -22,8 +28,3 @@ storage_class_pool_poll_frequency_seconds: 10
 concurrent_powerflex_queries: 10
 # set the default endpoint for powerflex service
 endpoint: karavi-powerflex-metrics
-
-mTLS_enabled: "false"
-
-tls_enabled: "true"
-collector_cert_file: /root/test-keys/cert.pem # path to certificate
