@@ -9,17 +9,6 @@ data:
 
 ---
 
-#{{- $collectorCert := (.Files.Get (printf "%s" .Values.collector_cert_file)) }}
-apiVersion: v1
-data:
-  collector-cert.pem: |-
-{{ .Files.Get (printf "%s" .Values.collector_cert_file) | indent 4 }}
-kind: ConfigMap
-metadata:
-  name: collector-cert
-
----
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -103,16 +92,16 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: TLS_ENABLED
-          value: "{{ .Values.tls_enabled }}"
+          value: "true"
         volumeMounts:
-        - name: collector-cert
-          mountPath: /etc/ssl/certs/collector-cert.pem
-          subPath: collector-cert.pem
+        - name: cert-file-config
+          mountPath: /etc/ssl/certs/cert.crt
+          subPath: cert.crt
           readOnly: false
       volumes:
-      - name: collector-cert
+      - name: cert-file-config
         configMap:
-           name: collector-cert
+           name: cert-file-config
 
       restartPolicy: Always
 status: {}
