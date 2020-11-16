@@ -23,8 +23,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
   - name: karavi-topology
-    port: 8080
-    targetPort: 8080
+    port: 443
+    targetPort: 443
   selector:
     app.kubernetes.io/name: karavi_topology
     app.kubernetes.io/instance: {{ .Release.Name }}
