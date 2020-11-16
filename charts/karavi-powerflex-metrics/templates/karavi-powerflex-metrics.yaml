@@ -52,7 +52,6 @@ spec:
       containers:
       - name: karavi-powerflex-metrics
         image: {{ .Values.image }}
-        imagePullPolicy: Always
         resources: {}
         env:
         - name: COLLECTOR_ADDR
