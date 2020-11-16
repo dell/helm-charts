@@ -42,8 +42,8 @@ kind: Secret
 metadata:
   name: tls-secret
 data:
-  tls.crt: {{ (.Files.Get "example.crt") | b64enc }}
-  tls.key: {{ (.Files.Get "example.key") | b64enc }}
+  tls.crt: {{ $certFile  | b64enc }}
+  tls.key: {{ $certKey | b64enc }}
 type: kubernetes.io/tls
 
 ---
