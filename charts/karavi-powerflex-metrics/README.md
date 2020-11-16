@@ -38,8 +38,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `otelCollector.cert_file`      | Required path to a valid public certificate file that will be used to deploy the OpenTelemetry Collector            | ` `                                                   |
-| `otelCollector.key_file`      | Required path to the public certificate's associated private key file that will be used to deploy the OpenTelemetry Collector            | ` `                                                   |
-| `otelCollector.key_file`      | Required path to a valid certificate            | ` `                                                   |
+| `otelCollector.key_file`      | Required path to the public certificate's associated private key file that will be used to deploy the OpenTelemetry Collector            | ` `|                                                   
 | `powerflex_endpoint`      | PowerFlex Gateway URL            | ` `                                                   |
 | `powerflex_user`                      | PowerFlex Gateway administrator username(in base64)                           | ` `                           |
 | `powerflex_password`                           | PowerFlex Gateway administrator password(in base64)                      | ` ` |
