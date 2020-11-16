@@ -38,6 +38,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `karavi-topology.enabled`                 | Enable deployment of Karavi Topology                        | `true`                                                  |
+| `karavi-topology.certificateFile`         | Location of the signed certificate file    |  |
+| `karavi-topology.privateKeyFile`          | Location of the signed certificate private key file |  |
 | `karavi-powerflex-metrics.enabled`                 | Enable deployment of Karavi PowerFlex Metrics      | `true`                                                  |
 | `karavi-powerflex-metrics.powerflex_endpoint`      | PowerFlex Gateway URL            | ` `                                                   |
 | `karavi-powerflex-metrics.powerflex_user`                      | PowerFlex Gateway administrator username (in base64)                           | ` `                           |
