@@ -113,7 +113,7 @@ spec:
           name: key-file-config
       containers:
       - name: nginx-proxy
-        image: nginx
+        image: {{ .Values.nginxProxy.image }}
         volumeMounts:
           - name: tls-secret
             mountPath: /etc/ssl/certs

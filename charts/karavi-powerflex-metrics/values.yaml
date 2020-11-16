@@ -3,6 +3,8 @@ otelCollector:
   cert_file: # Required: Path to a valid certifcate file
   key_file:  # Required: Path to a valid key file
 
+nginxProxy:
+  image: nginx:1
 
 powerflex_endpoint:
 # base64 user and password
