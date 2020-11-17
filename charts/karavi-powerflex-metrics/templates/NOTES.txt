@@ -5,4 +5,4 @@ Karavi PowerFlex Metrics
   PowerFlex Endpoint: {{ .Values.powerflex_endpoint }}
   Provisioner Names: {{ .Values.provisioner_names }}
   Prometheus Scrape Target: 
-    From inisde the Kubernetes cluster: otel-collector:443
+    From inside the Kubernetes cluster: otel-collector:443
