@@ -1,13 +1,4 @@
 <!--
-Copyright (c) 2020 Dell Inc., or its subsidiaries. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
--->
-<!--
 Thank you for contributing to helm-charts. Before you submit this PR we'd like to
 make sure you are aware of our technical requirements and best practices:
 
