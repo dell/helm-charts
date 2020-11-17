@@ -43,7 +43,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `karavi-powerflex-metrics.enabled`                 | Enable deployment of Karavi PowerFlex Metrics      | `true`                                                  |
 | `karavi-powerflex-metrics.powerflex_endpoint`      | PowerFlex Gateway URL            | ` `                                                   |
 | `karavi-powerflex-metrics.powerflex_user`                      | PowerFlex Gateway administrator username (in base64)                           | ` `                           |
-| `karavi-powerflex-metrics.powerflex_password`                           | PowerFlex Gateway administrator password (in base64)                      | ` ` |
+| `karavi-powerflex-metrics.otelCollector.certificateFile`                           | Required path to a valid public certificate file that will be used to deploy the OpenTelemetry Collector                      | ` ` |
+| `karavi-powerflex-metrics.otelCollector.privateKeyFile`                           | Required path to the public certificate's associated private key file that will be used to deploy the OpenTelemetry Collector                      | ` ` |
 
 Other parameters from the subcharts can be overridden during installation of the Karavi helm chart:
 - [karavi-topology](../karavi-topology/README.md)
