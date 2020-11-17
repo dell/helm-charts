@@ -8,3 +8,6 @@ karavi-powerflex-metrics:
   powerflex_endpoint:
   powerflex_user:
   powerflex_password:
+  otelCollector:
+    certificateFile:
+    privateKeyFile:

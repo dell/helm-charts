@@ -1,3 +1,13 @@
+otelCollector:
+  image: otel/opentelemetry-collector:0.9.0
+  # Required: Path to a valid certifcate file
+  certificateFile:
+  # Required: Path to a valid key file
+  privateKeyFile:
+
+nginxProxy:
+  image: nginx:1
+
 powerflex_endpoint:
 # base64 user and password
 powerflex_user:
