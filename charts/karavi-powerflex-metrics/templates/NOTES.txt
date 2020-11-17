@@ -7,4 +7,6 @@ Karavi PowerFlex Metrics
 
   PowerFlex Endpoint: {{ .Values.powerflex_endpoint }}
   Provisioner Names: {{ .Values.provisioner_names }}
-  Prometheus Scrape Target: https://$NODE_IP:$NODE_PORT
+  Prometheus Scrape Target: 
+    From outside the Kubernetes cluster: $NODE_IP:$NODE_PORT
+    From inisde the Kubernetes cluster: otel-collector:443
