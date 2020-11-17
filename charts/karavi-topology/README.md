@@ -12,6 +12,8 @@ You may obtain a copy of the License at
 Karavi Topology can be deployed using Helm.
 
 #### Installing the Chart
+The `certificateFile` and `privateKeyFile` parameters must be provided or else the Helm Chart installation will fail. These are the locations of the signed certificate and private key files.
+
 To install the helm chart:
 ```console
 $ helm repo add dell github.com/dell/helm-charts
@@ -36,6 +38,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `image`                   | Location of the karavi-topology Docker image                                                                                                        | `<docker-registry>:<port>/karavi-topology:latest`|
 | `provisioner_names`       | Provisioner Names used to filter the Persistent Volumes created on the Kubernetes cluster (must be a comma-separated list)    | ` csi-vxflexos.dellemc.com`                                                   |
 | `service.type`            | Kubernetes service type	    | `ClusterIP`                                                   |
+| `certificateFile`         | Location of the signed certificate file    |  |
+| `privateKeyFile`          | Location of the signed certificate private key file |  |
 
 ## Supported Kubernetes Versions
 
