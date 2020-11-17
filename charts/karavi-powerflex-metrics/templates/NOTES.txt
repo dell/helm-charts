@@ -2,11 +2,7 @@ Karavi PowerFlex Metrics
 
   The Karavi PowerFlex Metrics deployment has been successfully installed.
 
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[1].nodePort}" services otel-collector)
-
   PowerFlex Endpoint: {{ .Values.powerflex_endpoint }}
   Provisioner Names: {{ .Values.provisioner_names }}
   Prometheus Scrape Target: 
-    From outside the Kubernetes cluster: $NODE_IP:$NODE_PORT
     From inisde the Kubernetes cluster: otel-collector:443
