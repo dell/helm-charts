@@ -5,7 +5,15 @@ title: '[BUG]: [chart name (if applicable)]: bug title'
 labels: type/bug, needs-triage
 assignees: ''
 ---
+<!--
+Copyright (c) 2020 Dell Inc., or its subsidiaries. All Rights Reserved.
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+-->
 <!-- Thanks for filing an issue! Before hitting the button, please answer these questions. It's helpful to search the existing GitHub issues first. It's likely that another user has already reported the issue you're facing, or it's a known issue that we're already aware of.
 
 Fill in as much of the template below as you can.  If you leave out information, we can't help you as well.
