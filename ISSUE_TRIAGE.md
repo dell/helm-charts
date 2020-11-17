@@ -43,7 +43,7 @@ By default a bug will be created with the `type/bug` and `needs-triage` labels.
                                  |                           | YES                                                                                       
                                  |                           |                                                                                           
    +--------------------------+  |                +---------------------+ YES +---------------------------------------+                                  
-   |label:                    |  |                |  Dupicate Issue?    ------- Comment `Duplicate of #<issue number>`                                   
+   |label:                    |  |                |  Duplicate Issue?    ------- Comment `Duplicate of #<issue number>`                                   
    |triage/needs-investigation|  | NO             |                     |     | Remove needs-triage label             |                                  
    +------|-------------------+  |                +----------|----------+     | label: triage/duplicate               |                                  
           |                      |                           | NO             +-----------------|---------------------+                                  
@@ -158,7 +158,7 @@ Depending on the issue, you might not feel all this information is needed. Use y
 
 If the author provides the standard information but you are still unable to triage the issue, request additional information. Do this kindly and politely because you are asking for more of the author's time.  Label issue with `triage/needs-information`.
 
-If the author does not respond to the requested information within the timespan of a week, close the issue with a kind note stating that the author can request for the issue to be reopened when the necessary information is provided.
+If the author does not respond to the requested information within the time span of a week, close the issue with a kind note stating that the author can request for the issue to be reopened when the necessary information is provided.
 
 If you receive a notification with additional information provided but you are not anymore on issue triage and you feel you do not have time to handle it, you should delegate it to the current person on issue triage.
 
@@ -168,8 +168,8 @@ If you receive a notification with additional information provided but you are n
 
 Make sure it's not a duplicate by searching existing issues using related terms from the issue title and description. If you think you know there is an existing issue, but can't find it, please reach out to one of the maintainers and ask for help. If you identify that the issue is a duplicate of an existing issue:
 
-1. Add a comment `duplicate of #<issue number>`
-2. Add the `triage/duplicate` label
+1. Add a comment `duplicate of #<issue number>`.
+2. Add the `triage/duplicate` label.
 
 ### Bug reports
 
@@ -233,7 +233,7 @@ In case there is an uncertainty around the prioritization of an issue, please as
 3. Prioritize it or assign someone to work on it now or very soon.
 4. Consider requesting [help from the community](#5-requesting-help-from-the-community).
 
-**Low prioirity**
+**Low priority**
 
 1. If the issue is deemed possibly useful but a low priority label the issue `priority/low`.
 2. The amount of interest in the issue will determine if the priority changes to be higher.

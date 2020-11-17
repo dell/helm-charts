@@ -20,7 +20,7 @@ For more information about installing and using Helm, see the
 
 ## Where to Find Us
 
-For general discussions, issues or support for Dell Helm Charts contact the team and community on the [mailing lists](mailto:karavi@dell.com?subject=[Dell-Helms-Charts]%20<replace%20me%20with%20more%20specific%20subject>)
+For general discussions, issues or support for Dell Helm Charts contact the team and community on the [mailing lists](mailto:karavi@dell.com?subject=[Dell-Helms-Charts]%20<replace%20me%20with%20more%20specific%20subject>).
 
 ## How Do I Install These Charts?
 ```console

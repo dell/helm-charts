@@ -56,9 +56,9 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Supported Kubernetes Versions
 
-This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even though they are outside the target supported window.
+This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernetes even though they are outside the target supported window.
 
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
 ## Karavi PowerFlex Metrics Helm Chart Versioning
-See the Karavi PowerFlex Metrics Helm chart [versioning workflow](./VERSIONING_WORKFLOW.md)
+See the Karavi PowerFlex Metrics Helm chart [versioning workflow](./VERSIONING_WORKFLOW.md).

@@ -11,7 +11,7 @@ You may obtain a copy of the License at
 
 This versioning workflow applies to the Karavi Helm chart. This workflow is triggered either when there is a change to the Karavi Helm chart or when there is a new release of any of the child Karavi Helm charts. When either scenario occurs, a maintainer must release a new helm chart for that associated change. The steps include:
 
-1) [Create a branch](../../CONTRIBUTING.md)
+1) [Create a branch](../../CONTRIBUTING.md).
 2) Update the [Chart.yaml](../karavi/Chart.yaml) file, depending on the scenario that triggered this workflow. These scenarios include:
 
    - **Change to the Karavi Helm Chart:**
@@ -92,7 +92,7 @@ This versioning workflow applies to the Karavi Helm chart. This workflow is trig
         condition: karavi-powerflex-metrics.enabled
      ```
 
-3) Create and merge PR into main branch
+3) Create and merge PR into main branch.
 4) Github action will automatically make a new release given that there is a new chart version. The action packages and publishes an artifact,  making it available for consumption. Given the example above, in either scenario, the GitHub action will produce a release called `karavi-0.2.0`.
 
 ## Consume New Release

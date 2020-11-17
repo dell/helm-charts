@@ -29,9 +29,9 @@ Preparing an offline bundle requires the following utilities:
 ## Workflow
 
 To perform an offline installation of a helm chart, the following steps should be performed:
-1. Build an offline bundle
-2. Unpack the offline bundle and prepare for installation
-3. Perform a Helm installation
+1. Build an offline bundle.
+2. Unpack the offline bundle and prepare for installation.
+3. Perform a Helm installation.
 
 ### Build the Offline Bundle
 1. Copy the `offline-installer.sh` script to a local Linux system using `curl` or `wget`:
