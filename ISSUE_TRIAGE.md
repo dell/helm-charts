@@ -1,3 +1,12 @@
+<!--
+Copyright (c) 2020 Dell Inc., or its subsidiaries. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+-->
 # Triage issues
 
 The main goal of issue triage is to categorize all incoming Dell Community Kubernetes Helm Charts issues and make sure each issue has all basic information needed for anyone else to understand and be able to start working on it.
