@@ -42,7 +42,7 @@ We aim to track and document everything related to this repo via the Issues page
 
 Before submitting a new issue, try to make sure someone hasn't already reported the problem. Look through the [existing issues](https://github.com/dell/helm-charts/issues) for similar issues.
 
-Report a bug by submitting a [bug report](https://github.com/dell/helm-charts/issues/new?template=bug_report.md). Make sure that you provide as much information as possible on how to reproduce the bug.
+Report a bug by submitting a [bug report](https://github.com/dell/helm-charts/issues/new?labels=type%2Fbug%2C+needs-triage&template=bug_report.md&title=%5BBUG%5D%3A+%5Bchart+name+%28if+applicable%29%5D%3A+bug+title). Make sure that you provide as much information as possible on how to reproduce the bug.
 
 When opening a Bug please include the following information to help with debugging:
 
@@ -55,11 +55,11 @@ An Issue __must__ be created before submitting any pull request. Any pull reques
 
 # Feature request
 
-If you have an idea of how to improve Dell Community Kubernetes Helm Charts, submit a [feature request](https://github.com/dell/helm-charts/issues/new?template=feature_request.md).
+If you have an idea of how to improve Dell Community Kubernetes Helm Charts, submit a [feature request](https://github.com/dell/helm-charts/issues/new?labels=type%2Ffeature-request%2C+needs-triage&template=feature_request.md&title=%5BFEATURE%5D%3A+%5Bchart+name+%28if+applicable%29%5D%3A+feature+title).
 
 # Answering questions
 
-If you have a question and you can't find the answer in the documentation or issues, the next step is to submit a [question](https://github.com/dell/helm-charts/issues/new?template=ask-a-question.md)
+If you have a question and you can't find the answer in the documentation or issues, the next step is to submit a [question](https://github.com/dell/helm-charts/issues/new?labels=type%2Fquestion&template=ask-a-question.md&title=%5BQUESTION%5D%3A+%5Bchart+name+%28if+applicable%29%5D%3A+question+title).
 
 We'd love your help answering questions being asked by other Dell Community Kubernetes Helm Charts users.
 
