@@ -1,5 +1,7 @@
 karavi-topology:
   enabled: true
+  certificateFile:
+  privateKeyFile:
 
 karavi-powerflex-metrics:
   enabled: true
