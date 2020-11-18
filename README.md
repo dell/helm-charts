@@ -8,7 +8,7 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 -->
 
-## Dell Community Kubernetes Helm Charts
+# Dell Community Kubernetes Helm Charts
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![License](https://img.shields.io/github/license/dell/helm-charts)](LICENSE)
@@ -22,7 +22,8 @@ For more information about installing and using Helm, see the
 
 For general discussions, issues or support for Dell Helm Charts contact the team and community on the [mailing lists](mailto:karavi@dell.com?subject=[Dell-Helms-Charts]%20<replace%20me%20with%20more%20specific%20subject>).
 
-## How Do I Install These Charts?
+## How to Install
+
 ```console
 $ helm repo add dell github.com/dell/helm-charts
 ```

@@ -7,11 +7,13 @@ You may obtain a copy of the License at
 
     http://www.apache.org/licenses/LICENSE-2.0
 -->
+
 # Maintainer Guidelines
 
 As a Maintainer of this project you have the responsibility of keeping true to the vision of the project with unprecedented quality. Being part of this group is a privilege that requires dedication and time to attend to the daily activities that are associated with the maintenance of this project.
 
-### Becoming a Maintainer
+## Becoming a Maintainer
+
 Most Maintainers started as Contributors that have demonstrated their commitment to the success of the project. Contributors wishing to become Maintainers, must demonstrate commitment to the success of the project by contributing code, reviewing others' work, and triaging issues on a regular basis for at least three months.
 
 The contributions alone don't make you a Maintainer. You need to earn the trust of the current Maintainers and other project Contributors, that your decisions and actions are in the best interest of the project.
@@ -22,15 +24,15 @@ After a candidate is selected, the existing Maintainers discuss the candidate ov
 
 If a candidate is approved, a Maintainer contacts the candidate to invite them to open a pull request that adds the contributor to the MAINTAINERS file. The candidate becomes a Maintainer once the pull request is merged.
 
-### Maintainer Policies
+## Maintainer Policies
 
-*   Lead by example
-*   Follow the [Code of Conduct](CODE_OF_CONDUCT.md) and the guidelines in the [Contributing](CONTRIBUTING.md) guide
-*   Promote a friendly and collaborative environment within our community
-*   Be actively engaged in discussions, answering questions, updating defects, and reviewing pull requests
-*   Criticize code, not people. Ideally, tell the contributor a better way to do what they need.
-*   Clearly mark optional suggestions as such. Best practice, start your comment with *At your option: …*
+* Lead by example
+* Follow the [Code of Conduct](CODE_OF_CONDUCT.md) and the guidelines in the [Contributing](CONTRIBUTING.md) guide.
+* Promote a friendly and collaborative environment within our community.
+* Be actively engaged in discussions, answering questions, updating defects, and reviewing pull requests.
+* Criticize code, not people. Ideally, tell the contributor a better way to do what they need.
+* Clearly mark optional suggestions as such. Best practice, start your comment with *At your option: …*.
 
-### Project Decision Making
+## Project Decision Making
 
-All project decisions should contribute to successfully executing on the project roadmap. Project milestones are established for each release. 
+All project decisions should contribute to successfully executing on the project roadmap. Project milestones are established for each release.
