@@ -15,10 +15,11 @@ Karavi Powerflex Metrics can be deployed using Helm.  The chart must be configur
 
 #### TL;DR;
 #### Installing the Chart
-To install the helm chart:
+
+To install the helm chart, a signed certificate file and associated private key file must be passed to the `helm install` command. The domain name used for the certificate file must be 'otel-collector'.
 ```console
 $ helm repo add dell github.com/dell/helm-charts
-$ helm install dell/karavi-powerflex-metrics --namespace karavi --create-namespace
+$ helm install dell/karavi-powerflex-metrics --namespace karavi --create-namespace --set-file otelCollector.certificateFile=<path-to-certificate-file> --set-file otelCollector.privateKeyFile=<path-to-private-key-file>
 ```
 After installation, there will be a Deployment of a PowerFlex Metrics service in Kubernetes.
 The PowerFlex Metrics service will automatically start to gather PowerFlex metrics and push them to the OpenTelemetry collector.
@@ -37,8 +38,8 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
-| `otelCollector.certificateFile`      | Required path to a valid public certificate file that will be used to deploy the OpenTelemetry Collector            | ` `                                                   |
-| `otelCollector.privateKeyFile`      | Required path to the public certificate's associated private key file that will be used to deploy the OpenTelemetry Collector            | ` `|                                                   
+| `otelCollector.certificateFile`      | Required valid public certificate file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `                                                   |
+| `otelCollector.privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `|                                                   
 | `powerflex_endpoint`      | PowerFlex Gateway URL            | ` `                                                   |
 | `powerflex_user`                      | PowerFlex Gateway administrator username(in base64)                           | ` `                           |
 | `powerflex_password`                           | PowerFlex Gateway administrator password(in base64)                      | ` ` |
