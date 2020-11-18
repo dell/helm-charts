@@ -14,14 +14,16 @@ You may obtain a copy of the License at
 Karavi can be deployed using Helm.
 
 #### Installing the Chart
+The Karavi chart contains dependencies on the following charts which will be deployed during installation. Read the documentation for these helm charts to make sure the correct certificates have been created or an error may occur during deployment.
+
+- [karavi-topology](../karavi-topology/README.md)
+- [karavi-powerflex-metrics](../karavi-powerflex-metrics/README.md)
+
 To install the helm chart:
 ```console
 $ helm repo add dell github.com/dell/helm-charts
-$ helm install dell/karavi -n karavi --create-namespace --render-subchart-notes
+$ helm install dell/karavi -n karavi --create-namespace --render-subchart-notes --set-file karavi-topology.certificateFile=<path-to-certificate-file> (other --set-file parameters as documented in the dependency helm charts)
 ```
-After installation, the following deployments will be in Kubernetes:
-- [karavi-topology](../karavi-topology/README.md)
-- [karavi-powerflex-metrics](../karavi-powerflex-metrics/README.md)
 
 #### Offline Chart Installation
 To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Helm Chart Installer](./installer/README.md). When creating the offline bundle, use `dell/karavi` as the chart name.
@@ -38,13 +40,14 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `karavi-topology.enabled`                 | Enable deployment of Karavi Topology                        | `true`                                                  |
-| `karavi-topology.certificateFile`         | Location of the signed certificate file    |  |
-| `karavi-topology.privateKeyFile`          | Location of the signed certificate private key file |  |
+| `karavi-topology.certificateFile`      | Required valid public certificate file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `                                                   |
+| `karavi-topology.privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `|
+
 | `karavi-powerflex-metrics.enabled`                 | Enable deployment of Karavi PowerFlex Metrics      | `true`                                                  |
 | `karavi-powerflex-metrics.powerflex_endpoint`      | PowerFlex Gateway URL            | ` `                                                   |
 | `karavi-powerflex-metrics.powerflex_user`                      | PowerFlex Gateway administrator username (in base64)                           | ` `                           |
-| `karavi-powerflex-metrics.otelCollector.certificateFile`                           | Required path to a valid public certificate file that will be used to deploy the OpenTelemetry Collector                      | ` ` |
-| `karavi-powerflex-metrics.otelCollector.privateKeyFile`                           | Required path to the public certificate's associated private key file that will be used to deploy the OpenTelemetry Collector                      | ` ` |
+| `karavi-powerflex-metrics.otelCollector.certificateFile`      | Required valid public certificate file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `                                                   |
+| `karavi-powerflex-metrics.otelCollector.privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `|
 
 Other parameters from the subcharts can be overridden during installation of the Karavi helm chart:
 - [karavi-topology](../karavi-topology/README.md)

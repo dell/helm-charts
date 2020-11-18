@@ -1,17 +1,3 @@
-{{- $certificateFileNotDefined := printf "Certificate file was not defined. Refer to the Helm Chart documentation." -}}
-{{- $_ := required $certificateFileNotDefined (.Values.certificateFile) }}
-
-{{- $privateKeyFileNotDefined := printf "Private key file was not defined. Refer to the Helm Chart documentation." -}}
-{{- $_ := required $privateKeyFileNotDefined (.Values.privateKeyFile) }}
-
-{{- $certificateFile := .Values.certificateFile -}}
-{{- $certificateErrorMsg := printf "Unable to find certificate key file %s. Refer to the Helm Chart documentation." $certificateFile -}}
-{{- $certificateFileContents := required $certificateErrorMsg (.Files.Get $certificateFile) }}
-
-{{- $privateKeyFile := .Values.privateKeyFile -}}
-{{- $privateKeyErrorMsg := printf "Unable to find private key file %s. Refer to the Helm Chart documentation." $privateKeyFile -}}
-{{- $privateKeyFileContents := required $privateKeyErrorMsg (.Files.Get $privateKeyFile) }}
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -31,6 +17,8 @@ spec:
 
 ---
 
+{{- $certificateFileContents := required "A valid certificate file is required. Refer to the Helm Chart documentation." (.Values.certificateFile) }}
+{{- $privateKeyFileContents := required "A valid private key file is required. Refer to the Helm Chart documentation." (.Values.privateKeyFile) }}
 apiVersion: v1
 data:
   localhost.crt: {{ $certificateFileContents | b64enc }}
