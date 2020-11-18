@@ -1,6 +1,6 @@
-Karavi PowerFlex Metrics 
+Karavi Metrics for PowerFlex
 
-  The Karavi PowerFlex Metrics deployment has been successfully installed.
+  The Karavi Metrics for PowerFlex deployment has been successfully installed.
 
   PowerFlex Endpoint: {{ .Values.powerflex_endpoint }}
   Provisioner Names: {{ .Values.provisioner_names }}

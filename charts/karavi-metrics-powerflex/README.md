@@ -9,27 +9,27 @@ You may obtain a copy of the License at
 -->
 
 
-## Dell Community Kubernetes Helm Charts for Karavi Powerflex Metrics
+## Dell Community Kubernetes Helm Charts for Karavi Metrics for PowerFlex
 
-Karavi Powerflex Metrics can be deployed using Helm.  The chart must be configured to point to the PowerFlex system you wish to observe.
+Karavi Metrics for PowerFlex can be deployed using Helm.  The chart must be configured to point to the PowerFlex system you wish to observe.
 
 #### TL;DR;
 #### Installing the Chart
 To install the helm chart:
 ```console
 $ helm repo add dell github.com/dell/helm-charts
-$ helm install dell/karavi-powerflex-metrics --namespace karavi --create-namespace
+$ helm install dell/karavi-metrics-powerflex --namespace karavi --create-namespace
 ```
 After installation, there will be a Deployment of a PowerFlex Metrics service in Kubernetes.
 The PowerFlex Metrics service will automatically start to gather PowerFlex metrics and push them to the OpenTelemetry collector.
 
 #### Offline Chart Installation
-To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Helm Chart Installer](../karavi/installer/README.md). When creating the offline bundle, use `dell/karavi-powerflex-metrics` as the chart name.
+To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Helm Chart Installer](../karavi/installer/README.md). When creating the offline bundle, use `dell/karavi-metrics-powerflex` as the chart name.
 
 #### Uninstalling the Chart
 To uninstall/delete the deployment:
 ```console
-$ helm delete karavi-powerflex-metrics --namespace karavi
+$ helm delete karavi-metrics-powerflex --namespace karavi
 ```
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
@@ -60,5 +60,5 @@ This chart repository supports the latest and previous minor versions of Kuberne
 
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
-## Karavi PowerFlex Metrics Helm Chart Versioning
-See the Karavi PowerFlex Metrics Helm chart [versioning workflow](./VERSIONING_WORKFLOW.md).
+## Karavi Metrics for PowerFlex Helm Chart Versioning
+See the Karavi Metrics for PowerFlex Helm chart [versioning workflow](./VERSIONING_WORKFLOW.md).

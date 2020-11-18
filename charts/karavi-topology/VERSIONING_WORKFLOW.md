@@ -7,9 +7,10 @@ You may obtain a copy of the License at
 
     http://www.apache.org/licenses/LICENSE-2.0
 -->
+
 # Versioning Workflow
 
-This versioning workflow applies to the Karavi Topology Helm chart. This workflow is triggered when there is a new release of [karavi-topology](https://github.com/dell/karavi-topology) or when there is a change made to the Karavi Topology Topology Helm chart. When either scenario occurs, a maintainer must release a new Helm chart for that associated change. The steps include:
+This versioning workflow applies to the Karavi Topology Helm chart. This workflow is triggered when there is a new release of [karavi-topology](https://github.com/dell/karavi-topology) or when there is a change made to the Karavi Topology Helm chart. When either scenario occurs, a maintainer must release a new Helm chart for that associated change. The steps include:
 
 1) [Create a branch](../../CONTRIBUTING.md).
 2) Update the [Chart.yaml](../karavi-topology/Chart.yaml) file, depending on the scenario that triggered this workflow. These scenarios include:

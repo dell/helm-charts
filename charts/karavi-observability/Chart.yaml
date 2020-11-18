@@ -1,5 +1,5 @@
 apiVersion: v2
-name: karavi
+name: karavi-observability
 description: A Helm chart for Kubernetes
 type: application
 version: 0.4.0
@@ -8,7 +8,7 @@ dependencies:
   version: "0.3.0"
   repository: "file://../karavi-topology"
   condition: karavi-topology.enabled
-- name: karavi-powerflex-metrics
+- name: karavi-metrics-powerflex
   version: "0.3.0"
-  repository: "file://../karavi-powerflex-metrics"
+  repository: "file://../karavi-metrics-powerflex"
   condition: karavi-powerflex-metrics.enabled
