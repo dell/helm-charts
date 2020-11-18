@@ -7,39 +7,45 @@ You may obtain a copy of the License at
 
     http://www.apache.org/licenses/LICENSE-2.0
 -->
-## Dell Community Kubernetes Helm Chart for Karavi Topology
+
+# Dell Community Kubernetes Helm Chart for Karavi Topology
 
 Karavi Topology can be deployed using Helm.
 
-#### Installing the Chart
-The `certificateFile` and `privateKeyFile` parameters must be provided or else the Helm Chart installation will fail. These are the locations of the signed certificate and private key files.
+## Installing the Chart
 
-To install the helm chart:
+To install the helm chart, a signed certificate file and associated private key file must be passed to the `helm install` command. The domain name used for the certificate file must be 'karavi-topology'.
+
 ```console
 $ helm repo add dell github.com/dell/helm-charts
-$ helm install dell/karavi-topology -n karavi --create-namespace
+$ helm install dell/karavi-topology -n karavi --create-namespace --set-file certificateFile=<path-to-certificate-file> --set-file privateKeyFile=<path-to-private-key-file>
 ```
+
 After installation, there will be a deployment of the karavi-topology service in Kubernetes.
 
-#### Offline Chart Installation
+## Offline Chart Installation
+
 To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Helm Chart Installer](../karavi/installer/README.md).  When creating the offline bundle, use `dell/karavi-topology` as the chart name.
 
-#### Uninstalling the Chart
+## Uninstalling the Chart
+
 To uninstall/delete the deployment:
+
 ```console
-$ helm delete karavi-topology --namespace karavi 
+$ helm delete karavi-topology --namespace karavi
 ```
+
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-#### Configuration
+## Configuration
 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `image`                   | Location of the karavi-topology Docker image                                                                                                        | `<docker-registry>:<port>/karavi-topology:latest`|
 | `provisioner_names`       | Provisioner Names used to filter the Persistent Volumes created on the Kubernetes cluster (must be a comma-separated list)    | ` csi-vxflexos.dellemc.com`                                                   |
 | `service.type`            | Kubernetes service type	    | `ClusterIP`                                                   |
-| `certificateFile`         | Location of the signed certificate file    |  |
-| `privateKeyFile`          | Location of the signed certificate private key file |  |
+| `certificateFile`      | Required valid public certificate file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `                                                   |
+| `privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `|
 
 ## Supported Kubernetes Versions
 
@@ -48,4 +54,5 @@ This chart repository supports the latest and previous minor versions of Kuberne
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
 ## Karavi Topology Helm Chart Versioning
-See the Karavi Topology helm chart [versioning workflow](./VERSIONING_WORKFLOW.md).
+
+See the Karavi Topology helm chart [versioning workflow](./VERSIONING_WORKFLOW.md)
