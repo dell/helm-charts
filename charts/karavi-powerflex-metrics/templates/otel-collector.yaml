@@ -7,21 +7,21 @@ metadata:
 
 ---
 
-{{- $certFile := required "A valid certificate file is required." (.Files.Get (printf "%s" .Values.otelCollector.certificateFile)) }}
+{{- $certificateFileContents := required "A valid certificate file is required. Refer to the Helm Chart documentation." (.Values.otelCollector.certificateFile) }}
 apiVersion: v1
 data:
-  cert.crt: {{ $certFile | quote }}
+  cert.crt: {{ $certificateFileContents | quote }}
 kind: ConfigMap
 metadata:
   name: cert-file-config
 
 ---
 
-{{- $certKey := required "A valid key file is required." (.Files.Get (printf "%s" .Values.otelCollector.privateKeyFile)) }}
+{{- $privateKeyFileContents := required "A valid private key file is required. Refer to the Helm Chart documentation." (.Values.otelCollector.privateKeyFile) }}
 apiVersion: v1
 apiVersion: v1
 data:
-  cert.key: {{ $certKey | quote }}
+  cert.key: {{ $privateKeyFileContents | quote }}
 kind: ConfigMap
 metadata:
   name: key-file-config
@@ -42,8 +42,8 @@ kind: Secret
 metadata:
   name: tls-secret
 data:
-  tls.crt: {{ $certFile  | b64enc }}
-  tls.key: {{ $certKey | b64enc }}
+  tls.crt: {{ $certificateFileContents  | b64enc }}
+  tls.key: {{ $privateKeyFileContents | b64enc }}
 type: kubernetes.io/tls
 
 ---

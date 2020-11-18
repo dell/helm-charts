@@ -12,12 +12,11 @@ You may obtain a copy of the License at
 Karavi Topology can be deployed using Helm.
 
 #### Installing the Chart
-The `certificateFile` and `privateKeyFile` parameters must be provided or else the Helm Chart installation will fail. These are the locations of the signed certificate and private key files.
+To install the helm chart, a signed certificate file and associated private key file must be passed to the `helm install` command. The domain name used for the certificate file must be 'karavi-topology'.
 
-To install the helm chart:
 ```console
 $ helm repo add dell github.com/dell/helm-charts
-$ helm install dell/karavi-topology -n karavi --create-namespace
+$ helm install dell/karavi-topology -n karavi --create-namespace --set-file certificateFile=<path-to-certificate-file> --set-file privateKeyFile=<path-to-private-key-file>
 ```
 After installation, there will be a deployment of the karavi-topology service in Kubernetes.
 
@@ -38,8 +37,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `image`                   | Location of the karavi-topology Docker image                                                                                                        | `<docker-registry>:<port>/karavi-topology:latest`|
 | `provisioner_names`       | Provisioner Names used to filter the Persistent Volumes created on the Kubernetes cluster (must be a comma-separated list)    | ` csi-vxflexos.dellemc.com`                                                   |
 | `service.type`            | Kubernetes service type	    | `ClusterIP`                                                   |
-| `certificateFile`         | Location of the signed certificate file    |  |
-| `privateKeyFile`          | Location of the signed certificate private key file |  |
+| `certificateFile`      | Required valid public certificate file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `                                                   |
+| `privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `|
 
 ## Supported Kubernetes Versions
 
