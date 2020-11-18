@@ -3,7 +3,3 @@ image: <docker-registry>:<port>/karavi-topology:latest
 provisioner_names: csi-vxflexos.dellemc.com
 service:
   type: ClusterIP
-# location of the signed certificate file
-certificateFile: certificate.crt
-# location of the private key file
-privateKeyFile: private.key
