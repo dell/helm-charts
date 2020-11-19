@@ -93,14 +93,15 @@ spec:
         - name: TLS_ENABLED
           value: "true"
         volumeMounts:
-        - name: cert-file-config
-          mountPath: /etc/ssl/certs/cert.crt
-          subPath: cert.crt
-          readOnly: false
+        - name: tls-secret
+          mountPath: /etc/ssl/certs
+          readOnly: true
       volumes:
-      - name: cert-file-config
-        configMap:
-           name: cert-file-config
-
+      - name: tls-secret
+        secret:
+          secretName: tls-secret
+          items:
+            - key: tls.crt
+              path: cert.crt
       restartPolicy: Always
 status: {}
