@@ -1,5 +1,5 @@
 target-branch: main
 charts:
- - charts/karavi
+ - charts/karavi-observability
 validate-chart-schema: false
 validate-maintainers: false

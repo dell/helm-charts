@@ -11,7 +11,7 @@ powerflex_password:
 
 image: <docker-registry>:<port>/karavi-powerflex-metrics:latest
 collector_addr: otel-collector:55680
-# comma seperated list of provisioner names (ex: csi-vxflexos.dellemc.com)
+# comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
 provisioner_names: csi-vxflexos.dellemc.com
 # set sdc_metrics_enabled to "false" to disable collection of SDC metrics
 sdc_metrics_enabled: "true"

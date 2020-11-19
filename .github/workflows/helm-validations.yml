@@ -41,7 +41,7 @@ jobs:
           command: lint
           config: lintConfig.yaml
  
- # This job checks that dependency versions have been updated on the main karavi chart
+ # This job checks that dependency versions have been updated on the karavi-observability chart
   dependency:
     runs-on: ubuntu-latest
     # Only run job when .yaml file is changed
@@ -54,7 +54,7 @@ jobs:
         with: 
          fetch-depth: "0"
          
-      # Run a check on main karavi chart for updated dependency versions
+      # Run a check on karavi-observability chart for updated dependency versions
       - name: Run dependency version checks
         id: lint
         uses: helm/chart-testing-action@v1.0.0
