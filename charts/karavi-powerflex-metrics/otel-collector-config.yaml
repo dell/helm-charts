@@ -3,8 +3,8 @@ receivers:
     protocols:
       grpc:
         tls_settings:
-          cert_file: /etc/ssl/certs/cert.crt
-          key_file: /etc/ssl/certs/cert.key
+          cert_file: /etc/ssl/certs/tls.crt
+          key_file: /etc/ssl/certs/tls.key
       http:
   
 exporters:
