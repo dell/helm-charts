@@ -18,7 +18,7 @@ usage() {
    echo "-c             Create an offline bundle with chart argument"
    echo "-p             Prepare this bundle for installation with registry argument"
    echo "               Supply the registry name/path which will hold the images"
-   echo "               For example: my.registry.com:5000/dell/karavi"
+   echo "               For example: my.registry.com:5000/dell/karavi-observability"
    echo "-h             Displays this information"
    echo
    echo "Exactly one of '-c' or '-p' needs to be specified"
@@ -148,7 +148,7 @@ if [ "${CREATE}" == "true" ]; then
     exit 1
   fi
   if [[ $CHARTNAME != $CHARTPREFIX* ]]; then
-    echo "Chart name must begin with '${CHARTPREFIX}' (ex: dell/karavi)"
+    echo "Chart name must begin with '${CHARTPREFIX}' (ex: dell/karavi-observability)"
     exit 1
   fi
 fi

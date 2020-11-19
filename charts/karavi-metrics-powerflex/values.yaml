@@ -9,7 +9,7 @@ powerflex_endpoint:
 powerflex_user:
 powerflex_password:
 
-image: <docker-registry>:<port>/karavi-powerflex-metrics:latest
+image: <docker-registry>:<port>/karavi-metrics-powerflex:latest
 collector_addr: otel-collector:55680
 # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
 provisioner_names: csi-vxflexos.dellemc.com
@@ -27,4 +27,4 @@ storage_class_pool_poll_frequency_seconds: 10
 # set the the default max concurrent queries to powerflex
 concurrent_powerflex_queries: 10
 # set the default endpoint for powerflex service
-endpoint: karavi-powerflex-metrics
+endpoint: karavi-metrics-powerflex
