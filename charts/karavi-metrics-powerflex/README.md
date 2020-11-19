@@ -23,8 +23,8 @@ $ helm repo add dell github.com/dell/helm-charts
 $ helm install dell/karavi-metrics-powerflex --namespace karavi --create-namespace --set-file otelCollector.certificateFile=<path-to-certificate-file> --set-file otelCollector.privateKeyFile=<path-to-private-key-file>
 ```
 
-After installation, there will be a Deployment of a PowerFlex Metrics service in Kubernetes.
-The PowerFlex Metrics service will automatically start to gather PowerFlex metrics and push them to the OpenTelemetry collector.
+After installation, there will be a Deployment of a Karavi Metrics for PowerFlex service in Kubernetes.
+The service will automatically start to gather PowerFlex metrics and push them to the OpenTelemetry collector.
 
 ## Offline Chart Installation
 
@@ -49,7 +49,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `powerflex_endpoint`      | PowerFlex Gateway URL            | ` `                                                   |
 | `powerflex_user`                      | PowerFlex Gateway administrator username(in base64)                           | ` `                           |
 | `powerflex_password`                           | PowerFlex Gateway administrator password(in base64)                      | ` ` |
-| `image`                          |  PowerFlex Metrics Service image                      | `<docker-registry>:<port>/karavi-metrics-powerflex:latest`|
+| `image`                          |  Karavi Metrics for PowerFlex Service image                      | `<docker-registry>:<port>/karavi-metrics-powerflex:latest`|
 | `collector_addr`                         | Metrics Collector accessible from the Kubernetes cluster                    | `otel-collector:55680`  |
 | `provisioner_names`                       | Provisioner Names used to filter for determining PowerFlex SDC nodes( Must be a Comma-separated list)          | ` csi-vxflexos.dellemc.com`                                                   |
 | `sdc_poll_frequency_seconds`                        | The polling frequency (in seconds) to gather SDC metrics                         | `10`                                       |
