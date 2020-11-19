@@ -8,33 +8,39 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 -->
 
+# Dell Community Helm Chart for Karavi Metrics for PowerFlex
 
-## Dell Community Kubernetes Helm Charts for Karavi Powerflex Metrics
+Karavi Metrics for PowerFlex can be deployed using Helm.  The chart must be configured to point to the PowerFlex system you wish to observe.
 
-Karavi Powerflex Metrics can be deployed using Helm.  The chart must be configured to point to the PowerFlex system you wish to observe.
+## TL;DR;
 
-#### TL;DR;
-#### Installing the Chart
+## Installing the Chart
 
 To install the helm chart, a signed certificate file and associated private key file must be passed to the `helm install` command. The domain name used for the certificate file must be 'otel-collector'.
+
 ```console
 $ helm repo add dell github.com/dell/helm-charts
-$ helm install dell/karavi-powerflex-metrics --namespace karavi --create-namespace --set-file otelCollector.certificateFile=<path-to-certificate-file> --set-file otelCollector.privateKeyFile=<path-to-private-key-file>
+$ helm install dell/karavi-metrics-powerflex --namespace karavi --create-namespace --set-file otelCollector.certificateFile=<path-to-certificate-file> --set-file otelCollector.privateKeyFile=<path-to-private-key-file>
 ```
+
 After installation, there will be a Deployment of a PowerFlex Metrics service in Kubernetes.
 The PowerFlex Metrics service will automatically start to gather PowerFlex metrics and push them to the OpenTelemetry collector.
 
-#### Offline Chart Installation
-To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Helm Chart Installer](../karavi/installer/README.md). When creating the offline bundle, use `dell/karavi-powerflex-metrics` as the chart name.
+## Offline Chart Installation
 
-#### Uninstalling the Chart
+To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Helm Chart Installer](../karavi-observability/installer/README.md). When creating the offline bundle, use `dell/karavi-metrics-powerflex` as the chart name.
+
+## Uninstalling the Chart
+
 To uninstall/delete the deployment:
+
 ```console
-$ helm delete karavi-powerflex-metrics --namespace karavi
+$ helm delete karavi-metrics-powerflex --namespace karavi
 ```
+
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-#### Configuration
+## Configuration
 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
@@ -57,9 +63,10 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Supported Kubernetes Versions
 
-This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even though they are outside the target supported window.
+This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernetes even though they are outside the target supported window.
 
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
-## Karavi PowerFlex Metrics Helm Chart Versioning
-See the Karavi PowerFlex Metrics Helm chart [versioning workflow](./VERSIONING_WORKFLOW.md)
+## Helm Chart Versioning
+
+See the helm chart [versioning workflow](./VERSIONING_WORKFLOW.md).
