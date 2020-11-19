@@ -8,7 +8,7 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 -->
 
-# Dell Community Kubernetes Helm Charts for Karavi Metrics for PowerFlex
+# Dell Community Helm Chart for Karavi Metrics for PowerFlex
 
 Karavi Metrics for PowerFlex can be deployed using Helm.  The chart must be configured to point to the PowerFlex system you wish to observe.
 
@@ -67,6 +67,6 @@ This chart repository supports the latest and previous minor versions of Kuberne
 
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
-## Karavi Metrics for PowerFlex Helm Chart Versioning
+## Helm Chart Versioning
 
 See the helm chart [versioning workflow](./VERSIONING_WORKFLOW.md).

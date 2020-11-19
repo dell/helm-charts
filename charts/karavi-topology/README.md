@@ -8,7 +8,7 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 -->
 
-# Dell Community Kubernetes Helm Chart for Karavi Topology
+# Dell Community Helm Chart for Karavi Topology
 
 Karavi Topology can be deployed using Helm.
 
@@ -53,6 +53,6 @@ This chart repository supports the latest and previous minor versions of Kuberne
 
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
-## Karavi Topology Helm Chart Versioning
+## Helm Chart Versioning
 
 See the helm chart [versioning workflow](./VERSIONING_WORKFLOW.md)

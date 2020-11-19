@@ -10,12 +10,12 @@ You may obtain a copy of the License at
 
 # Versioning Workflow
 
-This versioning workflow applies to the Karavi Observability Helm chart. This workflow is triggered either when there is a change to chart or when there is a new release of any of the child charts. When either scenario occurs, a maintainer must release a new helm chart for that associated change. The steps include:
+This workflow is triggered either when there is a change to the helm chart or when there is a new release of any of the child charts. When either scenario occurs, a maintainer must release a new helm chart for that associated change. The steps include:
 
 1) [Create a branch](../../CONTRIBUTING.md).
 2) Update the [Chart.yaml](./Chart.yaml) file, depending on the scenario that triggered this workflow. These scenarios include:
 
-   - **Change to the Karavi Observability Helm Chart:**
+   - **Change to the Helm Chart:**
    If any changes are made in Karavi Observability Helm chart, for instance when the [values.yaml](./values.yaml) file is modified, the chart version number must also be incremented. For instance, consider the current Chart.yaml below:
 
    ```yaml
@@ -32,10 +32,10 @@ This versioning workflow applies to the Karavi Observability Helm chart. This wo
       - name: karavi-metrics-powerflex
         version: "0.1.0"
         repository: "file://../karavi-metrics-powerflex"
-        condition: karavi-powerflex-metrics.enabled
+        condition: karavi-metrics-powerflex.enabled
    ```
 
-   Depending on the nature of the modifications as defined by [semantic versioning](http://semver.org), for example if they meet the requirements for a minor release, the new version of the Karavi Observability Helm chart is incremented to `0.2.0`; the Chart.yaml becomes:
+   Depending on the nature of the modifications as defined by [semantic versioning](http://semver.org), for example if they meet the requirements for a minor release, the new version of the Helm chart is incremented to `0.2.0`; the Chart.yaml becomes:
   
    ```yaml
       apiVersion: v2
@@ -51,7 +51,7 @@ This versioning workflow applies to the Karavi Observability Helm chart. This wo
       - name: karavi-metrics-powerflex
         version: "1.1.0"
         repository: "file://../karavi-metrics-powerflex"
-        condition: karavi-powerflex-metrics.enabled
+        condition: karavi-metrics-powerflex.enabled
    ```
 
    - **New Release of any of the child helm Charts:**
@@ -71,7 +71,7 @@ This versioning workflow applies to the Karavi Observability Helm chart. This wo
       - name: karavi-metrics-powerflex
         version: "1.1.0"
         repository: "file://../karavi-metrics-powerflex"
-        condition: karavi-powerflex-metrics.enabled
+        condition: karavi-metrics-powerflex.enabled
      ```
 
      Since `karavi-metrics-powerflex-1.2.0` is a minor release, the updated `Chart.yaml` would look like this:
@@ -90,7 +90,7 @@ This versioning workflow applies to the Karavi Observability Helm chart. This wo
       - name: karavi-metrics-powerflex
         version: "1.2.0" # version updates to 1.2.0
         repository: "file://../karavi-metrics-powerflex"
-        condition: karavi-powerflex-metrics.enabled
+        condition: karavi-metrics-powerflex.enabled
      ```
 
 3) Create and merge PR into main branch.

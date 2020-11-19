@@ -10,11 +10,12 @@ You may obtain a copy of the License at
 
 # Versioning Workflow
 
-This versioning workflow applies to the Karavi Topology Helm chart. This workflow is triggered when there is a new release of [karavi-topology](https://github.com/dell/karavi-topology) or when there is a change made to the Karavi Topology Helm chart. When either scenario occurs, a maintainer must release a new Helm chart for that associated change. The steps include:
+This workflow is triggered when there is a new release of [karavi-topology](https://github.com/dell/karavi-topology) or when there is a change made to the helm chart. When either scenario occurs, a maintainer must release a new Helm chart for that associated change. The steps include:
 
 1) [Create a branch](../../CONTRIBUTING.md).
 2) Update the [Chart.yaml](../karavi-topology/Chart.yaml) file, depending on the scenario that triggered this workflow. These scenarios include:
-   - **Change to the Karavi Topology Helm Chart:**
+
+   - **Change to the Helm Chart:**
     If any changes are made in Karavi Topology Helm chart, for instance when the [values.yaml](./values.yaml) file is modified, the Karavi Topology Helm chart version number must be incremented. For instance, consider the current Chart.yaml below:  
 
     ```yaml
@@ -25,7 +26,7 @@ This versioning workflow applies to the Karavi Topology Helm chart. This workflo
         version: 0.1.0
      ```
 
-    Depending on the nature of the modifications as defined by [semantic versioning](http://semver.org), for example if they meet the requirements for a minor release, the new version of the Karavi Topology Helm chart is incremented to `0.2.0`; the Chart.yaml becomes:
+    Depending on the nature of the modifications as defined by [semantic versioning](http://semver.org), for example if they meet the requirements for a minor release, the new version of the Helm chart is incremented to `0.2.0`; the Chart.yaml becomes:
 
     ```yaml
         apiVersion: v1

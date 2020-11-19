@@ -11,4 +11,4 @@ dependencies:
 - name: karavi-metrics-powerflex
   version: "0.1.0"
   repository: "file://../karavi-metrics-powerflex"
-  condition: karavi-powerflex-metrics.enabled
+  condition: karavi-metrics-powerflex.enabled
