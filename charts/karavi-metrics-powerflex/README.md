@@ -69,4 +69,4 @@ To provide that support the API versions of objects should be those that work fo
 
 ## Karavi Metrics for PowerFlex Helm Chart Versioning
 
-See the Karavi Metrics for PowerFlex Helm chart [versioning workflow](./VERSIONING_WORKFLOW.md).
+See the helm chart [versioning workflow](./VERSIONING_WORKFLOW.md).

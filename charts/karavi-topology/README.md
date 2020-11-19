@@ -25,7 +25,7 @@ After installation, there will be a deployment of the karavi-topology service in
 
 ## Offline Chart Installation
 
-To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Helm Chart Installer](../karavi/installer/README.md).  When creating the offline bundle, use `dell/karavi-topology` as the chart name.
+To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Helm Chart Installer](../karavi-observability/installer/README.md).  When creating the offline bundle, use `dell/karavi-topology` as the chart name.
 
 ## Uninstalling the Chart
 
@@ -55,4 +55,4 @@ To provide that support the API versions of objects should be those that work fo
 
 ## Karavi Topology Helm Chart Versioning
 
-See the Karavi Topology helm chart [versioning workflow](./VERSIONING_WORKFLOW.md)
+See the helm chart [versioning workflow](./VERSIONING_WORKFLOW.md)

@@ -14,35 +14,17 @@ Karavi Observability can be deployed using Helm.
 
 # Installing the Chart
 
-<<<<<<< HEAD:charts/karavi-observability/README.md
-=======
-#### Installing the Chart
-The Karavi chart contains dependencies on the following charts which will be deployed during installation. Read the documentation for these helm charts to make sure the correct certificates have been created or an error may occur during deployment.
-
-- [karavi-topology](../karavi-topology/README.md)
-- [karavi-powerflex-metrics](../karavi-powerflex-metrics/README.md)
-
->>>>>>> main:charts/karavi/README.md
-To install the helm chart:
-
-```console
-$ helm repo add dell github.com/dell/helm-charts
-<<<<<<< HEAD:charts/karavi-observability/README.md
-$ helm install dell/karavi-observability -n karavi --create-namespace --render-subchart-notes
-```
-
-After installation, the following deployments will be in Kubernetes:
+The Karavi Observability chart contains dependencies on the following charts which will be deployed during installation. Read the documentation for these helm charts to make sure the correct certificates have been created or an error may occur during deployment.
 
 - [karavi-topology](../karavi-topology/README.md)
 - [karavi-metrics-powerflex](../karavi-metrics-powerflex/README.md)
 
-# Offline Chart Installation
+To install the helm chart:
 
-To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Observability Helm Chart Installer](./installer/README.md). When creating the offline bundle, use `dell/karavi-observability` as the chart name.
-=======
-$ helm install dell/karavi -n karavi --create-namespace --render-subchart-notes --set-file karavi-topology.certificateFile=<path-to-certificate-file> (other --set-file parameters as documented in the dependency helm charts)
+```console
+$ helm repo add dell github.com/dell/helm-charts
+$ helm install dell/karavi-observability -n karavi --create-namespace --render-subchart-notes --set-file karavi-topology.certificateFile=<path-to-certificate-file> (other --set-file parameters as documented in the dependency helm charts)
 ```
->>>>>>> main:charts/karavi/README.md
 
 # Uninstalling the Chart
 
@@ -59,16 +41,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `karavi-topology.enabled`                 | Enable deployment of Karavi Topology                        | `true`                                                  |
-<<<<<<< HEAD:charts/karavi-observability/README.md
-| `karavi-topology.certificateFile`         | Location of the signed certificate file    |  |
-| `karavi-topology.privateKeyFile`          | Location of the signed certificate private key file |  |
-| `karavi-powerflex-metrics.enabled`                 | Enable deployment of Karavi Metrics for PowerFlex      | `true`                                                  |
-=======
 | `karavi-topology.certificateFile`      | Required valid public certificate file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `                                                   |
 | `karavi-topology.privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `|
-
 | `karavi-powerflex-metrics.enabled`                 | Enable deployment of Karavi PowerFlex Metrics      | `true`                                                  |
->>>>>>> main:charts/karavi/README.md
 | `karavi-powerflex-metrics.powerflex_endpoint`      | PowerFlex Gateway URL            | ` `                                                   |
 | `karavi-powerflex-metrics.powerflex_user`                      | PowerFlex Gateway administrator username (in base64)                           | ` `                           |
 | `karavi-powerflex-metrics.otelCollector.certificateFile`      | Required valid public certificate file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `                                                   |
@@ -85,11 +60,6 @@ This chart repository supports the latest and previous minor versions of Kuberne
 
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
-<<<<<<< HEAD:charts/karavi-observability/README.md
 ## Karavi Observability Helm Chart Versioning Workflow
 
-See the Karavi Observability Helm chart [versioning workflow](./VERSIONING_WORKFLOW.md).
-=======
-## Karavi Helm Chart Versioning Workflow
-See the Karavi Helm chart [versioning workflow](./VERSIONING_WORKFLOW.md)
->>>>>>> main:charts/karavi/README.md
+See the Helm chart [versioning workflow](./VERSIONING_WORKFLOW.md).
