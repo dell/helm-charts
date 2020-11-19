@@ -71,7 +71,7 @@ or
 *
 * Downloading and saving Docker images
 
-   dellemc/karavi-powerflex-metrics:0.1.0
+   dellemc/karavi-metrics-powerflex:0.1.0
    dellemc/karavi-topology:0.1.0
 
 *
@@ -100,7 +100,7 @@ or
 *
 * Loading, tagging, and pushing Docker images to registry my-registry:5000/
 
-   dellemc/karavi-powerflex-metrics:0.1.0 -> my-registry:5000/karavi-powerflex-metrics:0.1.0
+   dellemc/karavi-metrics-powerflex:0.1.0 -> my-registry:5000/karavi-metrics-powerflex:0.1.0
    dellemc/karavi-topology:0.1.0 -> my-registry:5000/karavi-topology:0.1.0
 ```
 
