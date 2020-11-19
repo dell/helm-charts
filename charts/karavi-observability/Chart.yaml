@@ -8,7 +8,7 @@ dependencies:
   version: "0.1.0"
   repository: "file://../karavi-topology"
   condition: karavi-topology.enabled
-- name: karavi-powerflex-metrics
+- name: karavi-metrics-powerflex
   version: "0.1.0"
   repository: "file://../karavi-metrics-powerflex"
   condition: karavi-powerflex-metrics.enabled

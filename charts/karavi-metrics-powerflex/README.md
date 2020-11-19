@@ -28,7 +28,7 @@ The PowerFlex Metrics service will automatically start to gather PowerFlex metri
 
 ## Offline Chart Installation
 
-To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Helm Chart Installer](../karavi/installer/README.md). When creating the offline bundle, use `dell/karavi-metrics-powerflex` as the chart name.
+To install the helm chart in an environment that does not have an internet connection, follow the instructions for the [Offline Karavi Helm Chart Installer](../karavi-observability/installer/README.md). When creating the offline bundle, use `dell/karavi-metrics-powerflex` as the chart name.
 
 ## Uninstalling the Chart
 

@@ -43,11 +43,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | `karavi-topology.enabled`                 | Enable deployment of Karavi Topology                        | `true`                                                  |
 | `karavi-topology.certificateFile`      | Required valid public certificate file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `                                                   |
 | `karavi-topology.privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `|
-| `karavi-powerflex-metrics.enabled`                 | Enable deployment of Karavi PowerFlex Metrics      | `true`                                                  |
-| `karavi-powerflex-metrics.powerflex_endpoint`      | PowerFlex Gateway URL            | ` `                                                   |
-| `karavi-powerflex-metrics.powerflex_user`                      | PowerFlex Gateway administrator username (in base64)                           | ` `                           |
-| `karavi-powerflex-metrics.otelCollector.certificateFile`      | Required valid public certificate file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `                                                   |
-| `karavi-powerflex-metrics.otelCollector.privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `|
+| `karavi-metrics-powerflex.enabled`                 | Enable deployment of Karavi PowerFlex Metrics      | `true`                                                  |
+| `karavi-metrics-powerflex.powerflex_endpoint`      | PowerFlex Gateway URL            | ` `                                                   |
+| `karavi-metrics-powerflex.powerflex_user`                      | PowerFlex Gateway administrator username (in base64)                           | ` `                           |
+| `karavi-metrics-powerflex.otelCollector.certificateFile`      | Required valid public certificate file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `                                                   |
+| `karavi-metrics-powerflex.otelCollector.privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `|
 
 Other parameters from the subcharts can be overridden during installation of the Karavi Observability helm chart:
 
