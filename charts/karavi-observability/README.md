@@ -22,7 +22,7 @@ The Karavi Observability chart contains dependencies on the following charts whi
 To install the helm chart:
 
 ```console
-$ helm repo add dell github.com/dell/helm-charts
+$ helm repo add dell https://dell.github.io/helm-charts
 $ helm install karavi-observability dell/karavi-observability -n karavi --create-namespace --render-subchart-notes --set-file karavi-topology.certificateFile=<path-to-certificate-file> (other --set-file parameters as documented in the dependency helm charts)
 ```
 
