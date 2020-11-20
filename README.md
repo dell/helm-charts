@@ -25,7 +25,7 @@ For general discussions, issues or support for Dell Helm Charts contact the team
 ## How to Install
 
 ```console
-$ helm repo add dell github.com/dell/helm-charts
+$ helm repo add dell https://dell.github.io/helm-charts
 ```
 
 Please refer to individual chart documentation for installation.
