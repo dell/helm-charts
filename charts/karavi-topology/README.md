@@ -18,7 +18,7 @@ To install the helm chart, a signed certificate file and associated private key 
 
 ```console
 $ helm repo add dell github.com/dell/helm-charts
-$ helm install dell/karavi-topology -n karavi --create-namespace --set-file certificateFile=<path-to-certificate-file> --set-file privateKeyFile=<path-to-private-key-file>
+$ helm install karavi-topology dell/karavi-topology -n karavi --create-namespace --set-file certificateFile=<path-to-certificate-file> --set-file privateKeyFile=<path-to-private-key-file>
 ```
 
 After installation, there will be a deployment of the karavi-topology service in Kubernetes.
