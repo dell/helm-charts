@@ -9,7 +9,7 @@ powerflex_endpoint:
 powerflex_user:
 powerflex_password:
 
-image: <docker-registry>:<port>/karavi-metrics-powerflex:latest
+image: dellemc/karavi-metrics-powerflex:0.1.0-pre-release
 collector_addr: otel-collector:55680
 # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
 provisioner_names: csi-vxflexos.dellemc.com
