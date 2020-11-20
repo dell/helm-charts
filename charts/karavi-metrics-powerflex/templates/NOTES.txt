@@ -1,8 +1,0 @@
-Karavi Metrics for PowerFlex
-
-  The Karavi Metrics for PowerFlex deployment has been successfully installed.
-
-  PowerFlex Endpoint: {{ .Values.powerflex_endpoint }}
-  Provisioner Names: {{ .Values.provisioner_names }}
-  Prometheus Scrape Target: 
-    From inside the Kubernetes cluster: otel-collector:443
