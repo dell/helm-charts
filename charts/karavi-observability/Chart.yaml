@@ -1,4 +1,5 @@
 apiVersion: v2
+appVersion: "0.1.0"
 name: karavi-observability
 description: Karavi Observability is part of the [Karavi](https://github.com/dell/karavi) open source suite of Kubernetes storage enablers for Dell EMC storage products. Karavi Observability provides Kubernetes administrators with visibility into metrics and topology data related to containerized storage.
 type: application
