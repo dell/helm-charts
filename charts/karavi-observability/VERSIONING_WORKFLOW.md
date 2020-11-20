@@ -101,6 +101,6 @@ This workflow is triggered either when there is a change to the helm chart or wh
 - Given the example above, users can utilize the new release by running the following commands:
 
  ```bash
-   helm repo add dell https://github.com/dell/helm-charts
+   helm repo add dell https://dell.github.io/helm-charts
    helm install karavi-observability --version "0.2.0" -n karavi --create-namespace --render-subchart-notes
  ```

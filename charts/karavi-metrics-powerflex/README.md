@@ -19,7 +19,7 @@ Karavi Metrics for PowerFlex can be deployed using Helm.  The chart must be conf
 To install the helm chart, a signed certificate file and associated private key file must be passed to the `helm install` command. The domain name used for the certificate file must be 'otel-collector'.
 
 ```console
-$ helm repo add dell github.com/dell/helm-charts
+$ helm repo add dell https://dell.github.io/helm-charts
 $ helm install karavi-metrics-powerflex dell/karavi-metrics-powerflex --namespace karavi --create-namespace --set-file otelCollector.certificateFile=<path-to-certificate-file> --set-file otelCollector.privateKeyFile=<path-to-private-key-file>
 ```
 
