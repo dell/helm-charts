@@ -41,7 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
-| `image`                   | Location of the karavi-topology Docker image                                                                                                        | `<docker-registry>:<port>/karavi-topology:latest`|
+| `image`                   | Location of the karavi-topology Docker image                                                                                                        | `dellemc/karavi-topology:0.1.0-pre-release`|
 | `provisioner_names`       | Provisioner Names used to filter the Persistent Volumes created on the Kubernetes cluster (must be a comma-separated list)    | ` csi-vxflexos.dellemc.com`                                                   |
 | `service.type`            | Kubernetes service type	    | `ClusterIP`                                                   |
 | `certificateFile`      | Required valid public certificate file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `                                                   |
