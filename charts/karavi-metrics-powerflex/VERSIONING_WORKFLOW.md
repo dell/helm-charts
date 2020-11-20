@@ -65,6 +65,6 @@ This workflow is triggered when there is a new release of [karavi-metrics-powerf
 - Given the example above, users can utilize the new release by running the following commands:
   
 ```bash
-   helm repo add dell https://github.com/dell/helm-charts
+   helm repo add dell https://dell.github.io/helm-charts
    helm install karavi-metrics-powerflex --version "0.2.0" -n karavi --create-namespace
 ```
