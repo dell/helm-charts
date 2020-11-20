@@ -20,7 +20,7 @@ To install the helm chart, a signed certificate file and associated private key 
 
 ```console
 $ helm repo add dell github.com/dell/helm-charts
-$ helm install dell/karavi-metrics-powerflex --namespace karavi --create-namespace --set-file otelCollector.certificateFile=<path-to-certificate-file> --set-file otelCollector.privateKeyFile=<path-to-private-key-file>
+$ helm install karavi-metrics-powerflex dell/karavi-metrics-powerflex --namespace karavi --create-namespace --set-file otelCollector.certificateFile=<path-to-certificate-file> --set-file otelCollector.privateKeyFile=<path-to-private-key-file>
 ```
 
 After installation, there will be a Deployment of a Karavi Metrics for PowerFlex service in Kubernetes.
