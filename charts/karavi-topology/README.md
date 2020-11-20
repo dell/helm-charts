@@ -17,7 +17,7 @@ Karavi Topology can be deployed using Helm.
 To install the helm chart, a signed certificate file and associated private key file must be passed to the `helm install` command. The domain name used for the certificate file must be 'karavi-topology'.
 
 ```console
-$ helm repo add dell github.com/dell/helm-charts
+$ helm repo add dell https://dell.github.io/helm-charts
 $ helm install karavi-topology dell/karavi-topology -n karavi --create-namespace --set-file certificateFile=<path-to-certificate-file> --set-file privateKeyFile=<path-to-private-key-file>
 ```
 
