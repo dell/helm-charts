@@ -37,7 +37,7 @@ CHARTNAME=""
 HELMBACKUPDIR="helm-original"
 HELMDIR="helm"
 IMAGEDIR="images"
-HELMREPO="https://github.com/dell/helm-charts"
+HELMREPO="https://dell.github.io/helm-charts"
 CHARTPREFIX="dell/"
 
 create_bundle() {
