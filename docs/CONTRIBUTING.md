@@ -10,31 +10,38 @@ You may obtain a copy of the License at
 
 # How to Contribute
 
-Become one of the contributors to this project! We thrive to build a welcoming and open community for anyone who wants to use the project or contribute to it. There are just a few small guidelines you need to follow. To help us create a safe and positive community experience for all, we require all participants to adhere to the [Code of Conduct](CODE_OF_CONDUCT.md).
+Become one of the contributors to this project! We thrive to build a welcoming and open community for anyone who wants to use the project or contribute to it. There are just a few small guidelines you need to follow. To help us create a safe and positive community experience for all, we require all participants to adhere to the [Code of Conduct](docs/CODE_OF_CONDUCT.md).
 
 ## Table of Contents
 
-* [Become a contributor](#Become-a-contributor)
-* [Report bugs](#Report-bugs)
-* [Feature request](#Feature-request)
-* [Answering questions](#Answering-questions)
-* [Triage issues](#Triage-issues)
-* [Your first contribution](#Your-first-contribution)
-* [Branching Strategy](#Branching-strategy)
-* [Signing your commits](#Signing-your-commits)
-* [Pull requests](#Pull-requests)
-* [Code reviews](#Code-reviews)
-* [Code Quality](#Code-quality)
+- [How to Contribute](#how-to-contribute)
+  - [Table of Contents](#table-of-contents)
+  - [Become a contributor](#become-a-contributor)
+  - [Report bugs](#report-bugs)
+  - [Feature request](#feature-request)
+  - [Answering questions](#answering-questions)
+  - [Triage issues](#triage-issues)
+  - [Your first contribution](#your-first-contribution)
+  - [Branching Strategy](#branching-strategy)
+    - [Branch Naming Convention](#branch-naming-convention)
+    - [Branch Types](#branch-types)
+    - [Steps to create a branch for a bug fix or feature](#steps-to-create-a-branch-for-a-bug-fix-or-feature)
+  - [Signing your commits](#signing-your-commits)
+    - [Signing a commit](#signing-a-commit)
+    - [Commit message format](#commit-message-format)
+  - [Pull requests](#pull-requests)
+  - [Code Reviews](#code-reviews)
+  - [Code Quality](#code-quality)
 
 ## Become a contributor
 
 You can contribute to Dell Community Kubernetes Helm Charts in several ways. Here are some examples:
 
-* Contribute to the Dell Community Kubernetes Helm Charts codebase.
-* Report and triage bugs.
-* Feature requests
-* Write technical documentation and blog posts, for users and contributors.
-* Help others by answering questions about Dell Community Kubernetes Helm Charts.
+- Contribute to the Dell Community Kubernetes Helm Charts codebase.
+- Report and triage bugs.
+- Feature requests
+- Write technical documentation and blog posts, for users and contributors.
+- Help others by answering questions about Dell Community Kubernetes Helm Charts.
 
 ## Report bugs
 
@@ -49,9 +56,9 @@ When opening a Bug please include the following information to help with debuggi
 1. Version of relevant software: this software, Kubernetes, Dell Storage Platform, Helm, etc.
 2. Details of the issue explaining the problem: what, when, where
 3. The expected outcome that was not met (if any)
-4. Supporting troubleshooting information. __Note: Do not provide private company information that could compromise your company's security.__
+4. Supporting troubleshooting information. **Note: Do not provide private company information that could compromise your company's security.**
 
-An Issue __must__ be created before submitting any pull request. Any pull request that is created should be linked to an Issue.
+An Issue **must** be created before submitting any pull request. Any pull request that is created should be linked to an Issue.
 
 ## Feature request
 
@@ -67,21 +74,21 @@ We'd love your help answering questions being asked by other Dell Community Kube
 
 Triage helps ensure that issues resolve quickly by:
 
-* Ensuring the issue's intent and purpose is conveyed precisely. This is necessary because it can be difficult for an issue to explain how an end user experiences a problem and what actions they took.
-* Giving a contributor the information they need before they commit to resolving an issue.
-* Lowering the issue count by preventing duplicate issues.
-* Streamlining the development process by preventing duplicate discussions.
+- Ensuring the issue's intent and purpose is conveyed precisely. This is necessary because it can be difficult for an issue to explain how an end user experiences a problem and what actions they took.
+- Giving a contributor the information they need before they commit to resolving an issue.
+- Lowering the issue count by preventing duplicate issues.
+- Streamlining the development process by preventing duplicate discussions.
 
 If you don't have the knowledge or time to code, consider helping with _issue triage_. The community will thank you for saving them time by spending some of yours.
 
-Read more about the ways you can [Triage issues](ISSUE_TRIAGE.md).
+Read more about the ways you can [Triage issues](docs/ISSUE_TRIAGE.md).
 
 ## Your first contribution
 
 Unsure where to begin contributing to Dell Community Kubernetes Helm Charts? Start by browsing issues labeled `beginner friendly` or `help wanted`.
 
-* [Beginner-friendly](https://github.com/dell/helm-charts/issues?q=is%3Aopen+is%3Aissue+label%3A%22beginner+friendly%22) issues are generally straightforward to complete.
-* [Help wanted](https://github.com/dell/helm-charts/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) issues are problems we would like the community to help us with regardless of complexity.
+- [Beginner-friendly](https://github.com/dell/helm-charts/issues?q=is%3Aopen+is%3Aissue+label%3A%22beginner+friendly%22) issues are generally straightforward to complete.
+- [Help wanted](https://github.com/dell/helm-charts/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) issues are problems we would like the community to help us with regardless of complexity.
 
 When you're ready to contribute, it's time to create a pull request.
 
@@ -91,18 +98,18 @@ We are following a scaled trunk branching strategy where short-lived branches ar
 
 ### Branch Naming Convention
 
-|  Branch Type |  Example                          |  Comment                                  |
-|--------------|-----------------------------------|-------------------------------------------|
-|  main        |  main                             |                                           |
-|  Release     |  release-1.0                      |  hotfix: release-1.1 patch: release-1.0.1 |
-|  Feature     |  feature-9-olp-support            |  "9" referring to GitHub issue ID         |
-|  Bug Fix     |  bugfix-110-remove-docker-compose |  "110" referring to GitHub issue ID       |
+| Branch Type | Example                          | Comment                                  |
+| ----------- | -------------------------------- | ---------------------------------------- |
+| main        | main                             |                                          |
+| Release     | release-1.0                      | hotfix: release-1.1 patch: release-1.0.1 |
+| Feature     | feature-9-olp-support            | "9" referring to GitHub issue ID         |
+| Bug Fix     | bugfix-110-remove-docker-compose | "110" referring to GitHub issue ID       |
 
 ### Branch Types
 
-* A Release branch is a branch created from the main branch used for releasing a Helm Chart version. Only critical bug fixes will be merged into this branch.
-* Bug Fix branch is a branch which is created for the purpose of fixing the given defect/issue.
-* Feature branch is created for a feature development purpose.
+- A Release branch is a branch created from the main branch used for releasing a Helm Chart version. Only critical bug fixes will be merged into this branch.
+- Bug Fix branch is a branch which is created for the purpose of fixing the given defect/issue.
+- Feature branch is created for a feature development purpose.
 
 ### Steps to create a branch for a bug fix or feature
 
@@ -123,12 +130,12 @@ GitHub will prevent a pull request from being merged if there are any unsigned c
 
 ### Signing a commit
 
-GPG (GNU Privacy Guard) will be used to sign commits.  Follow the instructions [here](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/signing-commits) to create a GPG key and configure your GitHub account to use that key.
+GPG (GNU Privacy Guard) will be used to sign commits. Follow the instructions [here](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/signing-commits) to create a GPG key and configure your GitHub account to use that key.
 
-Make sure you have your user name and e-mail set.  This will be required for your signed commit to be properly verified.  Check the following references:
+Make sure you have your user name and e-mail set. This will be required for your signed commit to be properly verified. Check the following references:
 
-* Setting up your github user name [reference](https://help.github.com/articles/setting-your-username-in-git/)
-* Setting up your e-mail address [reference](https://help.github.com/articles/setting-your-commit-email-address-in-git/)
+- Setting up your github user name [reference](https://help.github.com/articles/setting-your-username-in-git/)
+- Setting up your e-mail address [reference](https://help.github.com/articles/setting-your-commit-email-address-in-git/)
 
 Once Git and your GitHub account have been properly configured, you can add the -S flag to the git commits:
 
@@ -149,16 +156,16 @@ A pull request must always link to at least one GitHub issue. If that is not the
 
 To increase the chance of having your pull request accepted, make sure your pull request follows these guidelines:
 
-* Title and description matches the implementation.
-* Commits within the pull request follow the formatting guidelines.
-* The pull request closes one related issue.
-* The pull request contains necessary tests that verify the intended behavior.
-* If your pull request has conflicts, rebase your branch onto the master branch.
-* Code validation checks must pass.
+- Title and description matches the implementation.
+- Commits within the pull request follow the formatting guidelines.
+- The pull request closes one related issue.
+- The pull request contains necessary tests that verify the intended behavior.
+- If your pull request has conflicts, rebase your branch onto the master branch.
+- Code validation checks must pass.
 
 If the pull request fixes a bug:
 
-* The pull request description must include `Fixes #<issue number>`.
+- The pull request description must include `Fixes #<issue number>`.
 
 The Dell Community Kubernetes Helm Charts team _squashes_ all commits into one when we accept a pull request. The title of the pull request becomes the subject line of the squashed commit message. We still encourage contributors to write informative commit messages, as they becomes a part of the Git commit body.
 
@@ -174,13 +181,13 @@ All submissions, including submissions by project members, require review. We us
 
 In order to maintain code quality, we have defined quality gates that are automatically checked in every Pull Request. Any failed checks will block merging the Pull Request changes to the main branch. The contributor will need to update the code to address the failed checks. When the changes are committed to the Pull Request, the checks will rerun automatically. After all the checks have passed, merging to the main branch will be enabled based on maintainer approval. The following checks are used for the helm-charts repository:
 
-* Validate linting using [helm-lint](https://helm.sh/docs/helm/helm_lint/) on updated charts.
-* Check for version increment on updated charts.
-* Validate [dependency](https://helm.sh/docs/helm/helm_dependency/) versions on parent charts.
+- Validate linting using [helm-lint](https://helm.sh/docs/helm/helm_lint/) on updated charts.
+- Check for version increment on updated charts.
+- Validate [dependency](https://helm.sh/docs/helm/helm_dependency/) versions on parent charts.
 
 A pull request must satisfy following for it to be merged:
 
-* A pull request will require at least 2 maintainer approvals.
-* Maintainer must perform a code review and ensure there is no malicious code.
-* Maintainer must run a suite of tests that verify the quality of the code being submitted, and update the contributor if there are any failures.
-* If any commits are made after the PR has been approved, the PR approval will automatically be removed and the above process must happen again.
+- A pull request will require at least 2 maintainer approvals.
+- Maintainer must perform a code review and ensure there is no malicious code.
+- Maintainer must run a suite of tests that verify the quality of the code being submitted, and update the contributor if there are any failures.
+- If any commits are made after the PR has been approved, the PR approval will automatically be removed and the above process must happen again.
