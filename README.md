@@ -10,7 +10,7 @@ You may obtain a copy of the License at
 
 # Dell Community Kubernetes Helm Charts
 
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](docs/CODE_OF_CONDUCT.md)
 [![License](https://img.shields.io/github/license/dell/helm-charts)](LICENSE)
 
 The source for Dell Helm charts [Dell Helm Hub](https://github.com/dell/helm-charts).
@@ -32,7 +32,7 @@ Please refer to individual chart documentation for installation.
 
 ## Contributing to an Existing Chart
 
-We'd love for you to contribute to an existing Chart that you find provides a useful application or service for Kubernetes. Please read our [Contribution Guide](CONTRIBUTING.md) for more information on how you can contribute Charts.
+We'd love for you to contribute to an existing Chart that you find provides a useful application or service for Kubernetes. Please read our [Contribution Guide](docs/CONTRIBUTING.md) for more information on how you can contribute Charts.
 
 ## Owning and Maintaining A Chart
 
@@ -42,7 +42,7 @@ Individual charts can be maintained by one or more users of [OWNERS](OWNERS). Wh
 
 ## Review Process
 
-For information related to the review procedure used by the Chart repository maintainers, see [Merge approval and release process](CONTRIBUTING.md).
+For information related to the review procedure used by the Chart repository maintainers, see [Merge approval and release process](docs/CONTRIBUTING.md).
 
 ## Versioning Strategy
 

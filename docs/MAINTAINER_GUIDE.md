@@ -26,12 +26,12 @@ If a candidate is approved, a Maintainer contacts the candidate to invite them t
 
 ## Maintainer Policies
 
-* Lead by example
-* Follow the [Code of Conduct](CODE_OF_CONDUCT.md) and the guidelines in the [Contributing](CONTRIBUTING.md) guide.
-* Promote a friendly and collaborative environment within our community.
-* Be actively engaged in discussions, answering questions, updating defects, and reviewing pull requests.
-* Criticize code, not people. Ideally, tell the contributor a better way to do what they need.
-* Clearly mark optional suggestions as such. Best practice, start your comment with *At your option: …*.
+- Lead by example
+- Follow the [Code of Conduct](docs/CODE_OF_CONDUCT.md) and the guidelines in the [Contributing](docs/CONTRIBUTING.md) guide.
+- Promote a friendly and collaborative environment within our community.
+- Be actively engaged in discussions, answering questions, updating defects, and reviewing pull requests.
+- Criticize code, not people. Ideally, tell the contributor a better way to do what they need.
+- Clearly mark optional suggestions as such. Best practice, start your comment with _At your option: …_.
 
 ## Project Decision Making
 
