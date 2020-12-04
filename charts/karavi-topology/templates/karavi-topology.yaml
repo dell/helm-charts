@@ -9,8 +9,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
   - name: karavi-topology
-    port: 443
-    targetPort: 443
+    port: {{ .Values.listen_port }}
+    targetPort: {{ .Values.listen_port }}
   selector:
     app.kubernetes.io/name: karavi_topology
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -61,6 +61,8 @@ spec:
         env:
         - name: PROVISIONER_NAMES
           value: {{ .Values.provisioner_names }}
+        - name: PORT
+          value: "{{ .Values.listen_port }}"
         volumeMounts:
         - name: karavi-topology-secret-volume
           mountPath: "/certs"

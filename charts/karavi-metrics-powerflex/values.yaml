@@ -1,8 +1,9 @@
 otelCollector:
   image: otel/opentelemetry-collector:0.9.0
+listen_port: 8443
 
 nginxProxy:
-  image: nginx:1
+  image: nginxinc/nginx-unprivileged:1.18
 
 powerflex_endpoint:
 # base64 user and password
