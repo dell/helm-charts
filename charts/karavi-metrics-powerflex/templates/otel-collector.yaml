@@ -43,8 +43,8 @@ spec:
     - port: 55680
       targetPort: 55680
       name: receiver
-    - port: {{ .Values.listen_port }}
-      targetPort: {{ .Values.listen_port }}
+    - port: 8443
+      targetPort: 8443
       name: exporter-https
   selector:
     app.kubernetes.io/name: otel-collector

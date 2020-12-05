@@ -1,6 +1,5 @@
 image: dellemc/karavi-topology:0.1.0-pre-release
 # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
 provisioner_names: csi-vxflexos.dellemc.com
-listen_port: 8443
 service:
   type: ClusterIP

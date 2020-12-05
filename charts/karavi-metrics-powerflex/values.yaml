@@ -1,6 +1,5 @@
 otelCollector:
   image: otel/opentelemetry-collector:0.9.0
-listen_port: 8443
 
 nginxProxy:
   image: nginxinc/nginx-unprivileged:1.18

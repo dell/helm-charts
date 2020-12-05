@@ -9,8 +9,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
   - name: karavi-topology
-    port: {{ .Values.listen_port }}
-    targetPort: {{ .Values.listen_port }}
+    port: 8443
+    targetPort: 8443
   selector:
     app.kubernetes.io/name: karavi_topology
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -62,7 +62,7 @@ spec:
         - name: PROVISIONER_NAMES
           value: {{ .Values.provisioner_names }}
         - name: PORT
-          value: "{{ .Values.listen_port }}"
+          value: "8443"
         volumeMounts:
         - name: karavi-topology-secret-volume
           mountPath: "/certs"
