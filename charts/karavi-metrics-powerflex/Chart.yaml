@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: "0.1.0"
+appVersion: "0.2.0"
 description: The open-source solution that provides Kubernetes administrators insight into storage usage and performance for containerized applications using Dell products.
 name: karavi-metrics-powerflex
-version: 0.1.0
+version: 0.2.0
