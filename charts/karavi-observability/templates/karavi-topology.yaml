@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   name: karavi-topology
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.karaviTopology.service.type }}
   ports:
   - name: karavi-topology
     port: 8443
@@ -17,8 +17,8 @@ spec:
 
 ---
 
-{{- $certificateFileContents := required "A valid certificate file is required. Refer to the Helm Chart documentation." (.Values.certificateFile) }}
-{{- $privateKeyFileContents := required "A valid private key file is required. Refer to the Helm Chart documentation." (.Values.privateKeyFile) }}
+{{- $certificateFileContents := required "A valid certificate file is required. Refer to the Helm Chart documentation." .Values.karaviTopology.certificateFile }}
+{{- $privateKeyFileContents := required "A valid private key file is required. Refer to the Helm Chart documentation." .Values.karaviTopology.privateKeyFile }}
 apiVersion: v1
 data:
   localhost.crt: {{ $certificateFileContents | b64enc }}
@@ -56,11 +56,11 @@ spec:
       serviceAccount: {{ .Release.Name }}-topology-controller
       containers:
       - name: karavi-topology
-        image: {{ .Values.image }}
+        image: {{ .Values.karaviTopology.image }}
         resources: {}
         env:
         - name: PROVISIONER_NAMES
-          value: {{ .Values.provisioner_names }}
+          value: {{ .Values.karaviTopology.provisionerNames }}
         - name: PORT
           value: "8443"
         volumeMounts:

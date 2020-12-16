@@ -1,5 +1,5 @@
-{{- $certificateFileContents := required "A valid certificate file is required. Refer to the Helm Chart documentation." (.Values.otelCollector.certificateFile) }}
-{{- $privateKeyFileContents := required "A valid private key file is required. Refer to the Helm Chart documentation." (.Values.otelCollector.privateKeyFile) }}
+{{- $certificateFileContents := required "A valid certificate file is required. Refer to the Helm Chart documentation." .Values.otelCollector.certificateFile }}
+{{- $privateKeyFileContents := required "A valid private key file is required. Refer to the Helm Chart documentation." .Values.otelCollector.privateKeyFile }}
 
 apiVersion: v1
 kind: Secret
@@ -23,7 +23,7 @@ metadata:
 
 apiVersion: v1
 data:
-  nginx.conf: {{ (.Files.Get "nginx.conf") | quote }}
+  nginx.conf: {{ (.Files.Get "otel-collector-nginx.conf") | quote }}
 kind: ConfigMap
 metadata:
   name: nginx-config
@@ -89,7 +89,7 @@ spec:
           name: otel-collector-config
       containers:
       - name: nginx-proxy
-        image: {{ .Values.nginxProxy.image }}
+        image: {{ .Values.otelCollector.nginxProxy.image }}
         volumeMounts:
           - name: tls-secret
             mountPath: /etc/ssl/certs

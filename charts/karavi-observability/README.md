@@ -14,16 +14,18 @@ Karavi Observability can be deployed using Helm.
 
 # Installing the Chart
 
-The Karavi Observability chart contains dependencies on the following charts which will be deployed during installation. Read the documentation for these helm charts to make sure the correct certificates have been created or an error may occur during deployment.
-
-- [karavi-topology](../karavi-topology/README.md)
-- [karavi-metrics-powerflex](../karavi-metrics-powerflex/README.md)
-
 To install the helm chart:
 
 ```console
 $ helm repo add dell https://dell.github.io/helm-charts
-$ helm install karavi-observability dell/karavi-observability -n karavi --create-namespace --render-subchart-notes --set-file karavi-topology.certificateFile=<path-to-certificate-file> (other --set-file parameters as documented in the dependency helm charts)
+$ helm install karavi-observability dell/karavi-observability -n karavi --create-namespace \
+    --set-file karaviTopology.certificateFile=<location-of-karavi-topology-certificate-file> \
+    --set-file karaviTopology.privateKeyFile=<location-of-karavi-topology-private-key-file> \
+    --set-file otelCollector.certificateFile=<location-of-otel-collector-certificate-file> \
+    --set-file otelCollector.privateKeyFile=<location-of-otel-collector-private-key-file> \
+    --set karaviMetricsPowerflex.powerflexPassword=<base64-encoded-password> \
+    --set karaviMetricsPowerflex.powerflexUser=<base64-encoded-username> \
+    --set karaviMetricsPowerflex.powerflexEndpoint=https://<powerflex-endpoint>
 ```
 
 # Uninstalling the Chart
@@ -40,20 +42,28 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Parameter                                 | Description                                   | Default                                                 |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
-| `karavi-topology.enabled`                 | Enable deployment of Karavi Topology                        | `true`                                                  |
-| `karavi-topology.certificateFile`      | Required valid public certificate file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `                                                   |
-| `karavi-topology.privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `|
-| `karavi-metrics-powerflex.enabled`                 | Enable deployment of Karavi PowerFlex Metrics      | `true`                                                  |
-| `karavi-metrics-powerflex.powerflex_endpoint`      | PowerFlex Gateway URL            | ` `                                                   |
-| `karavi-metrics-powerflex.powerflex_user`                      | PowerFlex Gateway administrator username (in base64)                           | ` `                           |
-| `karavi-metrics-powerflex.powerflex_password`                      | PowerFlex Gateway administrator password (in base64)                           | ` `                           |
-| `karavi-metrics-powerflex.otelCollector.certificateFile`      | Required valid public certificate file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `                                                   |
-| `karavi-metrics-powerflex.otelCollector.privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `|
+| `karaviTopology.image`                   | Location of the karavi-topology Docker image                                                                                                        | `dellemc/karavi-topology:0.1.0-pre-release`|
+| `karaviTopology.provisionerNames`       | Provisioner Names used to filter the Persistent Volumes created on the Kubernetes cluster (must be a comma-separated list)    | ` csi-vxflexos.dellemc.com`                                                   |
+| `karaviTopology.service.type`            | Kubernetes service type	    | `ClusterIP`                                                   |
+| `karaviTopology.certificateFile`      | Required valid public certificate file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `                                                   |
+| `karaviTopology.privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the Topology service. Must use domain name 'karavi-topology'.            | ` `|
+| `otelCollector.certificateFile`      | Required valid public certificate file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `                                                   |
+| `otelCollector.privateKeyFile`      | Required public certificate's associated private key file that will be used to deploy the OpenTelemetry Collector. Must use domain name 'otel-collector'.            | ` `|                                                   
+| `karaviMetricsPowerflex.powerflexEndpoint`      | PowerFlex Gateway URL            | ` `                                                   |
+| `karaviMetricsPowerflex.powerflexUser`                      | PowerFlex Gateway administrator username(in base64)                           | ` `                           |
+| `karaviMetricsPowerflex.powerflexPassword`                           | PowerFlex Gateway administrator password(in base64)                      | ` ` |
+| `karaviMetricsPowerflex.image`                          |  Karavi Metrics for PowerFlex Service image                      | `dellemc/karavi-metrics-powerflex:0.1.0-pre-release`|
+| `karaviMetricsPowerflex.collectorAddr`                         | Metrics Collector accessible from the Kubernetes cluster                    | `otel-collector:55680`  |
+| `karaviMetricsPowerflex.provisionerNames`                       | Provisioner Names used to filter for determining PowerFlex SDC nodes( Must be a Comma-separated list)          | ` csi-vxflexos.dellemc.com`                                                   |
+| `karaviMetricsPowerflex.sdcPollFrequencySeconds`                        | The polling frequency (in seconds) to gather SDC metrics                         | `10`                                       |
+| `karaviMetricsPowerflex.volumePollFrequencySeconds`                        | The polling frequency (in seconds) to gather volume metrics | `10`                         |
+| `karaviMetricsPowerflex.storageClassPoolPollFrequencySeconds`                        | The polling frequency (in seconds) to gather storage class/pool metrics                         |  `10`                                       |
+| `karaviMetricsPowerflex.concurrentPowerflexQueries`                        | The number of simultaneous metrics queries to make to Powerflex(MUST be less than 10; otherwise, several request errors from Powerflex will ensue.)                       |  `10`                                       |
+| `karaviMetricsPowerflex.sdcMetricsEnabled`                        | Enable PowerFlex SDC Metrics Collection                         | `true`                                       |
+| `karaviMetricsPowerflex.volumeMetricsEnabled`                        | Enable PowerFlex Volume Metrics Collection                         | `true`                                       |
+| `karaviMetricsPowerflex.storageClassPoolMetricsEnabled`                        | Enable PowerFlex  Storage Class/Pool Metrics Collection                         | `true`                                       |
+| `karaviMetricsPowerflex.endpoint`                        | Endpoint for pod leader election                       | `karavi-metrics-powerflex`                                       |
 
-Other parameters from the subcharts can be overridden during installation of the Karavi Observability helm chart:
-
-- [karavi-topology](../karavi-topology/README.md)
-- [karavi-metrics-powerflex](../karavi-metrics-powerflex/README.md)
 
 ## Supported Kubernetes Versions
 
