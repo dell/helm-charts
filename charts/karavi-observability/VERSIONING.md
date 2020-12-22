@@ -8,15 +8,15 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 -->
 
-# Versioning Workflow
+# Versioning
 
-This workflow is triggered either when there is a change to the helm chart or when there is a new release of any of the child charts. When either scenario occurs, a maintainer must release a new helm chart for that associated change. The steps include:
+To version the Karavi Observability Helm chart, follow the instructions below.
 
 1. [Create a branch](../../docs/CONTRIBUTING.md).
-2. Update the [Chart.yaml](./Chart.yaml) file, depending on the scenario that triggered this workflow. These scenarios include:
+2. Update the [Chart.yaml](./Chart.yaml) file:
 
-   - **Change to the Helm Chart:**
-     If any changes are made in Karavi Observability Helm chart, for instance when the [values.yaml](./values.yaml) file is modified, the chart version number must also be incremented. For instance, consider the current Chart.yaml below:
+   - **Update the Helm Chart:**
+     If any changes are made in the Karavi Observability Helm chart, for instance when the [values.yaml](./values.yaml) file is modified, the chart version number must also be incremented. Consider the Chart.yaml below:
 
    ```yaml
    apiVersion: v2
@@ -38,12 +38,3 @@ This workflow is triggered either when there is a change to the helm chart or wh
 
 3. Create and merge PR into main branch.
 4. Github action will automatically make a new release given that there is a new chart version. The action packages and publishes an artifact, making it available for consumption. Given the example above, in either scenario, the GitHub action will produce a release called `karavi-observability-0.2.0`.
-
-## Consume New Release
-
-- Given the example above, users can utilize the new release by running the following commands:
-
-```bash
-  helm repo add dell https://dell.github.io/helm-charts
-  helm install karavi-observability --version "0.2.0" -n karavi --create-namespace --render-subchart-notes
-```
