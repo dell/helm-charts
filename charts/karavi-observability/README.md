@@ -12,7 +12,7 @@ You may obtain a copy of the License at
 
 Karavi Observability can be deployed using Helm.
 
-For complete deployment instructions, refer to the [Getting Started Guide](https://github.com/dell/karavi-observability/docs/GETTING_STARTED_GUIDE.md) in the Karavi Observability Github repository.
+For complete deployment instructions, refer to the [Getting Started Guide](https://github.com/dell/karavi-observability/blob/main/docs/GETTING_STARTED_GUIDE.md) in the Karavi Observability Github repository.
 
 ## Helm Chart Versioning
 
