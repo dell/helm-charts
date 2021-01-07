@@ -103,7 +103,7 @@ spec:
       volumes:
       - name: tls-secret
         secret:
-          secretName: tls-secret
+          secretName: otel-collector-tls
           items:
             - key: tls.crt
               path: cert.crt

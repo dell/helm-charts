@@ -17,18 +17,6 @@ spec:
 
 ---
 
-{{- $certificateFileContents := required "A valid certificate file is required. Refer to the Helm Chart documentation." .Values.karaviTopology.certificateFile }}
-{{- $privateKeyFileContents := required "A valid private key file is required. Refer to the Helm Chart documentation." .Values.karaviTopology.privateKeyFile }}
-apiVersion: v1
-data:
-  localhost.crt: {{ $certificateFileContents | b64enc }}
-  localhost.key: {{ $privateKeyFileContents | b64enc }}
-kind: Secret
-metadata:
-  name: karavi-topology-secret
-
----
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -52,7 +40,7 @@ spec:
       volumes:
         - name: karavi-topology-secret-volume
           secret:
-            secretName: karavi-topology-secret
+            secretName: karavi-topology-tls
       serviceAccount: {{ .Release.Name }}-topology-controller
       containers:
       - name: karavi-topology
