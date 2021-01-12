@@ -41,6 +41,11 @@ spec:
         - name: karavi-topology-secret-volume
           secret:
             secretName: karavi-topology-tls
+            items:
+            - key: tls.crt
+              path: localhost.crt
+            - key: tls.key
+              path: localhost.key
       serviceAccount: {{ .Release.Name }}-topology-controller
       containers:
       - name: karavi-topology

@@ -1,13 +1,15 @@
 {{- if and (.Values.karaviTopology.certificateFile) (.Values.karaviTopology.privateKeyFile) }}
-{{- $certificateFileContents := .Values.karaviTopology.certificateFile }}
-{{- $privateKeyFileContents := .Values.karaviTopology.privateKeyFile }}
+{{- $certificateFileContents := .Files.Get .Values.karaviTopology.certificateFile }}
+{{- $privateKeyFileContents := .Files.Get .Values.karaviTopology.privateKeyFile }}
 apiVersion: v1
 data:
   tls.crt: {{ $certificateFileContents | b64enc }}
   tls.key: {{ $privateKeyFileContents | b64enc }}
 kind: Secret
+type: kubernetes.io/tls
 metadata:
   name: karavi-topology-secret
+  namespace: {{ .Release.Namespace }}
 
 ---
 
@@ -24,12 +26,14 @@ spec:
 {{- end }}
 
 {{- if and (.Values.otelCollector.certificateFile) (.Values.otelCollector.privateKeyFile) }}
-{{- $certificateFileContents := .Values.otelCollector.certificateFile }}
-{{- $privateKeyFileContents := .Values.otelCollector.privateKeyFile }}
+{{- $certificateFileContents := .Files.Get .Values.otelCollector.certificateFile }}
+{{- $privateKeyFileContents := .Files.Get .Values.otelCollector.privateKeyFile }}
 apiVersion: v1
 kind: Secret
+type: kubernetes.io/tls
 metadata:
   name: otel-collector-secret
+  namespace: {{ .Release.Namespace }}
 data:
   tls.crt: {{ $certificateFileContents  | b64enc }}
   tls.key: {{ $privateKeyFileContents | b64enc }}
