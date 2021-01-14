@@ -1,3 +1,4 @@
+# If the karavi-topology cert and key are provided, deploy a CA Issuer using the cert and key
 {{- if and (.Values.karaviTopology.certificateFile) (.Values.karaviTopology.privateKeyFile) }}
 {{- $certificateFileContents := .Files.Get .Values.karaviTopology.certificateFile }}
 {{- $privateKeyFileContents := .Files.Get .Values.karaviTopology.privateKeyFile }}
@@ -25,6 +26,7 @@ spec:
 ---
 {{- end }}
 
+# If the otelCollector cert and key are provided, deploy a CA Issuer using the cert and key
 {{- if and (.Values.otelCollector.certificateFile) (.Values.otelCollector.privateKeyFile) }}
 {{- $certificateFileContents := .Files.Get .Values.otelCollector.certificateFile }}
 {{- $privateKeyFileContents := .Files.Get .Values.otelCollector.privateKeyFile }}
@@ -52,6 +54,7 @@ spec:
 ---
 {{- end }}
 
+# If any set of cert+key combos are not provided, deploy a selfsigned-issuer
 {{- if or (and (not .Values.karaviTopology.certificateFile) (not .Values.karaviTopology.privateKeyFile)) (and (not .Values.otelCollector.certificateFile) (not .Values.otelCollector.privateKeyFile)) }}
 apiVersion: cert-manager.io/v1
 kind: Issuer
