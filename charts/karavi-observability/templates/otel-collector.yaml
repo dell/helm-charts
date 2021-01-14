@@ -1,17 +1,3 @@
-{{- $certificateFileContents := required "A valid certificate file is required. Refer to the Helm Chart documentation." .Values.otelCollector.certificateFile }}
-{{- $privateKeyFileContents := required "A valid private key file is required. Refer to the Helm Chart documentation." .Values.otelCollector.privateKeyFile }}
-
-apiVersion: v1
-kind: Secret
-metadata:
-  name: tls-secret
-data:
-  tls.crt: {{ $certificateFileContents  | b64enc }}
-  tls.key: {{ $privateKeyFileContents | b64enc }}
-type: kubernetes.io/tls
-
----
-
 apiVersion: v1
 data:
   otel-collector-config.yaml: {{ (.Files.Get "otel-collector-config.yaml") | quote }}
@@ -75,7 +61,7 @@ spec:
       volumes:
       - name: tls-secret
         secret:
-          secretName: tls-secret
+          secretName: otel-collector-tls
           items:
             - key: tls.crt
               path: tls.crt
