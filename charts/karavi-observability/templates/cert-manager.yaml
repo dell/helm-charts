@@ -1,7 +1,7 @@
 # If the karavi-topology cert and key are provided, deploy a CA Issuer using the cert and key
 {{- if and (.Values.karaviTopology.certificateFile) (.Values.karaviTopology.privateKeyFile) }}
-{{- $certificateFileContents := .Files.Get .Values.karaviTopology.certificateFile }}
-{{- $privateKeyFileContents := .Files.Get .Values.karaviTopology.privateKeyFile }}
+{{- $certificateFileContents := .Values.karaviTopology.certificateFile }}
+{{- $privateKeyFileContents := .Values.karaviTopology.privateKeyFile }}
 apiVersion: v1
 data:
   tls.crt: {{ $certificateFileContents | b64enc }}
@@ -28,8 +28,8 @@ spec:
 
 # If the otelCollector cert and key are provided, deploy a CA Issuer using the cert and key
 {{- if and (.Values.otelCollector.certificateFile) (.Values.otelCollector.privateKeyFile) }}
-{{- $certificateFileContents := .Files.Get .Values.otelCollector.certificateFile }}
-{{- $privateKeyFileContents := .Files.Get .Values.otelCollector.privateKeyFile }}
+{{- $certificateFileContents := .Values.otelCollector.certificateFile }}
+{{- $privateKeyFileContents := .Values.otelCollector.privateKeyFile }}
 apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls
