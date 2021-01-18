@@ -1,6 +1,7 @@
 apiVersion: v1
 data:
-  otel-collector-config.yaml: {{ (.Files.Get "otel-collector-config.yaml") | quote }}
+  otel-collector-config.yaml: |-
+{{ (.Files.Get "otel-collector-config.yaml") | indent 4 }}
 kind: ConfigMap
 metadata:
   name: otel-collector-config
@@ -9,7 +10,8 @@ metadata:
 
 apiVersion: v1
 data:
-  nginx.conf: {{ (.Files.Get "otel-collector-nginx.conf") | quote }}
+  nginx.conf: |-
+{{ (.Files.Get "otel-collector-nginx.conf") | indent 4 }}
 kind: ConfigMap
 metadata:
   name: nginx-config
