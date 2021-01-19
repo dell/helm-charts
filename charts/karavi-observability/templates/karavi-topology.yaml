@@ -40,7 +40,7 @@ spec:
       volumes:
         - name: karavi-topology-secret-volume
           secret:
-            secretName: karavi-topology-tls
+            secretName: karavi-topology-secret
             items:
             - key: tls.crt
               path: localhost.crt

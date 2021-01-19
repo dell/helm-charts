@@ -13,17 +13,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
 
 ---
-
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: karavi-topology-issuer
-  namespace: {{ .Release.Namespace }}
-spec:
-  ca:
-    secretName: karavi-topology-secret
-
----
 {{- end }}
 
 # If the otelCollector cert and key are provided, deploy a CA Issuer using the cert and key
@@ -41,17 +30,6 @@ data:
   tls.key: {{ $privateKeyFileContents | b64enc }}
 
 ---
-
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: otel-collector-issuer
-  namespace: {{ .Release.Namespace }}
-spec:
-  ca:
-    secretName: otel-collector-secret
-
----
 {{- end }}
 
 # If any set of cert+key combos are not provided, deploy a selfsigned-issuer
@@ -65,7 +43,6 @@ spec:
   selfSigned: {}
 
 ---
-{{- end }}
 
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -73,7 +50,7 @@ metadata:
   name: otel-collector
   namespace: {{ .Release.Namespace }}
 spec:
-  secretName: otel-collector-tls
+  secretName: otel-collector-secret
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
@@ -91,11 +68,7 @@ spec:
   - otel-collector
   - otel-collector.karavi.svc.kubernetes.local
   issuerRef:
-  {{- if and (.Values.otelCollector.certificateFile) (.Values.otelCollector.privateKeyFile) }}
-    name: otel-collector-issuer
-  {{- else }}
     name: selfsigned-issuer
-  {{- end }}
     kind: Issuer
     group: cert-manager.io
 
@@ -107,7 +80,7 @@ metadata:
   name: karavi-topology
   namespace: {{ .Release.Namespace }}
 spec:
-  secretName: karavi-topology-tls
+  secretName: karavi-topology-secret
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
@@ -125,11 +98,8 @@ spec:
   - karavi-topology
   - karavi-topology.karavi.svc.kubernetes.local
   issuerRef:
-  {{- if and (.Values.karaviTopology.certificateFile) (.Values.karaviTopology.privateKeyFile) }}
-    name: karavi-topology-issuer
-  {{- else }}
     name: selfsigned-issuer
-  {{- end }}
     kind: Issuer
     group: cert-manager.io
 
+{{- end }}
