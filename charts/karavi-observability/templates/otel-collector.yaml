@@ -1,20 +1,7 @@
-{{- $certificateFileContents := required "A valid certificate file is required. Refer to the Helm Chart documentation." (.Values.otelCollector.certificateFile) }}
-{{- $privateKeyFileContents := required "A valid private key file is required. Refer to the Helm Chart documentation." (.Values.otelCollector.privateKeyFile) }}
-
-apiVersion: v1
-kind: Secret
-metadata:
-  name: tls-secret
-data:
-  tls.crt: {{ $certificateFileContents  | b64enc }}
-  tls.key: {{ $privateKeyFileContents | b64enc }}
-type: kubernetes.io/tls
-
----
-
 apiVersion: v1
 data:
-  otel-collector-config.yaml: {{ (.Files.Get "otel-collector-config.yaml") | quote }}
+  otel-collector-config.yaml: |-
+{{ (.Files.Get "otel-collector-config.yaml") | indent 4 }}
 kind: ConfigMap
 metadata:
   name: otel-collector-config
@@ -23,7 +10,8 @@ metadata:
 
 apiVersion: v1
 data:
-  nginx.conf: {{ (.Files.Get "nginx.conf") | quote }}
+  nginx.conf: |-
+{{ (.Files.Get "otel-collector-nginx.conf") | indent 4 }}
 kind: ConfigMap
 metadata:
   name: nginx-config
@@ -43,8 +31,8 @@ spec:
     - port: 55680
       targetPort: 55680
       name: receiver
-    - port: 443
-      targetPort: 443
+    - port: 8443
+      targetPort: 8443
       name: exporter-https
   selector:
     app.kubernetes.io/name: otel-collector
@@ -75,7 +63,7 @@ spec:
       volumes:
       - name: tls-secret
         secret:
-          secretName: tls-secret
+          secretName: otel-collector-tls
           items:
             - key: tls.crt
               path: tls.crt
@@ -89,7 +77,7 @@ spec:
           name: otel-collector-config
       containers:
       - name: nginx-proxy
-        image: {{ .Values.nginxProxy.image }}
+        image: {{ .Values.otelCollector.nginxProxy.image }}
         volumeMounts:
           - name: tls-secret
             mountPath: /etc/ssl/certs

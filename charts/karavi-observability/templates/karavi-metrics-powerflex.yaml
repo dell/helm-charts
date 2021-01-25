@@ -1,11 +1,15 @@
+{{- $powerflexUser := required "A valid PowerFlex user is required. Refer to the Helm Chart documentation." .Values.karaviMetricsPowerflex.powerflexUser }}
+{{- $powerflexPassword := required "A valid PowerFlex password is required. Refer to the Helm Chart documentation." .Values.karaviMetricsPowerflex.powerflexPassword }}
+{{- $powerflexEndpoint := required "A valid PowerFlex endpoint is required. Refer to the Helm Chart documentation." .Values.karaviMetricsPowerflex.powerflexEndpoint }}
+
 apiVersion: v1
 kind: Secret
 metadata:
   name: powerflex-gateway-credentials
 type: Opaque
 data:
-  username: {{ .Values.powerflex_user }}
-  password: {{ .Values.powerflex_password }}
+  username: {{ $powerflexUser }}
+  password: {{ $powerflexPassword }}
 
 ---
 
@@ -51,13 +55,13 @@ spec:
       serviceAccount: {{ .Release.Name }}-metrics-powerflex-controller
       containers:
       - name: karavi-metrics-powerflex
-        image: {{ .Values.image }}
+        image: {{ .Values.karaviMetricsPowerflex.image }}
         resources: {}
         env:
         - name: COLLECTOR_ADDR
-          value: {{ .Values.collector_addr }}
+          value: {{ .Values.karaviMetricsPowerflex.collectorAddr }}
         - name: POWERFLEX_ENDPOINT
-          value: {{ .Values.powerflex_endpoint }}
+          value: {{ $powerflexEndpoint }}
         - name: POWERFLEX_USER
           valueFrom:
             secretKeyRef:
@@ -69,23 +73,23 @@ spec:
               name: powerflex-gateway-credentials
               key: password
         - name: PROVISIONER_NAMES
-          value: {{ .Values.provisioner_names }}
+          value: {{ .Values.karaviMetricsPowerflex.provisionerNames }}
         - name: POWERFLEX_SDC_METRICS_ENABLED
-          value: "{{ .Values.sdc_metrics_enabled }}"
+          value: "{{ .Values.karaviMetricsPowerflex.sdcMetricsEnabled }}"
         - name: POWERFLEX_SDC_IO_POLL_FREQUENCY
-          value: "{{ .Values.sdc_poll_frequency_seconds }}"
+          value: "{{ .Values.karaviMetricsPowerflex.sdcPollFrequencySeconds }}"
         - name: POWERFLEX_VOLUME_IO_POLL_FREQUENCY
-          value: "{{ .Values.volume_poll_frequency_seconds }}"
+          value: "{{ .Values.karaviMetricsPowerflex.volumePollFrequencySeconds }}"
         - name: POWERFLEX_VOLUME_METRICS_ENABLED
-          value: "{{ .Values.volume_metrics_enabled }}"
+          value: "{{ .Values.karaviMetricsPowerflex.volumeMetricsEnabled }}"
         - name: POWERFLEX_STORAGE_POOL_METRICS_ENABLED
-          value: "{{ .Values.storage_class_pool_metrics_enabled }}"
+          value: "{{ .Values.karaviMetricsPowerflex.storageClassPoolMetricsEnabled }}"
         - name: POWERFLEX_STORAGE_POOL_POLL_FREQUENCY
-          value: "{{ .Values.storage_class_pool_poll_frequency_seconds }}"
+          value: "{{ .Values.karaviMetricsPowerflex.storageClassPoolPollFrequencySeconds }}"
         - name: POWERFLEX_MAX_CONCURRENT_QUERIES
-          value: "{{ .Values.concurrent_powerflex_queries }}"
+          value: "{{ .Values.karaviMetricsPowerflex.concurrentPowerflexQueries }}"
         - name: POWERFLEX_METRICS_ENDPOINT
-          value: "{{ .Values.endpoint }}"
+          value: "{{ .Values.karaviMetricsPowerflex.endpoint }}"
         - name: POWERFLEX_METRICS_NAMESPACE
           valueFrom:
             fieldRef:
@@ -99,7 +103,7 @@ spec:
       volumes:
       - name: tls-secret
         secret:
-          secretName: tls-secret
+          secretName: otel-collector-tls
           items:
             - key: tls.crt
               path: cert.crt
