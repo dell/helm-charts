@@ -1,8 +1,37 @@
-karavi-topology:
-  enabled: true
+karaviTopology:
+  image: dellemc/karavi-topology:0.2.0-pre-release
+  # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
+  provisionerNames: csi-vxflexos.dellemc.com
+  service:
+    type: ClusterIP
 
-karavi-metrics-powerflex:
-  enabled: true
-  powerflex_endpoint:
-  powerflex_user:
-  powerflex_password:
+karaviMetricsPowerflex:
+  powerflexEndpoint:
+  # base64 user and password
+  powerflexUser:
+  powerflexPassword:
+
+  image: dellemc/karavi-metrics-powerflex:0.2.0-pre-release
+  collectorAddr: otel-collector:55680
+  # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
+  provisionerNames: csi-vxflexos.dellemc.com
+  # set sdcMetricsEnabled to "false" to disable collection of SDC metrics
+  sdc_metricsEnabled: "true"
+  # set polling frequency to the PowerFlex array to get metrics data
+  sdcPollFrequencySeconds: 10
+  volumePollFrequencySeconds: 10
+  # set volumeMetricsEnabled to "false" to disable collection of Volume metrics
+  volumeMetricsEnabled: "true"
+  # set storageClassPoolMetricsEnabled to "false" to disable collection of storage class/pool metrics
+  storageClassPoolMetricsEnabled: "true"
+  # set the polling frequency to configure the interval which storage class/pool metrics are gathered
+  storageClassPoolPollFrequencySeconds: 10
+  # set the the default max concurrent queries to powerflex
+  concurrentPowerflexQueries: 10
+  # set the default endpoint for powerflex service
+  endpoint: karavi-metrics-powerflex
+
+otelCollector:
+  image: otel/opentelemetry-collector:0.9.0
+  nginxProxy:
+    image: nginx:1
