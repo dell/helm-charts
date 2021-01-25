@@ -6,26 +6,14 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   name: karavi-topology
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.karaviTopology.service.type }}
   ports:
   - name: karavi-topology
-    port: 443
-    targetPort: 443
+    port: 8443
+    targetPort: 8443
   selector:
     app.kubernetes.io/name: karavi_topology
     app.kubernetes.io/instance: {{ .Release.Name }}
-
----
-
-{{- $certificateFileContents := required "A valid certificate file is required. Refer to the Helm Chart documentation." (.Values.certificateFile) }}
-{{- $privateKeyFileContents := required "A valid private key file is required. Refer to the Helm Chart documentation." (.Values.privateKeyFile) }}
-apiVersion: v1
-data:
-  localhost.crt: {{ $certificateFileContents | b64enc }}
-  localhost.key: {{ $privateKeyFileContents | b64enc }}
-kind: Secret
-metadata:
-  name: karavi-topology-secret
 
 ---
 
@@ -52,15 +40,22 @@ spec:
       volumes:
         - name: karavi-topology-secret-volume
           secret:
-            secretName: karavi-topology-secret
+            secretName: karavi-topology-tls
+            items:
+            - key: tls.crt
+              path: localhost.crt
+            - key: tls.key
+              path: localhost.key
       serviceAccount: {{ .Release.Name }}-topology-controller
       containers:
       - name: karavi-topology
-        image: {{ .Values.image }}
+        image: {{ .Values.karaviTopology.image }}
         resources: {}
         env:
         - name: PROVISIONER_NAMES
-          value: {{ .Values.provisioner_names }}
+          value: {{ .Values.karaviTopology.provisionerNames }}
+        - name: PORT
+          value: "8443"
         volumeMounts:
         - name: karavi-topology-secret-volume
           mountPath: "/certs"
