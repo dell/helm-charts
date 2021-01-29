@@ -21,7 +21,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   name: karavi-metrics-powerflex
 spec:
-  type: NodePort
+  type: {{ .Values.karaviMetricsPowerflex.service.type }}
   ports:
   - name: karavi-metrics-powerflex
     port: 2222
