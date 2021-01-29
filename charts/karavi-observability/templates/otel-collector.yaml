@@ -26,7 +26,6 @@ metadata:
     app.kubernetes.io/name: otel-collector
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  type: NodePort
   ports:
     - port: 55680
       targetPort: 55680
