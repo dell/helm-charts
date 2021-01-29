@@ -30,6 +30,8 @@ karaviMetricsPowerflex:
   concurrentPowerflexQueries: 10
   # set the default endpoint for powerflex service
   endpoint: karavi-metrics-powerflex
+  service:
+    type: ClusterIP
 
 otelCollector:
   image: otel/opentelemetry-collector:0.9.0
