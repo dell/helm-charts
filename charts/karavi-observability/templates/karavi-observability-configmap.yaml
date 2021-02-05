@@ -21,4 +21,5 @@ kind: ConfigMap
 metadata:
   name: karavi-topology-configmap
 data:
-  PROVISIONER_NAMES: {{ .Values.karaviTopology.provisionerNames }}
+  karavi-topology.yaml: |
+    PROVISIONER_NAMES: {{ .Values.karaviTopology.provisionerNames }}

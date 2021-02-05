@@ -64,7 +64,6 @@ spec:
         - name: karavi-topology-secret-volume
           mountPath: "/certs"
         - name: karavi-topology-configmap
-          mountPath: /etc/config/karavi-topology-config.yaml
-          subPath: karavi-topology-config.yaml
+          mountPath: "/etc/config"
       restartPolicy: Always
 status: {}
