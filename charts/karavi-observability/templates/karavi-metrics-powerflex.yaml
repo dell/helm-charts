@@ -83,7 +83,7 @@ spec:
           mountPath: /etc/ssl/certs
           readOnly: true
         - name: karavi-metrics-powerflex-configmap
-          mountPath: /config-maps
+          mountPath: /etc/config
       volumes:
       - name: tls-secret
         secret:
