@@ -57,9 +57,6 @@ spec:
       - name: karavi-metrics-powerflex
         image: {{ .Values.karaviMetricsPowerflex.image }}
         resources: {}
-        envFrom:
-        - configMapRef:
-            name: karavi-metrics-powerflex-configmap
         env:
         - name: POWERFLEX_ENDPOINT
           value: {{ $powerflexEndpoint }}
@@ -73,6 +70,8 @@ spec:
             secretKeyRef:
               name: powerflex-gateway-credentials
               key: password
+        - name: POWERFLEX_METRICS_ENDPOINT	
+          value: "{{ .Values.karaviMetricsPowerflex.endpoint }}"
         - name: POWERFLEX_METRICS_NAMESPACE
           valueFrom:
             fieldRef:
@@ -84,8 +83,7 @@ spec:
           mountPath: /etc/ssl/certs
           readOnly: true
         - name: karavi-metrics-powerflex-configmap
-          mountPath: /etc/config/karavi-metrics-powerflex-config.yaml
-          subPath: karavi-metrics-powerflex-config.yaml
+          mountPath: /config-maps
       volumes:
       - name: tls-secret
         secret:

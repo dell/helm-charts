@@ -3,16 +3,16 @@ kind: ConfigMap
 metadata:
   name: karavi-metrics-powerflex-configmap
 data:
-  COLLECTOR_ADDR: {{ .Values.karaviMetricsPowerflex.collectorAddr }}
-  PROVISIONER_NAMES: {{ .Values.karaviMetricsPowerflex.provisionerNames }}
-  POWERFLEX_SDC_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerflex.sdcMetricsEnabled }}"
-  POWERFLEX_SDC_IO_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerflex.sdcPollFrequencySeconds }}"
-  POWERFLEX_VOLUME_IO_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerflex.volumePollFrequencySeconds }}"
-  POWERFLEX_VOLUME_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerflex.volumeMetricsEnabled }}"
-  POWERFLEX_STORAGE_POOL_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerflex.storageClassPoolMetricsEnabled }}"
-  POWERFLEX_STORAGE_POOL_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerflex.storageClassPoolPollFrequencySeconds }}"
-  POWERFLEX_MAX_CONCURRENT_QUERIES: "{{ .Values.karaviMetricsPowerflex.concurrentPowerflexQueries }}"
-  POWERFLEX_METRICS_ENDPOINT: "{{ .Values.karaviMetricsPowerflex.endpoint }}"
+  karavi-metrics-powerflex.yaml : |
+    COLLECTOR_ADDR: {{ .Values.karaviMetricsPowerflex.collectorAddr }}
+    PROVISIONER_NAMES: {{ .Values.karaviMetricsPowerflex.provisionerNames }}
+    POWERFLEX_SDC_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerflex.sdcMetricsEnabled }}"
+    POWERFLEX_SDC_IO_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerflex.sdcPollFrequencySeconds }}"
+    POWERFLEX_VOLUME_IO_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerflex.volumePollFrequencySeconds }}"
+    POWERFLEX_VOLUME_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerflex.volumeMetricsEnabled }}"
+    POWERFLEX_STORAGE_POOL_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerflex.storageClassPoolMetricsEnabled }}"
+    POWERFLEX_STORAGE_POOL_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerflex.storageClassPoolPollFrequencySeconds }}"
+    POWERFLEX_MAX_CONCURRENT_QUERIES: "{{ .Values.karaviMetricsPowerflex.concurrentPowerflexQueries }}"
   
 ---
 
