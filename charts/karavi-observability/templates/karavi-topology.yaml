@@ -54,9 +54,6 @@ spec:
       - name: karavi-topology
         image: {{ .Values.karaviTopology.image }}
         resources: {}
-        envFrom:
-        - configMapRef:
-            name: karavi-topology-configmap
         env:
         - name: PORT
           value: "8443"
