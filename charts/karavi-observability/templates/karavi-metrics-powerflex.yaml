@@ -58,8 +58,6 @@ spec:
         image: {{ .Values.karaviMetricsPowerflex.image }}
         resources: {}
         env:
-        - name: COLLECTOR_ADDR
-          value: {{ .Values.karaviMetricsPowerflex.collectorAddr }}
         - name: POWERFLEX_ENDPOINT
           value: {{ $powerflexEndpoint }}
         - name: POWERFLEX_USER
@@ -72,23 +70,7 @@ spec:
             secretKeyRef:
               name: powerflex-gateway-credentials
               key: password
-        - name: PROVISIONER_NAMES
-          value: {{ .Values.karaviMetricsPowerflex.provisionerNames }}
-        - name: POWERFLEX_SDC_METRICS_ENABLED
-          value: "{{ .Values.karaviMetricsPowerflex.sdcMetricsEnabled }}"
-        - name: POWERFLEX_SDC_IO_POLL_FREQUENCY
-          value: "{{ .Values.karaviMetricsPowerflex.sdcPollFrequencySeconds }}"
-        - name: POWERFLEX_VOLUME_IO_POLL_FREQUENCY
-          value: "{{ .Values.karaviMetricsPowerflex.volumePollFrequencySeconds }}"
-        - name: POWERFLEX_VOLUME_METRICS_ENABLED
-          value: "{{ .Values.karaviMetricsPowerflex.volumeMetricsEnabled }}"
-        - name: POWERFLEX_STORAGE_POOL_METRICS_ENABLED
-          value: "{{ .Values.karaviMetricsPowerflex.storageClassPoolMetricsEnabled }}"
-        - name: POWERFLEX_STORAGE_POOL_POLL_FREQUENCY
-          value: "{{ .Values.karaviMetricsPowerflex.storageClassPoolPollFrequencySeconds }}"
-        - name: POWERFLEX_MAX_CONCURRENT_QUERIES
-          value: "{{ .Values.karaviMetricsPowerflex.concurrentPowerflexQueries }}"
-        - name: POWERFLEX_METRICS_ENDPOINT
+        - name: POWERFLEX_METRICS_ENDPOINT	
           value: "{{ .Values.karaviMetricsPowerflex.endpoint }}"
         - name: POWERFLEX_METRICS_NAMESPACE
           valueFrom:
@@ -100,6 +82,8 @@ spec:
         - name: tls-secret
           mountPath: /etc/ssl/certs
           readOnly: true
+        - name: karavi-metrics-powerflex-configmap
+          mountPath: /etc/config
       volumes:
       - name: tls-secret
         secret:
@@ -107,5 +91,8 @@ spec:
           items:
             - key: tls.crt
               path: cert.crt
+      - name: karavi-metrics-powerflex-configmap
+        configMap:
+          name: karavi-metrics-powerflex-configmap
       restartPolicy: Always
 status: {}

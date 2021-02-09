@@ -16,7 +16,7 @@ karaviMetricsPowerflex:
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
   provisionerNames: csi-vxflexos.dellemc.com
   # set sdcMetricsEnabled to "false" to disable collection of SDC metrics
-  sdc_metricsEnabled: "true"
+  sdcMetricsEnabled: "true"
   # set polling frequency to the PowerFlex array to get metrics data
   sdcPollFrequencySeconds: 10
   volumePollFrequencySeconds: 10
