@@ -16,4 +16,4 @@ For complete deployment instructions, refer to the [Getting Started Guide](https
 
 ## Helm Chart Versioning
 
-For an explanation and examples on versioning the Karavi Observability Helm chart, please see the [versioning document](./VERSIONING.md).
+For an explanation and examples on versioning/releasing the Karavi Observability Helm chart, please see the [contributing guide](../../docs/CONTRIBUTING.md#helm-chart-release-strategy).
