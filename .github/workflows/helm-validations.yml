@@ -17,8 +17,9 @@ jobs:
      - name: Check for files changed
        id: diff
        run: |
-            git fetch origin $GITHUB_BASE_REF --depth=1
-            git diff --name-only origin/$GITHUB_BASE_REF.. | grep \.yaml$ && echo '::set-output name=run_tests::true' || true
+            URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files"
+            FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
+            echo $FILES | grep \.yaml$ && echo '::set-output name=run_tests::true' || true
  
   # This job will run helm lint and version increment check on updated charts
   lint:
