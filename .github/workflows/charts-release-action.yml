@@ -4,7 +4,8 @@ name: charts-release-action
 # Triggers the action on push/merge to the main branch
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   # This job will perform a helm release of all the karavi charts that have been updated
