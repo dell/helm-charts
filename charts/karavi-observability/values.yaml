@@ -6,11 +6,6 @@ karaviTopology:
     type: ClusterIP
 
 karaviMetricsPowerflex:
-  powerflexEndpoint:
-  # base64 user and password
-  powerflexUser:
-  powerflexPassword:
-
   image: dellemc/karavi-metrics-powerflex:0.2.0-pre-release
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
