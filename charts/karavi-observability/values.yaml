@@ -33,4 +33,4 @@ otelCollector:
   service:
     type: ClusterIP
   nginxProxy:
-    image: nginx:1
+    image: nginxinc/nginx-unprivileged:1.18
