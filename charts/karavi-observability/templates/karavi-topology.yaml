@@ -46,18 +46,21 @@ spec:
               path: localhost.crt
             - key: tls.key
               path: localhost.key
+        - name: karavi-topology-configmap
+          configMap:
+            name: karavi-topology-configmap
       serviceAccount: {{ .Release.Name }}-topology-controller
       containers:
       - name: karavi-topology
         image: {{ .Values.karaviTopology.image }}
         resources: {}
         env:
-        - name: PROVISIONER_NAMES
-          value: {{ .Values.karaviTopology.provisionerNames }}
         - name: PORT
           value: "8443"
         volumeMounts:
         - name: karavi-topology-secret-volume
           mountPath: "/certs"
+        - name: karavi-topology-configmap
+          mountPath: "/etc/config"
       restartPolicy: Always
 status: {}
