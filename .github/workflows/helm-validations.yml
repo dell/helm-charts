@@ -4,7 +4,8 @@ name: helm-validations
 # Check runs on PRs created to merge to main branch
 on:
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   # This job will check to see if any .yaml file is modified
