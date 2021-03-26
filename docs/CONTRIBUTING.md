@@ -32,6 +32,7 @@ Become one of the contributors to this project! We thrive to build a welcoming a
   - [Pull requests](#pull-requests)
   - [Code Reviews](#code-reviews)
   - [Code Quality](#code-quality)
+  - [Helm chart release strategy](#helm-chart-release-strategy)
 
 ## Become a contributor
 
@@ -94,22 +95,21 @@ When you're ready to contribute, it's time to create a pull request.
 
 ## Branching Strategy
 
-We are following a scaled trunk branching strategy where short-lived branches are created off of the main branch. When coding is complete, the branch is merged back into main after being approved in a pull request code review.
+Updating a Helm chart will require a new branch. When updates are complete, the branch is merged back into the main branch after being approved in a pull request review. The frequency in which you merge branches into the main branch depends on how often you wish to release the Helm chart. Please see [Helm chart branching strategy](#helm-chart-release-strategy) for information on how merging a branch to the main branch will automatically release a Helm chart.
 
 ### Branch Naming Convention
 
+Branch naming should be descriptive and align with a feature or bug fix. In order to align a branch with the feature or bug fix, use the GitHub issue ID whenever possible.
+
 | Branch Type | Example                          | Comment                                  |
 | ----------- | -------------------------------- | ---------------------------------------- |
-| main        | main                             |                                          |
-| Release     | release-1.0                      | hotfix: release-1.1 patch: release-1.0.1 |
 | Feature     | feature-9-olp-support            | "9" referring to GitHub issue ID         |
 | Bug Fix     | bugfix-110-remove-docker-compose | "110" referring to GitHub issue ID       |
 
 ### Branch Types
 
-- A Release branch is a branch created from the main branch used for releasing a Helm Chart version. Only critical bug fixes will be merged into this branch.
 - Bug Fix branch is a branch which is created for the purpose of fixing the given defect/issue.
-- Feature branch is created for a feature development purpose.
+- Feature branch is created for feature development
 
 ### Steps to create a branch for a bug fix or feature
 
@@ -119,8 +119,6 @@ We are following a scaled trunk branching strategy where short-lived branches ar
 4. If other code changes have merged into the upstream main branch, perform a rebase of those changes into your branch.
 5. Open a [pull request](#pull-requests) between your branch and the upstream main branch.
 6. Once your pull request has merged, your branch can be deleted.
-
-Release branches will be created from the main branch near the time of a planned release when all features are completed. Only critical bug fixes will be merged into the release branch at this time. All other bug fixes and features can continue to be merged into the main branch. When the release branch is stable, the branch will be tagged for release.
 
 ## Signing your commits
 
@@ -191,3 +189,29 @@ A pull request must satisfy following for it to be merged:
 - Maintainer must perform a code review and ensure there is no malicious code.
 - Maintainer must run a suite of tests that verify the quality of the code being submitted, and update the contributor if there are any failures.
 - If any commits are made after the PR has been approved, the PR approval will automatically be removed and the above process must happen again.
+
+## Helm chart release strategy
+
+It is important to understand that when a branch is merged into the main branch, a GitHub action will generate a new helm chart release if the helm chart version in the chart.yaml file has been incremented. Consider the following example where a change to the Helm chart has been made and the contributor wants a new version to be released:
+
+The original Chart.yaml file:
+
+   ```yaml
+   apiVersion: v2
+   name: karavi-observability
+   description: A Helm chart for Kubernetes
+   type: application
+   version: 0.1.0
+   ```
+
+If a modification to the Helm chart is made (an update to the values.yaml file for instance) the version in Chart.yaml is incremented to `0.2.0`:
+
+   ```yaml
+   apiVersion: v2
+   name: karavi-observability
+   description: A Helm chart for Kubernetes
+   type: application
+   version: 0.2.0 # version updates to 0.2.0
+   ```
+
+Once the associated branch is merged into the main branch, the GitHub action packages and publishes an artifact, making it available for consumption. The release name is based off the 'name' field and the 'version' field in the Chart.yaml file. Given the example above, GitHub action will produce a release called `karavi-observability-0.2.0`.

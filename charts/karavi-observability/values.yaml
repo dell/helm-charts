@@ -1,22 +1,17 @@
 karaviTopology:
-  image: dellemc/karavi-topology:0.2.0-pre-release
+  image: dellemc/csm-topology:v0.3.0
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
   provisionerNames: csi-vxflexos.dellemc.com
   service:
     type: ClusterIP
 
 karaviMetricsPowerflex:
-  powerflexEndpoint:
-  # base64 user and password
-  powerflexUser:
-  powerflexPassword:
-
-  image: dellemc/karavi-metrics-powerflex:0.2.0-pre-release
+  image: dellemc/csm-metrics-powerflex:v0.3.0
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
   provisionerNames: csi-vxflexos.dellemc.com
   # set sdcMetricsEnabled to "false" to disable collection of SDC metrics
-  sdc_metricsEnabled: "true"
+  sdcMetricsEnabled: "true"
   # set polling frequency to the PowerFlex array to get metrics data
   sdcPollFrequencySeconds: 10
   volumePollFrequencySeconds: 10
@@ -38,4 +33,4 @@ otelCollector:
   service:
     type: ClusterIP
   nginxProxy:
-    image: nginx:1
+    image: nginxinc/nginx-unprivileged:1.18
