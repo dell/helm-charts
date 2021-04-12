@@ -4,6 +4,8 @@ karaviTopology:
   provisionerNames: csi-vxflexos.dellemc.com
   service:
     type: ClusterIP
+  logLevel: INFO
+  logFormat: text
 
 karaviMetricsPowerflex:
   image: dellemc/csm-metrics-powerflex:v0.3.0
@@ -27,6 +29,9 @@ karaviMetricsPowerflex:
   endpoint: karavi-metrics-powerflex
   service:
     type: ClusterIP
+  logLevel: INFO
+  logFormat: text
+
 
 otelCollector:
   image: otel/opentelemetry-collector:0.9.0

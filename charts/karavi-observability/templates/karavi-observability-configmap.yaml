@@ -13,6 +13,9 @@ data:
     POWERFLEX_STORAGE_POOL_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerflex.storageClassPoolMetricsEnabled }}"
     POWERFLEX_STORAGE_POOL_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerflex.storageClassPoolPollFrequencySeconds }}"
     POWERFLEX_MAX_CONCURRENT_QUERIES: "{{ .Values.karaviMetricsPowerflex.concurrentPowerflexQueries }}"
+    LOG_LEVEL: "{{ .Values.karaviMetricsPowerflex.logLevel }}"
+    LOG_FORMAT: "{{ .Values.karaviMetricsPowerflex.logFormat }}"
+
   
 ---
 
@@ -23,3 +26,5 @@ metadata:
 data:
   karavi-topology.yaml: |
     PROVISIONER_NAMES: {{ .Values.karaviTopology.provisionerNames }}
+    LOG_LEVEL: "{{ .Values.karaviTopology.logLevel }}"
+    LOG_FORMAT: "{{ .Values.karaviTopology.logFormat }}"
