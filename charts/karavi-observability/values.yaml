@@ -1,5 +1,6 @@
 karaviTopology:
   image: dellemc/csm-topology:v0.3.0
+  enabled: true
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
   provisionerNames: csi-vxflexos.dellemc.com
   service:
@@ -9,6 +10,7 @@ karaviTopology:
 
 karaviMetricsPowerflex:
   image: dellemc/csm-metrics-powerflex:v0.3.0
+  enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
   provisionerNames: csi-vxflexos.dellemc.com
@@ -32,6 +34,24 @@ karaviMetricsPowerflex:
   logLevel: INFO
   logFormat: text
 
+karaviMetricsPowerstore:
+  image: dellemc/csm-metrics-powerstore:v0.1.0
+  enabled: true
+  collectorAddr: otel-collector:55680
+  # comma separated list of provisioner names (ex: csi-powerstore.dellemc.com)
+  provisionerNames: csi-powerstore.dellemc.com
+  # set polling frequency to the PowerStore array to get metrics data
+  volumePollFrequencySeconds: 10
+  # set volumeMetricsEnabled to "false" to disable collection of Volume metrics
+  volumeMetricsEnabled: "true"
+  # set the the default max concurrent queries to powerstore
+  concurrentPowerstoreQueries: 10
+  # set the default endpoint for powerstore service
+  endpoint: karavi-metrics-powerstore
+  service:
+    type: ClusterIP
+  logLevel: INFO
+  logFormat: text
 
 otelCollector:
   image: otel/opentelemetry-collector:0.9.0

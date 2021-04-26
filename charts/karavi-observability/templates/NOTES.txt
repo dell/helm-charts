@@ -1,3 +1,5 @@
+{{ if .Values.karaviTopology.enabled -}}
+
 Karavi Topology
   The Karavi Topology deployment has been successfully installed.
 
@@ -10,6 +12,10 @@ Karavi Topology
   The Karavi Topology service can be accessed at the following URL from within the Kubernetes cluster: https://karavi-topology.{{ .Release.Namespace }}.svc.cluster.local
 {{- end }}
 
+{{- end }}
+
+{{ if .Values.karaviMetricsPowerflex.enabled -}}
+
 Karavi Metrics for PowerFlex
 
   The Karavi Metrics for PowerFlex deployment has been successfully installed.
@@ -17,3 +23,17 @@ Karavi Metrics for PowerFlex
   Provisioner Names: {{ .Values.karaviMetricsPowerflex.provisionerNames }}
   Prometheus Scrape Target: 
     From inside the Kubernetes cluster: otel-collector:8443
+
+{{- end }}
+
+{{ if .Values.karaviMetricsPowerstore.enabled -}}
+
+Karavi Metrics for PowerStore
+
+  The Karavi Metrics for PowerStore deployment has been successfully installed.
+
+  Provisioner Names: {{ .Values.karaviMetricsPowerstore.provisionerNames }}
+  Prometheus Scrape Target: 
+    From inside the Kubernetes cluster: otel-collector:8443
+
+{{- end}}
