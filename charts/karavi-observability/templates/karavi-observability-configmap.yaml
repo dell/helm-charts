@@ -55,3 +55,4 @@ data:
     LOG_FORMAT: "{{ .Values.karaviMetricsPowerstore.logFormat }}"
 
 {{ end }}
+
