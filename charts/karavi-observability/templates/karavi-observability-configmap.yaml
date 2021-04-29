@@ -53,6 +53,9 @@ data:
     POWERSTORE_MAX_CONCURRENT_QUERIES: "{{ .Values.karaviMetricsPowerstore.concurrentPowerstoreQueries }}"
     LOG_LEVEL: "{{ .Values.karaviMetricsPowerstore.logLevel }}"
     LOG_FORMAT: "{{ .Values.karaviMetricsPowerstore.logFormat }}"
+    ZIPKIN_URI: "{{ .Values.karaviMetricsPowerstore.zipkin.uri }}"
+    ZIPKIN_SERVICE_NAME: "{{ .Values.karaviMetricsPowerstore.zipkin.serviceName }}"
+    ZIPKIN_PROBABILITY: "{{ .Values.karaviMetricsPowerstore.zipkin.probability }}"
 
 {{ end }}
 
