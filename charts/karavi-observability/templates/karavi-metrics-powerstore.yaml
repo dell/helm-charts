@@ -11,8 +11,8 @@ spec:
   type: {{ .Values.karaviMetricsPowerstore.service.type }}
   ports:
   - name: karavi-metrics-powerstore
-    port: 2222
-    targetPort: 2222
+    port: 9090
+    targetPort: 9090
   selector:
     app.kubernetes.io/name: karavi_metrics_powerstore
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -54,6 +54,8 @@ spec:
         - name: TLS_ENABLED
           value: "true"
         volumeMounts:
+        - name: karavi-metrics-powerstore-secret-volume
+          mountPath: "/certs"
         - name: powerstore-config
           mountPath: /powerstore-config
         - name: tls-secret
@@ -62,6 +64,14 @@ spec:
         - name: karavi-metrics-powerstore-configmap
           mountPath: /etc/config
       volumes:
+      - name: karavi-metrics-powerstore-secret-volume
+        secret:
+          secretName: karavi-metrics-powerstore-tls
+          items:
+            - key: tls.crt
+              path: localhost.crt
+            - key: tls.key
+              path: localhost.key
       - name: powerstore-config
         secret:
           secretName: powerstore-config

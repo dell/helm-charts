@@ -52,6 +52,10 @@ karaviMetricsPowerstore:
     type: ClusterIP
   logLevel: INFO
   logFormat: text
+  zipkin:
+    uri: ""
+    serviceName: metrics-powerstore
+    probability: 0.0
 
 otelCollector:
   image: otel/opentelemetry-collector:0.9.0
