@@ -7,6 +7,10 @@ karaviTopology:
     type: ClusterIP
   logLevel: INFO
   logFormat: text
+  zipkin:
+    uri: ""
+    serviceName: karavi-topology
+    probability: 0.0
 
 karaviMetricsPowerflex:
   image: dellemc/csm-metrics-powerflex:v0.3.0
