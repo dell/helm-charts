@@ -59,6 +59,8 @@ spec:
         env:
         - name: PORT
           value: "8443"
+        - name: DEBUG
+          value: "false"
         volumeMounts:
         - name: karavi-topology-secret-volume
           mountPath: "/certs"
