@@ -9,7 +9,7 @@ data:
 kind: Secret
 type: kubernetes.io/tls
 metadata:
-  name: karavi-topology-secret
+  name: karavi-topology-tls
   namespace: {{ .Release.Namespace }}
 
 ---
@@ -21,7 +21,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   ca:
-    secretName: karavi-topology-secret
+    secretName: karavi-topology-tls
 
 ---
 {{- end }}
@@ -34,7 +34,7 @@ apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls
 metadata:
-  name: otel-collector-secret
+  name: otel-collector-tls
   namespace: {{ .Release.Namespace }}
 data:
   tls.crt: {{ $certificateFileContents  | b64enc }}
@@ -49,7 +49,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   ca:
-    secretName: otel-collector-secret
+    secretName: otel-collector-tls
 
 ---
 {{- end }}
@@ -67,6 +67,8 @@ spec:
 ---
 {{- end }}
 
+# only create Certificate for self-signed
+{{- if and (not .Values.otelCollector.certificateFile) (not .Values.otelCollector.privateKeyFile) }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -91,29 +93,27 @@ spec:
   - otel-collector
   - otel-collector.karavi.svc.kubernetes.local
   issuerRef:
-  {{- if and (.Values.otelCollector.certificateFile) (.Values.otelCollector.privateKeyFile) }}
-    name: otel-collector-issuer
-  {{- else }}
     name: selfsigned-issuer
-  {{- end }}
     kind: Issuer
     group: cert-manager.io
 
 ---
+{{- end }}
 
+# only create Certificate for self-signed
+{{- if and (not .Values.karaviTopology.certificateFile) (not .Values.karaviTopology.privateKeyFile) }} 
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: karavi-topology
   namespace: {{ .Release.Namespace }}
 spec:
-  secretName: karavi-topology-tls
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
     organizations:
     - dellemc
-  isCA: false
+  isCA: true
   privateKey:
     algorithm: RSA
     encoding: PKCS1
@@ -124,12 +124,9 @@ spec:
   dnsNames:
   - karavi-topology
   - karavi-topology.karavi.svc.kubernetes.local
+  secretName: karavi-topology-tls
   issuerRef:
-  {{- if and (.Values.karaviTopology.certificateFile) (.Values.karaviTopology.privateKeyFile) }}
-    name: karavi-topology-issuer
-  {{- else }}
     name: selfsigned-issuer
-  {{- end }}
     kind: Issuer
     group: cert-manager.io
-
+{{- end }}
