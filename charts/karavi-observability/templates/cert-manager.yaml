@@ -121,6 +121,7 @@ spec:
   usages:
     - server auth
     - client auth
+    - signing
   dnsNames:
   - karavi-topology
   - karavi-topology.karavi.svc.kubernetes.local
