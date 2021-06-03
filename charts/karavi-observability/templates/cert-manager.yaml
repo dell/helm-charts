@@ -91,7 +91,7 @@ spec:
     - client auth
   dnsNames:
   - otel-collector
-  - otel-collector.karavi.svc.kubernetes.local
+  - otel-collector.{{ .Release.Namespace }}.svc.kubernetes.local
   issuerRef:
     name: selfsigned-issuer
     kind: Issuer
@@ -124,7 +124,7 @@ spec:
     - signing
   dnsNames:
   - karavi-topology
-  - karavi-topology.karavi.svc.kubernetes.local
+  - karavi-topology.{{ .Release.Namespace }}.svc.kubernetes.local
   secretName: karavi-topology-tls
   issuerRef:
     name: selfsigned-issuer
