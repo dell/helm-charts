@@ -26,6 +26,34 @@ spec:
 ---
 {{- end }}
 
+# If the karavi-metrics-powerstore cert and key are provided, deploy a CA Issuer using the cert and key
+{{- if and (.Values.karaviMetricsPowerstore.certificateFile) (.Values.karaviMetricsPowerstore.privateKeyFile) }}
+{{- $certificateFileContents := .Values.karaviMetricsPowerstore.certificateFile }}
+{{- $privateKeyFileContents := .Values.karaviMetricsPowerstore.privateKeyFile }}
+apiVersion: v1
+data:
+  tls.crt: {{ $certificateFileContents | b64enc }}
+  tls.key: {{ $privateKeyFileContents | b64enc }}
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: karavi-metrics-powerstore-tls
+  namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: karavi-metrics-powerstore-issuer
+  namespace: {{ .Release.Namespace }}
+spec:
+  ca:
+    secretName: karavi-metrics-powerstore-tls
+
+---
+{{- end }}
+
 # If the otelCollector cert and key are provided, deploy a CA Issuer using the cert and key
 {{- if and (.Values.otelCollector.certificateFile) (.Values.otelCollector.privateKeyFile) }}
 {{- $certificateFileContents := .Values.otelCollector.certificateFile }}
@@ -55,7 +83,7 @@ spec:
 {{- end }}
 
 # If any set of cert+key combos are not provided, deploy a selfsigned-issuer
-{{- if or (and (not .Values.karaviTopology.certificateFile) (not .Values.karaviTopology.privateKeyFile)) (and (not .Values.otelCollector.certificateFile) (not .Values.otelCollector.privateKeyFile)) }}
+{{- if or (and (not .Values.karaviTopology.certificateFile) (not .Values.karaviTopology.privateKeyFile)) (and (not .Values.otelCollector.certificateFile) (not .Values.otelCollector.privateKeyFile)) (and (not .Values.karaviMetricsPowerstore.certificateFile) (not .Values.karaviMetricsPowerstore.privateKeyFile)) }}
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
@@ -130,4 +158,40 @@ spec:
     name: selfsigned-issuer
     kind: Issuer
     group: cert-manager.io
+
+---
+{{- end }}
+
+
+# only create Certificate for self-signed
+{{- if and (.Values.karaviMetricsPowerstore.certificateFile) (.Values.karaviMetricsPowerstore.privateKeyFile) }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: karavi-metrics-powerstore
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: karavi-metrics-powerstore-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - dellemc
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - karavi-metrics-powerstore
+  - karavi-metrics-powerstore.{{ .Release.Namespace }}.svc.kubernetes.local
+  issuerRef:
+    name: selfsigned-issuer
+    kind: Issuer
+    group: cert-manager.io
+
+---
 {{- end }}

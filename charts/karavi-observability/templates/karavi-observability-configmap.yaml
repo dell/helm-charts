@@ -1,3 +1,5 @@
+{{ if .Values.karaviMetricsPowerflex.enabled }}
+
 apiVersion: v1 
 kind: ConfigMap 
 metadata:
@@ -13,8 +15,14 @@ data:
     POWERFLEX_STORAGE_POOL_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerflex.storageClassPoolMetricsEnabled }}"
     POWERFLEX_STORAGE_POOL_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerflex.storageClassPoolPollFrequencySeconds }}"
     POWERFLEX_MAX_CONCURRENT_QUERIES: "{{ .Values.karaviMetricsPowerflex.concurrentPowerflexQueries }}"
+    LOG_LEVEL: "{{ .Values.karaviMetricsPowerflex.logLevel }}"
+    LOG_FORMAT: "{{ .Values.karaviMetricsPowerflex.logFormat }}"
+
+{{ end }}
   
 ---
+
+{{ if .Values.karaviTopology.enabled }}
 
 apiVersion: v1 
 kind: ConfigMap 
@@ -23,3 +31,34 @@ metadata:
 data:
   karavi-topology.yaml: |
     PROVISIONER_NAMES: {{ .Values.karaviTopology.provisionerNames }}
+    LOG_LEVEL: "{{ .Values.karaviTopology.logLevel }}"
+    LOG_FORMAT: "{{ .Values.karaviTopology.logFormat }}"
+    ZIPKIN_URI: "{{ .Values.karaviTopology.zipkin.uri }}"
+    ZIPKIN_SERVICE_NAME: "{{ .Values.karaviTopology.zipkin.serviceName }}"
+    ZIPKIN_PROBABILITY: "{{ .Values.karaviTopology.zipkin.probability }}"
+
+{{ end }}
+
+---
+
+{{ if .Values.karaviMetricsPowerstore.enabled }}
+
+apiVersion: v1 
+kind: ConfigMap 
+metadata:
+  name: karavi-metrics-powerstore-configmap
+data:
+  karavi-metrics-powerstore.yaml : |
+    COLLECTOR_ADDR: {{ .Values.karaviMetricsPowerstore.collectorAddr }}
+    PROVISIONER_NAMES: {{ .Values.karaviMetricsPowerstore.provisionerNames }}
+    POWERSTORE_VOLUME_IO_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerstore.volumePollFrequencySeconds }}"
+    POWERSTORE_VOLUME_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerstore.volumeMetricsEnabled }}"
+    POWERSTORE_MAX_CONCURRENT_QUERIES: "{{ .Values.karaviMetricsPowerstore.concurrentPowerstoreQueries }}"
+    LOG_LEVEL: "{{ .Values.karaviMetricsPowerstore.logLevel }}"
+    LOG_FORMAT: "{{ .Values.karaviMetricsPowerstore.logFormat }}"
+    ZIPKIN_URI: "{{ .Values.karaviMetricsPowerstore.zipkin.uri }}"
+    ZIPKIN_SERVICE_NAME: "{{ .Values.karaviMetricsPowerstore.zipkin.serviceName }}"
+    ZIPKIN_PROBABILITY: "{{ .Values.karaviMetricsPowerstore.zipkin.probability }}"
+
+{{ end }}
+
