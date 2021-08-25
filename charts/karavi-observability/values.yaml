@@ -45,10 +45,10 @@ karaviMetricsPowerstore:
   # comma separated list of provisioner names (ex: csi-powerstore.dellemc.com)
   provisionerNames: csi-powerstore.dellemc.com
   # set polling frequency to the PowerStore array to get metrics data
-  volumePollFrequencySeconds: 10
-  spacePollFrequencySeconds: 10
-  arrayPollFrequencySeconds: 10
-  filesystemPollFrequencySeconds: 10
+  volumePollFrequencySeconds: 20
+  spacePollFrequencySeconds: 300
+  arrayPollFrequencySeconds: 300
+  filesystemPollFrequencySeconds: 20
   # set volumeMetricsEnabled to "false" to disable collection of Volume metrics
   volumeMetricsEnabled: "true"
   # set the the default max concurrent queries to powerstore
