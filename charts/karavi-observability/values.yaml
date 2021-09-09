@@ -1,5 +1,5 @@
 karaviTopology:
-  image: dellemc/csm-topology:v0.3.0
+  image: dellemc/csm-topology:v1.0.0
   enabled: true
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
   provisionerNames: csi-vxflexos.dellemc.com,csi-powerstore.dellemc.com
@@ -13,7 +13,7 @@ karaviTopology:
     probability: 0.0
 
 karaviMetricsPowerflex:
-  image: dellemc/csm-metrics-powerflex:v0.3.0
+  image: dellemc/csm-metrics-powerflex:v1.0.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
@@ -39,7 +39,7 @@ karaviMetricsPowerflex:
   logFormat: text
 
 karaviMetricsPowerstore:
-  image: dellemc/csm-metrics-powerstore:v0.1.0
+  image: dellemc/csm-metrics-powerstore:v1.0.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powerstore.dellemc.com)
