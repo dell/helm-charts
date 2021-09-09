@@ -11,7 +11,6 @@ You may obtain a copy of the License at
 # Maintainers
 
 * @alikdell
-* @ameer-jabbar
 * @atye
 * @gallacher
 * @hoppea2
