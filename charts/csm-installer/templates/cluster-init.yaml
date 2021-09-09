@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cluster-init
+  labels:
+    app: cockroachdb
+spec:
+  template:
+    spec:
+      {{ if eq .Values.dbSSLEnabled "true" }}
+      volumes:
+      - name: dell-csm-installer-dbclient-certificates
+        secret:
+          secretName: dell-csm-installer-dbclient-certificates
+          items:
+            - key: tls.crt
+              path: client.root.crt
+              mode: 0700
+            - key: tls.key
+              path: client.root.key
+              mode: 0700
+            - key: ca.crt
+              path: ca.crt
+              mode: 0700
+      {{ end }}
+      containers:
+      - name: cluster-init
+        env:
+        - name: COCKROACH_SKIP_KEY_PERMISSION_CHECK
+          value: "true"
+        image: cockroachdb/cockroach:v21.1.6
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command:
+          - "/cockroach/cockroach"
+          - "init"
+          {{- if eq .Values.dbSSLEnabled "true" }}
+          - "--certs-dir=/cockroach/dbclient-certificates"
+          {{- else }}
+          - "--insecure"
+          {{- end }}
+          - "--host=cockroachdb-0.cockroachdb"
+        {{ if eq .Values.dbSSLEnabled "true" }}
+        volumeMounts:
+        - name: dell-csm-installer-dbclient-certificates
+          mountPath: /cockroach/dbclient-certificates
+        {{ end }}
+      restartPolicy: OnFailure
