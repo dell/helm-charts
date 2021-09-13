@@ -4,10 +4,10 @@ metadata:
   name: csm-creds
 type: Opaque
 data:
-  ADMIN_USERNAME: {{ required "Must provide the admin username for the API" .Values.adminUserName | toString | b64enc | quote }}
-  ADMIN_PASSWORD: {{ required "Must provide the admin password for the API" .Values.adminPassword | toString | b64enc | quote }}
-  DB_USERNAME: {{ required "Must provide the admin username for the Database" .Values.dbUserName | toString | b64enc | quote }}
-  DB_PASSWORD: {{ .Values.dbPassword | toString | b64enc | quote }}
+  adminUserName: {{ required "Must provide the admin username for the API" .Values.adminUserName | toString | b64enc | quote }}
+  adminPassword: {{ required "Must provide the admin password for the API" .Values.adminPassword | toString | b64enc | quote }}
+  dbUserName: {{ required "Must provide the admin username for the Database" .Values.dbUserName | toString | b64enc | quote }}
+  dbPassword: {{ .Values.dbPassword | toString | b64enc | quote }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -85,13 +85,25 @@ spec:
             - name: DATA_COLLECTOR_IMAGE
               value: {{ .Values.dataCollectorImage }}
             - name: ADMIN_USERNAME
-              value: {{ .Values.adminUserName | default "/csm/secret/admin/ADMIN_USERNAME" }}
+              valueFrom:
+                secretKeyRef:
+                  name: csm-creds
+                  key: adminUserName
             - name: ADMIN_PASSWORD
-              value: {{ .Values.adminPassword | default "/csm/secret/admin/ADMIN_PASSWORD" }}
+              valueFrom:
+                secretKeyRef:
+                  name: csm-creds
+                  key: adminPassword
             - name: DB_USERNAME
-              value: {{ .Values.dbUserName | default "/csm/secret/admin/DB_USERNAME" }}
+              valueFrom:
+                secretKeyRef:
+                  name: csm-creds
+                  key: dbUserName
             - name: DB_PASSWORD
-              value: {{ .Values.dbPassword | default "/csm/secret/admin/DB_PASSWORD" }}           
+              valueFrom:
+                secretKeyRef:
+                  name: csm-creds
+                  key: dbPassword
             - name: DB_HOST
               value: {{ .Values.dbHost | default "cockroachdb-public" }}
             - name: DB_PORT
@@ -144,15 +156,15 @@ spec:
           secret:
             secretName: csm-creds
             items:
-              - key: ADMIN_USERNAME
+              - key: adminUserName
                 path: admin/ADMIN_USERNAME
                 mode: 0444
-              - key: ADMIN_PASSWORD
+              - key: adminPassword
                 path: admin/ADMIN_PASSWORD
                 mode: 0444
-              - key: DB_USERNAME
+              - key: dbUserName
                 path: admin/DB_USERNAME
                 mode: 0444
-              - key: DB_PASSWORD
+              - key: dbPassword
                 path: admin/DB_PASSWORD
                 mode: 0444

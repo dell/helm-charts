@@ -34,22 +34,22 @@ dbPort: 26257
 dbSSLEnabled: "true"
 
 # CSM Installer image
-installerImage: dellemc/dell-common-installer:v1.0.0
+installerImage: dellemc/dell-csm-installer:v1.0.0
 
 # CSM Data collector image
 dataCollectorImage: dellemc/csm-data-collector:v1.0.0
 
 # Admin username of CSM Installer
-adminUserName: admin
+adminUserName:
 
 # Admin password of CSM Installer
-adminPassword: admin
+adminPassword:
 
 # Username to access cocroachdb
 dbUserName: root
 
 # Passwors to gain access to cockroachdb
-dbPassword: password
+dbPassword:
 
 # The directory on the host that will be created for the db persistent storage
 dbVolumeDirectory: /var/lib/cockroachdb
