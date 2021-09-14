@@ -16,4 +16,4 @@ For complete deployment instructions, refer to the [Dell EMC Container Storage M
 
 ## Helm Chart Versioning
 
-For an explanation and examples on versioning/releasing the Karavi Observability Helm chart, please see the [contributing guide](../../docs/CONTRIBUTING.md#helm-chart-release-strategy).
+For an explanation and examples on versioning/releasing the helm chart, please see the [contributing guide](../../docs/CONTRIBUTING.md#helm-chart-release-strategy).
