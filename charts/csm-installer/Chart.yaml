@@ -1,6 +1,6 @@
+apiVersion: v2
 name: csm-installer
 version: 1.0.0
 appVersion: 1.0.0
-description: |
-  Dell EMC Container Storage Modules Installer
-  
+type: application
+description: Dell EMC Container Storage Modules Installer
