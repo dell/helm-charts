@@ -1,4 +1,3 @@
-
 csmInstallerCount: 1
 
 dbInstanceCount: 2
@@ -9,7 +8,7 @@ imagePullPolicy: Always
 host: 0.0.0.0
 
 # Change to the desired port
-# If you are accessing it from a different host, make sure your firewall allows it 
+# If you are accessing it from a different host, make sure your firewall allows it
 port: 8080
 
 # Allowed values are https & http (recommended is https)
