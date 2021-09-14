@@ -1,0 +1,30 @@
+{{ if eq .Values.scheme "https" }}
+apiVersion: v1
+data:
+  tls.crt: {{ required "A valid serviceCertificate is required" .Values.serviceCertificate | b64enc }}
+  tls.key: {{ required "A valid servicePrivateKey is required" .Values.servicePrivateKey | b64enc }}
+kind: Secret
+metadata:
+  name: dell-csm-installer-service-certificates
+---
+{{ end }}
+
+{{ if eq .Values.dbSSLEnabled "true" }}
+apiVersion: v1
+data:
+  tls.crt: {{ required "A valid dbClientCertificate is required" .Values.dbClientCertificate | b64enc }}
+  tls.key: {{ required "A valid dbClientPrivateKey is required" .Values.dbClientPrivateKey | b64enc }}
+  ca.crt: {{ required "A valid caCrt is required" .Values.caCrt | b64enc }}
+kind: Secret
+metadata:
+  name: dell-csm-installer-dbclient-certificates
+---
+apiVersion: v1
+data:
+  ca.crt: {{ required "A valid caCrt is required" .Values.caCrt | b64enc }}
+  tls.crt: {{ required "A valid databaseCertificate is required" .Values.databaseCertificate | b64enc }}
+  tls.key: {{ required "A valid databasePrivateKey is required" .Values.databasePrivateKey | b64enc }}
+kind: Secret
+metadata:
+  name: dell-csm-installer-database-certificates
+{{ end }}
