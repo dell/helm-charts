@@ -1,0 +1,170 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: csm-creds
+type: Opaque
+data:
+  adminUserName: {{ required "Must provide the admin username for the API" .Values.adminUserName | toString | b64enc | quote }}
+  adminPassword: {{ required "Must provide the admin password for the API" .Values.adminPassword | toString | b64enc | quote }}
+  dbUserName: {{ required "Must provide the admin username for the Database" .Values.dbUserName | toString | b64enc | quote }}
+  dbPassword: {{ .Values.dbPassword | toString | b64enc | quote }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dell-csm-installer-configmap
+data:
+  config.yaml: |
+    LOG_LEVEL: "{{ .Values.logLevel }}"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dell-csm-installer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dell-csm-installer
+  labels:
+    app: dell-csm-installer
+spec:
+  type: NodePort
+  selector:
+    app: dell-csm-installer
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 31313
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dell-csm-installer
+spec:
+  replicas: {{ required "Must provide the number of csm installer instances to create." .Values.csmInstallerCount }}
+  selector:
+    matchLabels:
+      app: "dell-csm-installer"
+  template:
+    metadata:
+      labels:
+        app: "dell-csm-installer"
+    spec:
+      serviceAccountName: "dell-csm-installer"
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - "dell-csm-installer"
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: "dell-csm-installer"
+          image: {{ required "Must provide the container image." .Values.installerImage }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: HOST
+              value: {{ .Values.host | default "0.0.0.0" }}
+            - name: PORT
+              value: "{{ .Values.port | default "8080" }}"
+            - name: API_SERVER_IP
+              value: "{{ .Values.api_server_ip | default "127.0.0.1" }}"
+            - name: API_SERVER_PORT
+              value: "31313"
+            - name: SCHEME
+              value: {{ .Values.scheme | default "https" }}
+            - name: DB_DIR
+              value: "/app/db"
+            - name: KAPP_BINARY
+              value: "/app/kapp"
+            - name: DATA_COLLECTOR_IMAGE
+              value: {{ .Values.dataCollectorImage }}
+            - name: ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: csm-creds
+                  key: adminUserName
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: csm-creds
+                  key: adminPassword
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: csm-creds
+                  key: dbUserName
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: csm-creds
+                  key: dbPassword
+            - name: DB_HOST
+              value: {{ .Values.dbHost | default "cockroachdb-public" }}
+            - name: DB_PORT
+              value: "{{ .Values.dbPort | default "26257" }}"
+            - name: DB_SSL_ENABLED
+              value: "{{ .Values.dbSSLEnabled | default "true" }}"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dell-csm-installer-secrets
+                  key: jwtKey
+            - name: CIPHER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dell-csm-installer-secrets
+                  key: cipherKey
+          volumeMounts:
+            - name: cache-volume
+              mountPath: /app/db
+            - name: csm-admin-creds
+              mountPath: /csm/secret
+              readOnly: true
+            - name: dell-csm-installer-configmap
+              mountPath: "/etc/config"
+            {{ if eq .Values.scheme "https" }}
+            - name: dell-csm-installer-service-certificates
+              mountPath: "/app/service-certificates"
+            {{ end }}
+            {{ if eq .Values.dbSSLEnabled "true" }}
+            - name: dell-csm-installer-dbclient-certificates
+              mountPath: "/app/dbclient-certificates"
+            {{ end }}
+      volumes:
+        - name: cache-volume
+          emptyDir: { }
+        - name: dell-csm-installer-configmap
+          configMap:
+            name: dell-csm-installer-configmap
+        {{ if eq .Values.scheme "https" }}
+        - name: dell-csm-installer-service-certificates
+          secret:
+            secretName: dell-csm-installer-service-certificates
+        {{ end }}
+        {{ if eq .Values.dbSSLEnabled "true" }}
+        - name: dell-csm-installer-dbclient-certificates
+          secret:
+            secretName: dell-csm-installer-dbclient-certificates            
+        {{ end }}
+        - name: csm-admin-creds
+          secret:
+            secretName: csm-creds
+            items:
+              - key: adminUserName
+                path: admin/ADMIN_USERNAME
+                mode: 0444
+              - key: adminPassword
+                path: admin/ADMIN_PASSWORD
+                mode: 0444
+              - key: dbUserName
+                path: admin/DB_USERNAME
+                mode: 0444
+              - key: dbPassword
+                path: admin/DB_PASSWORD
+                mode: 0444
