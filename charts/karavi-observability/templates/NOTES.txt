@@ -1,19 +1,39 @@
-Karavi Topology
-  The Karavi Topology deployment has been successfully installed.
+{{ if .Values.karaviTopology.enabled -}}
+
+CSM Topology
+  The CSM Topology deployment has been successfully installed.
 
 {{ if contains "NodePort" .Values.karaviTopology.service.type -}}
-  Execute the following commands in your shell to print the URL that can be used to access the Karavi Topology service: 
+  Execute the following commands in your shell to print the URL that can be used to access the CSM Topology service: 
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services karavi-topology)
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo https://$NODE_IP:$NODE_PORT
 {{ else if contains "ClusterIP" .Values.karaviTopology.service.type }}
-  The Karavi Topology service can be accessed at the following URL from within the Kubernetes cluster: https://karavi-topology.{{ .Release.Namespace }}.svc.cluster.local
+  The CSM Topology service can be accessed at the following URL from within the Kubernetes cluster: https://karavi-topology.{{ .Release.Namespace }}.svc.cluster.local
 {{- end }}
 
-Karavi Metrics for PowerFlex
+{{- end }}
 
-  The Karavi Metrics for PowerFlex deployment has been successfully installed.
+{{ if .Values.karaviMetricsPowerflex.enabled -}}
+
+CSM Metrics for PowerFlex
+
+  The CSM Metrics for PowerFlex deployment has been successfully installed.
 
   Provisioner Names: {{ .Values.karaviMetricsPowerflex.provisionerNames }}
   Prometheus Scrape Target: 
     From inside the Kubernetes cluster: otel-collector:8443
+
+{{- end }}
+
+{{ if .Values.karaviMetricsPowerstore.enabled -}}
+
+CSM Metrics for PowerStore
+
+  The CSM Metrics for PowerStore deployment has been successfully installed.
+
+  Provisioner Names: {{ .Values.karaviMetricsPowerstore.provisionerNames }}
+  Prometheus Scrape Target: 
+    From inside the Kubernetes cluster: otel-collector:8443
+
+{{- end}}
