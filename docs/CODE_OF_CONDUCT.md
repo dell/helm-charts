@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 Dell Inc., or its subsidiaries. All Rights Reserved.
+Copyright (c) 2021 Dell Inc., or its subsidiaries. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -69,8 +69,9 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at
-[karavi@dell.com](mailto:karavi@dell.com).
+reported to the community leaders responsible for enforcement at our Slack group. 
+Click [Here](http://del.ly/Slack_request) to request your invite. 
+
 All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the

@@ -1,3 +1,5 @@
+{{ if .Values.karaviTopology.enabled }}
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -57,6 +59,8 @@ spec:
         env:
         - name: PORT
           value: "8443"
+        - name: DEBUG
+          value: "false"
         volumeMounts:
         - name: karavi-topology-secret-volume
           mountPath: "/certs"
@@ -64,3 +68,6 @@ spec:
           mountPath: "/etc/config"
       restartPolicy: Always
 status: {}
+
+{{ end }}
+
