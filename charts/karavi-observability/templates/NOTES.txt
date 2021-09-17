@@ -4,7 +4,7 @@ CSM Topology
   The CSM Topology deployment has been successfully installed.
 
 {{ if contains "NodePort" .Values.karaviTopology.service.type -}}
-  Execute the following commands in your shell to print the URL that can be used to access the Karavi Topology service: 
+  Execute the following commands in your shell to print the URL that can be used to access the CSM Topology service: 
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services karavi-topology)
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo https://$NODE_IP:$NODE_PORT
