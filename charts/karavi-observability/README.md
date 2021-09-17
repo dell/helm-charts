@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 Dell Inc., or its subsidiaries. All Rights Reserved.
+Copyright (c) 2021 Dell Inc., or its subsidiaries. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -8,12 +8,12 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 -->
 
-# Dell Community Helm Chart for Karavi Observability
+# Container Storage Modules(CSM) for Observability Dell Community Helm Chart 
 
-Karavi Observability can be deployed using Helm.
+CSM for Observability can be deployed using Helm.
 
-For complete deployment instructions, refer to the [Getting Started Guide](https://github.com/dell/karavi-observability/blob/main/docs/GETTING_STARTED_GUIDE.md) in the Karavi Observability Github repository.
+For complete deployment instructions, refer to the [Container Storage Modules documentation](https://dell.github.io/csm-docs/docs/observability/deployment/helm).
 
 ## Helm Chart Versioning
 
-For an explanation and examples on versioning/releasing the Karavi Observability Helm chart, please see the [contributing guide](../../docs/CONTRIBUTING.md#helm-chart-release-strategy).
+For an explanation and examples on versioning/releasing the CSM for Observability Helm chart, please see the [contributing guide](../../docs/CONTRIBUTING.md#helm-chart-release-strategy).
