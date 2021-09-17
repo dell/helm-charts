@@ -20,7 +20,9 @@ For more information about installing and using Helm, see the
 
 ## Where to Find Us
 
-For general discussions, issues or support for Dell Helm Charts contact the team and community on the [mailing lists](mailto:karavi@dell.com?subject=[Dell-Helms-Charts]%20<replace%20me%20with%20more%20specific%20subject>).
+For all your support needs or to follow the latest ongoing discussions and updates, join our Slack group. Click [Here](http://del.ly/Slack_request) to request your invite.
+
+You can also interact with us by creating a [GitHub issue](https://github.com/dell/helm-charts/issues).
 
 ## How to Install
 
@@ -28,7 +30,7 @@ For general discussions, issues or support for Dell Helm Charts contact the team
 $ helm repo add dell https://dell.github.io/helm-charts
 ```
 
-Please refer to individual chart documentation for installation.
+For documentation, please visit [Container Storage Modules documentation](https://dell.github.io/csm-docs/docs/observability/deployment/helm#configuration).
 
 ## Contributing to an Existing Chart
 
