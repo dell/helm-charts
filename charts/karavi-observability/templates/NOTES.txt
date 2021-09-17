@@ -1,7 +1,7 @@
 {{ if .Values.karaviTopology.enabled -}}
 
-Karavi Topology
-  The Karavi Topology deployment has been successfully installed.
+CSM Topology
+  The CSM Topology deployment has been successfully installed.
 
 {{ if contains "NodePort" .Values.karaviTopology.service.type -}}
   Execute the following commands in your shell to print the URL that can be used to access the Karavi Topology service: 
@@ -9,16 +9,16 @@ Karavi Topology
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo https://$NODE_IP:$NODE_PORT
 {{ else if contains "ClusterIP" .Values.karaviTopology.service.type }}
-  The Karavi Topology service can be accessed at the following URL from within the Kubernetes cluster: https://karavi-topology.{{ .Release.Namespace }}.svc.cluster.local
+  The CSM Topology service can be accessed at the following URL from within the Kubernetes cluster: https://karavi-topology.{{ .Release.Namespace }}.svc.cluster.local
 {{- end }}
 
 {{- end }}
 
 {{ if .Values.karaviMetricsPowerflex.enabled -}}
 
-Karavi Metrics for PowerFlex
+CSM Metrics for PowerFlex
 
-  The Karavi Metrics for PowerFlex deployment has been successfully installed.
+  The CSM Metrics for PowerFlex deployment has been successfully installed.
 
   Provisioner Names: {{ .Values.karaviMetricsPowerflex.provisionerNames }}
   Prometheus Scrape Target: 
@@ -28,9 +28,9 @@ Karavi Metrics for PowerFlex
 
 {{ if .Values.karaviMetricsPowerstore.enabled -}}
 
-Karavi Metrics for PowerStore
+CSM Metrics for PowerStore
 
-  The Karavi Metrics for PowerStore deployment has been successfully installed.
+  The CSM Metrics for PowerStore deployment has been successfully installed.
 
   Provisioner Names: {{ .Values.karaviMetricsPowerstore.provisionerNames }}
   Prometheus Scrape Target: 
