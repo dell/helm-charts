@@ -70,3 +70,9 @@ otelCollector:
     type: ClusterIP
   nginxProxy:
     image: nginxinc/nginx-unprivileged:1.18
+
+cert-manager:
+  startupapicheck:
+    enabled: false
+    serviceAccount:
+      create: false
