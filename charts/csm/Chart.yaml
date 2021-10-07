@@ -1,0 +1,9 @@
+---
+apiVersion: v2
+name: csm
+version: 1.0.0
+appVersion: 1.0.0
+type: application
+description: Dell EMC Container Storage Modules Installer
+maintainers:
+- name: DellEMC

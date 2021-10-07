@@ -1,0 +1,17 @@
+
+# A Dell CSI Driver to install
+DRIVER_TYPE: "powerflex"
+# Comma separated List of a Dell CSI Driver Configurations to install
+DRIVER_CONFIGURATION: ""
+DRIVER_CONFIG_PATH: "config.yaml"
+
+# Comma separated List of CSM modules to install
+MODULE_TYPES: ""
+# Comma separated List of CSM modules Configuration to install
+MODULE_CONFIGURATION: ""
+
+# If left empty, the default will be used
+RELEASE_NAMESPACE: ""
+RELEASE_NAME: ""
+
+K8S_VERSION: "1.22"

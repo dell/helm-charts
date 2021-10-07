@@ -1,0 +1,183 @@
+#!/bin/bash
+
+set -e
+
+ytt version 1>&2 >/dev/null || (
+    echo "*** Missing ytt binary. Install from https://carvel.dev ***" 1>&2
+    exit 1
+)
+
+TEMPLATE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
+function load_values_file() {
+    read_file=$(sed -nr 's/(.*): (.*)/export \1=\2/ p' ${TEMPLATE_DIR}/values.yaml)
+    eval $read_file
+}
+
+function optional_values_arg() {
+    # Enabling Special Modules
+    OPT_VALUES_ARG=""
+    for i in ${MODULE_TYPES//,/ }; do
+        OPT_VALUES_ARG+=" --data-value-yaml $i.enabled=true "
+        if [ "$DRIVER_TYPE"x == "x" ]; then
+            if [ "${i}" != "observabiltiy" ]; then
+                echo "The module: ${i} cannot be deployed as standalone" 1>&2
+                exit 1
+            fi
+        fi
+    done
+
+    # Driver Secret
+    if [ -f "$DRIVER_CONFIG_PATH" ]; then
+        valuesArray=$(cat $DRIVER_CONFIG_PATH)
+        OPT_VALUES_ARG+=" --data-value arrayconfig='${valuesArray}' "
+    else
+        echo "The secret to drive path: $DRIVER_CONFIG_PATH was NOT FOUND." 1>&2
+        exit 1
+    fi
+
+    valuesArrayType="${DRIVER_TYPE}"
+    if [ "${DRIVER_TYPE}" == "powerflex" ]; then
+        valuesArrayType="vxflexos"
+    fi
+
+    OPT_VALUES_ARG+=" --data-value secret.name=${valuesArrayType}-config "
+    if [ "$RELEASE_NAMESPACE"x != "x" ]; then
+        OPT_VALUES_ARG+=" --data-value secret.namespace=${RELEASE_NAMESPACE} "
+    else
+        OPT_VALUES_ARG+=" --data-value secret.namespace=${valuesArrayType} "
+    fi
+
+    # configurations
+
+    # modules
+    for i in ${MODULE_CONFIGURATION//,/ }; do
+        key_value=(${i//=/ })
+        if [ ${#key_value[@]} != 2 ]; then
+            echo "$i is an invalid ytt value format. It should be in the format key1=value1" 1>&2
+            exit 1
+        fi
+        if [[ ${key_value[0]} == *".filename" ]]; then
+            if [ -f "${key_value[1]}" ]; then
+                OPT_VALUES_ARG+=" -f  ${key_value[1]} "
+            else
+                echo "The file: ${key_value[1]} does NOT EXIST" 1>&2
+                exit 1
+            fi
+        fi
+
+        OPT_VALUES_ARG+=" --data-value-yaml ${key_value[0]}=$(basename ${key_value[1]}) "
+    done
+
+    if [ "${DRIVER_TYPE}" == "powerflex" ]; then
+        OPT_VALUES_ARG+=" --data-value karaviMetricsPowerflex.enabled=true "
+    fi
+    if [ "${DRIVER_TYPE}" == "powerstore" ]; then
+        OPT_VALUES_ARG+=" --data-value karaviMetricsPowerstore.enabled=true "
+    fi
+
+    # driver
+    for i in ${DRIVER_CONFIGURATION//,/ }; do
+        OPT_VALUES_ARG+=" --data-value-yaml $i "
+    done
+
+    # overight NAMESPACE
+    if [ "$RELEASE_NAMESPACE"x != "x" ]; then
+        OPT_VALUES_ARG+=" --data-value namespace=$RELEASE_NAMESPACE "
+    fi
+    if [ "$RELEASE_NAME"x != "x" ]; then
+        OPT_VALUES_ARG+=" --data-value application=$RELEASE_NAMESPACE "
+    fi
+
+    echo "$OPT_VALUES_ARG"
+}
+
+function optional_files_arg() {
+    # namespace
+    OPT_FILES_ARG=" -f  $TEMPLATE_DIR/templates-ytt/namespace.yaml "
+
+    # ConfigMap
+    OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/configs/driver-config-params.yaml "
+
+    # secrets
+    OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/configs/driver-secret.yaml "
+    OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/authorization-secret.yaml "
+    OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/observability-secret.yaml "
+    if [ "${DRIVER_TYPE}" == "unity" ]; then
+        OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/empty-secret.yaml "
+    fi
+
+    # modules
+    found_Obervability=false
+    for i in ${MODULE_TYPES//,/ }; do
+        if [ "${i}" == "observabiltiy" ]; then
+            found_Obervability=true
+        fi
+    done
+
+    ARRAY_FILE="$TEMPLATE_DIR/templates-ytt/configs/values-$DRIVER_TYPE.yaml"
+    if [ -f "$ARRAY_FILE" ]; then
+        OPT_FILES_ARG+=" -f  $ARRAY_FILE "
+        OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/controller.yaml "
+        OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/node.yaml "
+        OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/csidriver.yaml "
+        OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/common/values.yaml "
+        OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/csireverseproxy.yaml "
+
+        if [ -f "$TEMPLATE_DIR/templates-ytt/common/k8s-$K8S_VERSION-values.yaml" ]; then
+            OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/common/k8s-$K8S_VERSION-values.yaml "
+        else
+            echo "The k8s version: $K8S_VERSION is NOT SUPPORTED. Try 1.19, 1.20, 1.21, or 1.22" 1>&2
+            exit 1
+        fi
+
+    else
+        if [ "$found_Obervability" == true ]; then
+            OPT_FILES_ARG+=" --data-value observability.standalone=true "
+            if [ "$RELEASE_NAMESPACE"x != "x" ]; then
+                OPT_VALUES_ARG+=" --data-value namespace=$RELEASE_NAMESPACE "
+            else
+                OPT_FILES_ARG+=" --data-value namespace=csm-obervability "
+            fi
+        else
+            echo "The array type: $DRIVER_TYPE is NOT SUPPORTED or $ARRAY_FILE NOT FOUND. Try powerflex, powermax, powerstore, or unity." 1>&2
+            exit 1
+        fi
+    fi
+
+    OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/modules/ "
+    OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/authorization.yaml "
+    OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/observability.yaml "
+
+    # values files
+    OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/configs/values-authorization.yaml "
+    OPT_FILES_ARG+=" -f  $TEMPLATE_DIR/templates-ytt/configs/values-observability.yaml "
+
+    echo "$OPT_FILES_ARG"
+}
+
+function prechecks() {
+    # TODO
+    TODO=true
+}
+
+function helm_release_info() {
+    # TODO
+    TODO=true
+}
+
+function install_application() {
+    OPT_VALUES_ARG=$(optional_values_arg)
+    OPT_FILES_ARG=$(optional_files_arg)
+
+    eval "ytt ${OPT_FILES_ARG} --ignore-unknown-comments ${OPT_VALUES_ARG} -f - "
+}
+
+load_values_file
+
+prechecks
+
+helm_release_info
+
+# all good, keep processing
+install_application
