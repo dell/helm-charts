@@ -9,9 +9,11 @@ ytt version 1>&2 >/dev/null || (
 
 TEMPLATE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-function load_values_file() {
+function load_helm_values() {
     read_file=$(sed -nr 's/(.*): (.*)/export \1=\2/ p' ${TEMPLATE_DIR}/values.yaml)
     eval $read_file
+
+    #TODO: (Michael) overwrite with passed in values or value file passed in using -f
 }
 
 function optional_values_arg() {
@@ -173,7 +175,7 @@ function install_application() {
     eval "ytt ${OPT_FILES_ARG} --ignore-unknown-comments ${OPT_VALUES_ARG} -f - "
 }
 
-load_values_file
+load_helm_values
 
 prechecks
 
