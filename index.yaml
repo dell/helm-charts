@@ -26,6 +26,23 @@ entries:
   karavi-observability:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2021-10-15T15:09:18.375157686Z"
+    dependencies:
+    - name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.5.3
+    description: CSM for Observability is part of the [Container Storage Modules](https://github.com/dell/csm)
+      open source suite of Kubernetes storage enablers for Dell EMC storage products.
+      CSM for Observability provides Kubernetes administrators with visibility into
+      metrics and topology data related to containerized storage.
+    digest: 31566b52eebf89f1a6e44de70edd1803972edd6650ab0d7c2e56c917e5139cd3
+    name: karavi-observability
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/karavi-observability-1.0.1/karavi-observability-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2021-09-17T13:58:16.513639128Z"
     dependencies:
     - name: cert-manager
