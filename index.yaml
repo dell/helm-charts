@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   csm-installer:
   - apiVersion: v2
+    appVersion: 1.0.1
+    created: "2021-10-15T16:30:40.369425651Z"
+    description: Dell EMC Container Storage Modules Installer
+    digest: b0c935a4925a58635de1d3b14525893593fd0164a585236583de76adf74a84e6
+    name: csm-installer
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csm-installer-1.0.1/csm-installer-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
     appVersion: 1.0.0
     created: "2021-09-14T18:51:24.647537811Z"
     description: Dell EMC Container Storage Modules Installer
