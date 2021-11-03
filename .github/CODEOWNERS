@@ -1,0 +1,22 @@
+# CODEOWNERS
+#
+# documentation for this file can be found at:
+# https://help.github.com/en/articles/about-code-owners
+
+# These are the default owners for the code and will
+# be requested for review when someone opens a pull request.
+# order is alphabetical for easier maintenance.
+#
+# Michael Edegware (medegw01)
+# Sean Gallacher (gallacher)
+# Trevor Dawe (tdawe)
+# Alexander Hoppe (hoppea2)
+# Alik Saring (alikdell)
+# Aaron Tye (atye)
+# Florian Coulombel (coulof)
+# Shayna Finocchiaro (shaynafinocchiaro)
+# Logan Jones (lj-software)
+# Sharmila Ramamoorthy (sharmilarama)
+
+# for all files:
+* @medegw01 @gallacher @tdawe @alikdell @atye @hoppea2 @coulof @shaynafinocchiaro @lj-software @sharmilarama
