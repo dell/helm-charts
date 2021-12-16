@@ -26,8 +26,8 @@ metadata:
   labels:
     app.kubernetes.io/name: karavi_metrics_powerflex
     app.kubernetes.io/instance: {{ .Release.Name }}
-  {{- if hasKey .Values "authorization" }}
-  {{- if eq .Values.authorization.enabled true }}
+  {{- if hasKey .Values "karaviMetricsPowerflex.authorization" }}
+  {{- if eq .Values.karaviMetricsPowerflex.authorization.enabled true }}
   annotations:
     com.dell.karavi-authorization-proxy: "true"
   {{ end }}
@@ -67,16 +67,16 @@ spec:
           readOnly: true
         - name: karavi-metrics-powerflex-configmap
           mountPath: /etc/config
-      {{- if hasKey .Values "authorization" }}
-      {{- if eq .Values.authorization.enabled true }}
+      {{- if hasKey .Values "karaviMetricsPowerflex.authorization" }}
+      {{- if eq .Values.karaviMetricsPowerflex.authorization.enabled true }}
       - name: karavi-authorization-proxy
         imagePullPolicy: Always
-        image: {{ required "Must provide the authorization sidecar container image." .Values.authorization.sidecarProxyImage }}
+        image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowerflex.authorization.sidecarProxyImage }}
         env:
           - name: PROXY_HOST
-            value: "{{ .Values.authorization.proxyHost }}"
+            value: "{{ .Values.karaviMetricsPowerflex.authorization.proxyHost }}"
           - name: INSECURE
-            value: "{{ .Values.authorization.skipCertificateValidation }}"
+            value: "{{ .Values.karaviMetricsPowerflex.authorization.skipCertificateValidation }}"
           - name: PLUGIN_IDENTIFIER
             value: powerflex
           - name: ACCESS_TOKEN
@@ -111,8 +111,8 @@ spec:
       - name: karavi-metrics-powerflex-configmap
         configMap:
           name: karavi-metrics-powerflex-configmap
-      {{- if hasKey .Values "authorization" }}
-      {{- if eq .Values.authorization.enabled true }}
+      {{- if hasKey .Values "karaviMetricsPowerflex.authorization" }}
+      {{- if eq .Values.karaviMetricsPowerflex.authorization.enabled true }}
       - name: karavi-authorization-config
         secret:
           secretName: karavi-authorization-config
