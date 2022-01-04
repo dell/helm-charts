@@ -67,10 +67,10 @@ spec:
           readOnly: true
         - name: karavi-metrics-powerflex-configmap
           mountPath: /etc/config
-      {{- if hasKey .Values "karaviMetricsPowerflex.authorization" }}
+      {{- if hasKey .Values.karaviMetricsPowerflex "authorization" }}
       {{- if eq .Values.karaviMetricsPowerflex.authorization.enabled true }}
       - name: karavi-authorization-proxy
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowerflex.authorization.sidecarProxyImage }}
         env:
           - name: PROXY_HOST
@@ -111,14 +111,17 @@ spec:
       - name: karavi-metrics-powerflex-configmap
         configMap:
           name: karavi-metrics-powerflex-configmap
-      {{- if hasKey .Values "karaviMetricsPowerflex.authorization" }}
-      {{- if eq .Values.karaviMetricsPowerflex.authorization.enabled true }}
+     {{- if hasKey .Values.karaviMetricsPowerflex "authorization" }}
+     {{- if eq .Values.karaviMetricsPowerflex.authorization.enabled true }}
       - name: karavi-authorization-config
         secret:
           secretName: karavi-authorization-config
       - name: proxy-server-root-certificate
         secret:
           secretName: proxy-server-root-certificate
+      - name: vxflexos-config-params
+        configMap:
+          name: vxflexos-config-params
       {{ end }}
       {{ end }}
       restartPolicy: Always
