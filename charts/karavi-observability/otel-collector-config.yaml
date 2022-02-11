@@ -2,7 +2,7 @@ receivers:
   otlp:
     protocols:
       grpc:
-        tls_settings:
+        tls:
           cert_file: /etc/ssl/certs/tls.crt
           key_file: /etc/ssl/certs/tls.key
       http:
