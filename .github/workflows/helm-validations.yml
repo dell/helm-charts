@@ -6,6 +6,7 @@ on:
   pull_request:
     branches:
       - main
+      - karavi-observability-release
 
 jobs:
   # This job will check to see if any .yaml file is modified
