@@ -4,7 +4,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/name: karavi_topology
+    app.kubernetes.io/name: karavi-topology
     app.kubernetes.io/instance: {{ .Release.Name }}
   name: karavi-topology
 spec:
@@ -14,7 +14,7 @@ spec:
     port: 8443
     targetPort: 8443
   selector:
-    app.kubernetes.io/name: karavi_topology
+    app.kubernetes.io/name: karavi-topology
     app.kubernetes.io/instance: {{ .Release.Name }}
 
 ---
@@ -24,19 +24,19 @@ kind: Deployment
 metadata:
   name: karavi-topology
   labels:
-    app.kubernetes.io/name: karavi_topology
+    app.kubernetes.io/name: karavi-topology
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: karavi_topology
+      app.kubernetes.io/name: karavi-topology
       app.kubernetes.io/instance: {{ .Release.Name }}
   replicas: 1
   strategy: {}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: karavi_topology
+        app.kubernetes.io/name: karavi-topology
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       volumes:
