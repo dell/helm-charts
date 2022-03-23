@@ -2,10 +2,10 @@ receivers:
   otlp:
     protocols:
       grpc:
-        tls_settings:
+        endpoint: 0.0.0.0:55680
+        tls:
           cert_file: /etc/ssl/certs/tls.crt
           key_file: /etc/ssl/certs/tls.key
-      http:
   
 exporters:
   prometheus:
