@@ -1,0 +1,56 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: proxy-server
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    traefik.protocol: https
+    traefik.ingress.kubernetes.io/frontend-entry-points: h2c, https
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+spec:
+  tls:
+  - hosts:
+      - {{ .Values.hostname }}
+    secretName: karavi-auth-tls
+  rules:
+  - host: {{ .Values.hostname }}
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: proxy-server
+              port:
+                number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grpc-services
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    ingress.kubernetes.io/protocol: h2c
+    kubernetes.io/ingress.class: traefik
+    traefik.protocol: https
+    traefik.ingress.kubernetes.io/frontend-entry-points: h2c,https
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+spec:
+  tls:
+  - hosts:
+      - grpc.{{ .Values.hostname }}
+    secretName: karavi-auth-tls
+  rules:
+  - host: grpc.{{ .Values.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tenant-service
+            port:
+              number: 50051

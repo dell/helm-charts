@@ -1,0 +1,8 @@
+web:
+  jwtsigningsecret: secret
+proxy:
+  host: ":8080"
+zipkin:
+  collectoruri: http://DNS-hostname:9411/api/v2/spans
+  probability: 1
+hostname: DNS-hostname

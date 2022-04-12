@@ -1,0 +1,71 @@
+# If the cert and key are provided, deploy a CA Issuer using the cert and key
+{{- if and (.Values.certificate.crtFile) (.Values.certificate.keyFile) }}
+{{- $certificateFileContents := .Values.certificate.crtFile }}
+{{- $privateKeyFileContents := .Values.certificate.keyFile }}
+apiVersion: v1
+data:
+  tls.crt: {{ $certificateFileContents | b64enc }}
+  tls.key: {{ $privateKeyFileContents | b64enc }}
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: karavi-cert-secret
+  namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: csm-authorization-issuer
+  namespace: {{ .Release.Namespace }}
+spec:
+  ca:
+    secretName: karavi-cert-secret
+
+---
+{{- end }}
+
+{{- if or (not .Values.certificate.crtFile) (not .Values.certificate.keyFile) }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-issuer
+  namespace: {{ .Release.Namespace }}
+spec:
+  selfSigned: {}
+
+---
+{{- end }}
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: karavi-auth
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: karavi-auth-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - dellemc
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - karavi-auth
+  - karavi-auth.karavi.svc.kubernetes.local
+  issuerRef:
+  {{- if and (.Values.certificate.crtFile) (.Values.certificate.keyFile) }}
+    name: csm-authorization-issuer
+  {{- else }}
+    name: selfsigned-issuer
+  {{- end }}
+    kind: Issuer
+    group: cert-manager.io

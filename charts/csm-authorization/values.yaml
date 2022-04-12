@@ -1,0 +1,13 @@
+proxyServiceImage: amaas-eos-mw1.cec.lab.emc.com:5046/csm-authorization-proxy-server:v1.2.0
+tenantServiceImage: amaas-eos-mw1.cec.lab.emc.com:5046/csm-authorization-tenant-service:v1.2.0
+
+logLevel: debug
+
+hostname: lglap150.hop.lab.emc.com
+
+certificate:
+  crtFile: /root/lglap150.hop.lab.emc.com+2.pem
+  keyFile: /root/lglap150.hop.lab.emc.com+2-key.pem
+
+redis:
+  storageClass: vxflexos
