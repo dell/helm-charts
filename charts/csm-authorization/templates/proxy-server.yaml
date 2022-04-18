@@ -62,6 +62,7 @@ spec:
         imagePullPolicy: Always
         args:
           - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
+          - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -112,16 +113,3 @@ spec:
     protocol: TCP
     port: 8080
     targetPort: 8080
----
-# busybox container is only here to pull in busybox as a dependency
-apiVersion: v1
-kind: Pod
-metadata:
-  name: busybox1
-  labels:
-    app: busybox1
-spec:
-  containers:
-  - name: busybox
-    image: docker.io/busybox:latest
-    

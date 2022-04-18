@@ -9,6 +9,7 @@ spec:
   tls:
   - hosts:
       - {{ .Values.authorization.hostname }}
+      - {{ .Release.Name }}-ingress-nginx-controller.{{ .Release.Namespace }}.svc.cluster.local
     {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
     secretName: user-provided-tls
     {{- else }}
@@ -16,6 +17,16 @@ spec:
     {{- end}}
   rules:
   - host: {{ .Values.authorization.hostname }}
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: proxy-server
+              port:
+                number: 8080
+  - host: {{ .Release.Name }}-ingress-nginx-controller.{{ .Release.Namespace }}.svc.cluster.local
     http:
       paths:
         - path: /
