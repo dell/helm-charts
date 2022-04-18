@@ -4,18 +4,18 @@ metadata:
   name: proxy-server
   namespace: {{ .Release.Namespace }}
   annotations:
-    kubernetes.io/ingress.class: "traefik"
-    traefik.protocol: https
-    traefik.ingress.kubernetes.io/frontend-entry-points: h2c, https
-    traefik.ingress.kubernetes.io/redirect-entry-point: https
-    traefik.ingress.kubernetes.io/redirect-permanent: "true"
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
-      - {{ .Values.hostname }}
-    secretName: karavi-auth-tls
+      - {{ .Values.authorization.hostname }}
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end}}
   rules:
-  - host: {{ .Values.hostname }}
+  - host: {{ .Values.authorization.hostname }}
     http:
       paths:
         - path: /
@@ -29,22 +29,22 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: grpc-services
+  name: tenant-service
   namespace: {{ .Release.Namespace }}
   annotations:
-    ingress.kubernetes.io/protocol: h2c
-    kubernetes.io/ingress.class: traefik
-    traefik.protocol: https
-    traefik.ingress.kubernetes.io/frontend-entry-points: h2c,https
-    traefik.ingress.kubernetes.io/redirect-entry-point: https
-    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
-      - grpc.{{ .Values.hostname }}
-    secretName: karavi-auth-tls
+      - grpc.{{ .Values.authorization.hostname }}
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end}}
   rules:
-  - host: grpc.{{ .Values.hostname }}
+  - host: grpc.{{ .Values.authorization.hostname }}
     http:
       paths:
       - path: /

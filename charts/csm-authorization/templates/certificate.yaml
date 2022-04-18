@@ -1,7 +1,7 @@
-# If the cert and key are provided, deploy a CA Issuer using the cert and key
-{{- if and (.Values.certificate.crtFile) (.Values.certificate.keyFile) }}
-{{- $certificateFileContents := .Values.certificate.crtFile }}
-{{- $privateKeyFileContents := .Values.certificate.keyFile }}
+# If the cert and key are provided, use them to create a tls secret
+{{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+{{- $certificateFileContents := .Values.authorization.certificate }}
+{{- $privateKeyFileContents := .Values.authorization.privateKey }}
 apiVersion: v1
 data:
   tls.crt: {{ $certificateFileContents | b64enc }}
@@ -9,24 +9,15 @@ data:
 kind: Secret
 type: kubernetes.io/tls
 metadata:
-  name: karavi-cert-secret
+  name: user-provided-tls
   namespace: {{ .Release.Namespace }}
-
----
-
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: csm-authorization-issuer
-  namespace: {{ .Release.Namespace }}
-spec:
-  ca:
-    secretName: karavi-cert-secret
 
 ---
 {{- end }}
 
-{{- if or (not .Values.certificate.crtFile) (not .Values.certificate.keyFile) }}
+
+# If the cert and key are not provided, user cert-manager to create a self-signed tls secret
+{{- if or (not .Values.authorization.certificate) (not .Values.authorization.privateKey) }}
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
@@ -36,7 +27,6 @@ spec:
   selfSigned: {}
 
 ---
-{{- end }}
 
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -44,7 +34,7 @@ metadata:
   name: karavi-auth
   namespace: {{ .Release.Namespace }}
 spec:
-  secretName: karavi-auth-tls
+  secretName: karavi-selfsigned-tls
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
@@ -60,12 +50,15 @@ spec:
     - client auth
   dnsNames:
   - karavi-auth
-  - karavi-auth.karavi.svc.kubernetes.local
+  - karavi-auth.{{ .Release.Namespace }}.svc.kubernetes.local
+  - {{ .Values.authorization.hostname }}
+  - grpc.{{ .Values.authorization.hostname }}
   issuerRef:
-  {{- if and (.Values.certificate.crtFile) (.Values.certificate.keyFile) }}
-    name: csm-authorization-issuer
+  {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    name: not-selfsigned-issuer
   {{- else }}
     name: selfsigned-issuer
   {{- end }}
     kind: Issuer
     group: cert-manager.io
+{{- end }}

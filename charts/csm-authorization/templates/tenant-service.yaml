@@ -17,8 +17,10 @@ spec:
     spec:
       containers:
       - name: tenant-service
-        image: {{ .Values.tenantServiceImage }}
-        imagePullPolicy: IfNotPresent
+        image: {{ required "Must provide the tenant-service image." .Values.authorization.tenantServiceImage }}
+        imagePullPolicy: Always
+        args:
+          - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
         ports:
         - containerPort: 50051
           name: grpc

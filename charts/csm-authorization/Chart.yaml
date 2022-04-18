@@ -8,6 +8,9 @@ dependencies:
 - name: cert-manager
   version: 1.6.1
   repository: https://charts.jetstack.io
-- name: traefik
-  version: 10.0.0 #10.0.0 for 1.22+, else v9.20.2
-  repository: https://helm.traefik.io/traefik
+- name: ingress-nginx
+  version: 4.0.19
+  repository: https://kubernetes.github.io/ingress-nginx
+#- name: traefik
+  #version: 10.19.4 #10.0.0 for 1.22+, else v9.20.2
+  #repository: https://helm.traefik.io/traefik

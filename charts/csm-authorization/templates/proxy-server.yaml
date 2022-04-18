@@ -58,8 +58,10 @@ spec:
     spec:
       containers:
       - name: proxy-server
-        image:  {{ .Values.proxyServiceImage }}
-        imagePullPolicy: IfNotPresent
+        image:  {{ required "Must provide the proxy-server image." .Values.authorization.proxyServiceImage }}
+        imagePullPolicy: Always
+        args:
+          - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -122,3 +124,4 @@ spec:
   containers:
   - name: busybox
     image: docker.io/busybox:latest
+    

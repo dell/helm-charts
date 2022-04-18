@@ -1,13 +1,14 @@
-proxyServiceImage: amaas-eos-mw1.cec.lab.emc.com:5046/csm-authorization-proxy-server:v1.2.0
-tenantServiceImage: amaas-eos-mw1.cec.lab.emc.com:5046/csm-authorization-tenant-service:v1.2.0
+authorization:
+  proxyServiceImage: dellemc/csm-authorization-proxy:nightly
+  tenantServiceImage: dellemc/dellemc/csm-authorization-tenant:nightly
 
-logLevel: debug
+  hostname: csm-authorization.com
 
-hostname: lglap150.hop.lab.emc.com
+  logLevel: debug
 
-certificate:
-  crtFile: /root/lglap150.hop.lab.emc.com+2.pem
-  keyFile: /root/lglap150.hop.lab.emc.com+2-key.pem
+  zipkin: {}
+    #collectoruri: http://DNS-hostname:9411/api/v2/spans
+    #probability: 1
 
 redis:
-  storageClass: vxflexos
+  storageClass: local-storage
