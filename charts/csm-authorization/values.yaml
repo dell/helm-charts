@@ -7,8 +7,8 @@ authorization:
   logLevel: debug
 
   zipkin: {}
-    #collectoruri: http://DNS-hostname:9411/api/v2/spans
-    #probability: 1
+    # collectoruri: http://DNS-hostname:9411/api/v2/spans
+    # probability: 1
 
 redis:
   storageClass: local-storage
