@@ -1,6 +1,6 @@
 authorization:
   proxyServiceImage: dellemc/csm-authorization-proxy:nightly
-  tenantServiceImage: dellemc/dellemc/csm-authorization-tenant:nightly
+  tenantServiceImage: dellemc/csm-authorization-tenant:nightly
 
   hostname: csm-authorization.com
 
