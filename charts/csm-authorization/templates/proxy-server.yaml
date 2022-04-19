@@ -58,8 +58,8 @@ spec:
     spec:
       containers:
       - name: proxy-server
-        image:  {{ required "Must provide the proxy-server image." .Values.authorization.proxyServiceImage }}
-        imagePullPolicy: IfNotPresent
+        image:  {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}
+        imagePullPolicy: Always
         args:
           - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
           - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
@@ -73,7 +73,7 @@ spec:
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
       - name: opa
-        image: docker.io/openpolicyagent/opa
+        image: {{ required "Must provide the openpolicyagent image." .Values.authorization.images.opa }}
         imagePullPolicy: IfNotPresent
         args:
         - "run"
@@ -84,7 +84,7 @@ spec:
         - name: http
           containerPort: 8181
       - name: kube-mgmt
-        image: docker.io/openpolicyagent/kube-mgmt:0.11
+        image: {{ required "Must provide the opaKubeMgmt image." .Values.authorization.images.opaKubeMgmt }}
         imagePullPolicy: IfNotPresent
         args:
         - "--policies=karavi"

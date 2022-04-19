@@ -1,8 +1,13 @@
 authorization:
-  proxyServiceImage: dellemc/csm-authorization-proxy:nightly
-  tenantServiceImage: dellemc/csm-authorization-tenant:nightly
+  # images to use in installation
+  images:
+    proxyService: dellemc/csm-authorization-proxy:nightly
+    tenantService: dellemc/csm-authorization-tenant:nightly
+    opa: openpolicyagent/opa
+    opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
-  hostname: csm-authorization.com
+  # hostname for csm-authorization
+  hostname: csmauth.com
 
   logLevel: debug
 
@@ -11,4 +16,8 @@ authorization:
     # probability: 1
 
 redis:
+  images:
+    redis: redis:6.0.8-alpine
+    commander: rediscommander/redis-commander:latest
+
   storageClass: local-storage

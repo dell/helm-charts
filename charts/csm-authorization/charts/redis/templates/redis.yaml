@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: primary
-        image: docker.io/redis:6.0.8-alpine
+        image: {{ .Values.images.redis }}
         imagePullPolicy: IfNotPresent
         args: ["--appendonly", "yes", "--appendfsync", "always"]
         resources:
@@ -71,7 +71,7 @@ spec:
     spec:
       containers:
       - name: redis-commander
-        image: docker.io/rediscommander/redis-commander:latest
+        image: {{ .Values.images.commander }}
         imagePullPolicy: IfNotPresent
         env:
         - name: REDIS_HOSTS
