@@ -59,7 +59,7 @@ spec:
       containers:
       - name: proxy-server
         image:  {{ required "Must provide the proxy-server image." .Values.authorization.proxyServiceImage }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         args:
           - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
           - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
