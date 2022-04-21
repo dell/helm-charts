@@ -13,5 +13,5 @@ LoadBalancer host rules for proxy-server:
 LoadBalancer host rules for tenant-service:
 - grpc.{{ .Values.authorization.hostname }}
 
-authorization.proxyHost value, for a CSI Driver, examples:
-- csm-authorization-ingress-nginx-controller.csm-authorization.svc.cluster.local:443 (CSI Driver in the same cluster as CSM Authorization)
+authorization.proxyHost value for a CSI Driver examples:
+- {{ .Release.Name }}-ingress-nginx-controller.{{ .Release.Namespace }}.svc.cluster.local:443 (CSI Driver in the same cluster as CSM Authorization)
