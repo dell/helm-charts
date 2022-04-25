@@ -3,6 +3,7 @@ authorization:
   images:
     proxyService: dellemc/csm-authorization-proxy:nightly
     tenantService: dellemc/csm-authorization-tenant:nightly
+    roleService: dellemc/csm-authorization-role:nightly
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 

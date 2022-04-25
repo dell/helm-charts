@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: role-service
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: role-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: role-service
+  template:
+    metadata:
+      labels:
+        app: role-service
+    spec:
+      containers:
+      - name: role-service
+        image: {{ required "Must provide the role-service image." .Values.authorization.images.roleService }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 50051
+          name: grpc
+        env:
+          - name: NAMESPACE
+            value: {{ .Release.Namespace }}
+        volumeMounts:
+        - name: csm-config-params
+          mountPath: /etc/karavi-authorization/csm-config-params
+      volumes:
+      - name: csm-config-params
+        configMap:
+          name: csm-config-params
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: role-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: role-service
+  ports:
+  - port: 50051
+    targetPort: 50051
+    name: grpc

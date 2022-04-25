@@ -48,7 +48,7 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-      - grpc.{{ .Values.authorization.hostname }}
+      - tenant.{{ .Values.authorization.hostname }}
     {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
     secretName: user-provided-tls
     {{- else }}
@@ -63,5 +63,34 @@ spec:
         backend:
           service:
             name: tenant-service
+            port:
+              number: 50051
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: role-service
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - role.{{ .Values.authorization.hostname }}
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end}}
+  rules:
+  - host: role.{{ .Values.authorization.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: role-service
             port:
               number: 50051
