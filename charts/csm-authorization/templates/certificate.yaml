@@ -52,8 +52,9 @@ spec:
   - karavi-auth
   - karavi-auth.{{ .Release.Namespace }}.svc.kubernetes.local
   - {{ .Values.authorization.hostname }}
-  - grpc.{{ .Values.authorization.hostname }}
-  - {{ .Release.Name }}-ingress-nginx-controller{{ .Release.Namespace }}.svc.cluster.local
+  - tenant.{{ .Values.authorization.hostname }}
+  - role.{{ .Values.authorization.hostname }}
+  - {{ .Release.Name }}-ingress-nginx-controller.{{ .Release.Namespace }}.svc.cluster.local
   issuerRef:
     name: selfsigned
     kind: Issuer

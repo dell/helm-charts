@@ -55,7 +55,7 @@ spec:
     secretName: karavi-selfsigned-tls
     {{- end}}
   rules:
-  - host: grpc.{{ .Values.authorization.hostname }}
+  - host: tenant.{{ .Values.authorization.hostname }}
     http:
       paths:
       - path: /
