@@ -1,0 +1,96 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: proxy-server
+  namespace: {{ .Release.Namespace }}
+  annotations:
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - {{ .Values.authorization.hostname }}
+      - {{ .Release.Name }}-ingress-nginx-controller.{{ .Release.Namespace }}.svc.cluster.local
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end}}
+  rules:
+  - host: {{ .Values.authorization.hostname }}
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: proxy-server
+              port:
+                number: 8080
+  - host: {{ .Release.Name }}-ingress-nginx-controller.{{ .Release.Namespace }}.svc.cluster.local
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: proxy-server
+              port:
+                number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tenant-service
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - tenant.{{ .Values.authorization.hostname }}
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end}}
+  rules:
+  - host: tenant.{{ .Values.authorization.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tenant-service
+            port:
+              number: 50051
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: role-service
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+      - role.{{ .Values.authorization.hostname }}
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end}}
+  rules:
+  - host: role.{{ .Values.authorization.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: role-service
+            port:
+              number: 50051
