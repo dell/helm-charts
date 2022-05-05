@@ -48,7 +48,9 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: {{ required "Must provide the storage class for redis." .Values.storageClass }}
+  {{- if (.Values.storageClass) }}
+  storageClassName: {{.Values.storageClass }}
+  {{- end}}
   resources:
     requests:
       storage: 8Gi
