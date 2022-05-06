@@ -3,13 +3,22 @@ kind: Ingress
 metadata:
   name: proxy-server
   namespace: {{ .Release.Namespace }}
+  {{- if .Values.authorization.proxyServerIngress.annotations }}
   annotations:
+    {{- range $key, $value := .Values.authorization.proxyServerIngress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.authorization.proxyServerIngress.ingressClassName }}
   tls:
   - hosts:
       - {{ .Values.authorization.hostname }}
-      - {{ .Release.Name }}-ingress-nginx-controller.{{ .Release.Namespace }}.svc.cluster.local
+      {{- if .Values.authorization.proxyServerIngress.hosts  }}
+      {{- range .Values.authorization.proxyServerIngress.hosts }}
+      - {{ tpl . $}}
+      {{- end }}
+      {{- end}}
     {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
     secretName: user-provided-tls
     {{- else }}
@@ -26,7 +35,9 @@ spec:
               name: proxy-server
               port:
                 number: 8080
-  - host: {{ .Release.Name }}-ingress-nginx-controller.{{ .Release.Namespace }}.svc.cluster.local
+  {{- if .Values.authorization.proxyServerIngress.hosts  }}
+  {{- range .Values.authorization.proxyServerIngress.hosts }}
+  - host: {{ tpl . $}}
     http:
       paths:
         - path: /
@@ -36,6 +47,8 @@ spec:
               name: proxy-server
               port:
                 number: 8080
+  {{- end }}
+  {{- end}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -43,12 +56,21 @@ metadata:
   name: tenant-service
   namespace: {{ .Release.Namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+  {{- if .Values.authorization.tenantServiceIngress.annotations }}
+    {{- range $key, $value := .Values.authorization.tenantServiceIngress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.authorization.tenantServiceIngress.ingressClassName }}
   tls:
   - hosts:
       - tenant.{{ .Values.authorization.hostname }}
+      {{- if .Values.authorization.tenantServiceIngress.hosts  }}
+      {{- range .Values.authorization.tenantServiceIngress.hosts }}
+      - {{ tpl . $}}
+      {{- end }}
+      {{- end}}
     {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
     secretName: user-provided-tls
     {{- else }}
@@ -65,6 +87,20 @@ spec:
             name: tenant-service
             port:
               number: 50051
+  {{- if .Values.authorization.tenantServiceIngress.hosts  }}
+  {{- range .Values.authorization.tenantServiceIngress.hosts }}
+  - host: {{ tpl . $}}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tenant-service
+            port:
+              number: 50051
+  {{- end }}
+  {{- end}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -72,12 +108,21 @@ metadata:
   name: role-service
   namespace: {{ .Release.Namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+  {{- if .Values.authorization.roleServiceIngress.annotations }}
+    {{- range $key, $value := .Values.authorization.roleServiceIngress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.authorization.roleServiceIngress.ingressClassName }}
   tls:
   - hosts:
       - role.{{ .Values.authorization.hostname }}
+      {{- if .Values.authorization.roleServiceIngress.hosts  }}
+      {{- range .Values.authorization.roleServiceIngress.hosts }}
+      - {{ tpl . $}}
+      {{- end }}
+      {{- end}}
     {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
     secretName: user-provided-tls
     {{- else }}
@@ -94,3 +139,17 @@ spec:
             name: role-service
             port:
               number: 50051
+  {{- if .Values.authorization.roleServiceIngress.hosts  }}
+  {{- range .Values.authorization.roleServiceIngress.hosts }}
+  - host: {{ tpl . $}}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: role-service
+            port:
+              number: 50051
+  {{- end}}
+  {{- end}}
