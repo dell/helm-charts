@@ -49,12 +49,11 @@ authorization:
 
     # additional host rules for the tenant-service ingress
     hosts: []
-    # - namespace-ingress-nginx-controller.namespace.svc.cluster.local
 
     # additional annotiations for the tenant-service ingress
     # an annotation supporting grpc for your ingress controller must be supplied, if applicable
-    annotations:
-      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    annotations: {}
+      # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
 
   # role-service ingress configuration
   roleServiceIngress:
@@ -62,12 +61,11 @@ authorization:
 
     # additional host rules for the tenant-service ingress
     hosts: []
-    # - namespace-ingress-nginx-controller.namespace.svc.cluster.local
 
     # additional annotiations for the role-service ingress
     # an annotation supporting grpc for your ingress controller must be supplied, if applicable
-    annotations:
-      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    annotations: {}
+      # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
 
 redis:
   images:
