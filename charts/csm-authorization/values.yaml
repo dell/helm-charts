@@ -34,18 +34,18 @@ authorization:
 
   # proxy-server ingress configuration
   proxyServerIngress:
-    ingressClassName: # nginx
+    ingressClassName:  # nginx
 
     # additional host rules for the proxy-server ingress
     hosts: []
-      #- namespace-ingress-nginx-controller.namespace.svc.cluster.local
+      # - namespace-ingress-nginx-controller.namespace.svc.cluster.local
 
     # additional annotiations for the proxy-server ingress
     annotations: {}
 
   # tenant-service ingress configuration
   tenantServiceIngress:
-    ingressClassName: # nginx
+    ingressClassName:  # nginx
 
     # additional host rules for the tenant-service ingress
     hosts: []
