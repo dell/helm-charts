@@ -153,3 +153,32 @@ spec:
               number: 50051
   {{- end}}
   {{- end}}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: storage-service
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - storage.{{ .Values.authorization.hostname }}
+      {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+      secretName: user-provided-tls
+      {{- else }}
+      secretName: karavi-selfsigned-tls
+      {{- end}}
+  rules:
+    - host: storage.{{ .Values.authorization.hostname }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: storage-service
+                port:
+                  number: 50051
