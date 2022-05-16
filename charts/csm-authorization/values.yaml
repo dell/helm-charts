@@ -14,7 +14,7 @@ authorization:
     proxyService: dellemc/csm-authorization-proxy:nightly
     tenantService: dellemc/csm-authorization-tenant:nightly
     roleService: dellemc/csm-authorization-role:nightly
-    storageService: dellemc/csm-authorization-role:nightly
+    storageService: dellemc/csm-authorization-storage:nightly
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
@@ -64,6 +64,18 @@ authorization:
     hosts: []
 
     # additional annotiations for the role-service ingress
+    # an annotation supporting grpc for your ingress controller must be supplied, if applicable
+    annotations: {}
+      # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+
+  # storage-service ingress configuration
+  storageServiceIngress:
+    ingressClassName: nginx
+
+    # additional host rules for the tenant-service ingress
+    hosts: []
+
+    # additional annotiations for the storage-service ingress
     # an annotation supporting grpc for your ingress controller must be supplied, if applicable
     annotations: {}
       # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"

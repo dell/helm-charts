@@ -160,25 +160,48 @@ metadata:
   name: storage-service
   namespace: {{ .Release.Namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+  {{- if .Values.authorization.storageServiceIngress.annotations }}
+    {{- range $key, $value := .Values.authorization.storageServiceIngress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.authorization.storageServiceIngress.ingressClassName }}
   tls:
-    - hosts:
-        - storage.{{ .Values.authorization.hostname }}
-      {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
-      secretName: user-provided-tls
-      {{- else }}
-      secretName: karavi-selfsigned-tls
+  - hosts:
+      - storage.{{ .Values.authorization.hostname }}
+      {{- if .Values.authorization.storageServiceIngress.hosts  }}
+      {{- range .Values.authorization.storageServiceIngress.hosts }}
+      - {{ tpl . $}}
+      {{- end }}
       {{- end}}
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end}}
   rules:
-    - host: storage.{{ .Values.authorization.hostname }}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: storage-service
-                port:
-                  number: 50051
+  - host: storage.{{ .Values.authorization.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: storage-service
+            port:
+              number: 50051
+  {{- if .Values.authorization.storageServiceIngress.hosts  }}
+  {{- range .Values.authorization.storageServiceIngress.hosts }}
+  - host: {{ tpl . $}}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: storage-service
+            port:
+              number: 50051
+  {{- end}}
+  {{- end}}
