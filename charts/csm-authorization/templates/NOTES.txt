@@ -16,5 +16,8 @@ LoadBalancer host rules for tenant-service:
 LoadBalancer host rules for role-service:
 - role.{{ .Values.authorization.hostname }}
 
+LoadBalancer host rules for storage-service:
+- storage.{{ .Values.authorization.hostname }}
+
 authorization.proxyHost value for a CSI Driver examples:
 - {{ .Release.Name }}-ingress-nginx-controller.{{ .Release.Namespace }}.svc.cluster.local:443 (CSI Driver in the same cluster as CSM Authorization)

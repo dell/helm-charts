@@ -54,6 +54,7 @@ spec:
   - {{ .Values.authorization.hostname }}
   - tenant.{{ .Values.authorization.hostname }}
   - role.{{ .Values.authorization.hostname }}
+  - storage.{{ .Values.authorization.hostname }}
   - {{ .Release.Name }}-ingress-nginx-controller.{{ .Release.Namespace }}.svc.cluster.local
   issuerRef:
     name: selfsigned
