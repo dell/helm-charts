@@ -10,7 +10,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: Group
-  name: system:serviceaccounts:karavi
+  name: system:serviceaccounts:{{ .Release.Namespace }}
   apiGroup: rbac.authorization.k8s.io
 ---
 # Define role for OPA/kube-mgmt to update configmaps with policy status.
@@ -87,7 +87,7 @@ spec:
         image: {{ required "Must provide the opaKubeMgmt image." .Values.authorization.images.opaKubeMgmt }}
         imagePullPolicy: IfNotPresent
         args:
-        - "--policies=karavi"
+        - "--policies={{ .Release.Namespace }}"
         - "--enable-data"
       volumes:
       - name: config-volume

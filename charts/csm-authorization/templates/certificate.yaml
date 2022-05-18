@@ -55,7 +55,26 @@ spec:
   - tenant.{{ .Values.authorization.hostname }}
   - role.{{ .Values.authorization.hostname }}
   - storage.{{ .Values.authorization.hostname }}
-  - {{ .Release.Name }}-ingress-nginx-controller.{{ .Release.Namespace }}.svc.cluster.local
+  {{- if .Values.authorization.proxyServerIngress.hosts  }}
+  {{- range .Values.authorization.proxyServerIngress.hosts }}
+  - {{ tpl . $}}
+  {{- end }}
+  {{- end}}
+  {{- if .Values.authorization.tenantServiceIngress.hosts  }}
+  {{- range .Values.authorization.tenantServiceIngress.hosts }}
+  - {{ tpl . $}}
+  {{- end }}
+  {{- end}}
+  {{- if .Values.authorization.roleServiceIngress.hosts  }}
+  {{- range .Values.authorization.roleServiceIngress.hosts }}
+  - {{ tpl . $}}
+  {{- end }}
+  {{- end}}
+  {{- if .Values.authorization.storageServiceIngress.hosts  }}
+  {{- range .Values.authorization.storageServiceIngress.hosts }}
+  - {{ tpl . $}}
+  {{- end }}
+  {{- end}}
   issuerRef:
     name: selfsigned
     kind: Issuer
