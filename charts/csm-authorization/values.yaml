@@ -51,8 +51,8 @@ authorization:
     # additional host rules for the tenant-service ingress
     hosts: []
 
-    # additional annotations for the tenant-service ingress
-    # an annotation supporting grpc for your ingress controller must be supplied, if applicable
+    # additional annotiations for the tenant-service ingress
+    # if applicable, an annotation supporting grpc for your ingress controller must be supplied
     annotations: {}
       # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
 
@@ -77,6 +77,8 @@ authorization:
 
     # additional annotations for the storage-service ingress
     # an annotation supporting grpc for your ingress controller must be supplied, if applicable
+    # additional annotiations for the role-service ingress
+    # if applicable, an annotation supporting grpc for your ingress controller must be supplied
     annotations: {}
       # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
 
