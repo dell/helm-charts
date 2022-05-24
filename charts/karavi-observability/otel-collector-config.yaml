@@ -2,8 +2,7 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 0.0.0.0:55680
-        tls:
+        tls_settings:
           cert_file: /etc/ssl/certs/tls.crt
           key_file: /etc/ssl/certs/tls.key
   
