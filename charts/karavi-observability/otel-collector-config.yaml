@@ -2,15 +2,16 @@ receivers:
   otlp:
     protocols:
       grpc:
-        tls_settings:
+        endpoint: 0.0.0.0:55680
+        tls:
           cert_file: /etc/ssl/certs/tls.crt
           key_file: /etc/ssl/certs/tls.key
-  
+
 exporters:
   prometheus:
     endpoint: 0.0.0.0:8889
   logging:
-  
+
 extensions:
   health_check: {}
   
@@ -21,4 +22,3 @@ service:
       receivers: [otlp]
       processors: []
       exporters: [logging,prometheus]
-
