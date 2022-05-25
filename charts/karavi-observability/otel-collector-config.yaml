@@ -21,4 +21,3 @@ service:
       receivers: [otlp]
       processors: []
       exporters: [logging,prometheus]
-
