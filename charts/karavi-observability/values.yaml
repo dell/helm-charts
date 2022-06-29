@@ -2,7 +2,7 @@ karaviTopology:
   image: dellemc/csm-topology:v1.2.0
   enabled: true
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
-  provisionerNames: csi-vxflexos.dellemc.com,csi-powerstore.dellemc.com
+  provisionerNames: csi-vxflexos.dellemc.com,csi-powerstore.dellemc.com,csi-isilon.dellemc.com
   service:
     type: ClusterIP
   logLevel: INFO
