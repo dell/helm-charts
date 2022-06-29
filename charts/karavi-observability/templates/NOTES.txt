@@ -37,3 +37,15 @@ CSM Metrics for PowerStore
     From inside the Kubernetes cluster: otel-collector:8443
 
 {{- end}}
+
+{{ if .Values.karaviMetricsPowerscale.enabled -}}
+
+CSM Metrics for PowerScale
+
+  The CSM Metrics for PowerScale deployment has been successfully installed.
+
+  Provisioner Names: {{ .Values.karaviMetricsPowerscale.provisionerNames }}
+  Prometheus Scrape Target: 
+    From inside the Kubernetes cluster: otel-collector:8443
+
+{{- end}}
