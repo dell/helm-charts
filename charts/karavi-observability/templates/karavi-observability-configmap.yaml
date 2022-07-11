@@ -65,3 +65,27 @@ data:
 
 {{ end }}
 
+---
+
+{{ if .Values.karaviMetricsPowerscale.enabled }}
+
+apiVersion: v1 
+kind: ConfigMap 
+metadata:
+  name: karavi-metrics-powerscale-configmap
+data:
+  karavi-metrics-powerscale.yaml : |
+    COLLECTOR_ADDR: {{ .Values.karaviMetricsPowerscale.collectorAddr }}
+    PROVISIONER_NAMES: {{ .Values.karaviMetricsPowerscale.provisionerNames }}
+    POWERSCALE_VOLUME_IO_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerscale.volumePollFrequencySeconds }}"
+    POWERSCALE_VOLUME_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerscale.volumeMetricsEnabled }}"
+    POWERSCALE_MAX_CONCURRENT_QUERIES: "{{ .Values.karaviMetricsPowerscale.concurrentPowerscaleQueries }}"
+    POWERSCALE_CLUSTER_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerscale.clusterPollFrequencySeconds }}"
+    POWERSCALE_CLUSTER_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerscale.clusterMetricsEnabled }}"
+    POWERSCALE_ISICLIENT_INSECURE: "{{ .Values.karaviMetricsPowerscale.isiClientOptions.isiSkipCertificateValidation }}"
+    POWERSCALE_ISICLIENT_AUTH_TYPE: "{{ .Values.karaviMetricsPowerscale.isiClientOptions.isiAuthType }}"
+    POWERSCALE_ISICLIENT_VERBOSE: "{{ .Values.karaviMetricsPowerscale.isiClientOptions.isiLogVerbose }}"
+    LOG_LEVEL: "{{ .Values.karaviMetricsPowerscale.logLevel }}"
+    LOG_FORMAT: "{{ .Values.karaviMetricsPowerscale.logFormat }}"
+
+{{ end }}

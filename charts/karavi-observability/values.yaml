@@ -78,6 +78,39 @@ karaviMetricsPowerstore:
     serviceName: metrics-powerstore
     probability: 0.0
 
+karaviMetricsPowerscale:
+  image: dellemc/csm-metrics-powerscale:nightly
+  enabled: true
+  collectorAddr: otel-collector:55680
+  # comma separated list of provisioner names (ex: csi-isilon.dellemc.com)
+  provisionerNames: csi-isilon.dellemc.com
+  # set polling frequency to the PowerScale cluster to get metrics data
+  volumePollFrequencySeconds: 20
+  clusterPollFrequencySeconds: 30
+  # set volumeMetricsEnabled to "false" to disable collection of Volume metrics
+  volumeMetricsEnabled: "true"
+  # set clusterMetricsEnabled to "false" to disable collection of Cluster metrics
+  clusterMetricsEnabled: "true"
+  # set the the default max concurrent queries to PowerScale
+  concurrentPowerscaleQueries: 10
+  # set the default endpoint for PowerScale service
+  endpoint: karavi-metrics-powerscale
+  service:
+    type: ClusterIP
+  logLevel: INFO
+  logFormat: text
+  # isiClientOptions to access Powerscale OneFS API server
+  isiClientOptions:
+    # set isiSkipCertificateValidation to true/false to skip/verify OneFS API server's certificates
+    # default isiSkipCertificateValidation: true to skip OneFS API server's certificates
+    isiSkipCertificateValidation: true
+    # set isiAuthType to 0/1 to enables session-based/basic Authentication
+    # default isiAuthType: 0 to use session-based Authentication
+    isiAuthType: 1
+    # set isiLogVerbose to 0/1/2 decide High/Medium/Low content of the OneFS REST API message should be logged in debug level logs
+    # default isiLogVerbose: 0 to log full content of the HTTP request and response
+    isiLogVerbose: 0
+
 otelCollector:
   image: otel/opentelemetry-collector:0.42.0
   service:

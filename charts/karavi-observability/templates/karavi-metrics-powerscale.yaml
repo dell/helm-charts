@@ -1,0 +1,81 @@
+{{ if .Values.karaviMetricsPowerscale.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: karavi-metrics-powerscale
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  name: karavi-metrics-powerscale
+spec:
+  type: {{ .Values.karaviMetricsPowerscale.service.type }}
+  ports:
+  - name: karavi-metrics-powerscale
+    port: 8080
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: karavi-metrics-powerscale
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karavi-metrics-powerscale
+  labels:
+    app.kubernetes.io/name: karavi-metrics-powerscale
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: karavi-metrics-powerscale
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: karavi-metrics-powerscale
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccount: {{ .Release.Name }}-metrics-powerscale-controller
+      containers:
+      - name: karavi-metrics-powerscale
+        image: {{ .Values.karaviMetricsPowerscale.image }}
+        resources: {}
+        env:
+        - name: POWERSCALE_METRICS_ENDPOINT	
+          value: "{{ .Values.karaviMetricsPowerscale.endpoint }}"
+        - name: POWERSCALE_METRICS_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: TLS_ENABLED
+          value: "true"
+        volumeMounts:
+        - name: isilon-creds
+          mountPath: /isilon-creds
+        - name: tls-secret
+          mountPath: /etc/ssl/certs
+          readOnly: true
+        - name: karavi-metrics-powerscale-configmap
+          mountPath: /etc/config
+      volumes:
+      - name: isilon-creds
+        secret:
+          secretName: isilon-creds
+      - name: tls-secret
+        secret:
+          secretName: otel-collector-tls
+          items:
+            - key: tls.crt
+              path: cert.crt
+      - name: karavi-metrics-powerscale-configmap
+        configMap:
+          name: karavi-metrics-powerscale-configmap
+      restartPolicy: Always
+status: {}
+
+{{ end }}
+
