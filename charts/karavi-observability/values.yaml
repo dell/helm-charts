@@ -84,13 +84,16 @@ karaviMetricsPowerscale:
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-isilon.dellemc.com)
   provisionerNames: csi-isilon.dellemc.com
-  # set polling frequency to the PowerScale cluster to get metrics data
-  volumePollFrequencySeconds: 20
-  clusterPollFrequencySeconds: 30
-  # set volumeMetricsEnabled to "false" to disable collection of Volume metrics
-  volumeMetricsEnabled: "true"
-  # set clusterMetricsEnabled to "false" to disable collection of Cluster metrics
-  clusterMetricsEnabled: "true"
+  # set capacityMetricsEnabled to "false" to disable collection of capacity metrics
+  capacityMetricsEnabled: "true"
+  # set performanceMetricsEnabled to "false" to disable collection of performance metrics
+  performanceMetricsEnabled: "true"
+  # set polling frequency to get cluster capacity metrics data
+  clusterCapacityPollFrequencySeconds: 30
+  # set polling frequency to get cluster performance data
+  clusterPerformancePollFrequencySeconds: 20
+  # set polling frequency to get quota capacity metrics data
+  quotaCapacityPollFrequencySeconds: 30
   # set the the default max concurrent queries to PowerScale
   concurrentPowerscaleQueries: 10
   # set the default endpoint for PowerScale service
