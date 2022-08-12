@@ -113,6 +113,20 @@ karaviMetricsPowerscale:
     # set isiLogVerbose to 0/1/2 decide High/Medium/Low content of the OneFS REST API message should be logged in debug level logs
     # default isiLogVerbose: 0 to log full content of the HTTP request and response
     isiLogVerbose: 0
+  authorization:
+    enabled: false
+    # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
+    # Default value: dellemc/csm-authorization-sidecar:v1.3.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.3.0
+    # proxyHost: hostname of the csm-authorization server
+    # Default value: None
+    proxyHost:
+    # skipCertificateValidation: certificate validation of the csm-authorization server
+    # Allowed Values:
+    #   "true" - TLS certificate verification will be skipped
+    #   "false" - TLS certificate will be verified
+    # Default value: "true"
+    skipCertificateValidation: true
 
 otelCollector:
   image: otel/opentelemetry-collector:0.42.0
