@@ -11,10 +11,10 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v1.3.0
-    tenantService: dellemc/csm-authorization-tenant:v1.3.0
-    roleService: dellemc/csm-authorization-role:v1.3.0
-    storageService: dellemc/csm-authorization-storage:v1.3.0
+    proxyService: dellemc/csm-authorization-proxy:v1.4.0
+    tenantService: dellemc/csm-authorization-tenant:v1.4.0
+    roleService: dellemc/csm-authorization-role:v1.4.0
+    storageService: dellemc/csm-authorization-storage:v1.4.0
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
