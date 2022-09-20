@@ -23,7 +23,7 @@ licenseName: license
 # app-mobility requires velero. If velero is already installed on the cluster, specify the name of the secret in velero namespace that has credentials to access object store.
 # Default value is "cloud-credentials".
 objectstore:
-  secretName: 
+  secretName:
 
 # app-mobility requires velero. If velero is not already present in cluster, set enabled to true to install it too.
 velero:
@@ -49,8 +49,8 @@ velero:
   configuration:
     provider: aws
     backupStorageLocation:
-      name: default 
-      bucket: velero-bucket 
+      name: default
+      bucket: velero-bucket
       config: {}
       #  region:
       #  s3ForcePathStyle:
@@ -76,4 +76,3 @@ velero:
   #  volumeMounts:
   #  - mountPath: /target
   #    name: plugins
-
