@@ -75,7 +75,7 @@ spec:
         env:
           - name: PROXY_HOST
             value: "{{ .Values.karaviMetricsPowerflex.authorization.proxyHost }}"
-          - name: INSECURE
+          - name: SKIP_CERTIFICATE_VALIDATION
             value: "{{ .Values.karaviMetricsPowerflex.authorization.skipCertificateValidation }}"
           - name: PLUGIN_IDENTIFIER
             value: powerflex
