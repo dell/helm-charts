@@ -79,7 +79,7 @@ karaviMetricsPowerstore:
     probability: 0.0
 
 karaviMetricsPowerscale:
-  image: dellemc/csm-metrics-powerscale:v1.3.0
+  image: dellemc/csm-metrics-powerscale:v1.0.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-isilon.dellemc.com)
