@@ -33,7 +33,7 @@ allowlist = [
 		"POST /api/instances/Volume::[a-f0-9]+/action/removeVolume/"
 ]
 
-default allow = ***REMOVED***
+default allow = true
 allow {
 	regex.match(allowlist[_], sprintf("%s %s", [input.method, input.url]))
 }
