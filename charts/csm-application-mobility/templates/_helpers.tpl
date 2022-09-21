@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "app-mobility.name" -}}
+{{- define "csm-application-mobility.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "app-mobility.fullname" -}}
+{{- define "csm-application-mobility.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "app-mobility.chart" -}}
+{{- define "csm-application-mobility.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "app-mobility.labels" -}}
-helm.sh/chart: {{ include "app-mobility.chart" . }}
-{{ include "app-mobility.selectorLabels" . }}
+{{- define "csm-application-mobility.labels" -}}
+helm.sh/chart: {{ include "csm-application-mobility.chart" . }}
+{{ include "csm-application-mobility.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "app-mobility.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "app-mobility.name" . }}
+{{- define "csm-application-mobility.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "csm-application-mobility.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "app-mobility.serviceAccountName" -}}
+{{- define "csm-application-mobility.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "app-mobility.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "csm-application-mobility.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
@@ -80,7 +80,7 @@ Create the name of the velero namespace.
 {{/*
 Create the name of the license.
 */}}
-{{- define "app-mobility.licenseName" -}}
+{{- define "csm-application-mobility.licenseName" -}}
 {{- if .Values.licenseName -}}
   {{- .Values.licenseName -}}
 {{- else -}}
