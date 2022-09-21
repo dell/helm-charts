@@ -1,0 +1,25 @@
+apiVersion: v2
+name: csm-application-mobility
+description: A Helm chart deploying Application Mobility
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 0.1.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.
+appVersion: "0.1.0"
+
+dependencies:
+- name: cert-manager
+  version: 1.8.2
+  repository: https://charts.jetstack.io
+  condition: cert-manager.enabled
+- name: velero
+  version: 2.29.8
+  repository: https://vmware-tanzu.github.io/helm-charts
+  condition: velero.enabled

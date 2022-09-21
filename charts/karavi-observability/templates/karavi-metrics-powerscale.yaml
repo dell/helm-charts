@@ -1,0 +1,131 @@
+{{ if .Values.karaviMetricsPowerscale.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: karavi-metrics-powerscale
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  name: karavi-metrics-powerscale
+spec:
+  type: {{ .Values.karaviMetricsPowerscale.service.type }}
+  ports:
+  - name: karavi-metrics-powerscale
+    port: 8080
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: karavi-metrics-powerscale
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karavi-metrics-powerscale
+  labels:
+    app.kubernetes.io/name: karavi-metrics-powerscale
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  {{- if hasKey .Values "karaviMetricsPowerscale.authorization" }}
+  {{- if eq .Values.karaviMetricsPowerscale.authorization.enabled true }}
+  annotations:
+    com.dell.karavi-authorization-proxy: "true"
+  {{ end }}
+  {{ end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: karavi-metrics-powerscale
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: karavi-metrics-powerscale
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccount: {{ .Release.Name }}-metrics-powerscale-controller
+      containers:
+      - name: karavi-metrics-powerscale
+        image: {{ .Values.karaviMetricsPowerscale.image }}
+        resources: {}
+        env:
+        - name: POWERSCALE_METRICS_ENDPOINT	
+          value: "{{ .Values.karaviMetricsPowerscale.endpoint }}"
+        - name: POWERSCALE_METRICS_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: TLS_ENABLED
+          value: "true"
+        volumeMounts:
+        - name: isilon-creds
+          mountPath: /isilon-creds
+        - name: tls-secret
+          mountPath: /etc/ssl/certs
+          readOnly: true
+        - name: karavi-metrics-powerscale-configmap
+          mountPath: /etc/config
+      {{- if hasKey .Values.karaviMetricsPowerscale "authorization" }}
+      {{- if eq .Values.karaviMetricsPowerscale.authorization.enabled true }}
+      - name: karavi-authorization-proxy
+        imagePullPolicy: IfNotPresent
+        image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowerscale.authorization.sidecarProxyImage }}
+        env:
+          - name: PROXY_HOST
+            value: "{{ .Values.karaviMetricsPowerscale.authorization.proxyHost }}"
+          - name: SKIP_CERTIFICATE_VALIDATION
+            value: "{{ .Values.karaviMetricsPowerscale.authorization.skipCertificateValidation }}"
+          - name: PLUGIN_IDENTIFIER
+            value: powerscale
+          - name: ACCESS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: isilon-proxy-authz-tokens
+                key: access
+          - name: REFRESH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: isilon-proxy-authz-tokens
+                key: refresh
+        volumeMounts:
+          - name: karavi-authorization-config
+            mountPath: /etc/karavi-authorization/config
+          - name: proxy-server-root-certificate
+            mountPath: /etc/karavi-authorization/root-certificates
+          - name: isilon-config-params
+            mountPath: /etc/karavi-authorization
+      {{ end }}
+      {{ end }}
+      volumes:
+      - name: isilon-creds
+        secret:
+          secretName: isilon-creds
+      - name: tls-secret
+        secret:
+          secretName: otel-collector-tls
+          items:
+            - key: tls.crt
+              path: cert.crt
+      - name: karavi-metrics-powerscale-configmap
+        configMap:
+          name: karavi-metrics-powerscale-configmap
+     {{- if hasKey .Values.karaviMetricsPowerscale "authorization" }}
+     {{- if eq .Values.karaviMetricsPowerscale.authorization.enabled true }}
+      - name: karavi-authorization-config
+        secret:
+          secretName: isilon-karavi-authorization-config
+      - name: proxy-server-root-certificate
+        secret:
+          secretName: isilon-proxy-server-root-certificate
+      - name: isilon-config-params
+        configMap:
+          name: isilon-config-params
+      {{ end }}
+      {{ end }}
+      restartPolicy: Always
+status: {}
+
+{{ end }}
+
