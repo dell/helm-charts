@@ -23,7 +23,7 @@ licenseName: license
 # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the name of the secret in velero namespace that has credentials to access object store.
 # Default value is "cloud-credentials".
 objectstore:
-  secretName: 
+  secretName:
 
 # csm-application-mobility requires velero. If velero is not already present in cluster, set enabled to true to install it too.
 velero:
