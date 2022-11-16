@@ -360,4 +360,23 @@ rules:
   - patch
   - update
   - watch
-
+- apiGroups:
+    - mobility.storage.dell.com
+  resources:
+    - schedules
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+    - mobility.storage.dell.com
+  resources:
+    - schedules/status
+  verbs:
+    - get
+    - patch
+    - update
