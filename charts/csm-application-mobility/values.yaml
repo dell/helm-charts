@@ -31,6 +31,9 @@ velero:
   use-volume-snapshots: false
   deployRestic: true
   cleanUpCRDs: true
+  restic:
+    # Set to true if installing on OpenShift
+    privileged: false
 
   credentials:
 #    Optionally, specify the name of the pre-created secret in the release namespace that holds the object store credentials. Either this or secretContents should be specified.
