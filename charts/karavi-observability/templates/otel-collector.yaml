@@ -78,6 +78,11 @@ spec:
       containers:
       - name: nginx-proxy
         image: {{ .Values.otelCollector.nginxProxy.image }}
+        ports:
+        - containerPort: 8443
+          name: exporter-https
+        - containerPort: 55680
+          name: receiver
         volumeMounts:
           - name: tls-secret
             mountPath: /etc/ssl/certs
