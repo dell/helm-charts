@@ -1,0 +1,21 @@
+# Rekey controller image name.
+image: dellemc/csm-encryption-rekey-controller:v0.1.0
+
+# Rekey controller image pull policy.
+# Allowed values:
+#  Always: Always pull the image.
+#  IfNotPresent: Only pull the image if it does not already exist on the node.
+#  Never: Never pull the image.
+imagePullPolicy: IfNotPresent
+
+# logLevel: Log level of the rekey controller.
+# Allowed values: "error", "warning", "info", "debug", "trace".
+logLevel: "info"
+
+# This value is required and must match encryption.pluginName value
+# of the corresponding Dell CSI driver.
+provisioner:
+
+# This value is required and must match encryption.apiPort value
+# of the corresponding Dell CSI driver.
+port:
