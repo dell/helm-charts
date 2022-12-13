@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Release.Namespace }}-encryption-rekey-controller
+  namespace: {{ .Release.Namespace }}
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Namespace }}-encryption-rekey-controller
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csm-encryption-rekey-controller
+  template:
+    metadata:
+      labels:
+        app: csm-encryption-rekey-controller
+    spec:
+      serviceAccount: {{ .Release.Namespace }}-encryption-rekey-controller
+      containers:
+        - name: rekey-controller
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args:
+            - --kubeconfig=/.kube/config
+            - --provisioner={{ .Values.provisioner }}
+            - --port={{ .Values.port }}
+            - --logLevel={{ .Values.logLevel }}
+          volumeMounts:
+            - name: kube-config
+              mountPath: /.kube
+      volumes:
+        - name: kube-config
+          secret:
+            secretName: cluster-kube-config
