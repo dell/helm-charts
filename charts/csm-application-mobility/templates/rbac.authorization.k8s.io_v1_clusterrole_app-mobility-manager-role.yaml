@@ -261,6 +261,12 @@ rules:
 - apiGroups:
   - velero.io
   resources:
+  - backups/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - velero.io
+  resources:
   - backupstoragelocations
   verbs:
   - get
@@ -354,4 +360,23 @@ rules:
   - patch
   - update
   - watch
-
+- apiGroups:
+    - mobility.storage.dell.com
+  resources:
+    - schedules
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+    - mobility.storage.dell.com
+  resources:
+    - schedules/status
+  verbs:
+    - get
+    - patch
+    - update
