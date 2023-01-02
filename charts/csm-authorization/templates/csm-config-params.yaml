@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: csm-config-params
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 data:
   csm-config-params.yaml: |
     LOG_LEVEL: {{ .Values.authorization.logLevel }}

@@ -8,3 +8,4 @@ dependencies:
 - name: cert-manager
   version: 1.10.0
   repository: https://charts.jetstack.io
+  condition: cert-manager.enabled

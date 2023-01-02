@@ -136,7 +136,9 @@ otelCollector:
     image: nginxinc/nginx-unprivileged:1.20
 
 cert-manager:
+  enabled: false
   startupapicheck:
     enabled: false
     serviceAccount:
       create: false
+# namespace: observability-ns

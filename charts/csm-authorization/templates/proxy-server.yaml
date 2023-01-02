@@ -10,14 +10,14 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: Group
-  name: system:serviceaccounts:{{ .Release.Namespace }}
+  name: system:serviceaccounts:{{ include "custom.namespace" . }}
   apiGroup: rbac.authorization.k8s.io
 ---
 # Define role for OPA/kube-mgmt to update configmaps with policy status.
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   name: configmap-modifier
 rules:
 - apiGroups: [""]
@@ -28,7 +28,7 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   name: opa-configmap-modifier
 roleRef:
   kind: Role
@@ -36,14 +36,14 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: Group
-  name: system:serviceaccounts:{{ .Release.Namespace }}
+  name: system:serviceaccounts:{{ include "custom.namespace" . }}
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: proxy-server
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   labels:
     app: proxy-server
 spec:
@@ -61,8 +61,8 @@ spec:
         image:  {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}
         imagePullPolicy: Always
         args:
-          - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
-          - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
+          - "--redis-host=redis.{{ include "custom.namespace" . }}.svc.cluster.local:6379"
+          - "--tenant-service=tenant-service.{{ include "custom.namespace" . }}.svc.cluster.local:50051"
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -87,7 +87,7 @@ spec:
         image: {{ required "Must provide the opaKubeMgmt image." .Values.authorization.images.opaKubeMgmt }}
         imagePullPolicy: IfNotPresent
         args:
-        - "--policies={{ .Release.Namespace }}"
+        - "--policies={{ include "custom.namespace" . }}"
         - "--enable-data"
       volumes:
       - name: config-volume
@@ -104,7 +104,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: proxy-server
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 spec:
   selector:
     app: proxy-server

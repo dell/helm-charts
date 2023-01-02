@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tenant-service
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   labels:
     app: tenant-service
 spec:
@@ -20,7 +20,7 @@ spec:
         image: {{ required "Must provide the tenant-service image." .Values.authorization.images.tenantService }}
         imagePullPolicy: Always
         args:
-          - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
+          - "--redis-host=redis.{{ include "custom.namespace" . }}.svc.cluster.local:6379"
         ports:
         - containerPort: 50051
           name: grpc
@@ -41,7 +41,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tenant-service
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 spec:
   selector:
     app: tenant-service

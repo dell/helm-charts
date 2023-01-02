@@ -1,0 +1,21 @@
+dependencies:
+- name: csi-powerstore
+  repository: file://../csi-powerstore
+  version: 2.5.0
+- name: csm-replication
+  repository: file://../csm-replication
+  version: 1.3.0
+- name: karavi-observability
+  repository: file://../karavi-observability
+  version: 1.4.0
+- name: cert-manager
+  repository: https://charts.jetstack.io
+  version: v1.10.0
+- name: csm-application-mobility
+  repository: file://../csm-application-mobility
+  version: 0.2.0
+- name: csm-authorization
+  repository: file://../csm-authorization
+  version: 1.5.0
+digest: sha256:8d592a0f5b4fa20e8dd59272be735785777c2a18a168a33d32030b9bdba13f5f
+generated: "2022-12-22T07:47:22.116170004-05:00"
