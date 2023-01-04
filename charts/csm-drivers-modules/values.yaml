@@ -1,6 +1,6 @@
 #
 #
-# Copyright © 2020-2022 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright © 2023 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +13,11 @@
 # limitations under the License.
 #
 #
-
 ## K8S/DRIVER ATTRIBUTES
 ########################
 csi-powerstore:
   enabled: false
-  #namespace: powerstore-ns
+  namespace: 
   version: "v2.5.0"
   images:
     driverRepository: dellemc
@@ -48,13 +47,13 @@ csi-powerstore:
 ##########################################
 csm-replication:
   enabled: false
-  #namespace: replication-ns
+  namespace: 
 
 ## K8S/Observability Module ATTRIBUTES
 ##########################################
 karavi-observability:
   enabled: false
-  #namespace: observability-ns
+  namespace: 
   karaviMetricsPowerstore:
     enabled: false
   karaviMetricsPowerflex:
@@ -66,7 +65,7 @@ karavi-observability:
 ########################################## 
 csm-application-mobility:
   enabled: false
-  #namespace: app-ns
+  namespace: 
   
   # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the namespace in which velero is deployed. Default value is "velero"
   veleroNamespace: velero
@@ -77,18 +76,18 @@ csm-application-mobility:
       secretContents:
         cloud: |
           [default]
-          #aws_access_key_id=access_key
-          #aws_secret_access_key=secret_access_key
+          aws_access_key_id=access_key
+          aws_secret_access_key=secret_access_key
     configuration:
       provider: aws
       backupStorageLocation:
         name: default
-        #bucket: velero-bucket
+        bucket: velero-bucket
         config: {}
-          #region: minio
-          #s3ForcePathStyle: true
-          #s3Url: http://10.225.105.43:9000
-          #publicUrl: http://10.225.105.43:9000
+          #region: 
+          #s3ForcePathStyle: 
+          #s3Url: 
+          #publicUrl:
     initContainers:
     - name: dell-custom-velero-plugin
       image: dellemc/csm-application-mobility-velero-plugin:v0.2.0
@@ -105,20 +104,20 @@ csm-application-mobility:
 ##########################################         
 csm-authorization:
   enabled: false
-  #namespace: author-ns
+  namespace: 
   redis:
-    #namespace: author-ns
-    #storageClass: powerstore-topology-iscsi
+    namespace: 
+    storageClass: 
 
 ## K8S/Cert-manager ATTRIBUTES
 ########################################## 
 cert-manager: 
   enabled: false
-  #namespace: cert-manager
+  namespace: 
   
-## K8S/Cert-manager ATTRIBUTES
+## K8S/Powermax ATTRIBUTES
 ##########################################
 #csi-powermax:
   #enabled: false
-  #namespace: powermax-ns
+  #namespace: 
   
