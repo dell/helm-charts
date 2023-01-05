@@ -1,9 +1,0 @@
-dependencies:
-- name: cert-manager
-  repository: https://charts.jetstack.io
-  version: v1.8.2
-- name: velero
-  repository: https://vmware-tanzu.github.io/helm-charts
-  version: 2.29.8
-digest: sha256:3804e4d54685ff26d4e9dd4612e0083f962d8047bb60c28796ce2c76f08b56f2
-generated: "2022-12-16T03:41:21.526365991-05:00"
