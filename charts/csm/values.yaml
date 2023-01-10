@@ -60,6 +60,8 @@ karavi-observability:
     enabled: false
   karaviMetricsPowerscale:
     enabled: false
+  cert-manager:
+    enabled: false
 
 ## K8S/Application-mobility Module ATTRIBUTES
 ########################################## 

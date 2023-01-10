@@ -14,7 +14,7 @@
 #
 #
 apiVersion: v2
-name: csm-drivers-modules
+name: csm
 description: A Helm chart for csm-drivers-modules 
 
 # A chart can be either an 'application' or a 'library' chart.
