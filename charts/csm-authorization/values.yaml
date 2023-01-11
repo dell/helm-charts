@@ -6,7 +6,7 @@ ingress-nginx:
 # if enabled, cert-manager will be deployed
 # if cert-manager is already deployed, keep this false
 cert-manager:
-  enabled: false
+  enabled: true
 
 authorization:
   # images to use in installation

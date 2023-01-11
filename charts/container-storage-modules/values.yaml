@@ -107,6 +107,8 @@ csm-application-mobility:
 csm-authorization:
   enabled: false
   namespace: 
+  cert-manager:
+    enabled: false
   redis:
     namespace: 
     storageClass: 

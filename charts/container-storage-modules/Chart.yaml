@@ -14,8 +14,8 @@
 #
 #
 apiVersion: v2
-name: csm
-description: A Helm chart for csm-drivers-modules 
+name: container-storage-modules
+description: Container Storage Modules(https://github.com/dell/csm) open source suite of Kubernetes storage enablers for Dell Technologies storage products.
 
 # A chart can be either an 'application' or a 'library' chart.
 #
