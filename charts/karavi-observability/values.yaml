@@ -94,7 +94,7 @@ karaviMetricsPowerscale:
   clusterPerformancePollFrequencySeconds: 20
   # set polling frequency to get quota capacity metrics data
   quotaCapacityPollFrequencySeconds: 30
-  # set the the default max concurrent queries to PowerScale
+  # set the default max concurrent queries to PowerScale
   concurrentPowerscaleQueries: 10
   # set the default endpoint for PowerScale service
   endpoint: karavi-metrics-powerscale
@@ -118,6 +118,43 @@ karaviMetricsPowerscale:
     # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
     # Default value: dellemc/csm-authorization-sidecar:v1.5.0
     sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.5.0
+    # proxyHost: hostname of the csm-authorization server
+    # Default value: None
+    proxyHost:
+    # skipCertificateValidation: certificate validation of the csm-authorization server
+    # Allowed Values:
+    #   "true" - TLS certificate verification will be skipped
+    #   "false" - TLS certificate will be verified
+    # Default value: "true"
+    skipCertificateValidation: true
+
+karaviMetricsPowermax:
+  image: dellemc/csm-metrics-powermax:v1.0.0
+  enabled: true
+  collectorAddr: otel-collector:55680
+  # comma separated list of provisioner names (ex: csi-powermax.dellemc.com)
+  provisionerNames: csi-powermax.dellemc.com
+  # set capacityMetricsEnabled to "false" to disable collection of capacity metrics
+  capacityMetricsEnabled: "true"
+  # set performanceMetricsEnabled to "false" to disable collection of performance metrics
+  performanceMetricsEnabled: "true"
+  # set polling frequency to get array capacity metrics data
+  arrayCapacityPollFrequencySeconds: 20
+  # set polling frequency to get cluster performance data
+  arrayPerformancePollFrequencySeconds: 20
+  # set the default max concurrent queries to PowerMax
+  concurrentPowermaxQueries: 10
+  # set the default endpoint for PowerMax service
+  endpoint: karavi-metrics-powermax
+  service:
+    type: ClusterIP
+  logLevel: INFO
+  logFormat: text
+  authorization:
+    enabled: false
+    # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
+    # Default value: dellemc/csm-authorization-sidecar:v1.4.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.4.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
