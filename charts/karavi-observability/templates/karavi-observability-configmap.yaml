@@ -90,3 +90,25 @@ data:
     LOG_FORMAT: "{{ .Values.karaviMetricsPowerscale.logFormat }}"
 
 {{ end }}
+
+---
+
+{{ if .Values.karaviMetricsPowermax.enabled }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: karavi-metrics-powermax-configmap
+data:
+  karavi-metrics-powermax.yaml : |
+    COLLECTOR_ADDR: {{ .Values.karaviMetricsPowermax.collectorAddr }}
+    PROVISIONER_NAMES: {{ .Values.karaviMetricsPowermax.provisionerNames }}
+    POWERMAX_MAX_CONCURRENT_QUERIES: "{{ .Values.karaviMetricsPowermax.concurrentPowermaxQueries }}"
+    POWERMAX_CAPACITY_METRICS_ENABLED: "{{ .Values.karaviMetricsPowermax.capacityMetricsEnabled }}"
+    POWERMAX_PERFORMANCE_METRICS_ENABLED: "{{ .Values.karaviMetricsPowermax.performanceMetricsEnabled }}"
+    POWERMAX_ARRAY_CAPACITY_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowermax.arrayCapacityPollFrequencySeconds }}"
+    POWERMAX_ARRAY_PERFORMANCE_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowermax.arrayPerformancePollFrequencySeconds }}"
+    LOG_LEVEL: "{{ .Values.karaviMetricsPowermax.logLevel }}"
+    LOG_FORMAT: "{{ .Values.karaviMetricsPowermax.logFormat }}"
+
+{{ end }}

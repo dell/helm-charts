@@ -1,0 +1,137 @@
+{{ if .Values.karaviMetricsPowermax.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: karavi-metrics-powermax
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  name: karavi-metrics-powermax
+spec:
+  type: {{ .Values.karaviMetricsPowermax.service.type }}
+  ports:
+  - name: karavi-metrics-powermax
+    port: 8081
+    targetPort: 8081
+  selector:
+    app.kubernetes.io/name: karavi-metrics-powermax
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karavi-metrics-powermax
+  labels:
+    app.kubernetes.io/name: karavi-metrics-powermax
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  {{- if hasKey .Values "karaviMetricsPowermax.authorization" }}
+  {{- if eq .Values.karaviMetricsPowermax.authorization.enabled true }}
+  annotations:
+    com.dell.karavi-authorization-proxy: "true"
+  {{ end }}
+  {{ end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: karavi-metrics-powermax
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: karavi-metrics-powermax
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccount: {{ .Release.Name }}-metrics-powermax-controller
+      containers:
+      - name: karavi-metrics-powermax
+        image: {{ .Values.karaviMetricsPowermax.image }}
+        resources: {}
+        env:
+        - name: POWERMAX_METRICS_ENDPOINT
+          value: "{{ .Values.karaviMetricsPowermax.endpoint }}"
+        - name: POWERMAX_METRICS_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: TLS_ENABLED
+          value: "true"
+        - name: SSL_CERT_DIR
+          value: /certs
+        volumeMounts:
+        - name: powermax-reverseproxy-config
+          mountPath: /etc/reverseproxy
+        - name: tls-secret
+          mountPath: /etc/ssl/certs
+          readOnly: true
+        - name: karavi-metrics-powermax-configmap
+          mountPath: /etc/config
+        - name: certs
+          mountPath: /certs
+      {{- if hasKey .Values.karaviMetricsPowermax "authorization" }}
+      {{- if eq .Values.karaviMetricsPowermax.authorization.enabled true }}
+      - name: karavi-authorization-proxy
+        imagePullPolicy: IfNotPresent
+        image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowermax.authorization.sidecarProxyImage }}
+        env:
+          - name: PROXY_HOST
+            value: "{{ .Values.karaviMetricsPowermax.authorization.proxyHost }}"
+          - name: SKIP_CERTIFICATE_VALIDATION
+            value: "{{ .Values.karaviMetricsPowermax.authorization.skipCertificateValidation }}"
+          - name: PLUGIN_IDENTIFIER
+            value: powermax
+          - name: ACCESS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: powermax-proxy-authz-tokens
+                key: access
+          - name: REFRESH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: powermax-proxy-authz-tokens
+                key: refresh
+        volumeMounts:
+          - name: karavi-authorization-config
+            mountPath: /etc/karavi-authorization/config
+          - name: proxy-server-root-certificate
+            mountPath: /etc/karavi-authorization/root-certificates
+          - name: powermax-config-params
+            mountPath: /etc/karavi-authorization
+      {{ end }}
+      {{ end }}
+      volumes:
+      - name: powermax-reverseproxy-config
+        configMap:
+          name: powermax-reverseproxy-config
+      - name: tls-secret
+        secret:
+          secretName: otel-collector-tls
+          items:
+            - key: tls.crt
+              path: cert.crt
+      - name: certs
+        emptyDir: { }
+      - name: karavi-metrics-powermax-configmap
+        configMap:
+          name: karavi-metrics-powermax-configmap
+     {{- if hasKey .Values.karaviMetricsPowermax "authorization" }}
+     {{- if eq .Values.karaviMetricsPowermax.authorization.enabled true }}
+      - name: karavi-authorization-config
+        secret:
+          secretName: powermax-karavi-authorization-config
+      - name: proxy-server-root-certificate
+        secret:
+          secretName: powermax-proxy-server-root-certificate
+      - name: powermax-config-params
+        configMap:
+          name: powermax-config-params
+      {{ end }}
+      {{ end }}
+      restartPolicy: Always
+status: {}
+
+{{ end }}
+
