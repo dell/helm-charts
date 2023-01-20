@@ -1,0 +1,5 @@
+apiVersion: v2
+name: csm-replication
+type: application
+version: 1.3.1
+appVersion: "1.3.1"
