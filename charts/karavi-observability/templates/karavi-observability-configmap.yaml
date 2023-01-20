@@ -4,6 +4,7 @@ apiVersion: v1
 kind: ConfigMap 
 metadata:
   name: karavi-metrics-powerflex-configmap
+  namespace: {{ include "custom.namespace" . }}
 data:
   karavi-metrics-powerflex.yaml : |
     COLLECTOR_ADDR: {{ .Values.karaviMetricsPowerflex.collectorAddr }}
@@ -28,6 +29,7 @@ apiVersion: v1
 kind: ConfigMap 
 metadata:
   name: karavi-topology-configmap
+  namespace: {{ include "custom.namespace" . }}
 data:
   karavi-topology.yaml: |
     PROVISIONER_NAMES: {{ .Values.karaviTopology.provisionerNames }}
@@ -47,6 +49,7 @@ apiVersion: v1
 kind: ConfigMap 
 metadata:
   name: karavi-metrics-powerstore-configmap
+  namespace: {{ include "custom.namespace" . }}
 data:
   karavi-metrics-powerstore.yaml : |
     COLLECTOR_ADDR: {{ .Values.karaviMetricsPowerstore.collectorAddr }}
@@ -73,6 +76,7 @@ apiVersion: v1
 kind: ConfigMap 
 metadata:
   name: karavi-metrics-powerscale-configmap
+  namespace: {{ include "custom.namespace" . }}
 data:
   karavi-metrics-powerscale.yaml : |
     COLLECTOR_ADDR: {{ .Values.karaviMetricsPowerscale.collectorAddr }}

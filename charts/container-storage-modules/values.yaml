@@ -1,0 +1,127 @@
+#
+#
+# Copyright © 2023 Dell Inc. or its subsidiaries. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#      http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+## K8S/DRIVER ATTRIBUTES
+########################
+csi-powerstore:
+  enabled: false
+  namespace: 
+  version: "v2.5.0"
+  images:
+    driverRepository: dellemc
+  ## Controller ATTRIBUTES
+  controller:
+    controllerCount: 1
+    healthMonitor:
+      enabled: false
+    nodeSelector:
+    replication:
+      enabled: false
+      image: dellemc/dell-csi-replicator:v1.3.0
+    vgsnapshot:
+      enabled: false
+      image: dellemc/csi-volumegroup-snapshotter:v1.1.0
+    snapshot:
+      enabled: false
+    resizer:
+      enabled: false
+  ## Node ATTRIBUTES
+  node:
+    healthMonitor:
+      enabled: false
+    nodeSelector:
+    
+## K8S/Replication Module ATTRIBUTES
+##########################################
+csm-replication:
+  enabled: false
+  namespace: 
+
+## K8S/Observability Module ATTRIBUTES
+##########################################
+karavi-observability:
+  enabled: false
+  namespace: 
+  karaviMetricsPowerstore:
+    enabled: false
+  karaviMetricsPowerflex:
+    enabled: false
+  karaviMetricsPowerscale:
+    enabled: false
+  cert-manager:
+    enabled: false
+
+## K8S/Application-mobility Module ATTRIBUTES
+########################################## 
+csm-application-mobility:
+  enabled: false
+  namespace: 
+  
+  # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the namespace in which velero is deployed. Default value is "velero"
+  veleroNamespace: velero
+  # csm-application-mobility requires velero. If velero is not already present in cluster, set enabled to true to install it too.
+  velero:
+    enabled: false
+    credentials:
+      secretContents:
+        cloud: |
+          [default]
+          aws_access_key_id=access_key
+          aws_secret_access_key=secret_access_key
+    configuration:
+      provider: aws
+      backupStorageLocation:
+        name: default
+        bucket: velero-bucket
+        config: {}
+          #region: 
+          #s3ForcePathStyle: 
+          #s3Url: 
+          #publicUrl:
+    initContainers:
+    - name: dell-custom-velero-plugin
+      image: dellemc/csm-application-mobility-velero-plugin:v0.2.0
+      volumeMounts:
+      - mountPath: /target
+        name: plugins
+    #- name: velero-plugin-for-aws
+      #image: velero/velero-plugin-for-aws:v1.5.0
+      #volumeMounts:
+      #- mountPath: /target
+        #name: plugins
+
+## K8S/Authorization Module ATTRIBUTES
+##########################################         
+csm-authorization:
+  enabled: false
+  namespace: 
+  cert-manager:
+    enabled: false
+  redis:
+    namespace: 
+    storageClass: 
+
+## K8S/Cert-manager ATTRIBUTES
+########################################## 
+cert-manager: 
+  enabled: false
+  namespace: 
+  
+## K8S/Powermax ATTRIBUTES
+##########################################
+#csi-powermax:
+  #enabled: false
+  #namespace: 
+  

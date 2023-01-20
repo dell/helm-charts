@@ -171,9 +171,11 @@ otelCollector:
     type: ClusterIP
   nginxProxy:
     image: nginxinc/nginx-unprivileged:1.20
-
+# Karavi-observability requires cert-manager. If cert-manager is already present in cluster, set enabled to false not to install it.
 cert-manager:
+  enabled: true
   startupapicheck:
     enabled: false
     serviceAccount:
       create: false
+# namespace: observability-ns

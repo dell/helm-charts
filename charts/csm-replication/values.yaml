@@ -1,0 +1,39 @@
+# replicas: Defines number of controller replicas
+# Allowed values: int
+# Default value: 1
+replicas: 1
+
+# image: Defines controller image. This shouldn't be changed
+# Allowed values: string
+image: dellemc/dell-replication-controller:v1.3.1
+
+# logLevel: Defines initial log level for controller. This can be changed in runtime
+# Allowed values: "debug", "info", "warn", "error", "panic"
+# Default value: "info"
+logLevel: "info"
+
+# leaderElection: Enable leader election for dell-replication-controller manager.
+# Enabling this will ensure there is only one active dell-replication-controller manager.
+# Allowed values: "true", "false"
+# Default value: "true"
+leaderElection: "true"
+
+# retryIntervalMin: Initial retry interval of failed reconcile request.
+# It doubles with each failure, upto retry-interval-max
+# Allowed values: time
+retryIntervalMin: 1s
+
+# retryIntervalMax: Maximum retry interval of failed reconcile request
+# Allowed values: time
+retryIntervalMax: 5m
+
+# HostAliases: Optional features that allows <hostname:IP> entries injection into pod's /etc/hosts file
+#hostAliases:
+#  - ip: "10.10.10.10"
+#    hostnames:
+#      - "foo.bar"
+#  - ip: "10.10.10.11"
+#    hostnames:
+#      - "foo.baz"
+
+# namespace: replication-ns
