@@ -138,8 +138,8 @@ karaviMetricsPowermax:
   capacityMetricsEnabled: "true"
   # set performanceMetricsEnabled to "false" to disable collection of performance metrics
   performanceMetricsEnabled: "true"
-  # set polling frequency to get array capacity metrics data
-  arrayCapacityPollFrequencySeconds: 20
+  # set polling frequency to get capacity metrics data for volume, storagegroup, srp and array
+  capacityPollFrequencySeconds: 20
   # set polling frequency to get cluster performance data
   arrayPerformancePollFrequencySeconds: 20
   # set the default max concurrent queries to PowerMax
