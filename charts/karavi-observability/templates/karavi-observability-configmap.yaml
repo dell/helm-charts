@@ -111,7 +111,7 @@ data:
     POWERMAX_CAPACITY_METRICS_ENABLED: "{{ .Values.karaviMetricsPowermax.capacityMetricsEnabled }}"
     POWERMAX_PERFORMANCE_METRICS_ENABLED: "{{ .Values.karaviMetricsPowermax.performanceMetricsEnabled }}"
     POWERMAX_CAPACITY_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowermax.capacityPollFrequencySeconds }}"
-    POWERMAX_ARRAY_PERFORMANCE_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowermax.arrayPerformancePollFrequencySeconds }}"
+    POWERMAX_PERFORMANCE_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowermax.performancePollFrequencySeconds }}"
     LOG_LEVEL: "{{ .Values.karaviMetricsPowermax.logLevel }}"
     LOG_FORMAT: "{{ .Values.karaviMetricsPowermax.logFormat }}"
 
