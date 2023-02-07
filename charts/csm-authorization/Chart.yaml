@@ -1,0 +1,15 @@
+apiVersion: v2
+name: csm-authorization
+version: 1.5.0
+appVersion: 1.5.0
+type: application
+description: CSM for Authorization is part of the [Container Storage Modules](https://github.com/dell/csm) open source suite of Kubernetes storage enablers for Dell EMC storage products. CSM for Authorization provides storage and Kubernetes administrators the ability to apply RBAC for Dell CSI Drivers.
+dependencies:
+- name: cert-manager
+  version: 1.6.1
+  repository: https://charts.jetstack.io
+  condition: cert-manager.enabled
+- name: ingress-nginx
+  version: 4.0.19
+  repository: https://kubernetes.github.io/ingress-nginx
+  condition: ingress-nginx.enabled

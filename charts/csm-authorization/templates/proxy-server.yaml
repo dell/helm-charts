@@ -1,0 +1,115 @@
+# Grant OPA/kube-mgmt read-only access to resources. This lets kube-mgmt
+# list configmaps to be loaded into OPA as policies.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: opa-viewer
+roleRef:
+  kind: ClusterRole
+  name: view
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: Group
+  name: system:serviceaccounts:{{ include "custom.namespace" . }}
+  apiGroup: rbac.authorization.k8s.io
+---
+# Define role for OPA/kube-mgmt to update configmaps with policy status.
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: {{ include "custom.namespace" . }}
+  name: configmap-modifier
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["update", "patch"]
+---
+# Grant OPA/kube-mgmt role defined above.
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: {{ include "custom.namespace" . }}
+  name: opa-configmap-modifier
+roleRef:
+  kind: Role
+  name: configmap-modifier
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: Group
+  name: system:serviceaccounts:{{ include "custom.namespace" . }}
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-server
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app: proxy-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy-server
+  template:
+    metadata:
+      labels:
+        app: proxy-server
+    spec:
+      containers:
+      - name: proxy-server
+        image:  {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}
+        imagePullPolicy: Always
+        args:
+          - "--redis-host=redis.{{ include "custom.namespace" . }}.svc.cluster.local:6379"
+          - "--tenant-service=tenant-service.{{ include "custom.namespace" . }}.svc.cluster.local:50051"
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/karavi-authorization/config
+        - name: storage-volume
+          mountPath: /etc/karavi-authorization/storage
+        - name: csm-config-params
+          mountPath: /etc/karavi-authorization/csm-config-params
+      - name: opa
+        image: {{ required "Must provide the openpolicyagent image." .Values.authorization.images.opa }}
+        imagePullPolicy: IfNotPresent
+        args:
+        - "run"
+        - "--ignore=."
+        - "--server"
+        - "--log-level=debug"
+        ports:
+        - name: http
+          containerPort: 8181
+      - name: kube-mgmt
+        image: {{ required "Must provide the opaKubeMgmt image." .Values.authorization.images.opaKubeMgmt }}
+        imagePullPolicy: IfNotPresent
+        args:
+        - "--policies={{ include "custom.namespace" . }}"
+        - "--enable-data"
+      volumes:
+      - name: config-volume
+        secret:
+          secretName: karavi-config-secret
+      - name: storage-volume
+        secret:
+          secretName: karavi-storage-secret
+      - name: csm-config-params
+        configMap:
+          name: csm-config-params
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-server
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  selector:
+    app: proxy-server
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080

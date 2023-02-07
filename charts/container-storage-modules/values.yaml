@@ -23,7 +23,7 @@ csi-powerstore:
     driverRepository: dellemc
   ## Controller ATTRIBUTES
   controller:
-    controllerCount: 1
+    controllerCount: 2
     healthMonitor:
       enabled: false
     nodeSelector:
@@ -34,15 +34,69 @@ csi-powerstore:
       enabled: false
       image: dellemc/csi-volumegroup-snapshotter:v1.1.0
     snapshot:
-      enabled: false
+      enabled: true
     resizer:
-      enabled: false
+      enabled: true
   ## Node ATTRIBUTES
   node:
     healthMonitor:
       enabled: false
     nodeSelector:
-    
+      # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled
+    # tolerations:
+    # - key: "offline.vxflexos.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "vxflexos.podmon.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "offline.unity.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "unity.podmon.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "offline.isilon.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "isilon.podmon.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "offline.powerstore.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "powerstore.podmon.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+  storageCapacity:
+    enabled: true  
+  # Enable this feature only after contact support for additional information
+  podmon:
+    enabled: false
+    image: dellemc/podmon:v1.4.0
+    controller:
+     args:
+       - "--csisock=unix:/var/run/csi/csi.sock"
+       - "--labelvalue=csi-powerstore"
+       - "--arrayConnectivityPollRate=60"
+       - "--driverPath=csi-powerstore.dellemc.com"
+       - "--mode=controller"
+       - "--skipArrayConnectionValidation=false"
+       - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
+       - "--driverPodLabelValue=dell-storage"
+       - "--ignoreVolumelessPods=false"
+    node:
+     args:
+       - "--csisock=unix:/var/lib/kubelet/plugins/csi-powerstore.dellemc.com/csi_sock"
+       - "--labelvalue=csi-powerstore"
+       - "--arrayConnectivityPollRate=60"
+       - "--driverPath=csi-powerstore.dellemc.com"
+       - "--mode=node"
+       - "--leaderelection=false"
+       - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
+       - "--driverPodLabelValue=dell-storage"
+       - "--ignoreVolumelessPods=false"
+
 ## K8S/Replication Module ATTRIBUTES
 ##########################################
 csm-replication:
@@ -60,6 +114,8 @@ karavi-observability:
     enabled: false
   karaviMetricsPowerscale:
     enabled: false
+  karaviMetricsPowermax:
+    enabled: false
   cert-manager:
     enabled: false
 
@@ -67,13 +123,12 @@ karavi-observability:
 ########################################## 
 csm-application-mobility:
   enabled: false
-  namespace: 
-  
+  namespace:  
   # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the namespace in which velero is deployed. Default value is "velero"
   veleroNamespace: velero
   # csm-application-mobility requires velero. If velero is not already present in cluster, set enabled to true to install it too.
   velero:
-    enabled: false
+    enabled: true
     credentials:
       secretContents:
         cloud: |
@@ -110,8 +165,9 @@ csm-authorization:
   cert-manager:
     enabled: false
   redis:
-    namespace: 
-    storageClass: 
+    namespace:
+    # set the storageClass for redis to use. otherwise, the default storage class is used 
+    # storageClass: 
 
 ## K8S/Cert-manager ATTRIBUTES
 ########################################## 
@@ -121,7 +177,57 @@ cert-manager:
   
 ## K8S/Powermax ATTRIBUTES
 ##########################################
-#csi-powermax:
-  #enabled: false
-  #namespace: 
-  
+csi-powermax:
+  enabled: false
+  namespace: 
+  global:
+    storageArrays:
+      - storageArrayId: "000000000001"
+        endpoint: https://primary-1.unisphe.re:8443
+        backupEndpoint: https://backup-1.unisphe.re:8443
+  #    - storageArrayId: "000000000002"
+  #      endpoint: https://primary-2.unisphe.re:8443
+  #      backupEndpoint: https://backup-2.unisphe.re:8443
+    managementServers:
+      - endpoint: https://primary-1.unisphe.re:8443
+      - endpoint: https://backup-1.unisphe.re:8443
+  #    - endpoint: https://primary-2.unisphe.re:8443
+  #    - endpoint: https://backup-2.unisphe.re:8443
+  version: "v2.5.0"
+  images:
+    driverRepository: "dellemc"
+  clusterPrefix: ABC
+  portGroups: PortGroup1, PortGroup2, PortGroup3
+  controller:
+    controllerCount: 2
+    snapshot:
+      enabled: true
+    resizer:
+      enabled: true
+    healthMonitor:
+      enabled: false
+    nodeSelector:
+  node:
+    healthMonitor:
+      enabled: false
+    nodeSelector:
+  csireverseproxy:
+    image: dellemc/csipowermax-reverseproxy:v2.4.0
+    deployAsSidecar: true
+    namespace: 
+  replication:
+    enabled: false
+    image: dellemc/dell-csi-replicator:v1.3.0 
+  migration:
+    enabled: false
+    image: dellemc/dell-csi-migrator:v1.0.0
+  authorization:
+    enabled: false
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.5.0
+  vSphere:
+    enabled: false
+    fcPortGroup: "csi-vsphere-VC-PG"
+    fcHostName: "csi-vsphere-VC-HN"
+    vCenterHost: "00.000.000.00"
+    vCenterUserName: "user"
+    vCenterPassword: "pwd"

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: csm-config-params
+  namespace: {{ include "custom.namespace" . }}
+data:
+  csm-config-params.yaml: |
+    LOG_LEVEL: {{ .Values.authorization.logLevel }}
+    {{- if (.Values.authorization.zipkin.collectoruri) }}
+    zipkin.collectoruri: {{ .Values.authorization.zipkin.collectoruri }}
+    zipkin.probability: {{ .Values.authorization.zipkin.probability }}
+    {{- end }}

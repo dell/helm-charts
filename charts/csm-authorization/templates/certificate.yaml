@@ -1,0 +1,82 @@
+# If the cert and key are provided, use them to create a tls secret
+{{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+{{- $certificateFileContents := .Values.authorization.certificate }}
+{{- $privateKeyFileContents := .Values.authorization.privateKey }}
+apiVersion: v1
+data:
+  tls.crt: {{ $certificateFileContents | b64enc }}
+  tls.key: {{ $privateKeyFileContents | b64enc }}
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: user-provided-tls
+  namespace: {{ include "custom.namespace" . }}
+
+---
+{{- end }}
+
+
+# If the cert and key are not provided, user cert-manager to create a self-signed tls secret
+{{- if or (not .Values.authorization.certificate) (not .Values.authorization.privateKey) }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  selfSigned: {}
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: karavi-auth
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  secretName: karavi-selfsigned-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - dellemc
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - karavi-auth
+  - karavi-auth.{{ include "custom.namespace" . }}.svc.kubernetes.local
+  - {{ .Values.authorization.hostname }}
+  - tenant.{{ .Values.authorization.hostname }}
+  - role.{{ .Values.authorization.hostname }}
+  - storage.{{ .Values.authorization.hostname }}
+  {{- if .Values.authorization.proxyServerIngress.hosts  }}
+  {{- range .Values.authorization.proxyServerIngress.hosts }}
+  - {{ tpl . $}}
+  {{- end }}
+  {{- end}}
+  {{- if .Values.authorization.tenantServiceIngress.hosts  }}
+  {{- range .Values.authorization.tenantServiceIngress.hosts }}
+  - {{ tpl . $}}
+  {{- end }}
+  {{- end}}
+  {{- if .Values.authorization.roleServiceIngress.hosts  }}
+  {{- range .Values.authorization.roleServiceIngress.hosts }}
+  - {{ tpl . $}}
+  {{- end }}
+  {{- end}}
+  {{- if .Values.authorization.storageServiceIngress.hosts  }}
+  {{- range .Values.authorization.storageServiceIngress.hosts }}
+  - {{ tpl . $}}
+  {{- end }}
+  {{- end}}
+  issuerRef:
+    name: selfsigned
+    kind: Issuer
+    group: cert-manager.io
+{{- end }}

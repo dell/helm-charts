@@ -36,4 +36,5 @@ retryIntervalMax: 5m
 #    hostnames:
 #      - "foo.baz"
 
-# namespace: replication-ns
+# Optionally, uncomment and specify the name of the pre-created namespace to install the module in it
+# namespace: 
