@@ -29,7 +29,7 @@ csi-powerstore:
     nodeSelector:
     replication:
       enabled: false
-      image: dellemc/dell-csi-replicator:v1.3.0
+      image: dellemc/dell-csi-replicator:v1.4.0
     vgsnapshot:
       enabled: false
       image: dellemc/csi-volumegroup-snapshotter:v1.1.0
