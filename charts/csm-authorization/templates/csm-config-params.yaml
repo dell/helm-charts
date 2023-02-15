@@ -5,6 +5,7 @@ metadata:
   namespace: {{ include "custom.namespace" . }}
 data:
   csm-config-params.yaml: |
+    CONCURRENT_POWERFLEX_REQUESTS: {{ .Values.authorization.concurrentPowerFlexRequests }}
     LOG_LEVEL: {{ .Values.authorization.logLevel }}
     {{- if (.Values.authorization.zipkin.collectoruri) }}
     zipkin.collectoruri: {{ .Values.authorization.zipkin.collectoruri }}

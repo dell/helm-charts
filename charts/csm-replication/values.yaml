@@ -7,6 +7,10 @@ replicas: 1
 # Allowed values: string
 image: dellemc/dell-replication-controller:v1.3.1
 
+# image: Defines controller's init container image. This shouldn't be changed
+# Allowed values: string
+initImage: dellemc/dell-replication-init:v1.0.0
+
 # logLevel: Defines initial log level for controller. This can be changed in runtime
 # Allowed values: "debug", "info", "warn", "error", "panic"
 # Default value: "info"

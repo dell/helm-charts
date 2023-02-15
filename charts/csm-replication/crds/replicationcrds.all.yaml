@@ -109,6 +109,11 @@ spec:
                       description: Time is the time stamp for the last action update
                       format: date-time
                       type: string
+                    actionAttributes:
+                      description: ActionAttributes content unique on response to an action
+                      additionalProperties:
+                        type: string
+                      type: object
                   type: object
                 type: array
               lastAction:
@@ -130,6 +135,11 @@ spec:
                     description: Time is the time stamp for the last action update
                     format: date-time
                     type: string
+                  actionAttributes:
+                    description: ActionAttributes content unique on response to an action
+                    additionalProperties:
+                      type: string
+                    type: object
                 type: object
               remoteState:
                 type: string
