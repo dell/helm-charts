@@ -220,10 +220,11 @@ csi-powermax:
     image: dellemc/dell-csi-replicator:v1.4.0 
   migration:
     enabled: false
-    image: dellemc/dell-csi-migrator:v1.0.0
+    image: dellemc/dell-csi-migrator:v1.1.0
   authorization:
     enabled: false
     sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.5.0
+    proxyHost:
   vSphere:
     enabled: false
     fcPortGroup: "csi-vsphere-VC-PG"
