@@ -61,3 +61,11 @@ test_post_volume_remove_sdc_allowed {
 test_post_volume_remove_allowed {
     allow with input as {"method": "POST", "url": "/api/instances/Volume::2a3814c600000003/action/removeVolume/"}
 }
+
+test_post_sdc_rename_allowed {
+    allow with input as {"method": "POST", "url": "/api/instances/Sdc::c4270bf500000053/action/setSdcName/"}
+}
+
+test_post_sdc_approve_allowed {
+    allow with input as {"method": "POST", "url": "/api/instances/System::e7a082862fedf0f/action/approveSdc/"}
+}

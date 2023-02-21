@@ -30,7 +30,9 @@ allowlist = [
 		"GET /api/instances/StoragePool::[a-f0-9]+/relationships/Statistics/",
 		"POST /api/instances/Volume::[a-f0-9]+/action/addMappedSdc/",
 		"POST /api/instances/Volume::[a-f0-9]+/action/removeMappedSdc/",
-		"POST /api/instances/Volume::[a-f0-9]+/action/removeVolume/"
+		"POST /api/instances/Volume::[a-f0-9]+/action/removeVolume/",
+		"POST /api/instances/Sdc::[a-f0-9]+/action/setSdcName/",
+		"POST /api/instances/System::[a-f0-9]/action/approveSdc/"
 ]
 
 default allow = true
