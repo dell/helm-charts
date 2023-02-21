@@ -1,0 +1,128 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: redis-primary
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+      role: primary
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: primary
+        tier: backend
+    spec:
+      containers:
+      - name: primary
+        image: {{ .Values.images.redis }}
+        imagePullPolicy: IfNotPresent
+        args: ["--appendonly", "yes", "--appendfsync", "always"]
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+          - name: redis-primary-volume
+            mountPath: /data
+      volumes:
+        - name: redis-primary-volume
+          persistentVolumeClaim:
+            claimName: redis-primary-pv-claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-primary-pv-claim
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app: redis-primary
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if (.Values.storageClass) }}
+  storageClassName: {{.Values.storageClass }}
+  {{- end}}
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-commander
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-commander
+  template:
+    metadata:
+      labels:
+        app: redis-commander
+        tier: backend
+    spec:
+      containers:
+      - name: redis-commander
+        image: {{ .Values.images.commander }}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: REDIS_HOSTS
+          value: "rbac:redis.{{ include "custom.namespace" . }}.svc.cluster.local:6379"
+        - name: K8S_SIGTERM
+          value: "1"
+        ports:
+        - name: redis-commander
+          containerPort: 8081
+        livenessProbe:
+          httpGet:
+            path: /favicon.png
+            port: 8081
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512M"
+        securityContext:
+          runAsNonRoot: true
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  selector:
+    app: redis
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-commander
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  selector:
+    app: redis-commander
+  ports:
+  - protocol: TCP
+    port: 8081
+    targetPort: 8081

@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: common
+  namespace: {{ include "custom.namespace" . }}
+data:
+  {{- (.Files.Glob "policies/common.rego").AsConfig | nindent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: powermax-urls
+  namespace: {{ include "custom.namespace" . }}
+data:
+  {{- (.Files.Glob "policies/powermax-url.rego").AsConfig | nindent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: powerscale-urls
+  namespace: {{ include "custom.namespace" . }}
+data:
+  {{- (.Files.Glob "policies/powerscale-url.rego").AsConfig | nindent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: powerflex-urls
+  namespace: {{ include "custom.namespace" . }}
+data:
+  {{- (.Files.Glob "policies/url.rego").AsConfig | nindent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: volumes-create
+  namespace: {{ include "custom.namespace" . }}
+data:
+  {{- (.Files.Glob "policies/volumes-create.rego").AsConfig | nindent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: volumes-delete
+  namespace: {{ include "custom.namespace" . }}
+data:
+  {{- (.Files.Glob "policies/volumes-delete.rego").AsConfig | nindent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: volumes-map
+  namespace: {{ include "custom.namespace" . }}
+data:
+  {{- (.Files.Glob "policies/volumes-map.rego").AsConfig | nindent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: powermax-volumes-create
+  namespace: {{ include "custom.namespace" . }}
+data:
+  {{- (.Files.Glob "policies/volumes-powermax-create.rego").AsConfig | nindent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: powerscale-volumes-create
+  namespace: {{ include "custom.namespace" . }}
+data:
+  {{- (.Files.Glob "policies/volumes-powerscale-create.rego").AsConfig | nindent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: volumes-unmap
+  namespace: {{ include "custom.namespace" . }}
+data:
+  {{- (.Files.Glob "policies/volumes-unmap.rego").AsConfig | nindent 2 }}
