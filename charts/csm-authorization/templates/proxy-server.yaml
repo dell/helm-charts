@@ -63,6 +63,8 @@ spec:
         args:
           - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
           - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
+          - "--role-service=role-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
+          - "--storage-service=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
         ports:
         - containerPort: 8080
         volumeMounts:
