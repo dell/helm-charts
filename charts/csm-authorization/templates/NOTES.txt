@@ -1,0 +1,23 @@
+The CSM Authorization deployment has been successfully installed.
+
+Execute the following commands in your shell to print the URL of the CSM Authorization NodePort LoadBalancer:
+
+export NODE_PORT=$(kubectl get --namespace {{ include "custom.namespace" . }} -o jsonpath="{.spec.ports[1].nodePort}" service {{ include "custom.namespace" . }}-ingress-nginx-controller)
+export NODE_IP=$(kubectl get nodes --namespace {{ include "custom.namespace" . }} -o jsonpath="{.items[0].status.addresses[0].address}")
+echo https://$NODE_IP:$NODE_PORT
+
+LoadBalancer host rules for proxy-server:
+- {{ .Values.authorization.hostname }}
+- {{ .Release.Name }}-ingress-nginx-controller.{{ include "custom.namespace" . }}.svc.cluster.local
+
+LoadBalancer host rules for tenant-service:
+- tenant.{{ .Values.authorization.hostname }}
+
+LoadBalancer host rules for role-service:
+- role.{{ .Values.authorization.hostname }}
+
+LoadBalancer host rules for storage-service:
+- storage.{{ .Values.authorization.hostname }}
+
+authorization.proxyHost value for a CSI Driver examples:
+- {{ .Release.Name }}-ingress-nginx-controller.{{ include "custom.namespace" . }}.svc.cluster.local:443 (CSI Driver in the same cluster as CSM Authorization)

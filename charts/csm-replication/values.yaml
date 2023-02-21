@@ -5,7 +5,11 @@ replicas: 1
 
 # image: Defines controller image. This shouldn't be changed
 # Allowed values: string
-image: dellemc/dell-replication-controller:v1.3.1
+image: dellemc/dell-replication-controller:v1.4.0
+
+# image: Defines controller's init container image. This shouldn't be changed
+# Allowed values: string
+initImage: dellemc/dell-replication-init:v1.0.0
 
 # logLevel: Defines initial log level for controller. This can be changed in runtime
 # Allowed values: "debug", "info", "warn", "error", "panic"
@@ -36,4 +40,5 @@ retryIntervalMax: 5m
 #    hostnames:
 #      - "foo.baz"
 
-# namespace: replication-ns
+# Optionally, uncomment and specify the name of the pre-created namespace to install the module in it
+# namespace: 

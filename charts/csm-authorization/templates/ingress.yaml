@@ -1,0 +1,207 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: proxy-server
+  namespace: {{ include "custom.namespace" . }}
+  {{- if .Values.authorization.proxyServerIngress.annotations }}
+  annotations:
+    {{- range $key, $value := .Values.authorization.proxyServerIngress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.authorization.proxyServerIngress.ingressClassName }}
+  tls:
+  - hosts:
+      - {{ .Values.authorization.hostname }}
+      {{- if .Values.authorization.proxyServerIngress.hosts  }}
+      {{- range .Values.authorization.proxyServerIngress.hosts }}
+      - {{ tpl . $}}
+      {{- end }}
+      {{- end}}
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end}}
+  rules:
+  - host: {{ .Values.authorization.hostname }}
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: proxy-server
+              port:
+                number: 8080
+  {{- if .Values.authorization.proxyServerIngress.hosts  }}
+  {{- range .Values.authorization.proxyServerIngress.hosts }}
+  - host: {{ tpl . $}}
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: proxy-server
+              port:
+                number: 8080
+  {{- end }}
+  {{- end}}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tenant-service
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+  {{- if .Values.authorization.tenantServiceIngress.annotations }}
+    {{- range $key, $value := .Values.authorization.tenantServiceIngress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.authorization.tenantServiceIngress.ingressClassName }}
+  tls:
+  - hosts:
+      - tenant.{{ .Values.authorization.hostname }}
+      {{- if .Values.authorization.tenantServiceIngress.hosts  }}
+      {{- range .Values.authorization.tenantServiceIngress.hosts }}
+      - {{ tpl . $}}
+      {{- end }}
+      {{- end}}
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end}}
+  rules:
+  - host: tenant.{{ .Values.authorization.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tenant-service
+            port:
+              number: 50051
+  {{- if .Values.authorization.tenantServiceIngress.hosts  }}
+  {{- range .Values.authorization.tenantServiceIngress.hosts }}
+  - host: {{ tpl . $}}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tenant-service
+            port:
+              number: 50051
+  {{- end }}
+  {{- end}}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: role-service
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+  {{- if .Values.authorization.roleServiceIngress.annotations }}
+    {{- range $key, $value := .Values.authorization.roleServiceIngress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.authorization.roleServiceIngress.ingressClassName }}
+  tls:
+  - hosts:
+      - role.{{ .Values.authorization.hostname }}
+      {{- if .Values.authorization.roleServiceIngress.hosts  }}
+      {{- range .Values.authorization.roleServiceIngress.hosts }}
+      - {{ tpl . $}}
+      {{- end }}
+      {{- end}}
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end}}
+  rules:
+  - host: role.{{ .Values.authorization.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: role-service
+            port:
+              number: 50051
+  {{- if .Values.authorization.roleServiceIngress.hosts  }}
+  {{- range .Values.authorization.roleServiceIngress.hosts }}
+  - host: {{ tpl . $}}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: role-service
+            port:
+              number: 50051
+  {{- end}}
+  {{- end}}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+  {{- if .Values.authorization.storageServiceIngress.annotations }}
+    {{- range $key, $value := .Values.authorization.storageServiceIngress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.authorization.storageServiceIngress.ingressClassName }}
+  tls:
+  - hosts:
+      - storage.{{ .Values.authorization.hostname }}
+      {{- if .Values.authorization.storageServiceIngress.hosts  }}
+      {{- range .Values.authorization.storageServiceIngress.hosts }}
+      - {{ tpl . $}}
+      {{- end }}
+      {{- end}}
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end}}
+  rules:
+  - host: storage.{{ .Values.authorization.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: storage-service
+            port:
+              number: 50051
+  {{- if .Values.authorization.storageServiceIngress.hosts  }}
+  {{- range .Values.authorization.storageServiceIngress.hosts }}
+  - host: {{ tpl . $}}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: storage-service
+            port:
+              number: 50051
+  {{- end}}
+  {{- end}}

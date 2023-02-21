@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenant-service
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app: tenant-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tenant-service
+  template:
+    metadata:
+      labels:
+        app: tenant-service
+    spec:
+      containers:
+      - name: tenant-service
+        image: {{ required "Must provide the tenant-service image." .Values.authorization.images.tenantService }}
+        imagePullPolicy: Always
+        args:
+          - "--redis-host=redis.{{ include "custom.namespace" . }}.svc.cluster.local:6379"
+        ports:
+        - containerPort: 50051
+          name: grpc
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/karavi-authorization/config
+        - name: csm-config-params
+          mountPath: /etc/karavi-authorization/csm-config-params
+      volumes:
+      - name: config-volume
+        secret:
+          secretName: karavi-config-secret
+      - name: csm-config-params
+        configMap:
+          name: csm-config-params
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenant-service
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  selector:
+    app: tenant-service
+  ports:
+  - port: 50051
+    targetPort: 50051
+    name: grpc
