@@ -2,7 +2,7 @@ karaviTopology:
   image: dellemc/csm-topology:v1.4.0
   enabled: true
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
-  provisionerNames: csi-vxflexos.dellemc.com,csi-powerstore.dellemc.com,csi-isilon.dellemc.com
+  provisionerNames: csi-vxflexos.dellemc.com,csi-powerstore.dellemc.com,csi-isilon.dellemc.com,csi-powermax.dellemc.com
   service:
     type: ClusterIP
   logLevel: INFO
@@ -94,7 +94,7 @@ karaviMetricsPowerscale:
   clusterPerformancePollFrequencySeconds: 20
   # set polling frequency to get quota capacity metrics data
   quotaCapacityPollFrequencySeconds: 30
-  # set the the default max concurrent queries to PowerScale
+  # set the default max concurrent queries to PowerScale
   concurrentPowerscaleQueries: 10
   # set the default endpoint for PowerScale service
   endpoint: karavi-metrics-powerscale
@@ -128,15 +128,54 @@ karaviMetricsPowerscale:
     # Default value: "true"
     skipCertificateValidation: true
 
+karaviMetricsPowermax:
+  image: dellemc/csm-metrics-powermax:v1.0.0
+  enabled: true
+  collectorAddr: otel-collector:55680
+  # comma separated list of provisioner names (ex: csi-powermax.dellemc.com)
+  provisionerNames: csi-powermax.dellemc.com
+  # set capacityMetricsEnabled to "false" to disable collection of capacity metrics
+  capacityMetricsEnabled: "true"
+  # set performanceMetricsEnabled to "false" to disable collection of performance metrics
+  performanceMetricsEnabled: "true"
+  # set polling frequency to get capacity metrics data for volume, storagegroup, srp and array
+  capacityPollFrequencySeconds: 20
+  # set polling frequency to get performance metrics data for volume, storagegroup
+  performancePollFrequencySeconds: 20
+  # set the default max concurrent queries to PowerMax
+  concurrentPowermaxQueries: 10
+  # set the default endpoint for PowerMax service
+  endpoint: karavi-metrics-powermax
+  service:
+    type: ClusterIP
+  logLevel: INFO
+  logFormat: text
+  authorization:
+    enabled: false
+    # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
+    # Default value: dellemc/csm-authorization-sidecar:v1.4.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.4.0
+    # proxyHost: hostname of the csm-authorization server
+    # Default value: None
+    proxyHost:
+    # skipCertificateValidation: certificate validation of the csm-authorization server
+    # Allowed Values:
+    #   "true" - TLS certificate verification will be skipped
+    #   "false" - TLS certificate will be verified
+    # Default value: "true"
+    skipCertificateValidation: true
+
 otelCollector:
   image: otel/opentelemetry-collector:0.42.0
   service:
     type: ClusterIP
   nginxProxy:
     image: nginxinc/nginx-unprivileged:1.20
-
+# Karavi-observability requires cert-manager. If cert-manager is already present in cluster, set enabled to false not to install it.
 cert-manager:
+  enabled: true
   startupapicheck:
     enabled: false
     serviceAccount:
       create: false
+# namespace: observability-ns

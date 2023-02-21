@@ -4,7 +4,7 @@ metadata:
   labels:
     control-plane: controller-manager
   name: {{ .Release.Name }}-controller-manager
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 spec:
   replicas: 1
   selector:
@@ -33,7 +33,7 @@ spec:
         - --health-probe-bind-address=:8081
         - --metrics-bind-address=127.0.0.1:8080
         - --leader-elect
-        - --app-mobility-namespace={{ .Release.Namespace }}
+        - --app-mobility-namespace={{ include "custom.namespace" . }}
         - --velero-namespace={{ include "velero.namespace" . }}
         - --secret-name={{ include "objectstore.secretname" . }}
         - --license-name={{ .Values.licenseName }}

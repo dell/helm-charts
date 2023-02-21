@@ -32,7 +32,7 @@ allowlist = [
 		"POST /api/instances/Volume::[a-f0-9]+/action/removeMappedSdc/",
 		"POST /api/instances/Volume::[a-f0-9]+/action/removeVolume/",
 		"POST /api/instances/Sdc::[a-f0-9]+/action/setSdcName/",
-		"POST /api/instances/System::[a-f0-9]/action/approveSdc/"
+		"POST /api/instances/System::[a-f0-9]/action/approveSdc"
 ]
 
 default allow = true
