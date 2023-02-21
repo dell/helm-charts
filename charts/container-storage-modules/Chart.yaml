@@ -63,13 +63,8 @@ dependencies:
   version: 0.2.0
   repository: file://../csm-application-mobility
   condition: csm-application-mobility.enabled
-  
-- name: csm-authorization
-  version: 1.5.1
-  repository: file://../csm-authorization
-  condition: csm-authorization.enabled
 
 - name: csi-powermax
-  version: 2.5.0
+  version: 2.6.0
   repository: file://../csi-powermax
   condition: csi-powermax.enabled

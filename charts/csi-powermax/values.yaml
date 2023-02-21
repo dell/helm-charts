@@ -49,7 +49,7 @@ global:
 
 # Current version of the driver
 # Don't modify this value as this value will be used by the install script
-version: "v2.5.0"
+version: "v2.6.0"
 
 images:
   # "driver" defines the container image, used for the driver container.
@@ -255,8 +255,8 @@ enableCHAP: false
 csireverseproxy:
   # image: Define the container images used for the reverse proxy
   # Default value: None
-  # Example: "csipowermax-reverseproxy:v2.4.0"
-  image: dellemc/csipowermax-reverseproxy:v2.4.0
+  # Example: "csipowermax-reverseproxy:v2.5.0"
+  image: dellemc/csipowermax-reverseproxy:v2.5.0
   # "tlsSecret" defines the TLS secret that is created with certificate
   # and its associated key
   # Default value: None
@@ -385,6 +385,7 @@ migration:
   # Change this to use any specific version of the dell-csi-migrator sidecar
   # Default value: None
   image: dellemc/dell-csi-migrator:v1.1.0
+  nodeRescanSidecarImage: dellemc/dell-csi-node-sidecar:v1.0.0
   # migrationPrefix: Determine if migration is enabled
   # Default value: "migration.storage.dell.com"
   # Examples: "migration.storage.dell.com"

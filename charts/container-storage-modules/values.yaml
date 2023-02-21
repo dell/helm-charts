@@ -157,18 +157,6 @@ csm-application-mobility:
       #- mountPath: /target
         #name: plugins
 
-## K8S/Authorization Module ATTRIBUTES
-##########################################         
-csm-authorization:
-  enabled: false
-  namespace: 
-  cert-manager:
-    enabled: false
-  redis:
-    namespace:
-    # set the storageClass for redis to use. otherwise, the default storage class is used 
-    # storageClass: 
-
 ## K8S/Cert-manager ATTRIBUTES
 ########################################## 
 cert-manager: 
@@ -193,7 +181,7 @@ csi-powermax:
       - endpoint: https://backup-1.unisphe.re:8443
   #    - endpoint: https://primary-2.unisphe.re:8443
   #    - endpoint: https://backup-2.unisphe.re:8443
-  version: "v2.5.0"
+  version: "v2.6.0"
   images:
     driverRepository: "dellemc"
   clusterPrefix: ABC
@@ -212,7 +200,7 @@ csi-powermax:
       enabled: false
     nodeSelector:
   csireverseproxy:
-    image: dellemc/csipowermax-reverseproxy:v2.4.0
+    image: dellemc/csipowermax-reverseproxy:v2.5.0
     deployAsSidecar: true
     namespace: 
   replication:
@@ -221,6 +209,7 @@ csi-powermax:
   migration:
     enabled: false
     image: dellemc/dell-csi-migrator:v1.1.0
+    nodeRescanSidecarImage: dellemc/dell-csi-node-sidecar:v1.0.0
   authorization:
     enabled: false
     sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.5.0
