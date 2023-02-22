@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: storage-service
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "patch"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: storage-service
+subjects:
+  - kind: ServiceAccount
+    name: storage-service
+    namespace: {{ include "custom.namespace" . }}
+roleRef:
+  kind: ClusterRole
+  name: storage-service
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app: storage-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: storage-service
+  template:
+    metadata:
+      labels:
+        app: storage-service
+    spec:
+      serviceAccountName: storage-service
+      containers:
+      - name: storage-service
+        image: {{ required "Must provide the storage-service image." .Values.authorization.images.storageService }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 50051
+          name: grpc
+        env:
+          - name: NAMESPACE
+            value: {{ include "custom.namespace" . }}
+        volumeMounts:
+        - name: storage-volume
+          mountPath: /etc/karavi-authorization/storage
+        - name: csm-config-params
+          mountPath: /etc/karavi-authorization/csm-config-params
+      volumes:
+      - name: storage-volume
+        secret:
+          secretName: karavi-storage-secret
+      - name: csm-config-params
+        configMap:
+          name: csm-config-params
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  selector:
+    app: storage-service
+  ports:
+  - port: 50051
+    targetPort: 50051
+    name: grpc
