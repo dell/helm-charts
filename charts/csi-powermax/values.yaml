@@ -401,8 +401,8 @@ migration:
 authorization:
   enabled: false
   # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-  # Default value: dellemc/csm-authorization-sidecar:v1.5.0
-  sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.5.0
+  # Default value: dellemc/csm-authorization-sidecar:v1.6.0
+  sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
   # proxyHost: hostname of the csm-authorization server
   # Default value: None
   proxyHost:
@@ -431,10 +431,8 @@ vSphere:
   fcHostName: "csi-vsphere-VC-HN"
   # vCenterHost: URL/endpoint of the vCenter where all the ESX are present
   vCenterHost: "00.000.000.00"
-  # vCenterUserName: username from the vCenter credentials
-  vCenterUserName: "user"
-  # vCenterPassword: password from the vCenter credentials
-  vCenterPassword: "pwd"
+  # vCenterCredSecret: secret name for the vCenter credentials
+  vCenterCredSecret: vcenter-creds
 
 # Optionally, uncomment and specify the name of the pre-created namespace to install the driver in it
 # namespace: 
