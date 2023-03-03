@@ -73,7 +73,7 @@ csi-powerstore:
   # Enable this feature only after contact support for additional information
   podmon:
     enabled: false
-    image: dellemc/podmon:v1.4.0
+    image: dellemc/podmon:v1.5.0
     controller:
      args:
        - "--csisock=unix:/var/run/csi/csi.sock"
@@ -212,12 +212,11 @@ csi-powermax:
     nodeRescanSidecarImage: dellemc/dell-csi-node-sidecar:v1.0.0
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.5.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
     proxyHost:
   vSphere:
     enabled: false
     fcPortGroup: "csi-vsphere-VC-PG"
     fcHostName: "csi-vsphere-VC-HN"
     vCenterHost: "00.000.000.00"
-    vCenterUserName: "user"
-    vCenterPassword: "pwd"
+    vCenterCredSecret: vcenter-creds
