@@ -17,6 +17,7 @@ rules:
   resources:
   - customresourcedefinitions
   verbs:
+  - create
   - get
   - list
   - update
