@@ -68,3 +68,8 @@ dependencies:
   version: 2.6.0
   repository: file://../csi-powermax
   condition: csi-powermax.enabled
+
+- name: csi-isilon
+  version: 2.6.0
+  repository: file://../csi-isilon
+  condition: csi-isilon.enabled
