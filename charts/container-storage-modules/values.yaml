@@ -199,110 +199,109 @@ csi-isilon:
 
 ## CSI Unity
 ########################
-## K8S/DRIVER ATTRIBUTES
-########################
-
-version: "v2.6.0"
-
-# certSecretCount: Represents number of certificate secrets, which user is going to create for
-# ssl authentication. (unity-cert-0..unity-cert-n)
-# Allowed values: n, where n > 0
-certSecretCount: 1
-
-# fsGroupPolicy: Defines if the underlying volume supports changing ownership and permission of the volume before being mounted.
-# Allowed values:
-#   ReadWriteOnceWithFSType: supports volume ownership and permissions change only if the fsType is defined
-#   and the volume's accessModes contains ReadWriteOnce.
-#   File: kubernetes may use fsGroup to change permissions and ownership of the volume 
-#   to match user requested fsGroup in the pod's security policy regardless of fstype or access mode.
-#   None: volumes will be mounted with no modifications.
-# Default value: ReadWriteOnceWithFSType
-fsGroupPolicy: ReadWriteOnceWithFSType
-
-#To set nodeSelectors and tolerations for controller.
-# controller: configure controller pod specific parameters
-controller:
-  controllerCount: 2
-
-  snapshot:
-    enabled: true
-
-  resizer:
-    enabled: true
-
-  nodeSelector:
-
-  healthMonitor:
-    enabled: false
-
-# node: configure node pod specific parameters
-node:
-  # dnsPolicy : Define the DNS Policy of the Node service.
-  # ClusterFirstWithHostNet is the recommended and default DNS policy for the driver.
-  # Prior to v1.6 of the driver, the default DNS policy was ClusterFirst.
-  # In certain scenarios, users might need to change the default dnsPolicy.
-  # Default value: None
-  dnsPolicy: "ClusterFirstWithHostNet"
-
-  healthMonitor:
-    enabled: false
-
-  nodeSelector:
-
-  # tolerations: Define tolerations for the node daemonset, if required.
-  # Default value: None
-  tolerations:
-  # Uncomment if nodes you wish to use have the node-role.kubernetes.io/master taint
-  #  - key: "node-role.kubernetes.io/master"
-  #    operator: "Exists"
-  #    effect: "NoExecute"
-  # Uncomment if nodes you wish to use have the node-role.kubernetes.io/control-plane taint
-  #  - key: "node-role.kubernetes.io/control-plane"
-  #    operator: "Exists"
-  #    effect: "NoExecute"
-  #  - key: "node.kubernetes.io/memory-pressure"
-  #    operator: "Exists"
-  #    effect: "NoExecute"
-  #  - key: "node.kubernetes.io/disk-pressure"
-  #    operator: "Exists"
-  #    effect: "NoExecute"
-  #  - key: "node.kubernetes.io/network-unavailable"
-  #    operator: "Exists"
-  #    effect: "NoExecute"
-  # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled 
-  #  - key: "offline.vxflexos.storage.dell.com"
-  #    operator: "Exists"
-  #    effect: "NoSchedule"
-  #  - key: "vxflexos.podmon.storage.dell.com"
-  #    operator: "Exists"
-  #    effect: "NoSchedule"
-  #  - key: "offline.unity.storage.dell.com"
-  #    operator: "Exists"
-  #    effect: "NoSchedule"
-  #  - key: "unity.podmon.storage.dell.com"
-  #    operator: "Exists"
-  #    effect: "NoSchedule"
-  #  - key: "offline.isilon.storage.dell.com"
-  #    operator: "Exists"
-  #    effect: "NoSchedule"
-  #  - key: "isilon.podmon.storage.dell.com"
-  #    operator: "Exists"
-  #    effect: "NoSchedule"
-podmon:
+csi-unity:
   enabled: false
-  image: dellemc/podmon:v1.5.0
+  version: "v2.6.0"
 
-# allowRWOMultiPodAccess - Flag to enable sharing of volumes across multiple pods within the same node in RWO access mode.
-allowRWOMultiPodAccess: "false"
+  # certSecretCount: Represents number of certificate secrets, which user is going to create for
+  # ssl authentication. (unity-cert-0..unity-cert-n)
+  # Allowed values: n, where n > 0
+  certSecretCount: 1
 
-# maxUnityVolumesPerNode - Maximum number of volumes that controller can publish to the node.
-maxUnityVolumesPerNode: 0
+  # fsGroupPolicy: Defines if the underlying volume supports changing ownership and permission of the volume before being mounted.
+  # Allowed values:
+  #   ReadWriteOnceWithFSType: supports volume ownership and permissions change only if the fsType is defined
+  #   and the volume's accessModes contains ReadWriteOnce.
+  #   File: kubernetes may use fsGroup to change permissions and ownership of the volume 
+  #   to match user requested fsGroup in the pod's security policy regardless of fstype or access mode.
+  #   None: volumes will be mounted with no modifications.
+  # Default value: ReadWriteOnceWithFSType
+  fsGroupPolicy: ReadWriteOnceWithFSType
 
-# tenantName - Tenant name that need to added while adding host entry to the array.
-tenantName: ""
+  #To set nodeSelectors and tolerations for controller.
+  # controller: configure controller pod specific parameters
+  controller:
+    controllerCount: 2
 
-images:
-  driverRepository: dellemc
+    snapshot:
+      enabled: true
+
+    resizer:
+      enabled: true
+
+    nodeSelector:
+
+    healthMonitor:
+      enabled: false
+
+  # node: configure node pod specific parameters
+  node:
+    # dnsPolicy : Define the DNS Policy of the Node service.
+    # ClusterFirstWithHostNet is the recommended and default DNS policy for the driver.
+    # Prior to v1.6 of the driver, the default DNS policy was ClusterFirst.
+    # In certain scenarios, users might need to change the default dnsPolicy.
+    # Default value: None
+    dnsPolicy: "ClusterFirstWithHostNet"
+
+    healthMonitor:
+      enabled: false
+
+    nodeSelector:
+
+    # tolerations: Define tolerations for the node daemonset, if required.
+    # Default value: None
+    tolerations:
+    # Uncomment if nodes you wish to use have the node-role.kubernetes.io/master taint
+    #  - key: "node-role.kubernetes.io/master"
+    #    operator: "Exists"
+    #    effect: "NoExecute"
+    # Uncomment if nodes you wish to use have the node-role.kubernetes.io/control-plane taint
+    #  - key: "node-role.kubernetes.io/control-plane"
+    #    operator: "Exists"
+    #    effect: "NoExecute"
+    #  - key: "node.kubernetes.io/memory-pressure"
+    #    operator: "Exists"
+    #    effect: "NoExecute"
+    #  - key: "node.kubernetes.io/disk-pressure"
+    #    operator: "Exists"
+    #    effect: "NoExecute"
+    #  - key: "node.kubernetes.io/network-unavailable"
+    #    operator: "Exists"
+    #    effect: "NoExecute"
+    # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled 
+    #  - key: "offline.vxflexos.storage.dell.com"
+    #    operator: "Exists"
+    #    effect: "NoSchedule"
+    #  - key: "vxflexos.podmon.storage.dell.com"
+    #    operator: "Exists"
+    #    effect: "NoSchedule"
+    #  - key: "offline.unity.storage.dell.com"
+    #    operator: "Exists"
+    #    effect: "NoSchedule"
+    #  - key: "unity.podmon.storage.dell.com"
+    #    operator: "Exists"
+    #    effect: "NoSchedule"
+    #  - key: "offline.isilon.storage.dell.com"
+    #    operator: "Exists"
+    #    effect: "NoSchedule"
+    #  - key: "isilon.podmon.storage.dell.com"
+    #    operator: "Exists"
+    #    effect: "NoSchedule"
+  podmon:
+    enabled: false
+    image: dellemc/podmon:v1.5.0
+
+  # allowRWOMultiPodAccess - Flag to enable sharing of volumes across multiple pods within the same node in RWO access mode.
+  allowRWOMultiPodAccess: "false"
+
+  # maxUnityVolumesPerNode - Maximum number of volumes that controller can publish to the node.
+  maxUnityVolumesPerNode: 0
+
+  # tenantName - Tenant name that need to added while adding host entry to the array.
+  tenantName: ""
+
+  images:
+    driverRepository: dellemc
 
 ## K8S/Module ATTRIBUTES
 ##########################################
