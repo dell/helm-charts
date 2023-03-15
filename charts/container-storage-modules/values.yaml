@@ -14,6 +14,9 @@
 #
 #
 ## K8S/DRIVER ATTRIBUTES
+###################################
+
+## CSI PowerStore 
 ########################
 csi-powerstore:
   enabled: false
@@ -75,74 +78,8 @@ csi-powerstore:
     enabled: false
     image: dellemc/podmon:v1.5.0
 
-## K8S/Replication Module ATTRIBUTES
-##########################################
-csm-replication:
-  enabled: false
-  namespace: 
-
-## K8S/Observability Module ATTRIBUTES
-##########################################
-karavi-observability:
-  enabled: false
-  namespace: 
-  karaviMetricsPowerstore:
-    enabled: false
-  karaviMetricsPowerflex:
-    enabled: false
-  karaviMetricsPowerscale:
-    enabled: false
-  karaviMetricsPowermax:
-    enabled: false
-  cert-manager:
-    enabled: false
-
-## K8S/Application-mobility Module ATTRIBUTES
-########################################## 
-csm-application-mobility:
-  enabled: false
-  namespace:  
-  # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the namespace in which velero is deployed. Default value is "velero"
-  veleroNamespace: velero
-  # csm-application-mobility requires velero. If velero is not already present in cluster, set enabled to true to install it too.
-  velero:
-    enabled: true
-    credentials:
-      secretContents:
-        cloud: |
-          [default]
-          aws_access_key_id=access_key
-          aws_secret_access_key=secret_access_key
-    configuration:
-      provider: aws
-      backupStorageLocation:
-        name: default
-        bucket: velero-bucket
-        config: {}
-          #region: 
-          #s3ForcePathStyle: 
-          #s3Url: 
-          #publicUrl:
-    initContainers:
-    - name: dell-custom-velero-plugin
-      image: dellemc/csm-application-mobility-velero-plugin:v0.3.0
-      volumeMounts:
-      - mountPath: /target
-        name: plugins
-    #- name: velero-plugin-for-aws
-      #image: velero/velero-plugin-for-aws:v1.5.0
-      #volumeMounts:
-      #- mountPath: /target
-        #name: plugins
-
-## K8S/Cert-manager ATTRIBUTES
-########################################## 
-cert-manager: 
-  enabled: false
-  namespace: 
-  
-## K8S/Powermax ATTRIBUTES
-##########################################
+## CSI PowerMax
+########################
 csi-powermax:
   enabled: false
   namespace: 
@@ -199,8 +136,8 @@ csi-powermax:
     vCenterHost: "00.000.000.00"
     vCenterCredSecret: vcenter-creds
 
-## K8S/PowerScale ATTRIBUTES
-##########################################
+## CSI PowerScale
+########################
 csi-isilon:
   enabled: false
   namespace: 
@@ -259,3 +196,77 @@ csi-isilon:
     proxyHost:
   encryption:
     enabled: false
+
+## CSI Unity
+########################
+
+
+## K8S/Module ATTRIBUTES
+##########################################
+
+## Replication
+########################
+csm-replication:
+  enabled: false
+  namespace: 
+
+## Observability
+########################
+karavi-observability:
+  enabled: false
+  namespace: 
+  karaviMetricsPowerstore:
+    enabled: false
+  karaviMetricsPowerflex:
+    enabled: false
+  karaviMetricsPowerscale:
+    enabled: false
+  karaviMetricsPowermax:
+    enabled: false
+  cert-manager:
+    enabled: false
+
+## Application-Mobility 
+########################
+csm-application-mobility:
+  enabled: false
+  namespace:  
+  # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the namespace in which velero is deployed. Default value is "velero"
+  veleroNamespace: velero
+  # csm-application-mobility requires velero. If velero is not already present in cluster, set enabled to true to install it too.
+  velero:
+    enabled: true
+    credentials:
+      secretContents:
+        cloud: |
+          [default]
+          aws_access_key_id=access_key
+          aws_secret_access_key=secret_access_key
+    configuration:
+      provider: aws
+      backupStorageLocation:
+        name: default
+        bucket: velero-bucket
+        config: {}
+          #region: 
+          #s3ForcePathStyle: 
+          #s3Url: 
+          #publicUrl:
+    initContainers:
+    - name: dell-custom-velero-plugin
+      image: dellemc/csm-application-mobility-velero-plugin:v0.3.0
+      volumeMounts:
+      - mountPath: /target
+        name: plugins
+    #- name: velero-plugin-for-aws
+      #image: velero/velero-plugin-for-aws:v1.5.0
+      #volumeMounts:
+      #- mountPath: /target
+        #name: plugins
+
+## K8S/Cert-manager ATTRIBUTES
+########################
+cert-manager: 
+  enabled: false
+  namespace: 
+  
