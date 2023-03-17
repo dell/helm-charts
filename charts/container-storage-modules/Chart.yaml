@@ -54,6 +54,11 @@ dependencies:
   repository: file://../csi-isilon
   condition: csi-isilon.enabled
 
+- name: csi-vxflexos
+  version: 2.6.0
+  repository: file://../csi-vxflexos
+  condition: csi-vxflexos.enabled
+
 - name: csi-unity
   version: 2.6.0
   repository: file://../csi-unity
