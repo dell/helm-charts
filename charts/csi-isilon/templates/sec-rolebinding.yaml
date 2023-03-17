@@ -34,9 +34,9 @@ subjects:
 - kind: ServiceAccount
 #    "system:serviceaccount:isilon:isilon-node"
   name: {{ .Release.Name }}-node
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 - kind: ServiceAccount
 #    "system:serviceaccount:isilon:isilon-controller"
   name: {{ .Release.Name }}-controller
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 {{ end }}
