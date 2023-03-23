@@ -277,9 +277,6 @@ csireverseproxy:
   # Default value: None
   # Example: "StandAlone"
   mode: StandAlone
-  # Optionally, uncomment and specify the name of the pre-created namespace to install the sidecar in it
-  # namespace: 
-  
 # clusterPrefix: Define a prefix that is appended onto
 # all resources created in the Array
 # This should be unique per K8s/CSI deployment
@@ -435,6 +432,3 @@ vSphere:
   vCenterHost: "00.000.000.00"
   # vCenterCredSecret: secret name for the vCenter credentials
   vCenterCredSecret: vcenter-creds
-
-# Optionally, uncomment and specify the name of the pre-created namespace to install the driver in it
-# namespace: 

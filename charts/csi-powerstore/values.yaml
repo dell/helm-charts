@@ -339,6 +339,3 @@ podmon:
 images:
   # "driver" defines the container image, used for the driver container.
   driverRepository: dellemc
-  
-# Optionally, uncomment and specify the name of the pre-created namespace to install the driver in it
-# namespace: 

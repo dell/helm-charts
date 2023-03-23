@@ -4,4 +4,4 @@ data:
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-manager-config
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}

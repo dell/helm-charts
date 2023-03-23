@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ .Release.Name }}-node
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -50,7 +50,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: {{ .Release.Name }}-node
-    namespace: {{ include "custom.namespace" . }}
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   {{- if eq .Values.customDriverName.enabled true}}
@@ -65,7 +65,7 @@ kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: {{ .Release.Name }}-node
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
   {{- if hasKey .Values "authorization" }}
   {{- if eq .Values.authorization.enabled true }}
   annotations:

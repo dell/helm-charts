@@ -12,7 +12,7 @@ spec:
       clientConfig:
         service:
           name: {{ .Release.Name }}-webhook-service
-          namespace: {{ include "custom.namespace" . }}
+          namespace: {{ .Release.Namespace }}
           path: /convert
       conversionReviewVersions:
       - v1
