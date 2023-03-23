@@ -178,5 +178,3 @@ cert-manager:
     enabled: false
     serviceAccount:
       create: false
-# Optionally, uncomment and specify the name of the pre-created namespace to install the module in it
-# namespace: 

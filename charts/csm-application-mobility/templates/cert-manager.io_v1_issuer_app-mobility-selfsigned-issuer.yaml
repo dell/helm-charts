@@ -2,6 +2,6 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: {{ .Release.Name }}-selfsigned-issuer
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   selfSigned: {}

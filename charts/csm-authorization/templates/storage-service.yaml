@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: storage-service
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -20,7 +20,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: storage-service
-    namespace: {{ include "custom.namespace" . }}
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: storage-service
@@ -30,7 +30,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: storage-service
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: storage-service
 spec:
@@ -71,7 +71,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: storage-service
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     app: storage-service

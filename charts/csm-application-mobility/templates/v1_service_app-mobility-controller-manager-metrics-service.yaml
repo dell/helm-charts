@@ -4,7 +4,7 @@ metadata:
   labels:
     control-plane: controller-manager
   name: {{ .Release.Name }}-controller-manager-metrics-service
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - name: https
