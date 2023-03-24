@@ -53,7 +53,7 @@ spec:
           name: grpc
         env:
           - name: NAMESPACE
-            value: {{ include "custom.namespace" . }}
+            value: {{ .Release.Namespace }}
         volumeMounts:
         - name: storage-volume
           mountPath: /etc/karavi-authorization/storage

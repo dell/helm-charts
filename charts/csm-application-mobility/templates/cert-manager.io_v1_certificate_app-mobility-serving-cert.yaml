@@ -5,8 +5,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   dnsNames:
-  - {{ .Release.Name }}-webhook-service.{{ include "custom.namespace" . }}.svc
-  - {{ .Release.Name }}-webhook-service.{{ include "custom.namespace" . }}.svc.cluster.local
+  - {{ .Release.Name }}-webhook-service.{{ .Release.Namespace }}.svc
+  - {{ .Release.Name }}-webhook-service.{{ .Release.Namespace }}.svc.cluster.local
   issuerRef:
     kind: Issuer
     name: {{ .Release.Name }}-selfsigned-issuer

@@ -50,7 +50,7 @@ spec:
     - client auth
   dnsNames:
   - karavi-auth
-  - karavi-auth.{{ include "custom.namespace" . }}.svc.kubernetes.local
+  - karavi-auth.{{ .Release.Namespace }}.svc.kubernetes.local
   - {{ .Values.authorization.hostname }}
   - tenant.{{ .Values.authorization.hostname }}
   - role.{{ .Values.authorization.hostname }}

@@ -295,7 +295,7 @@ spec:
         - name: X_CSI_REPLICATION_IN_CLUSTER
           value: "true"
         - name: X_CSI_REPLICATION_WATCH_NAMESPACE
-          value: {{ include "custom.namespace" . }}
+          value: {{ .Release.Namespace }}
         - name: X_CSI_REPLICATION_CONFIG_DIR
           value: /app/config
         - name: X_CSI_REPLICATION_CERT_DIR
