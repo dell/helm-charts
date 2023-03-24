@@ -8,7 +8,7 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   {{- if eq .Values.customDriverName.enabled true}}
-  name: {{printf "%s-%s-controller" ( include "custom.namespace" . ) .Values.customDriverName.value}}
+  name: {{printf "%s-%s-controller" .Release.Namespace .Values.customDriverName.value}}
   {{- else }}
   name: {{ .Release.Name }}-controller
   {{- end }}
@@ -97,7 +97,7 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   {{- if eq .Values.customDriverName.enabled true}}
-  name: {{ printf "%s-%s-controller" ( include "custom.namespace" . ) .Values.customDriverName.value }}
+  name: {{ printf "%s-%s-controller" .Release.Namespace .Values.customDriverName.value }}
   {{- else }}
   name: {{ .Release.Name }}-controller
   {{- end }}
@@ -108,7 +108,7 @@ subjects:
 roleRef:
   kind: ClusterRole
   {{- if eq .Values.customDriverName.enabled true}}
-  name: {{ printf "%s-%s-controller" ( include "custom.namespace" . ) .Values.customDriverName.value }}
+  name: {{ printf "%s-%s-controller" .Release.Namespace .Values.customDriverName.value }}
   {{- else }}
   name: {{ .Release.Name }}-controller
   {{- end }}
@@ -345,7 +345,7 @@ spec:
             {{- end }}
             - name: X_CSI_POWERMAX_DRIVER_NAME
               {{- if eq .Values.customDriverName.enabled true}}
-              value: {{ required "Must provide a driver name" (printf "%s.%s.dellemc.com" ( include "custom.namespace" . ) .Values.customDriverName.value) }}
+              value: {{ required "Must provide a driver name" (printf "%s.%s.dellemc.com" .Release.Namespace .Values.customDriverName.value) }}
               {{- else }}
               value: csi-powermax.dellemc.com
               {{- end }}
