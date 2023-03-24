@@ -3,7 +3,7 @@ kind: Role
 metadata:
   creationTimestamp: null
   name: {{ .Release.Name }}-manager-role
-  namespace:  {{ include "custom.namespace" . }}
+  namespace:  {{ .Release.Namespace }}
 rules:
 - apiGroups:
   - ""

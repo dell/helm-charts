@@ -77,7 +77,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: REDIS_HOSTS
-          value: "rbac:redis.{{ include "custom.namespace" . }}.svc.cluster.local:6379"
+          value: "rbac:redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
         - name: K8S_SIGTERM
           value: "1"
         ports:

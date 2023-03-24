@@ -56,7 +56,7 @@ spec:
           name: grpc
         env:
           - name: NAMESPACE
-            value: {{ include "custom.namespace" . }}
+            value: {{ .Release.Namespace }}
         volumeMounts:
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
