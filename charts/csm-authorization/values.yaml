@@ -11,10 +11,10 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v1.5.1
-    tenantService: dellemc/csm-authorization-tenant:v1.5.1
-    roleService: dellemc/csm-authorization-role:v1.5.1
-    storageService: dellemc/csm-authorization-storage:v1.5.1
+    proxyService: dellemc/csm-authorization-proxy:v1.6.0
+    tenantService: dellemc/csm-authorization-tenant:v1.6.0
+    roleService: dellemc/csm-authorization-role:v1.6.0
+    storageService: dellemc/csm-authorization-storage:v1.6.0
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
@@ -91,3 +91,8 @@ redis:
 
   # set the storageClass for redis to use. otherwise, the default storage class is used
   # storageClass: local-storage
+  # Optionally, uncomment and specify the name of the pre-created namespace to install the redis in it
+  # namespace:
+
+# Optionally, uncomment and specify the name of the pre-created namespace to install the module in it
+# namespace:

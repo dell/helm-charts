@@ -72,3 +72,22 @@ permitted_roles[v] = y {
   common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[input.storagepool] >= to_number(input.request.volumeSizeInKb)
   y := to_number(common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[input.storagepool])
 }
+
+# These are the permitted roles that are configured
+# with zero quota, meaning infinite capacity.
+#
+permitted_roles[v] = y {
+  # Split the claimed roles by comma into an array.
+  claimed_roles := split(input.claims.roles, ",")
+
+  # This block filters 'a' to contain only roles
+  # that are found in 'common.roles'.
+  some i
+  a := claimed_roles[i]
+  common.roles[a]
+
+  # v will contain permitted roles that match the storage request.
+  v := claimed_roles[i]
+  common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[input.storagepool] == 0
+  y := to_number(common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[input.storagepool])
+}
