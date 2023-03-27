@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: proxy-server
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   {{- if .Values.authorization.proxyServerIngress.annotations }}
   annotations:
     {{- range $key, $value := .Values.authorization.proxyServerIngress.annotations }}
@@ -54,7 +54,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: tenant-service
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   annotations:
   {{- if .Values.authorization.tenantServiceIngress.annotations }}
     {{- range $key, $value := .Values.authorization.tenantServiceIngress.annotations }}
@@ -106,7 +106,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: role-service
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   annotations:
   {{- if .Values.authorization.roleServiceIngress.annotations }}
     {{- range $key, $value := .Values.authorization.roleServiceIngress.annotations }}
@@ -158,7 +158,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: storage-service
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   annotations:
   {{- if .Values.authorization.storageServiceIngress.annotations }}
     {{- range $key, $value := .Values.authorization.storageServiceIngress.annotations }}
