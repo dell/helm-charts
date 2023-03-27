@@ -162,7 +162,7 @@ csm-application-mobility:
 cert-manager:
   enabled: false
   namespace:
-  
+
 ## K8S/Powermax ATTRIBUTES
 ##########################################
 csi-powermax:
