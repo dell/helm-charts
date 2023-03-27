@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-primary
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   labels:
     app: redis
 spec:
@@ -42,7 +42,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: redis-primary-pv-claim
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   labels:
     app: redis-primary
 spec:
@@ -59,7 +59,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-commander
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 spec:
   replicas: 1
   selector:
@@ -77,7 +77,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: REDIS_HOSTS
-          value: "rbac:redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
+          value: "rbac:redis.{{ include "custom.namespace" . }}.svc.cluster.local:6379"
         - name: K8S_SIGTERM
           value: "1"
         ports:
@@ -105,7 +105,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: redis
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 spec:
   selector:
     app: redis
@@ -118,7 +118,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: redis-commander
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 spec:
   selector:
     app: redis-commander

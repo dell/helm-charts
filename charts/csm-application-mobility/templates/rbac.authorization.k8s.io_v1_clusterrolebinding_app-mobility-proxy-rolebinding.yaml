@@ -9,4 +9,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ .Release.Name }}-controller-manager
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}

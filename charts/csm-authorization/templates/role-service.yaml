@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: role-service
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -23,7 +23,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: role-service
-    namespace: {{ .Release.Namespace }}
+    namespace: {{ include "custom.namespace" . }}
 roleRef:
   kind: ClusterRole
   name: role-service
@@ -33,7 +33,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: role-service
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   labels:
     app: role-service
 spec:
@@ -56,7 +56,7 @@ spec:
           name: grpc
         env:
           - name: NAMESPACE
-            value: {{ .Release.Namespace }}
+            value: {{ include "custom.namespace" . }}
         volumeMounts:
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
@@ -69,7 +69,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: role-service
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 spec:
   selector:
     app: role-service

@@ -49,3 +49,15 @@ CSM Metrics for PowerScale
     From inside the Kubernetes cluster: otel-collector:8443
 
 {{- end}}
+
+{{ if .Values.karaviMetricsPowermax.enabled -}}
+
+CSM Metrics for PowerMax
+
+  The CSM Metrics for PowerMax deployment has been successfully installed.
+
+  Provisioner Names: {{ .Values.karaviMetricsPowermax.provisionerNames }}
+  Prometheus Scrape Target:
+    From inside the Kubernetes cluster: otel-collector:8443
+
+{{- end}}

@@ -10,7 +10,7 @@ kind: Secret
 type: kubernetes.io/tls
 metadata:
   name: user-provided-tls
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 
 ---
 {{- end }}
@@ -22,7 +22,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: selfsigned
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 spec:
   selfSigned: {}
 
@@ -32,7 +32,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: karavi-auth
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 spec:
   secretName: karavi-selfsigned-tls
   duration: 2160h # 90d
@@ -50,7 +50,7 @@ spec:
     - client auth
   dnsNames:
   - karavi-auth
-  - karavi-auth.{{ .Release.Namespace }}.svc.kubernetes.local
+  - karavi-auth.{{ include "custom.namespace" . }}.svc.kubernetes.local
   - {{ .Values.authorization.hostname }}
   - tenant.{{ .Values.authorization.hostname }}
   - role.{{ .Values.authorization.hostname }}
