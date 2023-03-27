@@ -17,7 +17,7 @@
 ########################
 csi-powerstore:
   enabled: false
-  namespace: 
+  namespace:
   version: "v2.6.0"
   images:
     driverRepository: dellemc
@@ -69,45 +69,45 @@ csi-powerstore:
     #   operator: "Exists"
     #   effect: "NoSchedule"
   storageCapacity:
-    enabled: true  
+    enabled: true
   # Enable this feature only after contact support for additional information
   podmon:
     enabled: false
     image: dellemc/podmon:v1.5.0
     controller:
-     args:
-       - "--csisock=unix:/var/run/csi/csi.sock"
-       - "--labelvalue=csi-powerstore"
-       - "--arrayConnectivityPollRate=60"
-       - "--driverPath=csi-powerstore.dellemc.com"
-       - "--mode=controller"
-       - "--skipArrayConnectionValidation=false"
-       - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
-       - "--driverPodLabelValue=dell-storage"
-       - "--ignoreVolumelessPods=false"
+      args:
+        - "--csisock=unix:/var/run/csi/csi.sock"
+        - "--labelvalue=csi-powerstore"
+        - "--arrayConnectivityPollRate=60"
+        - "--driverPath=csi-powerstore.dellemc.com"
+        - "--mode=controller"
+        - "--skipArrayConnectionValidation=false"
+        - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
+        - "--driverPodLabelValue=dell-storage"
+        - "--ignoreVolumelessPods=false"
     node:
-     args:
-       - "--csisock=unix:/var/lib/kubelet/plugins/csi-powerstore.dellemc.com/csi_sock"
-       - "--labelvalue=csi-powerstore"
-       - "--arrayConnectivityPollRate=60"
-       - "--driverPath=csi-powerstore.dellemc.com"
-       - "--mode=node"
-       - "--leaderelection=false"
-       - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
-       - "--driverPodLabelValue=dell-storage"
-       - "--ignoreVolumelessPods=false"
+      args:
+        - "--csisock=unix:/var/lib/kubelet/plugins/csi-powerstore.dellemc.com/csi_sock"
+        - "--labelvalue=csi-powerstore"
+        - "--arrayConnectivityPollRate=60"
+        - "--driverPath=csi-powerstore.dellemc.com"
+        - "--mode=node"
+        - "--leaderelection=false"
+        - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
+        - "--driverPodLabelValue=dell-storage"
+        - "--ignoreVolumelessPods=false"
 
 ## K8S/Replication Module ATTRIBUTES
 ##########################################
 csm-replication:
   enabled: false
-  namespace: 
+  namespace:
 
 ## K8S/Observability Module ATTRIBUTES
 ##########################################
 karavi-observability:
   enabled: false
-  namespace: 
+  namespace:
   karaviMetricsPowerstore:
     enabled: false
   karaviMetricsPowerflex:
@@ -120,10 +120,10 @@ karavi-observability:
     enabled: false
 
 ## K8S/Application-mobility Module ATTRIBUTES
-########################################## 
+##########################################
 csm-application-mobility:
   enabled: false
-  namespace:  
+  namespace:
   # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the namespace in which velero is deployed. Default value is "velero"
   veleroNamespace: velero
   # csm-application-mobility requires velero. If velero is not already present in cluster, set enabled to true to install it too.
@@ -141,33 +141,33 @@ csm-application-mobility:
         name: default
         bucket: velero-bucket
         config: {}
-          #region: 
-          #s3ForcePathStyle: 
-          #s3Url: 
-          #publicUrl:
+          # region:
+          # s3ForcePathStyle:
+          # s3Url:
+          # publicUrl:
     initContainers:
     - name: dell-custom-velero-plugin
       image: dellemc/csm-application-mobility-velero-plugin:v0.3.0
       volumeMounts:
       - mountPath: /target
         name: plugins
-    #- name: velero-plugin-for-aws
-      #image: velero/velero-plugin-for-aws:v1.5.0
-      #volumeMounts:
-      #- mountPath: /target
-        #name: plugins
+    # - name: velero-plugin-for-aws
+      # image: velero/velero-plugin-for-aws:v1.5.0
+      # volumeMounts:
+      # - mountPath: /target
+        # name: plugins
 
 ## K8S/Cert-manager ATTRIBUTES
-########################################## 
-cert-manager: 
+##########################################
+cert-manager:
   enabled: false
-  namespace: 
+  namespace:
   
 ## K8S/Powermax ATTRIBUTES
 ##########################################
 csi-powermax:
   enabled: false
-  namespace: 
+  namespace:
   global:
     storageArrays:
       - storageArrayId: "000000000001"
@@ -202,10 +202,10 @@ csi-powermax:
   csireverseproxy:
     image: dellemc/csipowermax-reverseproxy:v2.5.0
     deployAsSidecar: true
-    namespace: 
+    namespace:
   replication:
     enabled: false
-    image: dellemc/dell-csi-replicator:v1.4.0 
+    image: dellemc/dell-csi-replicator:v1.4.0
   migration:
     enabled: false
     image: dellemc/dell-csi-migrator:v1.1.0
