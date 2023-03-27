@@ -43,12 +43,12 @@ dependencies:
   version: 2.6.0
   repository: file://../csi-powerstore
   condition: csi-powerstore.enabled
-  
+
 - name: csm-replication
   version: 1.4.0
   repository: file://../csm-replication
   condition: csm-replication.enabled
-  
+
 - name: karavi-observability
   version: 1.5.0
   repository: file://../karavi-observability
@@ -58,7 +58,7 @@ dependencies:
   version: 1.10.0
   repository: https://charts.jetstack.io
   condition: cert-manager.enabled
-  
+
 - name: csm-application-mobility
   version: 0.3.0
   repository: file://../csm-application-mobility
