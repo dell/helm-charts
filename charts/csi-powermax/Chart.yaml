@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: v2
 name: csi-powermax
 version: 2.6.0
 appVersion: "2.6.0"
