@@ -2,11 +2,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: dell-replication-controller-sa
-<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
-=======
-  namespace: {{ include "custom.namespace" . }}
->>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
 secrets:
 - name: replication-secret
 ---
@@ -183,17 +179,10 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: replication-secret
-<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
   annotations:
     kubernetes.io/service-account.name: dell-replication-controller-sa
     kubernetes.io/service-account.namespace: {{ .Release.Namespace }}
-=======
-  namespace: {{ include "custom.namespace" . }}
-  annotations:
-    kubernetes.io/service-account.name: dell-replication-controller-sa
-    kubernetes.io/service-account.namespace: {{ include "custom.namespace" . }}
->>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
 type: kubernetes.io/service-account-token
 ---
 apiVersion: rbac.authorization.k8s.io/v1

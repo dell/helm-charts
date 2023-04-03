@@ -3,21 +3,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ .Release.Name }}-node
-<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
-=======
-  namespace: {{ include "custom.namespace" . }}
->>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   {{- if eq .Values.customDriverName.enabled true}}
-<<<<<<< HEAD
   name: {{ printf "%s-%s-node" .Release.Namespace .Values.customDriverName.value }}
-=======
-  name: {{ printf "%s-%s-node" ( include "custom.namespace" . ) .Values.customDriverName.value }}
->>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
   {{- else }}
   name: {{ .Release.Name }}-node
   {{- end }}

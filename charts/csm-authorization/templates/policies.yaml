@@ -42,11 +42,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: volumes-unmap
-<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
-=======
-  namespace: {{ include "custom.namespace" . }}
->>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
 data:
   {{- (.Files.Glob "policies/volumes-unmap.rego").AsConfig | nindent 2 }}
 ---
@@ -54,10 +50,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: sdc-approve
-<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
-=======
-  namespace: {{ include "custom.namespace" . }}
->>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
 data:
   {{- (.Files.Glob "policies/sdc-approve.rego").AsConfig | nindent 2 }}

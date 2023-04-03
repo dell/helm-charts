@@ -7,11 +7,7 @@ metadata:
     app.kubernetes.io/name: karavi-metrics-powerstore
     app.kubernetes.io/instance: {{ .Release.Name }}
   name: karavi-metrics-powerstore
-<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
-=======
-  namespace: {{ include "custom.namespace" . }}
->>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
 spec:
   type: {{ .Values.karaviMetricsPowerstore.service.type }}
   ports:
@@ -28,11 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: karavi-metrics-powerstore
-<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
-=======
-  namespace: {{ include "custom.namespace" . }}
->>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
   labels:
     app.kubernetes.io/name: karavi-metrics-powerstore
     app.kubernetes.io/instance: {{ .Release.Name }}
