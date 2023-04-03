@@ -53,58 +53,6 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: tenant-service
-  namespace: {{ include "custom.namespace" . }}
-  annotations:
-  {{- if .Values.authorization.tenantServiceIngress.annotations }}
-    {{- range $key, $value := .Values.authorization.tenantServiceIngress.annotations }}
-    {{ $key }}: {{ tpl $value $ | quote }}
-    {{- end }}
-  {{- end }}
-spec:
-  ingressClassName: {{ .Values.authorization.tenantServiceIngress.ingressClassName }}
-  tls:
-  - hosts:
-      - tenant.{{ .Values.authorization.hostname }}
-      {{- if .Values.authorization.tenantServiceIngress.hosts  }}
-      {{- range .Values.authorization.tenantServiceIngress.hosts }}
-      - {{ tpl . $}}
-      {{- end }}
-      {{- end}}
-    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
-    secretName: user-provided-tls
-    {{- else }}
-    secretName: karavi-selfsigned-tls
-    {{- end}}
-  rules:
-  - host: tenant.{{ .Values.authorization.hostname }}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: tenant-service
-            port:
-              number: 50051
-  {{- if .Values.authorization.tenantServiceIngress.hosts  }}
-  {{- range .Values.authorization.tenantServiceIngress.hosts }}
-  - host: {{ tpl . $}}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: tenant-service
-            port:
-              number: 50051
-  {{- end }}
-  {{- end}}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
   name: role-service
   namespace: {{ include "custom.namespace" . }}
   annotations:
