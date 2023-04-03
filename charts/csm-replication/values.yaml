@@ -32,7 +32,7 @@ retryIntervalMin: 1s
 retryIntervalMax: 5m
 
 # HostAliases: Optional features that allows <hostname:IP> entries injection into pod's /etc/hosts file
-#hostAliases:
+# hostAliases:
 #  - ip: "10.10.10.10"
 #    hostnames:
 #      - "foo.bar"

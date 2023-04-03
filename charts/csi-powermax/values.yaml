@@ -57,7 +57,7 @@ images:
 ## K8S/DRIVER ATTRIBUTES
 ########################
 # customDriverName: If enabled, sets the driver name to the
-# value provided to its value field with namespace prefixed to it. 
+# value provided to its value field with namespace prefixed to it.
 
 # e.g, namespace.csi-powermax
 # Default value: None
@@ -95,7 +95,7 @@ kubeletConfigDir: /var/lib/kubelet
 # Allowed values:
 #   ReadWriteOnceWithFSType: supports volume ownership and permissions change only if the fsType is defined
 #   and the volume's accessModes contains ReadWriteOnce.
-#   File: kubernetes may use fsGroup to change permissions and ownership of the volume 
+#   File: kubernetes may use fsGroup to change permissions and ownership of the volume
 #   to match user requested fsGroup in the pod's security policy regardless of fstype or access mode.
 #   None: volumes will be mounted with no modifications.
 # Default value: ReadWriteOnceWithFSType
@@ -408,8 +408,8 @@ authorization:
   # skipCertificateValidation: certificate validation of the csm-authorization server
   # Allowed Values:
   #   "true" - TLS certificate verification will be skipped
-  #   "false" - TLS certificate will be verified 
-  # Default value: "true" 
+  #   "false" - TLS certificate will be verified
+  # Default value: "true"
   skipCertificateValidation: true
 
 # VMware/vSphere virtualization support

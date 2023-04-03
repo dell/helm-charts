@@ -16,7 +16,7 @@ logLevel: "debug"
 certSecretCount: 1
 
 # allowedNetworks: Custom networks for PowerScale export
-#   Specify list of networks which can be used for NFS I/O traffic; CIDR format should be used.
+# Specify list of networks which can be used for NFS I/O traffic; CIDR format should be used.
 # Allowed values: list of one or more networks
 # Default value: None
 # Examples: [192.168.1.0/24, 192.168.100.0/22]
