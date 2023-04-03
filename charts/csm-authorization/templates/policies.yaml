@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: common
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 data:
   {{- (.Files.Glob "policies/common.rego").AsConfig | nindent 2 }}
 ---
@@ -10,7 +10,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: volumes-create
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 data:
   {{- (.Files.Glob "policies/volumes-create.rego").AsConfig | nindent 2 }}
 ---
@@ -18,7 +18,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: volumes-delete
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 data:
   {{- (.Files.Glob "policies/volumes-delete.rego").AsConfig | nindent 2 }}
 ---
@@ -26,7 +26,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: volumes-map
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 data:
   {{- (.Files.Glob "policies/volumes-map.rego").AsConfig | nindent 2 }}
 ---
@@ -34,7 +34,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: powermax-volumes-create
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 data:
   {{- (.Files.Glob "policies/volumes-powermax-create.rego").AsConfig | nindent 2 }}
 ---
@@ -42,7 +42,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: volumes-unmap
+<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
+=======
+  namespace: {{ include "custom.namespace" . }}
+>>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
 data:
   {{- (.Files.Glob "policies/volumes-unmap.rego").AsConfig | nindent 2 }}
 ---
@@ -50,6 +54,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: sdc-approve
+<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
+=======
+  namespace: {{ include "custom.namespace" . }}
+>>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
 data:
   {{- (.Files.Glob "policies/sdc-approve.rego").AsConfig | nindent 2 }}

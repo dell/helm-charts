@@ -5,7 +5,11 @@ data:
 kind: ConfigMap
 metadata:
   name: otel-collector-config
+<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
+=======
+  namespace: {{ include "custom.namespace" . }}
+>>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
 
 ---
 
@@ -16,7 +20,11 @@ data:
 kind: ConfigMap
 metadata:
   name: nginx-config
+<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
+=======
+  namespace: {{ include "custom.namespace" . }}
+>>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
 
 ---
 
@@ -24,7 +32,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: otel-collector
+<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
+=======
+  namespace: {{ include "custom.namespace" . }}
+>>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
   labels:
     app.kubernetes.io/name: otel-collector
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -47,7 +59,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: otel-collector
+<<<<<<< HEAD
   namespace: {{ .Release.Namespace }}
+=======
+  namespace: {{ include "custom.namespace" . }}
+>>>>>>> bea58fbae8318cb3977f0bcc187c1867a193b81c
   labels:
     app.kubernetes.io/name: otel-collector
     app.kubernetes.io/instance: {{ .Release.Name }}
