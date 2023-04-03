@@ -79,4 +79,3 @@ velero:
   #  volumeMounts:
   #  - mountPath: /target
   #    name: plugins
-  

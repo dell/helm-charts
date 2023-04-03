@@ -71,11 +71,33 @@ csi-powerstore:
     #   operator: "Exists"
     #   effect: "NoSchedule"
   storageCapacity:
-    enabled: true  
+    enabled: true
   # Enable this feature only after contact support for additional information
   podmon:
     enabled: false
     image: dellemc/podmon:v1.5.0
+    controller:
+      args:
+        - "--csisock=unix:/var/run/csi/csi.sock"
+        - "--labelvalue=csi-powerstore"
+        - "--arrayConnectivityPollRate=60"
+        - "--driverPath=csi-powerstore.dellemc.com"
+        - "--mode=controller"
+        - "--skipArrayConnectionValidation=false"
+        - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
+        - "--driverPodLabelValue=dell-storage"
+        - "--ignoreVolumelessPods=false"
+    node:
+      args:
+        - "--csisock=unix:/var/lib/kubelet/plugins/csi-powerstore.dellemc.com/csi_sock"
+        - "--labelvalue=csi-powerstore"
+        - "--arrayConnectivityPollRate=60"
+        - "--driverPath=csi-powerstore.dellemc.com"
+        - "--mode=node"
+        - "--leaderelection=false"
+        - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
+        - "--driverPodLabelValue=dell-storage"
+        - "--ignoreVolumelessPods=false"
 
 ## CSI PowerMax
 ########################
@@ -117,7 +139,7 @@ csi-powermax:
     deployAsSidecar: true
   replication:
     enabled: false
-    image: dellemc/dell-csi-replicator:v1.4.0 
+    image: dellemc/dell-csi-replicator:v1.4.0
   migration:
     enabled: false
     image: dellemc/dell-csi-migrator:v1.1.0
@@ -421,4 +443,3 @@ csm-application-mobility:
 ########################
 cert-manager: 
   enabled: false
-  
