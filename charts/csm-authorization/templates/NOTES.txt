@@ -10,9 +10,6 @@ LoadBalancer host rules for proxy-server:
 - {{ .Values.authorization.hostname }}
 - {{ .Release.Name }}-ingress-nginx-controller.{{ include "custom.namespace" . }}.svc.cluster.local
 
-LoadBalancer host rules for tenant-service:
-- tenant.{{ .Values.authorization.hostname }}
-
 LoadBalancer host rules for role-service:
 - role.{{ .Values.authorization.hostname }}
 

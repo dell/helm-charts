@@ -20,7 +20,6 @@ authorization:
 
   # base hostname for the ingress rules that expose the services
   # the proxy-server ingress will use this hostname
-  # the tenant-service ingress will use tenant.hostname
   # the role-service ingress will use role.hostname
   hostname: csm-authorization.com
 
@@ -47,18 +46,6 @@ authorization:
 
     # additional annotations for the proxy-server ingress
     annotations: {}
-
-  # tenant-service ingress configuration
-  tenantServiceIngress:
-    ingressClassName: nginx
-
-    # additional host rules for the tenant-service ingress
-    hosts: []
-
-    # additional annotations for the tenant-service ingress
-    # if applicable, an annotation supporting grpc for your ingress controller must be supplied
-    annotations:
-      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
 
   # role-service ingress configuration
   roleServiceIngress:
