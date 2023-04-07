@@ -58,6 +58,11 @@ metadata:
   annotations:
   {{- if .Values.authorization.roleServiceIngress.annotations }}
     {{- range $key, $value := .Values.authorization.roleServiceIngress.annotations }}
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+  {{- if .Values.authorization.storageServiceIngress.annotations }}
+    {{- range $key, $value := .Values.authorization.storageServiceIngress.annotations }}
     {{ $key }}: {{ tpl $value $ | quote }}
     {{- end }}
   {{- end }}
@@ -68,6 +73,12 @@ spec:
       - role.{{ .Values.authorization.hostname }}
       {{- if .Values.authorization.roleServiceIngress.hosts  }}
       {{- range .Values.authorization.roleServiceIngress.hosts }}
+  ingressClassName: {{ .Values.authorization.storageServiceIngress.ingressClassName }}
+  tls:
+  - hosts:
+      - storage.{{ .Values.authorization.hostname }}
+      {{- if .Values.authorization.storageServiceIngress.hosts  }}
+      {{- range .Values.authorization.storageServiceIngress.hosts }}
       - {{ tpl . $}}
       {{- end }}
       {{- end}}
@@ -78,6 +89,7 @@ spec:
     {{- end}}
   rules:
   - host: role.{{ .Values.authorization.hostname }}
+  - host: storage.{{ .Values.authorization.hostname }}
     http:
       paths:
       - path: /
@@ -87,8 +99,11 @@ spec:
             name: role-service
             port:
               number: 50051
-  {{- if .Values.authorization.roleServiceIngress.hosts  }}
-  {{- range .Values.authorization.roleServiceIngress.hosts }}
+            name: storage-service
+            port:
+              number: 50051
+  {{- if .Values.authorization.storageServiceIngress.hosts  }}
+  {{- range .Values.authorization.storageServiceIngress.hosts }}
   - host: {{ tpl . $}}
     http:
       paths:
@@ -97,6 +112,9 @@ spec:
         backend:
           service:
             name: role-service
+            port:
+              number: 50051
+            name: storage-service
             port:
               number: 50051
   {{- end}}
