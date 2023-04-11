@@ -53,7 +53,6 @@ spec:
   - karavi-auth.{{ include "custom.namespace" . }}.svc.kubernetes.local
   - {{ .Values.authorization.hostname }}
   - role.{{ .Values.authorization.hostname }}
-  - storage.{{ .Values.authorization.hostname }}
   {{- if .Values.authorization.proxyServerIngress.hosts  }}
   {{- range .Values.authorization.proxyServerIngress.hosts }}
   - {{ tpl . $}}
@@ -61,11 +60,6 @@ spec:
   {{- end}}
   {{- if .Values.authorization.roleServiceIngress.hosts  }}
   {{- range .Values.authorization.roleServiceIngress.hosts }}
-  - {{ tpl . $}}
-  {{- end }}
-  {{- end}}
-  {{- if .Values.authorization.storageServiceIngress.hosts  }}
-  {{- range .Values.authorization.storageServiceIngress.hosts }}
   - {{ tpl . $}}
   {{- end }}
   {{- end}}
