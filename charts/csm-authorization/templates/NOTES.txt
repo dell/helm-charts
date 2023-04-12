@@ -10,9 +10,6 @@ LoadBalancer host rules for proxy-server:
 - {{ .Values.authorization.hostname }}
 - {{ .Release.Name }}-ingress-nginx-controller.{{ include "custom.namespace" . }}.svc.cluster.local
 
-LoadBalancer host rules for role-service:
-- role.{{ .Values.authorization.hostname }}
-
 authorization.proxyHost value for a CSI Driver examples:
 - {{ .Release.Name }}-ingress-nginx-controller.{{ include "custom.namespace" . }}.svc.cluster.local:443 (CSI Driver in the same cluster as CSM Authorization)
 
