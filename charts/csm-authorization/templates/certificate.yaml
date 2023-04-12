@@ -52,14 +52,8 @@ spec:
   - karavi-auth
   - karavi-auth.{{ include "custom.namespace" . }}.svc.kubernetes.local
   - {{ .Values.authorization.hostname }}
-  - role.{{ .Values.authorization.hostname }}
   {{- if .Values.authorization.proxyServerIngress.hosts  }}
   {{- range .Values.authorization.proxyServerIngress.hosts }}
-  - {{ tpl . $}}
-  {{- end }}
-  {{- end}}
-  {{- if .Values.authorization.roleServiceIngress.hosts  }}
-  {{- range .Values.authorization.roleServiceIngress.hosts }}
   - {{ tpl . $}}
   {{- end }}
   {{- end}}
