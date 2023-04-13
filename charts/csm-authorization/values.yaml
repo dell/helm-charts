@@ -54,8 +54,3 @@ redis:
 
   # set the storageClass for redis to use. otherwise, the default storage class is used
   # storageClass: local-storage
-  # Optionally, uncomment and specify the name of the pre-created namespace to install the redis in it
-  # namespace:
-
-# Optionally, uncomment and specify the name of the pre-created namespace to install the module in it
-# namespace:

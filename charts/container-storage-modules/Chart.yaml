@@ -30,13 +30,13 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.0
+version: 1.0.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "0.1.0"
+appVersion: "1.0.0"
 
 dependencies:
 - name: csi-powerstore
@@ -44,11 +44,31 @@ dependencies:
   repository: file://../csi-powerstore
   condition: csi-powerstore.enabled
 
+- name: csi-powermax
+  version: 2.6.0
+  repository: file://../csi-powermax
+  condition: csi-powermax.enabled
+
+- name: csi-isilon
+  version: 2.6.0
+  repository: file://../csi-isilon
+  condition: csi-isilon.enabled
+
+- name: csi-vxflexos
+  version: 2.6.0
+  repository: file://../csi-vxflexos
+  condition: csi-vxflexos.enabled
+
+- name: csi-unity
+  version: 2.6.0
+  repository: file://../csi-unity
+  condition: csi-unity.enabled
+
 - name: csm-replication
   version: 1.4.0
   repository: file://../csm-replication
   condition: csm-replication.enabled
-
+  
 - name: karavi-observability
   version: 1.5.0
   repository: file://../karavi-observability
@@ -58,13 +78,8 @@ dependencies:
   version: 1.10.0
   repository: https://charts.jetstack.io
   condition: cert-manager.enabled
-
+  
 - name: csm-application-mobility
   version: 0.3.0
   repository: file://../csm-application-mobility
   condition: csm-application-mobility.enabled
-
-- name: csi-powermax
-  version: 2.6.0
-  repository: file://../csi-powermax
-  condition: csi-powermax.enabled
