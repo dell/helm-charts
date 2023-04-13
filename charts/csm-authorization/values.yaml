@@ -47,18 +47,6 @@ authorization:
     # additional annotations for the proxy-server ingress
     annotations: {}
 
-  # role-service ingress configuration
-  roleServiceIngress:
-    ingressClassName: nginx
-
-    # additional host rules for the role-service ingress
-    hosts: []
-
-    # additional annotations for the role-service ingress
-    # an annotation supporting grpc for your ingress controller must be supplied, if applicable
-    annotations:
-      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-      
 redis:
   images:
     redis: redis:6.0.8-alpine
