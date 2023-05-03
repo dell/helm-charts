@@ -34,7 +34,7 @@ Return the appropriate sidecar images based on k8s version
 {{- end -}}
 
 {{- define "csi-powermax.registrarImage" -}}
-  {{- if eq .Capabilities.KubeVersion.Major "1" }}
+  {{- if eq .Capabilities.KubeVersion.Major "1" }}<<<<<<< feature_761_k8_27_support
     {{- if and (ge (trimSuffix "+" .Capabilities.KubeVersion.Minor) "23") (le (trimSuffix "+" .Capabilities.KubeVersion.Minor) "27") -}}
       {{- print "k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.6.3" -}}
     {{- end -}}
