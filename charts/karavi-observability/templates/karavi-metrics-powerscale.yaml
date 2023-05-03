@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: karavi-metrics-powerscale
     app.kubernetes.io/instance: {{ .Release.Name }}
   name: karavi-metrics-powerscale
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   type: {{ .Values.karaviMetricsPowerscale.service.type }}
   ports:
@@ -24,7 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: karavi-metrics-powerscale
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: karavi-metrics-powerscale
     app.kubernetes.io/instance: {{ .Release.Name }}
