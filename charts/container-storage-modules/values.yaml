@@ -142,8 +142,8 @@ csi-powermax:
     image: dellemc/dell-csi-replicator:v1.5.0
   migration:
     enabled: false
-    image: dellemc/dell-csi-migrator:v1.1.0
-    nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.0.0
+    image: dellemc/dell-csi-migrator:v1.1.1
+    nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.0.1
   authorization:
     enabled: false
     sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
