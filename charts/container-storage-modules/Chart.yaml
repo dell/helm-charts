@@ -55,7 +55,7 @@ dependencies:
   condition: csi-isilon.enabled
 
 - name: csi-vxflexos
-  version: 2.6.0
+  version: 2.7.0
   repository: file://../csi-vxflexos
   condition: csi-vxflexos.enabled
 
