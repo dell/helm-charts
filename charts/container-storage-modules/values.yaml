@@ -219,7 +219,7 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
-  version: v2.6.0
+  version: v2.7.0
   images:
     driverRepository: dellemc
     powerflexSdc: dellemc/sdc:3.6.0.6
