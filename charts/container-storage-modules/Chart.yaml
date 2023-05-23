@@ -79,7 +79,3 @@ dependencies:
   repository: https://charts.jetstack.io
   condition: cert-manager.enabled
   
-- name: csm-application-mobility
-  version: 0.3.0
-  repository: file://../csm-application-mobility
-  condition: csm-application-mobility.enabled
