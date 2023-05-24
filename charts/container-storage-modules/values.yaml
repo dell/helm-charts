@@ -203,7 +203,8 @@ csi-isilon:
     #   - key: "isilon.podmon.storage.dell.com"
     #     operator: "Exists"
     #     effect: "NoSchedule"
-
+  storageCapacity:
+    enabled: true
   # Enable this feature only after contact support for additional information
   podmon:
     enabled: false
