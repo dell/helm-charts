@@ -50,7 +50,7 @@ dependencies:
   condition: csi-powermax.enabled
 
 - name: csi-isilon
-  version: 2.6.0
+  version: 2.7.0
   repository: file://../csi-isilon
   condition: csi-isilon.enabled
 
