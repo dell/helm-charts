@@ -40,7 +40,7 @@ appVersion: "1.0.0"
 
 dependencies:
 - name: csi-powerstore
-  version: 2.6.0
+  version: 2.7.0
   repository: file://../csi-powerstore
   condition: csi-powerstore.enabled
 
