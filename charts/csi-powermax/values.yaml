@@ -294,7 +294,6 @@ csireverseproxy:
     privateKeyFile: tls.key.encoded64
   # Optionally, uncomment and specify the name of the pre-created namespace to install the sidecar in it
   # namespace:
-
 # clusterPrefix: Define a prefix that is appended onto
 # all resources created in the Array
 # This should be unique per K8s/CSI deployment
@@ -378,7 +377,7 @@ replication:
   enabled: false
   # Change this to use any specific version of the dell-csi-replicator sidecar
   # Default value: None
-  image: dellemc/dell-csi-replicator:v1.4.0
+  image: dellemc/dell-csi-replicator:v1.5.0
   # replicationContextPrefix enables side cars to read
   # required information from the volume context
   # Default value: "powermax"
@@ -399,10 +398,10 @@ migration:
   enabled: false
   # Change this to use any specific version of the dell-csi-migrator sidecar
   # Default value: None
-  image: dellemc/dell-csi-migrator:v1.1.0
+  image: dellemc/dell-csi-migrator:v1.1.1
   # Node rescan sidecar does a rescan on nodes for identifying new paths
-  # Default value: dellemc/dell-csi-node-rescanner:v1.0.0
-  nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.0.0
+  # Default value: dellemc/dell-csi-node-rescanner:v1.0.1
+  nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.0.1
   # migrationPrefix: Determine if migration is enabled
   # Default value: "migration.storage.dell.com"
   # Examples: "migration.storage.dell.com"
@@ -450,6 +449,3 @@ vSphere:
   vCenterHost: "00.000.000.00"
   # vCenterCredSecret: secret name for the vCenter credentials
   vCenterCredSecret: vcenter-creds
-
-# Optionally, uncomment and specify the name of the pre-created namespace to install the driver in it
-# namespace:
