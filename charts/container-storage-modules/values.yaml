@@ -116,7 +116,7 @@ csi-powermax:
       - endpoint: https://backup-1.unisphe.re:8443
   #    - endpoint: https://primary-2.unisphe.re:8443
   #    - endpoint: https://backup-2.unisphe.re:8443
-  version: "v2.6.0"
+  version: "v2.7.0"
   images:
     driverRepository: "dellemc"
   clusterPrefix: ABC
@@ -135,7 +135,7 @@ csi-powermax:
       enabled: false
     nodeSelector:
   csireverseproxy:
-    image: dellemc/csipowermax-reverseproxy:v2.5.0
+    image: dellemc/csipowermax-reverseproxy:v2.6.0
     deployAsSidecar: true
   replication:
     enabled: false
@@ -146,7 +146,7 @@ csi-powermax:
     nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.0.1
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
     proxyHost:
   vSphere:
     enabled: false
