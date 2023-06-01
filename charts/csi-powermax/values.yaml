@@ -292,8 +292,6 @@ csireverseproxy:
     #   - encoded base64 value of tls.key: cat tls.key | base64
     #   - comment the param, if selfsigned should be used
     privateKeyFile: tls.key.encoded64
-  # Optionally, uncomment and specify the name of the pre-created namespace to install the sidecar in it
-  # namespace:
 # clusterPrefix: Define a prefix that is appended onto
 # all resources created in the Array
 # This should be unique per K8s/CSI deployment
