@@ -211,7 +211,7 @@ csi-isilon:
     image: dellemc/podmon:v1.5.0
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
     proxyHost:
   encryption:
     enabled: false
@@ -271,7 +271,7 @@ csi-vxflexos:
     image: dellemc/podmon:v1.5.0
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
     proxyHost:
 
 ## CSI Unity
