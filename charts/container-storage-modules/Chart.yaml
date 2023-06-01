@@ -45,7 +45,7 @@ dependencies:
   condition: csi-powerstore.enabled
 
 - name: csi-powermax
-  version: 2.6.0
+  version: 2.7.0
   repository: file://../csi-powermax
   condition: csi-powermax.enabled
 
