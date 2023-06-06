@@ -20,7 +20,7 @@
 ########################
 csi-powerstore:
   enabled: false
-  version: "v2.6.0"
+  version: "v2.7.0"
   images:
     driverRepository: dellemc
   ## Controller ATTRIBUTES
@@ -35,6 +35,7 @@ csi-powerstore:
     vgsnapshot:
       enabled: false
       image: dellemc/csi-volumegroup-snapshotter:v1.2.0
+    metadataretriever: dellemc/csi-metadata-retriever:v1.4.0
     snapshot:
       enabled: true
     resizer:
@@ -75,7 +76,7 @@ csi-powerstore:
   # Enable this feature only after contact support for additional information
   podmon:
     enabled: false
-    image: dellemc/podmon:v1.5.0
+    image: dellemc/podmon:v1.6.0
     controller:
       args:
         - "--csisock=unix:/var/run/csi/csi.sock"
@@ -116,7 +117,7 @@ csi-powermax:
       - endpoint: https://backup-1.unisphe.re:8443
   #    - endpoint: https://primary-2.unisphe.re:8443
   #    - endpoint: https://backup-2.unisphe.re:8443
-  version: "v2.6.0"
+  version: "v2.7.0"
   images:
     driverRepository: "dellemc"
   clusterPrefix: ABC
@@ -135,7 +136,7 @@ csi-powermax:
       enabled: false
     nodeSelector:
   csireverseproxy:
-    image: dellemc/csipowermax-reverseproxy:v2.5.0
+    image: dellemc/csipowermax-reverseproxy:v2.6.0
     deployAsSidecar: true
   replication:
     enabled: false
@@ -146,7 +147,7 @@ csi-powermax:
     nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.0.1
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
     proxyHost:
   vSphere:
     enabled: false
@@ -159,7 +160,7 @@ csi-powermax:
 ########################
 csi-isilon:
   enabled: false
-  version: "v2.6.0"
+  version: "v2.7.0"
   images:
     driverRepository: dellemc
   ## Controller ATTRIBUTES
@@ -203,14 +204,15 @@ csi-isilon:
     #   - key: "isilon.podmon.storage.dell.com"
     #     operator: "Exists"
     #     effect: "NoSchedule"
-
+  storageCapacity:
+    enabled: true
   # Enable this feature only after contact support for additional information
   podmon:
     enabled: false
     image: dellemc/podmon:v1.5.0
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
     proxyHost:
   encryption:
     enabled: false
@@ -270,7 +272,7 @@ csi-vxflexos:
     image: dellemc/podmon:v1.5.0
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
     proxyHost:
 
 ## CSI Unity
