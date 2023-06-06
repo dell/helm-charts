@@ -112,7 +112,7 @@ controller:
 
   # Image for csi-metadata-retriever
   metadataretriever:
-    image: dellemc/csi-metadata-retriever:v1.3.0
+    image: dellemc/csi-metadata-retriever:v1.4.0
 
   # replication: allows to configure replication
   # Replication CRDs must be installed before installing driver
@@ -389,7 +389,7 @@ storageCapacity:
 # Enable this feature only after contact support for additional information
 podmon:
   enabled: false
-  image: dellemc/podmon:v1.5.0
+  image: dellemc/podmon:v1.6.0
   #controller:
   #  args:
   #    - "--csisock=unix:/var/run/csi/csi.sock"
