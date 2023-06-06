@@ -210,6 +210,29 @@ csi-isilon:
   podmon:
     enabled: false
     image: dellemc/podmon:v1.5.0
+    #controller:
+    #  args:
+    #    - "--csisock=unix:/var/run/csi/csi.sock"
+    #    - "--labelvalue=csi-isilon"
+    #    - "--arrayConnectivityPollRate=60"
+    #    - "--driverPath=csi-isilon.dellemc.com"
+    #    - "--mode=controller"
+    #    - "--skipArrayConnectionValidation=false"
+    #    - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
+    #    - "--driverPodLabelValue=dell-storage"
+    #    - "--ignoreVolumelessPods=false"
+
+    #node:
+    #  args:
+    #    - "--csisock=unix:/var/lib/kubelet/plugins/csi-isilon/csi_sock"
+    #    - "--labelvalue=csi-isilon"
+    #    - "--arrayConnectivityPollRate=60"
+    #    - "--driverPath=csi-isilon.dellemc.com"
+    #    - "--mode=node"
+    #    - "--leaderelection=false"
+    #    - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
+    #    - "--driverPodLabelValue=dell-storage"
+    #    - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
     sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
@@ -270,6 +293,24 @@ csi-vxflexos:
   podmon:
     enabled: false
     image: dellemc/podmon:v1.5.0
+    controller:
+     args:
+       - "--csisock=unix:/var/run/csi/csi.sock"
+       - "--labelvalue=csi-vxflexos"
+       - "--mode=controller"
+       - "--skipArrayConnectionValidation=false"
+       - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
+       - "--driverPodLabelValue=dell-storage"
+       - "--ignoreVolumelessPods=false"
+    node:
+      args:
+        - "--csisock=unix:/var/lib/kubelet/plugins/vxflexos.emc.dell.com/csi_sock"
+        - "--labelvalue=csi-vxflexos"
+        - "--mode=node"
+        - "--leaderelection=false"
+        - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
+        - "--driverPodLabelValue=dell-storage"
+        - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
     sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
@@ -368,6 +409,26 @@ csi-unity:
   podmon:
     enabled: false
     image: dellemc/podmon:v1.5.0
+    # controller:
+    #   args:
+    #     - "--csisock=unix:/var/run/csi/csi.sock"
+    #     - "--labelvalue=csi-unity"
+    #     - "--driverPath=csi-unity.dellemc.com"
+    #     - "--mode=controller"
+    #     - "--skipArrayConnectionValidation=false"
+    #     - "--driver-config-params=/unity-config/driver-config-params.yaml"
+    #     - "--driverPodLabelValue=dell-storage"
+    #     - "--ignoreVolumelessPods=false"
+    # node:
+    #   args:
+    #     - "--csisock=unix:/var/lib/kubelet/plugins/unity.emc.dell.com/csi_sock"
+    #     - "--labelvalue=csi-unity"
+    #     - "--driverPath=csi-unity.dellemc.com"
+    #     - "--mode=node"
+    #     - "--leaderelection=false"
+    #     - "--driver-config-params=/unity-config/driver-config-params.yaml"
+    #     - "--driverPodLabelValue=dell-storage"
+    #     - "--ignoreVolumelessPods=false"
 
   # allowRWOMultiPodAccess - Flag to enable sharing of volumes across multiple pods within the same node in RWO access mode.
   allowRWOMultiPodAccess: "false"
@@ -403,43 +464,6 @@ karavi-observability:
     enabled: false
   cert-manager:
     enabled: false
-
-## Application-Mobility 
-########################
-csm-application-mobility:
-  enabled: false
-  # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the namespace in which velero is deployed. Default value is "velero"
-  veleroNamespace: velero
-  # csm-application-mobility requires velero. If velero is not already present in cluster, set enabled to true to install it too.
-  velero:
-    enabled: true
-    credentials:
-      secretContents:
-        cloud: |
-          [default]
-          aws_access_key_id=access_key
-          aws_secret_access_key=secret_access_key
-    configuration:
-      provider: aws
-      backupStorageLocation:
-        name: default
-        bucket: velero-bucket
-        config: {}
-          #region: 
-          #s3ForcePathStyle: 
-          #s3Url: 
-          #publicUrl:
-    initContainers:
-    - name: dell-custom-velero-plugin
-      image: dellemc/csm-application-mobility-velero-plugin:v0.3.0
-      volumeMounts:
-      - mountPath: /target
-        name: plugins
-    #- name: velero-plugin-for-aws
-      #image: velero/velero-plugin-for-aws:v1.5.0
-      #volumeMounts:
-      #- mountPath: /target
-        #name: plugins
 
 ## K8S/Cert-manager ATTRIBUTES
 ########################
