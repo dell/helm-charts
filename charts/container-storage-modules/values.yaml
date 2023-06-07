@@ -1,0 +1,222 @@
+#
+#
+# Copyright © 2023 Dell Inc. or its subsidiaries. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#      http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+## K8S/DRIVER ATTRIBUTES
+########################
+csi-powerstore:
+  enabled: false
+  namespace:
+  version: "v2.6.0"
+  images:
+    driverRepository: dellemc
+  ## Controller ATTRIBUTES
+  controller:
+    controllerCount: 2
+    healthMonitor:
+      enabled: false
+    nodeSelector:
+    replication:
+      enabled: false
+      image: dellemc/dell-csi-replicator:v1.4.0
+    vgsnapshot:
+      enabled: false
+      image: dellemc/csi-volumegroup-snapshotter:v1.2.0
+    snapshot:
+      enabled: true
+    resizer:
+      enabled: true
+  ## Node ATTRIBUTES
+  node:
+    healthMonitor:
+      enabled: false
+    nodeSelector:
+      # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled
+    # tolerations:
+    # - key: "offline.vxflexos.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "vxflexos.podmon.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "offline.unity.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "unity.podmon.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "offline.isilon.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "isilon.podmon.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "offline.powerstore.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+    # - key: "powerstore.podmon.storage.dell.com"
+    #   operator: "Exists"
+    #   effect: "NoSchedule"
+  storageCapacity:
+    enabled: true
+  # Enable this feature only after contact support for additional information
+  podmon:
+    enabled: false
+    image: dellemc/podmon:v1.5.0
+    controller:
+      args:
+        - "--csisock=unix:/var/run/csi/csi.sock"
+        - "--labelvalue=csi-powerstore"
+        - "--arrayConnectivityPollRate=60"
+        - "--driverPath=csi-powerstore.dellemc.com"
+        - "--mode=controller"
+        - "--skipArrayConnectionValidation=false"
+        - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
+        - "--driverPodLabelValue=dell-storage"
+        - "--ignoreVolumelessPods=false"
+    node:
+      args:
+        - "--csisock=unix:/var/lib/kubelet/plugins/csi-powerstore.dellemc.com/csi_sock"
+        - "--labelvalue=csi-powerstore"
+        - "--arrayConnectivityPollRate=60"
+        - "--driverPath=csi-powerstore.dellemc.com"
+        - "--mode=node"
+        - "--leaderelection=false"
+        - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
+        - "--driverPodLabelValue=dell-storage"
+        - "--ignoreVolumelessPods=false"
+
+## K8S/Replication Module ATTRIBUTES
+##########################################
+csm-replication:
+  enabled: false
+  namespace:
+
+## K8S/Observability Module ATTRIBUTES
+##########################################
+karavi-observability:
+  enabled: false
+  namespace:
+  karaviMetricsPowerstore:
+    enabled: false
+  karaviMetricsPowerflex:
+    enabled: false
+  karaviMetricsPowerscale:
+    enabled: false
+  karaviMetricsPowermax:
+    enabled: false
+  cert-manager:
+    enabled: false
+
+## K8S/Application-mobility Module ATTRIBUTES
+##########################################
+csm-application-mobility:
+  enabled: false
+  namespace:
+  # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the namespace in which velero is deployed. Default value is "velero"
+  veleroNamespace: velero
+  # csm-application-mobility requires velero. If velero is not already present in cluster, set enabled to true to install it too.
+  velero:
+    enabled: true
+    credentials:
+      secretContents:
+        cloud: |
+          [default]
+          aws_access_key_id=access_key
+          aws_secret_access_key=secret_access_key
+    configuration:
+      provider: aws
+      backupStorageLocation:
+        name: default
+        bucket: velero-bucket
+        config: {}
+          # region:
+          # s3ForcePathStyle:
+          # s3Url:
+          # publicUrl:
+    initContainers:
+    - name: dell-custom-velero-plugin
+      image: dellemc/csm-application-mobility-velero-plugin:v0.3.0
+      volumeMounts:
+      - mountPath: /target
+        name: plugins
+    # - name: velero-plugin-for-aws
+      # image: velero/velero-plugin-for-aws:v1.5.0
+      # volumeMounts:
+      # - mountPath: /target
+        # name: plugins
+
+## K8S/Cert-manager ATTRIBUTES
+##########################################
+cert-manager:
+  enabled: false
+  namespace:
+
+## K8S/Powermax ATTRIBUTES
+##########################################
+csi-powermax:
+  enabled: false
+  namespace:
+  global:
+    storageArrays:
+      - storageArrayId: "000000000001"
+        endpoint: https://primary-1.unisphe.re:8443
+        backupEndpoint: https://backup-1.unisphe.re:8443
+  #    - storageArrayId: "000000000002"
+  #      endpoint: https://primary-2.unisphe.re:8443
+  #      backupEndpoint: https://backup-2.unisphe.re:8443
+    managementServers:
+      - endpoint: https://primary-1.unisphe.re:8443
+      - endpoint: https://backup-1.unisphe.re:8443
+  #    - endpoint: https://primary-2.unisphe.re:8443
+  #    - endpoint: https://backup-2.unisphe.re:8443
+  version: "v2.6.0"
+  images:
+    driverRepository: "dellemc"
+  clusterPrefix: ABC
+  portGroups: PortGroup1, PortGroup2, PortGroup3
+  controller:
+    controllerCount: 2
+    snapshot:
+      enabled: true
+    resizer:
+      enabled: true
+    healthMonitor:
+      enabled: false
+    nodeSelector:
+  node:
+    healthMonitor:
+      enabled: false
+    nodeSelector:
+  csireverseproxy:
+    image: dellemc/csipowermax-reverseproxy:v2.5.0
+    deployAsSidecar: true
+    namespace:
+  replication:
+    enabled: false
+    image: dellemc/dell-csi-replicator:v1.4.0
+  migration:
+    enabled: false
+    image: dellemc/dell-csi-migrator:v1.1.0
+    nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.0.0
+  authorization:
+    enabled: false
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
+    proxyHost:
+  vSphere:
+    enabled: false
+    fcPortGroup: "csi-vsphere-VC-PG"
+    fcHostName: "csi-vsphere-VC-HN"
+    vCenterHost: "00.000.000.00"
+    vCenterCredSecret: vcenter-creds
