@@ -298,6 +298,16 @@ entries:
     version: 1.0.0
   csm-replication:
   - apiVersion: v2
+    appVersion: 1.5.0
+    created: "2023-06-23T22:42:23.688448734Z"
+    description: 'CSM for Replication helm charts '
+    digest: 001bf73329ea38f9c019bbce7866f7c410ca71e36fc7fc3a439eb60945902a55
+    name: csm-replication
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csm-replication-1.5.0/csm-replication-1.5.0.tgz
+    version: 1.5.0
+  - apiVersion: v2
     appVersion: 1.4.0
     created: "2023-03-27T19:35:17.176443914Z"
     digest: 2a989d1260fa2ac38c08c9a71eea11c745a4a90d7191e6d5bdd200b4354396e1
