@@ -4,7 +4,7 @@ name: csi-powermax
 version: 2.7.0
 description: |
   PowerMax CSI (Container Storage Interface) driver Kubernetes
-  integration.  This chart includes everything required to provision via CSI as
+  integration. This chart includes everything required to provision via CSI as
   well as a PowerMax StorageClass.
 type: application
 kubeVersion: ">= 1.23.0 < 1.28.0"
