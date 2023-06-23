@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: dell-replication-controller-sa
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 secrets:
 - name: replication-secret
 ---
@@ -179,10 +179,10 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: replication-secret
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
   annotations:
     kubernetes.io/service-account.name: dell-replication-controller-sa
-    kubernetes.io/service-account.namespace: {{ include "custom.namespace" . }}
+    kubernetes.io/service-account.namespace: {{ .Release.Namespace }}
 type: kubernetes.io/service-account-token
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -196,7 +196,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: dell-replication-controller-sa
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -209,14 +209,14 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: dell-replication-controller-sa
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 ---
-{{- $secret := (lookup "v1" "ConfigMap" "{{ include custom.namespace . }}" "dell-replication-controller-config").data -}}
+{{- $secret := (lookup "v1" "ConfigMap" "{{ .Release.Namespace }}" "dell-replication-controller-config").data -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: dell-replication-controller-config
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 {{ if $secret -}}
 data:
  {{- range $key, $value := $secret }}
@@ -236,7 +236,7 @@ metadata:
   labels:
     control-plane: controller-manager
   name: dell-replication-controller-manager-metrics-service
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ports:
   - name: https
@@ -251,7 +251,7 @@ metadata:
   labels:
     control-plane: controller-manager
   name: dell-replication-controller-manager
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
@@ -295,7 +295,7 @@ spec:
         - name: X_CSI_REPLICATION_IN_CLUSTER
           value: "true"
         - name: X_CSI_REPLICATION_WATCH_NAMESPACE
-          value: {{ include "custom.namespace" . }}
+          value: {{ .Release.Namespace }}
         - name: X_CSI_REPLICATION_CONFIG_DIR
           value: /app/config
         - name: X_CSI_REPLICATION_CERT_DIR
