@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: karavi-topology
     app.kubernetes.io/instance: {{ .Release.Name }}
   name: karavi-topology
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   type: {{ .Values.karaviTopology.service.type }}
   ports:
@@ -24,7 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: karavi-topology
-  namespace: {{ include "custom.namespace" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: karavi-topology
     app.kubernetes.io/instance: {{ .Release.Name }}
