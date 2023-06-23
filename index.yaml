@@ -2,6 +2,50 @@ apiVersion: v1
 entries:
   container-storage-modules:
   - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2023-06-23T22:53:59.583078081Z"
+    dependencies:
+    - condition: csi-powerstore.enabled
+      name: csi-powerstore
+      repository: https://dell.github.io/helm-charts
+      version: 2.7.0
+    - condition: csi-powermax.enabled
+      name: csi-powermax
+      repository: https://dell.github.io/helm-charts
+      version: 2.7.0
+    - condition: csi-isilon.enabled
+      name: csi-isilon
+      repository: https://dell.github.io/helm-charts
+      version: 2.7.0
+    - condition: csi-vxflexos.enabled
+      name: csi-vxflexos
+      repository: https://dell.github.io/helm-charts
+      version: 2.7.0
+    - condition: csi-unity.enabled
+      name: csi-unity
+      repository: https://dell.github.io/helm-charts
+      version: 2.7.0
+    - condition: csm-replication.enabled
+      name: csm-replication
+      repository: https://dell.github.io/helm-charts
+      version: 1.5.0
+    - condition: karavi-observability.enabled
+      name: karavi-observability
+      repository: https://dell.github.io/helm-charts
+      version: 1.5.0
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.10.0
+    description: Container Storage Modules(https://github.com/dell/csm) open source
+      suite of Kubernetes storage enablers for Dell Technologies storage products.
+    digest: 828fe8fafd042b21228413151d09921ceef954c93a80af3bf4f0c467f9643d22
+    name: container-storage-modules
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/container-storage-modules-1.0.0/container-storage-modules-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
     appVersion: 0.1.0
     created: "2023-03-27T19:35:16.161102674Z"
     dependencies:
