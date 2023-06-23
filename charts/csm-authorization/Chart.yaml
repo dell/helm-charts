@@ -5,7 +5,7 @@ appVersion: 1.7.0
 type: application
 description: |
   CSM for Authorization is part of the [Container Storage Modules](https://github.com/dell/csm) open source suite of Kubernetes 
-  storage enablers for Dell EMC storage products. CSM for Authorization provides storage and Kubernetes administrators the ability
+  storage enablers for Dell EMC storage products.  CSM for Authorization provides storage and Kubernetes administrators the ability
   to apply RBAC for Dell CSI Drivers.
 dependencies:
 - name: cert-manager
