@@ -40,8 +40,8 @@ karaviMetricsPowerflex:
   authorization:
     enabled: false
     # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-    # Default value: dellemc/csm-authorization-sidecar:v1.7.0
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+    # Default value: dellemc/csm-authorization-sidecar:v1.6.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -116,8 +116,8 @@ karaviMetricsPowerscale:
   authorization:
     enabled: false
     # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-    # Default value: dellemc/csm-authorization-sidecar:v1.7.0
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+    # Default value: dellemc/csm-authorization-sidecar:v1.6.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -153,8 +153,8 @@ karaviMetricsPowermax:
   authorization:
     enabled: false
     # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-    # Default value: dellemc/csm-authorization-sidecar:v1.7.0
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+    # Default value: dellemc/csm-authorization-sidecar:v1.6.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.6.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -178,3 +178,5 @@ cert-manager:
     enabled: false
     serviceAccount:
       create: false
+# Optionally, uncomment and specify the name of the pre-created namespace to install the module in it
+# namespace:

@@ -18,7 +18,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ .Release.Name }}-controller
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 
 ---
 
@@ -145,7 +145,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: {{ .Release.Name }}-controller
-    namespace: {{ .Release.Namespace }}
+    namespace: {{ include "custom.namespace" . }}
 roleRef:
   kind: ClusterRole
   name: {{ .Release.Name }}-controller
@@ -157,7 +157,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: {{ .Release.Name }}-controller
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 spec:
   selector:
     matchLabels:
