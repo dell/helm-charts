@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: karavi-metrics-powerflex
     app.kubernetes.io/instance: {{ .Release.Name }}
   name: karavi-metrics-powerflex
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
 spec:
   type: {{ .Values.karaviMetricsPowerflex.service.type }}
   ports:
@@ -24,7 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: karavi-metrics-powerflex
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ include "custom.namespace" . }}
   labels:
     app.kubernetes.io/name: karavi-metrics-powerflex
     app.kubernetes.io/instance: {{ .Release.Name }}
