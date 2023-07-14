@@ -51,7 +51,7 @@ Return the appropriate sidecar images based on k8s version
 
 {{- define "csi-powermax.isStorageCapacitySupported" -}}
 {{- if eq .Values.storageCapacity.enabled true -}}
-  {{- if and (eq .Capabilities.KubeVersion.Major "1") (ge (trimSuffix "+" .Capabilities.KubeVersion.Minor) "25") -}}
+  {{- if and (eq .Capabilities.KubeVersion.Major "1") (ge (trimSuffix "+" .Capabilities.KubeVersion.Minor) "24") -}}
       {{- true -}}
   {{- end -}}
 {{- end -}}
