@@ -9,5 +9,5 @@ metadata:
 spec:
     podInfoOnMount: true
     attachRequired: true
-    storageCapacity: {{ (include "csi-powermax.isStorageCapacitySupported" .) | default false }}
+    storageCapacity: {{ (include "csi-powermax.isStorageCapacitySupported" .) | default true }}
     fsGroupPolicy: {{ .Values.fsGroupPolicy }}
