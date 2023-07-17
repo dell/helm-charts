@@ -5,7 +5,7 @@
 
 # These are the default owners for the code and will
 # be requested for review when someone opens a pull request.
-# order is alphabetical for easier maintenance.
+# Order is alphabetical for easier maintenance.
 #
 # Sean Gallacher (gallacher)
 # Trevor Dawe (tdawe)
@@ -18,11 +18,13 @@
 # Niranjan N (niranjan-n1)
 # Shayna Finocchiaro (shaynafinocchiaro)
 # Sharmila Ramamoorthy (sharmilarama)
+# Sushma T S(tssushma)
 # Tao He (taohe1012)
 # Peter Cao (P-Cao)
+# Yamunadevi Shanmugam(shanmydell)
 # Yiming Bao (baoy1)
 # Yian Zong  (YianZong)
 # Forrest Xia (forrestxia)
 
 # for all files:
-* @gallacher @tdawe @alikdell @atye @hoppea2 @chaganti-rajitha @coulof @meggm @niranjan-n1 @shaynafinocchiaro @sharmilarama @taohe1012 @P-Cao @baoy1 @YianZong @forrestxia
+* @gallacher @tdawe @alikdell @atye @hoppea2 @chaganti-rajitha @coulof @meggm @niranjan-n1 @shaynafinocchiaro @sharmilarama @tssushma @taohe1012 @P-Cao @shanmydell @baoy1 @YianZong @forrestxia
