@@ -196,7 +196,7 @@ spec:
             - "--leader-election"
             - "--extra-create-metadata"
             - "--feature-gates=Topology=true"
-            - "--enable-capacity={{ (include "csi-powermax.isStorageCapacitySupported" .) | default false }}"
+            - "--enable-capacity={{ (include "csi-powermax.isStorageCapacitySupported" .) | default true }}"
             - "--capacity-ownerref-level=2"
             - "--capacity-poll-interval={{ .Values.storageCapacity.pollInterval | default "5m" }}"
           env:
