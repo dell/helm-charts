@@ -93,7 +93,7 @@ rules:
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]  
   {{- end}} 
   # Permissions for Storage Capacity
-  {{- if eq (include "csi-powermax.isStorageCapacitySupported" .) "false" }}
+  {{- if eq (include "csi-powermax.isStorageCapacitySupported" .) "true" }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["csistoragecapacities"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
@@ -196,7 +196,7 @@ spec:
             - "--leader-election"
             - "--extra-create-metadata"
             - "--feature-gates=Topology=true"
-            - "--enable-capacity={{ (include "csi-powermax.isStorageCapacitySupported" .) | default true }}"
+            - "--enable-capacity={{ (include "csi-powermax.isStorageCapacitySupported" .) | default false }}"
             - "--capacity-ownerref-level=2"
             - "--capacity-poll-interval={{ .Values.storageCapacity.pollInterval | default "5m" }}"
           env:
