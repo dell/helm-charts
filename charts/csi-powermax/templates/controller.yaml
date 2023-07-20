@@ -93,7 +93,7 @@ rules:
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]  
   {{- end}} 
   # Permissions for Storage Capacity
-  {{- if eq (include "csi-powermax.isStorageCapacitySupported" .) "true" }}
+  {{- if eq (include "csi-powermax.isStorageCapacitySupported" .) "false" }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["csistoragecapacities"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
