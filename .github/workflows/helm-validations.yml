@@ -8,7 +8,7 @@ on:
       - main
       - karavi-observability-release
       - csm-authorization-release
-      - release-v1.7.0
+      - release-v*
 
 jobs:
   # This job will check to see if any .yaml file is modified
