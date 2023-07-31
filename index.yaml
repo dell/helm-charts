@@ -221,6 +221,25 @@ entries:
     version: 2.7.0
   csi-vxflexos:
   - apiVersion: v2
+    appVersion: 2.7.1
+    created: "2023-07-31T15:44:46.523454882Z"
+    description: 'VxFlex OS CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a VxFlex
+      OS StorageClass. '
+    digest: ba77661de87c2cd2f166237b57885c5d22ef0dbe99e2bad008288963f8bdfc42
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.21.0 < 1.28.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-vxflexos
+    sources:
+    - https://github.com/dell/csi-vxflexos
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-vxflexos-2.7.1/csi-vxflexos-2.7.1.tgz
+    version: 2.7.1
+  - apiVersion: v2
     appVersion: 2.7.0
     created: "2023-06-23T22:48:22.9833339Z"
     description: 'VxFlex OS CSI (Container Storage Interface) driver Kubernetes integration.
