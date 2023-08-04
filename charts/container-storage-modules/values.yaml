@@ -117,7 +117,7 @@ csi-powermax:
       - endpoint: https://backup-1.unisphe.re:8443
   #    - endpoint: https://primary-2.unisphe.re:8443
   #    - endpoint: https://backup-2.unisphe.re:8443
-  version: "v2.7.0"
+  version: "v2.8.0"
   images:
     driverRepository: "dellemc"
   clusterPrefix: ABC
