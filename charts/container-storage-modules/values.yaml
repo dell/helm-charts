@@ -317,7 +317,7 @@ csi-vxflexos:
 ########################
 csi-unity:
   enabled: false
-  version: "v2.7.0"
+  version: "v2.8.0"
 
   # certSecretCount: Represents number of certificate secrets, which user is going to create for
   # ssl authentication. (unity-cert-0..unity-cert-n)
