@@ -436,6 +436,11 @@ csi-unity:
   # tenantName - Tenant name that need to added while adding host entry to the array.
   tenantName: ""
 
+# Storage Capacity Tracking
+# Note: Capacity tracking is supported in kubernetes v1.24 and above, this feature will be automatically disabled in older versions.
+storageCapacity:
+  enabled: true
+
   images:
     driverRepository: dellemc
 
