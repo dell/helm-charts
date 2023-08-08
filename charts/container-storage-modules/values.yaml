@@ -247,7 +247,11 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
+<<<<<<< HEAD
   version: v2.9.0
+=======
+  version: v2.8.0
+>>>>>>> c08e212 (PowerFlex v2.8.0 release (#250))
   images:
     driverRepository: dellemc
     powerflexSdc: dellemc/sdc:3.6.1
