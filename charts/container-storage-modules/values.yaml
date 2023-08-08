@@ -241,7 +241,7 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
-  version: v2.7.1
+  version: v2.8.0
   images:
     driverRepository: dellemc
     powerflexSdc: dellemc/sdc:3.6.0.6
@@ -282,6 +282,8 @@ csi-vxflexos:
     # - key: "isilon.podmon.storage.dell.com"
     #   operator: "Exists"
     #   effect: "NoSchedule"
+  storageCapacity:
+    enabled: true  
   monitor:
     enabled: false
   vgsnapshotter:
