@@ -136,7 +136,7 @@ csi-powermax:
       enabled: false
     nodeSelector:
   csireverseproxy:
-    image: dellemc/csipowermax-reverseproxy:v2.6.0
+    image: dellemc/csipowermax-reverseproxy:v2.7.0
     deployAsSidecar: true
   replication:
     enabled: false
