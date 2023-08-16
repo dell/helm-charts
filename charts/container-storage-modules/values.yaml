@@ -244,7 +244,7 @@ csi-vxflexos:
   version: v2.7.1
   images:
     driverRepository: dellemc
-    powerflexSdc: dellemc/sdc:3.6.0.6
+    powerflexSdc: dellemc/sdc:3.6.1
   certSecretCount: 0
   controller:
     replication:
@@ -289,6 +289,9 @@ csi-vxflexos:
   vgsnapshotter:
     enabled: false
     image: dellemc/csi-volumegroup-snapshotter:v1.2.0
+  # maxVxflexosVolumesPerNode - Maximum number of volumes that controller can publish to the node.
+  maxVxflexosVolumesPerNode: 0  
+  
   podmon:
     enabled: false
     image: dellemc/podmon:v1.6.0
