@@ -3,11 +3,7 @@
 
 # "version" is used to verify the values file matches driver version
 # Not recommend to change
-<<<<<<< HEAD
 version: v2.9.0
-=======
-version: v2.8.0
->>>>>>> c08e212 (PowerFlex v2.8.0 release (#250))
 
 images:
   # "driver" defines the container image, used for the driver container.
@@ -97,10 +93,14 @@ allowRWOMultiPodAccess: "false"
 fsGroupPolicy: File
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 56df1f9 (PowerFlex  SDC  updated (#251))
 # maxVxflexosVolumesPerNode: Specify default value for maximum number of volumes that controller can publish to the node.
 # If value is zero CO SHALL decide how many volumes of this type can be published by the controller to the node.
 # This limit is applicable to all the nodes in the cluster for which node label 'maxVxflexosVolumesPerNode' is not set.
 # Allowed values: n, where n >= 0
+<<<<<<< HEAD
 # Default value: 0
 =======
 # maxVxflexosVolumesPerNode - Maximum number of volumes that controller can publish to the node.
@@ -108,6 +108,9 @@ fsGroupPolicy: File
 # Default value: 0
 # Examples : 0 , 1
 >>>>>>> c08e212 (PowerFlex v2.8.0 release (#250))
+=======
+# Default value: 0
+>>>>>>> 56df1f9 (PowerFlex  SDC  updated (#251))
 maxVxflexosVolumesPerNode: 0
 
 # "controller" allows to configure controller specific parameters
