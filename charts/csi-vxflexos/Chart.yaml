@@ -17,5 +17,3 @@ maintainers:
 - name: DellEMC
 sources:
 - https://github.com/dell/csi-vxflexos
-
-
