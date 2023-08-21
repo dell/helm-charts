@@ -40,7 +40,7 @@ appVersion: "1.0.0"
 
 dependencies:
 - name: csi-powerstore
-  version: 2.7.0
+  version: 2.8.0
   repository: https://dell.github.io/helm-charts
   condition: csi-powerstore.enabled
 
