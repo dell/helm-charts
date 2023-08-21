@@ -20,7 +20,7 @@
 ########################
 csi-powerstore:
   enabled: false
-  version: "v2.7.0"
+  version: "v2.8.0"
   images:
     driverRepository: dellemc
   ## Controller ATTRIBUTES
