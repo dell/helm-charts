@@ -1,0 +1,153 @@
+# Copyright © 2023 Dell Inc. or its subsidiaries. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#      http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
+
+# Default values for cosi-driver.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# provisioner specifies parameters for the COSI driver provisioner container.
+provisioner:
+  # name of the COSI driver provisioner container.
+  name: "objectstorage-provisioner"
+  # logLevel is the logging level for the COSI driver provisioner,
+  # Possible values: "trace" "debug" "info" "warn" "error" "fatal" "panic".
+  logLevel: "debug"
+  # logFormat is the logging format for the COSI driver provisioner,
+  # Possible values: "json" "text".
+  logFormat: "text"
+  # otelEndpoint specifies the endpoint on which the OTEL Collector is set up and to which data is sent over gRPC.
+  otelEndpoint: "otel-collector.namespace:4317"
+  # image specifies the COSI driver provisioner container image.
+  image:
+    # repository is the COSI driver provisioner container image repository.
+    repository: "docker.io/dell/cosi"
+    # tag is the COSI driver provisioner container image tag.
+    tag: "v0.1.0"
+    # pullPolicy is the COSI driver provisioner container image pull policy.
+    pullPolicy: "IfNotPresent"
+
+# sidecar specifies parameters for the COSI driver sidecar container.
+sidecar:
+  # name of the COSI driver sidecar container.
+  name: "objectstorage-provisioner-sidecar"
+  # verbosity is the logging verbosity for the COSI driver sidecar, higher values are more verbose,
+  # Possible values: integers from -2,147,483,648 to 2,147,483,647
+  #
+  # Generally the range used is between -4 and 12. However, there may be cases where numbers outside
+  # that range might provide more information.
+  # For additional information, refer to the cosi sidecar documentation:
+  # - https://github.com/kubernetes-sigs/container-object-storage-interface-provisioner-sidecar
+  verbosity: 5
+  # image specifies the COSI driver sidecar container image.
+  image:
+    # repository is the COSI driver sidecar container image repository.
+    repository: "gcr.io/k8s-staging-sig-storage/objectstorage-sidecar/objectstorage-sidecar"
+    # tag is the COSI driver sidecar container image tag.
+    tag: "v20230130-v0.1.0-24-gc0cf995"
+    # pullPolicy is the COSI driver sidecar container image pull policy.
+    pullPolicy: "IfNotPresent"
+
+# configuration of the driver can be set with with --set-file configuration.data=path/to/config.yaml
+# or created manually and provided with --set configuration.secretName=existing-secret-name
+configuration:
+  # Specifies whether a secret with driver configuration should be created
+  # If set to false, you must set `configuration.secretName` field to an existing configuration secret name.
+  create: true
+  annotations: {}
+  # name can be used to specify an existing secret name to use for the driver configuration or override the generated name (default `cosi-driver`).
+  secretName: ""
+  # data should be provided when installing chart, it will be used to create the Secret with the driver configuration.
+  # `configuration.create` must be set to `true` for this to work.
+  data: ""
+
+# rbac specifies parameters for the COSI driver RBAC resources.
+rbac:
+  # create specifies whether RBAC resources should be created.
+  create: true
+  # role specifies parameters for the COSI driver Role.
+  role:
+    # annotations to add to the Role resource
+    annotations: {}
+    # name of the Role to create (efault `cosi-driver-role`).
+    name: ""
+  # roleBinding specifies parameters for the COSI driver RoleBinding.
+  roleBinding:
+    # Annotations to add to the RoleBinding
+    annotations: {}
+    # name of the RoleBinding to create (default `cosi-driver-rolebinding`).
+    name: ""
+
+# serviceAccount specifies parameters for the COSI driver ServiceAccount.
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # Annotations to add to the ServiceAccount
+  annotations: {}
+  # The name of the ServiceAccount to create (or just use if `rbac.create=false`, default `cosi-driver-sa`).
+  name: ""
+
+# replicaCount specifies the number of replicas of the COSI driver.
+replicaCount: 1
+# nameOverride specifies the name override for the COSI driver installation (default is `name` form `Chart.yaml`).
+nameOverride: ""
+# fullnameOverride specifies the full name override for the COSI driver installation (generated based on release name).
+fullnameOverride: ""
+# podAnnotations specifies the list of annotations to add to the COSI driver pod.
+podAnnotations: {}
+# imagePullSecrets specifies the list of image pull secrets.
+imagePullSecrets: []
+
+# podSecurityContext specifies the security context for the COSI driver pod.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  # fsGroup: 2000
+
+# securityContext specifies the security context for the COSI driver containers.
+securityContext:
+  readOnlyRootFilesystem: true
+  # capabilities:
+  #   drop:
+  #   - ALL
+
+# resources specifies the resource limits and requests for the COSI driver containers.
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# autoscaling rules for COSI driver deployment.
+autoscaling:
+  # enabled specifies whether autoscaling is enabled.
+  enabled: false
+  # minReplicas specifies the minimum number of replicas.
+  minReplicas: 1
+  # maxReplicas specifies the maximum number of replicas.
+  maxReplicas: 100
+  # targetCPUUtilizationPercentage specifies the target CPU utilization percentage.
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage specifies the target memory utilization percentage.
+  # targetMemoryUtilizationPercentage: 80
+
+# nodeSelector specifies the node selector for the COSI driver pod.
+nodeSelector: {}
+# tolerations specifies the list of tolerations for the COSI driver pod.
+tolerations: []
+# affinity specifies the affinity for the COSI driver pod.
+affinity: {}

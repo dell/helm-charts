@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cosi-driver.fullname" . }}
+  labels:
+    {{- include "cosi-driver.labels" . | trim | nindent 4 }}
+  {{- with .Values.rbac.role.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels: 
+      {{- include "cosi-driver.selectorLabels" . | trim | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cosi-driver.labels" . | trim | nindent 8 }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "cosi-driver.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ include "cosi-driver.provisionerContainerName" . }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: {{ include "cosi-driver.provisionerImageName" . }}
+          imagePullPolicy: {{ .Values.provisioner.image.pullPolicy }}
+          args:
+            - "--log-level={{ include "cosi-driver.logLevel" . }}"
+            - "--log-format={{ include "cosi-driver.logFormat" . }}"
+            - "--otel-endpoint={{ include "cosi-driver.otelEndpoint" . }}"
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+          - name: {{ include "cosi-driver.secretVolumeName" . }}
+            mountPath: /cosi
+          - name: cosi-socket-dir
+            mountPath: /var/lib/cosi
+        - name: {{ include "cosi-driver.provisionerSidecarContainerName" . }}
+          image: {{ include "cosi-driver.provisionerSidecarImageName" . }}
+          imagePullPolicy: {{ .Values.sidecar.image.pullPolicy }}
+          args:
+            - "-v={{ include "cosi-driver.provisionerSidecarVerbosity" . }}"
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+          - name: cosi-socket-dir
+            mountPath: /var/lib/cosi
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: {{ include "cosi-driver.secretVolumeName" . }}
+        secret:
+          secretName: {{ include "cosi-driver.secretName" . }}
+      - name: cosi-socket-dir
+        emptyDir: {}
