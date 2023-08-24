@@ -1,4 +1,4 @@
-name: Helm Chart
+name: COSI driver
 
 on:
   push:
