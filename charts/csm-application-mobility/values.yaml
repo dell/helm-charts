@@ -17,9 +17,6 @@ cert-manager:
 # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the namespace in which velero is deployed. Default value is "velero"
 veleroNamespace: velero
 
-# name of the license Secret used by csm-application-mobility.
-licenseName: license
-
 # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the name of the secret in velero namespace that has credentials to access object store.
 # Default value is "cloud-credentials".
 objectstore:

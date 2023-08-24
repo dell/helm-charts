@@ -36,7 +36,6 @@ spec:
         - --app-mobility-namespace={{ include "custom.namespace" . }}
         - --velero-namespace={{ include "velero.namespace" . }}
         - --secret-name={{ include "objectstore.secretname" . }}
-        - --license-name={{ .Values.licenseName }}
         command:
         - /manager
         image: {{ .Values.controller.image }}

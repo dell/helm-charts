@@ -78,17 +78,6 @@ Create the name of the velero namespace.
 {{- end -}}
 
 {{/*
-Create the name of the license.
-*/}}
-{{- define "csm-application-mobility.licenseName" -}}
-{{- if .Values.licenseName -}}
-  {{- .Values.licenseName -}}
-{{- else -}}
-  {{- default "license" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Create the name of the secret that holds credentials to object store.
 */}}
 {{- define "objectstore.secretname" -}}
