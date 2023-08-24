@@ -1,0 +1,8 @@
+target-branch: main
+chart-dirs:
+  - charts
+charts:
+  - charts/cosi
+check-version-increment: true
+validate-chart-schema: false
+validate-maintainers: false

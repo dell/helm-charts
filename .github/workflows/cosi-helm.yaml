@@ -49,4 +49,4 @@ jobs:
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.4.0
       - name: Run chart-testing (lint)
-        run: ct lint --config lintConfig.yaml
+        run: ct lint --config cosi-ct-config.yaml
