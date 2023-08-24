@@ -149,7 +149,7 @@ csi-powermax:
     nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.0.1
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
     proxyHost:
   vSphere:
     enabled: false
@@ -234,7 +234,7 @@ csi-isilon:
     #    - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
     proxyHost:
   encryption:
     enabled: false
@@ -317,7 +317,7 @@ csi-vxflexos:
     #     - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
     proxyHost:
 
 ## CSI Unity
