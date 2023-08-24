@@ -25,7 +25,7 @@ jobs:
         uses: stackrox/kube-linter-action@v1.0.4
         with:
           directory: charts/cosi
-          config: kubelinter-config.yaml
+          config: cosi-kubelinter-config.yaml
 
   helm-check:
     name: Chart Testing
@@ -49,4 +49,4 @@ jobs:
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.4.0
       - name: Run chart-testing (lint)
-        run: ct lint --config helm/ct-config.yaml
+        run: ct lint --config lintConfig.yaml
