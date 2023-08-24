@@ -1,0 +1,58 @@
+name: Helm Chart
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: ["**"]
+
+env:
+  GOPRIVATE: github.com/dell/*
+  TOKEN: ${{ secrets.GH_DELL_ACCESS }}
+
+jobs:
+  kube-linter:
+    name: Kube Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure git for private modules
+        run: |
+          git config --global url."https://csmbot:$TOKEN@github.com".insteadOf "https://github.com"
+          echo "machine github.com login csmbot password $TOKEN" >> ~/.netrc
+      - name: Checkout the code
+        uses: actions/checkout@v3.5.3
+      - name: "Vendor packages"
+        run: |
+          go mod vendor
+      - name: Scan repo with kube-linter
+        uses: stackrox/kube-linter-action@v1.0.4
+        with:
+          directory: charts/cosi
+          config: kubelinter-config.yaml
+
+  helm-check:
+    name: Chart Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure git for private modules
+        run: |
+          git config --global url."https://csmbot:$TOKEN@github.com".insteadOf "https://github.com"
+          echo "machine github.com login csmbot password $TOKEN" >> ~/.netrc
+      - name: Checkout the code
+        uses: actions/checkout@v3.5.3
+      - name: "Vendor packages"
+        run: |
+          go mod vendor
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+          check-latest: true
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.4.0
+      - name: Run chart-testing (lint)
+        run: ct lint --config helm/ct-config.yaml
