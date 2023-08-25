@@ -19,8 +19,8 @@ provisioner:
   # name of the COSI driver provisioner container.
   name: "objectstorage-provisioner"
   # logLevel is the logging level for the COSI driver provisioner,
-  # Possible values: "trace" "debug" "info" "warn" "error" "fatal" "panic".
-  logLevel: "debug"
+  # Possible values: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+  logLevel: 4
   # logFormat is the logging format for the COSI driver provisioner,
   # Possible values: "json" "text".
   logFormat: "text"
