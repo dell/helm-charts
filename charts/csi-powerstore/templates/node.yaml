@@ -203,8 +203,6 @@ spec:
               value: {{ .Values.driverName }}
             - name: X_CSI_FC_PORTS_FILTER_FILE_PATH
               value: {{ .Values.nodeFCPortsFilterFile }}
-            - name: X_CSI_DRIVER_NAME
-              value: {{ .Values.driverName }}
             {{- if eq .Values.connection.enableCHAP  true }}
             - name: X_CSI_POWERSTORE_ENABLE_CHAP
               value: "true"
