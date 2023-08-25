@@ -8,11 +8,11 @@ image:
   pullPolicy: IfNotPresent
 
 controller:
-  image: dellemc/csm-application-mobility-controller:v0.3.0
+  image: dellemc/csm-application-mobility-controller:latest
 
 # csm-application-mobility requires cert-manager. If cert-manager is not already present in cluster, set enabled to true to install it too.
 cert-manager:
-  enabled: false
+  enabled: true
 
 # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the namespace in which velero is deployed. Default value is "velero"
 veleroNamespace: velero
@@ -20,27 +20,39 @@ veleroNamespace: velero
 # name of the license Secret used by csm-application-mobility.
 licenseName: license
 
-# csm-application-mobility requires velero. If velero is already installed on the cluster, specify the name of the secret in velero namespace that has credentials to access object store.
-# Default value is "cloud-credentials".
-objectstore:
-  secretName:
-
 # csm-application-mobility requires velero. If velero is not already present in cluster, set enabled to true to install it too.
 velero:
   enabled: true
+  image:
+    repository: velero/velero
+    #digest for velero:v1.11.1 image
+    digest: sha256:720ca6c9c5fe4f2e50dbf2d0f3f0b718c7b5c9f9c6e58b21a0747cff3b9e6f79
+    pullPolicy: IfNotPresent
   use-volume-snapshots: false
-  deployRestic: true
+  deployNodeAgent: true
   cleanUpCRDs: true
-  restic:
+  upgradeCRDs: true
+  nodeAgent:
     # Set to true if installing on OpenShift
     privileged: false
 
   credentials:
-#    Optionally, specify the name of the pre-created secret in the release namespace that holds the object store credentials. Either this or secretContents should be specified.
-#    existingSecret: cloud-credentials
-#   Optionally, specify the name to be used for secret that will be created to hold object store credentials. Used in conjunction with secretContents.
+    # Whether a secret should be used. Set to false if, for examples:
+    # - using kube2iam or kiam to provide AWS IAM credentials instead of providing the key file. (AWS only)
+    # - using workload identity instead of providing the key file. (GCP only)
+    useSecret: true 
+    # If secret is already on cluster, provide name below
+    existingSecret: 
+    # Name of the secret to create if `useSecret` is true and `existingSecret` is empty
     name: cloud-creds
-#    Optionally, specify the object store access credentials to be stored in a secret with key "cloud". Either this or existingSecret should be provided.
+    # Data to be stored in the Velero secret, if `useSecret` is true and `existingSecret` is empty.
+    # As of the current Velero release, Velero only uses one secret key/value at a time.
+    # The key must be named `cloud`, and the value corresponds to the entire content of your IAM credentials file.
+    # Note that the format will be different for different providers, please check their documentation.
+    # Here is a list of documentation for plugins maintained by the Velero team:
+    # [AWS] https://github.com/vmware-tanzu/velero-plugin-for-aws/blob/main/README.md
+    # [GCP] https://github.com/vmware-tanzu/velero-plugin-for-gcp/blob/main/README.md
+    # [Azure] https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure/blob/main/README.md
     secretContents:
       cloud: |
         [default]
@@ -50,32 +62,36 @@ velero:
 # Based on the objectstore being used , the velero plugin and its configuration may need to change! Below is the sample configuration for using aws object store.
 # GCP and Azure plugins configuration are different. See more details at: https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/README.md
   configuration:
-    provider: aws
     backupStorageLocation:
-      name: default
-      bucket: velero-bucket
-      config: {}
-      #  region:
-      #  s3ForcePathStyle:
-      #  s3Url:
-      #  kmsKeyId:
-      #  resourceGroup:
-      #  The ID of the subscription containing the storage account, if different from the cluster’s subscription. (Azure only)
-      #  subscriptionId:
-      #  storageAccount:
-      #  publicUrl:
-      #  Name of the GCP service account to use for this backup storage location. Specify the
-      #  service account here if you want to use workload identity instead of providing the key file.(GCP only)
-      #  serviceAccount:
+      - name: default
+        bucket: my-bucket
+        provider: aws
+        config: {
+        # region:
+        # s3ForcePathStyle:
+        # s3Url:
+        # kmsKeyId:
+        # resourceGroup:
+        # The ID of the subscription containing the storage account, if different from the cluster’s subscription. (Azure only)
+        # subscriptionId:
+        # storageAccount:
+        # publicUrl:
+        # Name of the GCP service account to use for this backup storage location. Specify the
+        # service account here if you want to use workload identity instead of providing the key file.(GCP only)
+        # serviceAccount:
+    	}
+    volumeSnapshotLocation:
+    - name: aws-default
+      provider: aws
 
   initContainers:
   - name: dell-custom-velero-plugin
-    image: dellemc/csm-application-mobility-velero-plugin:v0.3.0
+    image: dellemc/csm-application-mobility-velero-plugin:latest
     volumeMounts:
     - mountPath: /target
       name: plugins
-  # - name: velero-plugin-for-aws
-  #  image: velero/velero-plugin-for-aws:v1.5.0
-  #  volumeMounts:
-  #  - mountPath: /target
-  #    name: plugins
+  - name: velero-plugin-for-aws
+    image: velero/velero-plugin-for-aws:v1.5.0
+    volumeMounts:
+    - mountPath: /target
+      name: plugins
