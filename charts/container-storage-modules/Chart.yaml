@@ -68,9 +68,9 @@ dependencies:
   version: 1.5.0
   repository: https://dell.github.io/helm-charts
   condition: csm-replication.enabled
-  
+
 - name: karavi-observability
-  version: 1.5.0
+  version: 1.6.0
   repository: https://dell.github.io/helm-charts
   condition: karavi-observability.enabled
 
@@ -78,4 +78,3 @@ dependencies:
   version: 1.10.0
   repository: https://charts.jetstack.io
   condition: cert-manager.enabled
-  
