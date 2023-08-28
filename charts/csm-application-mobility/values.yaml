@@ -12,7 +12,7 @@ controller:
 
 # csm-application-mobility requires cert-manager. If cert-manager is not already present in cluster, set enabled to true to install it too.
 cert-manager:
-  enabled: true
+  enabled: false
 
 # csm-application-mobility requires velero. If velero is already installed on the cluster, specify the namespace in which velero is deployed. Default value is "velero"
 veleroNamespace: velero
