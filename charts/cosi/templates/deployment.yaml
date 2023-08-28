@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "cosi-driver.fullname" . }}
+  name: {{ include "cosi.fullname" . }}
   labels:
-    {{- include "cosi-driver.labels" . | trim | nindent 4 }}
+    {{- include "cosi.labels" . | trim | nindent 4 }}
   {{- with .Values.rbac.role.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -14,11 +14,11 @@ spec:
   {{- end }}
   selector:
     matchLabels: 
-      {{- include "cosi-driver.selectorLabels" . | trim | nindent 6 }}
+      {{- include "cosi.selectorLabels" . | trim | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "cosi-driver.labels" . | trim | nindent 8 }}
+        {{- include "cosi.labels" . | trim | nindent 8 }}
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
@@ -28,37 +28,37 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "cosi-driver.serviceAccountName" . }}
+      serviceAccountName: {{ include "cosi.serviceAccountName" . }}
       {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ include "cosi-driver.provisionerContainerName" . }}
+        - name: {{ include "cosi.provisionerContainerName" . }}
           {{- with .Values.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: {{ include "cosi-driver.provisionerImageName" . }}
+          image: {{ include "cosi.provisionerImageName" . }}
           imagePullPolicy: {{ .Values.provisioner.image.pullPolicy }}
           args:
-            - "--log-level={{ include "cosi-driver.logLevel" . }}"
-            - "--log-format={{ include "cosi-driver.logFormat" . }}"
-            - "--otel-endpoint={{ include "cosi-driver.otelEndpoint" . }}"
+            - "--log-level={{ include "cosi.logLevel" . }}"
+            - "--log-format={{ include "cosi.logFormat" . }}"
+            - "--otel-endpoint={{ include "cosi.otelEndpoint" . }}"
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
-          - name: {{ include "cosi-driver.secretVolumeName" . }}
+          - name: {{ include "cosi.secretVolumeName" . }}
             mountPath: /cosi
           - name: cosi-socket-dir
             mountPath: /var/lib/cosi
-        - name: {{ include "cosi-driver.provisionerSidecarContainerName" . }}
-          image: {{ include "cosi-driver.provisionerSidecarImageName" . }}
+        - name: {{ include "cosi.provisionerSidecarContainerName" . }}
+          image: {{ include "cosi.provisionerSidecarImageName" . }}
           imagePullPolicy: {{ .Values.sidecar.image.pullPolicy }}
           args:
-            - "-v={{ include "cosi-driver.provisionerSidecarVerbosity" . }}"
+            - "-v={{ include "cosi.provisionerSidecarVerbosity" . }}"
           {{- with .Values.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
@@ -83,8 +83,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-      - name: {{ include "cosi-driver.secretVolumeName" . }}
+      - name: {{ include "cosi.secretVolumeName" . }}
         secret:
-          secretName: {{ include "cosi-driver.secretName" . }}
+          secretName: {{ include "cosi.secretName" . }}
       - name: cosi-socket-dir
         emptyDir: {}

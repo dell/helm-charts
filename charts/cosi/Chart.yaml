@@ -11,7 +11,7 @@
 # limitations under the License
 
 apiVersion: v2
-name: cosi-driver
+name: cosi
 description: Container Object Storage Interface (COSI) Driver for Dell ObjectScale
 
 # A chart can be either an 'application' or a 'library' chart.

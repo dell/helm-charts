@@ -2,9 +2,9 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ include "cosi-driver.roleName" . }}
+  name: {{ include "cosi.roleName" . }}
   labels:
-    {{- include "cosi-driver.labels" . | trim | nindent 4 }}
+    {{- include "cosi.labels" . | trim | nindent 4 }}
   {{- with .Values.rbac.roleBinding.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

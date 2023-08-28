@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License
 
-# Default values for cosi-driver.
+# Default values for cosi.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -63,7 +63,7 @@ configuration:
   # If set to false, you must set `configuration.secretName` field to an existing configuration secret name.
   create: true
   annotations: {}
-  # name can be used to specify an existing secret name to use for the driver configuration or override the generated name (default `cosi-driver`).
+  # name can be used to specify an existing secret name to use for the driver configuration or override the generated name (default `cosi`).
   secretName: ""
   # data should be provided when installing chart, it will be used to create the Secret with the driver configuration.
   # `configuration.create` must be set to `true` for this to work.
@@ -77,13 +77,13 @@ rbac:
   role:
     # annotations to add to the Role resource
     annotations: {}
-    # name of the Role to create (efault `cosi-driver-role`).
+    # name of the Role to create (efault `cosi-role`).
     name: ""
   # roleBinding specifies parameters for the COSI driver RoleBinding.
   roleBinding:
     # Annotations to add to the RoleBinding
     annotations: {}
-    # name of the RoleBinding to create (default `cosi-driver-rolebinding`).
+    # name of the RoleBinding to create (default `cosi-rolebinding`).
     name: ""
 
 # serviceAccount specifies parameters for the COSI driver ServiceAccount.
@@ -92,7 +92,7 @@ serviceAccount:
   create: true
   # Annotations to add to the ServiceAccount
   annotations: {}
-  # The name of the ServiceAccount to create (or just use if `rbac.create=false`, default `cosi-driver-sa`).
+  # The name of the ServiceAccount to create (or just use if `rbac.create=false`, default `cosi-sa`).
   name: ""
 
 # replicaCount specifies the number of replicas of the COSI driver.

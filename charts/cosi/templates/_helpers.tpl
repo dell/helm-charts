@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "cosi-driver.name" }}
+{{- define "cosi.name" }}
   {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "cosi-driver.fullname" }}
+{{- define "cosi.fullname" }}
   {{- if .Values.fullnameOverride }}
     {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
   {{- else }}
@@ -26,7 +26,7 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "cosi-driver.chart" }}
+{{- define "cosi.chart" }}
   {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -35,7 +35,7 @@ Create chart name and version as used by the chart label.
 # Possible values: "trace" "debug" "info" "warn" "error" "fatal" "panic"
 # Default value: "debug"
 */}}
-{{- define "cosi-driver.logLevel" }}
+{{- define "cosi.logLevel" }}
   {{- $logLevelValues := list "trace" "debug" "info" "warn" "error" "fatal" "panic" }}
   {{- if (has .Values.provisioner.logLevel $logLevelValues) }}
     {{- .Values.provisioner.logLevel }}
@@ -48,7 +48,7 @@ Create chart name and version as used by the chart label.
 # COSI driver sidecar log level
 # Values are set to the integer value, higher value means more verbose logging
 */}}
-{{- define "cosi-driver.provisionerSidecarVerbosity" }}
+{{- define "cosi.provisionerSidecarVerbosity" }}
   {{- if (kindIs "int" .Values.sidecar.verbosity) }}
     {{- .Values.sidecar.verbosity }}
   {{- else }}
@@ -61,7 +61,7 @@ Create chart name and version as used by the chart label.
 # Possible values: "json" "text"
 # Default value: "json"
 */}}
-{{- define "cosi-driver.logFormat" }}
+{{- define "cosi.logFormat" }}
   {{- $logFormatValues := list "json" "text" }}
   {{- if (has .Values.provisioner.logFormat $logFormatValues) }}
     {{- .Values.provisioner.logFormat }}
@@ -75,7 +75,7 @@ Create chart name and version as used by the chart label.
 # Default value is left empty on purpose, to not start any tracing if no argument was provided.
 # Default value: ""
 */}}
-{{- define "cosi-driver.otelEndpoint" }}
+{{- define "cosi.otelEndpoint" }}
   {{- if .Values.provisioner.otelEndpoint }}
     {{- .Values.provisioner.otelEndpoint }}
   {{- else }}
@@ -86,9 +86,9 @@ Create chart name and version as used by the chart label.
 {{/*
 Common labels
 */}}
-{{- define "cosi-driver.labels" }}
-helm.sh/chart: {{ include "cosi-driver.chart" . }}
-{{- include "cosi-driver.selectorLabels" . }}
+{{- define "cosi.labels" }}
+helm.sh/chart: {{ include "cosi.chart" . }}
+{{- include "cosi.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -98,17 +98,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "cosi-driver.selectorLabels" }}
-app.kubernetes.io/name: {{ include "cosi-driver.name" . }}
+{{- define "cosi.selectorLabels" }}
+app.kubernetes.io/name: {{ include "cosi.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the role to use
 */}}
-{{- define "cosi-driver.roleName" }}
+{{- define "cosi.roleName" }}
   {{- if and .Values.rbac.create }}
-      {{- default (printf "%s" (include "cosi-driver.fullname" .)) .Values.rbac.role.name }}
+      {{- default (printf "%s" (include "cosi.fullname" .)) .Values.rbac.role.name }}
   {{- else }}
     {{- .Values.rbac.role.name }}
   {{- end }}
@@ -117,9 +117,9 @@ Create the name of the role to use
 {{/*
 Create the name of the role binding to use
 */}}
-{{- define "cosi-driver.roleBindingName" }}
+{{- define "cosi.roleBindingName" }}
   {{- if and .Values.rbac.create }}
-    {{- default (printf "%s" (include "cosi-driver.fullname" .)) .Values.rbac.roleBinding.name }}
+    {{- default (printf "%s" (include "cosi.fullname" .)) .Values.rbac.roleBinding.name }}
   {{- else }}
     {{- .Values.rbac.roleBinding.name }}
   {{- end }}
@@ -128,9 +128,9 @@ Create the name of the role binding to use
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "cosi-driver.serviceAccountName" -}}
+{{- define "cosi.serviceAccountName" -}}
   {{- if .Values.serviceAccount.create -}}
-      {{ default (include "cosi-driver.fullname" .) .Values.serviceAccount.name }}
+      {{ default (include "cosi.fullname" .) .Values.serviceAccount.name }}
   {{- else -}}
       {{ default "default" .Values.serviceAccount.name }}
   {{- end -}}
@@ -139,37 +139,37 @@ Create the name of the service account to use
 {{/*
 Create the name of provisioner container
 */}}
-{{- define "cosi-driver.provisionerContainerName" }}
+{{- define "cosi.provisionerContainerName" }}
   {{- default "objectstorage-provisioner" .Values.provisioner.name }}
 {{- end }}
 
 {{/*
 Create the name of provisioner sidecar container
 */}}
-{{- define "cosi-driver.provisionerSidecarContainerName" }}
+{{- define "cosi.provisionerSidecarContainerName" }}
   {{- default "objectstorage-provisioner-sidecar" .Values.sidecar.name }}
 {{- end }}
 
 {{/*
 Create the full name of provisioner image from repository and tag
 */}}
-{{- define "cosi-driver.provisionerImageName" }}
+{{- define "cosi.provisionerImageName" }}
   {{- .Values.provisioner.image.repository }}:{{ .Values.provisioner.image.tag | default .Chart.AppVersion }}
 {{- end }}
 
 {{/*
 Create the full name of provisioner sidecar image from repository and tag
 */}}
-{{- define "cosi-driver.provisionerSidecarImageName" }}
+{{- define "cosi.provisionerSidecarImageName" }}
   {{- .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}
 {{- end }}
 
 {{/*
 Create the secret name
 */}}
-{{- define "cosi-driver.secretName" }}
+{{- define "cosi.secretName" }}
   {{- if .Values.configuration.create }}
-    {{- default (printf "%s-config" (include "cosi-driver.name" . )) .Values.configuration.secretName }}
+    {{- default (printf "%s-config" (include "cosi.name" . )) .Values.configuration.secretName }}
   {{- else }}
     {{- .Values.configuration.secretName }}
   {{- end }}
@@ -178,6 +178,6 @@ Create the secret name
 {{/*
 Create the name for secret volume
 */}}
-{{- define "cosi-driver.secretVolumeName" }}
-  {{- printf "%s-config" (include "cosi-driver.name" . ) }}
+{{- define "cosi.secretVolumeName" }}
+  {{- printf "%s-config" (include "cosi.name" . ) }}
 {{- end }}
