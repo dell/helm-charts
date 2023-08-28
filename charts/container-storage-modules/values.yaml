@@ -20,7 +20,7 @@
 ########################
 csi-powerstore:
   enabled: false
-  version: "v2.7.0"
+  version: "v2.8.0"
   images:
     driverRepository: dellemc
   ## Controller ATTRIBUTES
@@ -99,6 +99,8 @@ csi-powerstore:
         - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
         - "--driverPodLabelValue=dell-storage"
         - "--ignoreVolumelessPods=false"
+  # maxPowerstoreVolumesPerNode: Specify default value for maximum number of volumes that controller can publish to the node.
+  maxPowerstoreVolumesPerNode: 0
 
 ## CSI PowerMax
 ########################
@@ -117,7 +119,7 @@ csi-powermax:
       - endpoint: https://backup-1.unisphe.re:8443
   #    - endpoint: https://primary-2.unisphe.re:8443
   #    - endpoint: https://backup-2.unisphe.re:8443
-  version: "v2.7.0"
+  version: "v2.8.0"
   images:
     driverRepository: "dellemc"
   clusterPrefix: ABC
@@ -136,7 +138,7 @@ csi-powermax:
       enabled: false
     nodeSelector:
   csireverseproxy:
-    image: dellemc/csipowermax-reverseproxy:v2.6.0
+    image: dellemc/csipowermax-reverseproxy:v2.7.0
     deployAsSidecar: true
   replication:
     enabled: false
@@ -160,7 +162,7 @@ csi-powermax:
 ########################
 csi-isilon:
   enabled: false
-  version: "v2.7.0"
+  version: "v2.8.0"
   images:
     driverRepository: dellemc
   ## Controller ATTRIBUTES
@@ -241,10 +243,10 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
-  version: v2.7.1
+  version: v2.8.0
   images:
     driverRepository: dellemc
-    powerflexSdc: dellemc/sdc:3.6.0.6
+    powerflexSdc: dellemc/sdc:3.6.1
   certSecretCount: 0
   controller:
     replication:
@@ -282,11 +284,16 @@ csi-vxflexos:
     # - key: "isilon.podmon.storage.dell.com"
     #   operator: "Exists"
     #   effect: "NoSchedule"
+  storageCapacity:
+    enabled: true  
   monitor:
     enabled: false
   vgsnapshotter:
     enabled: false
     image: dellemc/csi-volumegroup-snapshotter:v1.2.0
+  # maxVxflexosVolumesPerNode - Maximum number of volumes that controller can publish to the node.
+  maxVxflexosVolumesPerNode: 0  
+  
   podmon:
     enabled: false
     image: dellemc/podmon:v1.6.0
@@ -317,7 +324,7 @@ csi-vxflexos:
 ########################
 csi-unity:
   enabled: false
-  version: "v2.7.0"
+  version: "v2.8.0"
 
   # certSecretCount: Represents number of certificate secrets, which user is going to create for
   # ssl authentication. (unity-cert-0..unity-cert-n)
@@ -435,6 +442,11 @@ csi-unity:
 
   # tenantName - Tenant name that need to added while adding host entry to the array.
   tenantName: ""
+
+# Storage Capacity Tracking
+# Note: Capacity tracking is supported in kubernetes v1.24 and above, this feature will be automatically disabled in older versions.
+storageCapacity:
+  enabled: true
 
   images:
     driverRepository: dellemc
