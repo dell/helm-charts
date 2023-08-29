@@ -24,6 +24,6 @@ jobs:
       - name: Scan repo with kube-linter
         uses: stackrox/kube-linter-action@v1.0.4
         with:
-          directory: charts
+          directory: charts/cosi
           config: kubelinter-config.yaml
 
