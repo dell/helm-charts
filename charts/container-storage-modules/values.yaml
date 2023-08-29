@@ -31,7 +31,7 @@ csi-powerstore:
     nodeSelector:
     replication:
       enabled: false
-      image: dellemc/dell-csi-replicator:v1.5.0
+      image: dellemc/dell-csi-replicator:v1.6.0
     vgsnapshot:
       enabled: false
       image: dellemc/csi-volumegroup-snapshotter:v1.2.0
@@ -142,11 +142,11 @@ csi-powermax:
     deployAsSidecar: true
   replication:
     enabled: false
-    image: dellemc/dell-csi-replicator:v1.5.0
+    image: dellemc/dell-csi-replicator:v1.6.0
   migration:
     enabled: false
-    image: dellemc/dell-csi-migrator:v1.1.1
-    nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.0.1
+    image: dellemc/dell-csi-migrator:v1.2.0
+    nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.1.0
   authorization:
     enabled: false
     sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
@@ -173,7 +173,7 @@ csi-isilon:
     nodeSelector:
     replication:
       enabled: false
-      image: dellemc/dell-csi-replicator:v1.5.0
+      image: dellemc/dell-csi-replicator:v1.6.0
     snapshot:
       enabled: true
     resizer:
@@ -251,7 +251,7 @@ csi-vxflexos:
   controller:
     replication:
       enabled: false
-      image: dellemc/dell-csi-replicator:v1.5.0
+      image: dellemc/dell-csi-replicator:v1.6.0
     healthMonitor:
       enabled: false
     controllerCount: 2
