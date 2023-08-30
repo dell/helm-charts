@@ -32,15 +32,15 @@ Create chart name and version as used by the chart label.
 
 {{/*
 # COSI driver log level
-# Possible values: "trace" "debug" "info" "warn" "error" "fatal" "panic"
-# Default value: "debug"
+# Possible values: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+# Default value: 4
 */}}
 {{- define "cosi.logLevel" }}
-  {{- $logLevelValues := list "trace" "debug" "info" "warn" "error" "fatal" "panic" }}
+  {{- $logLevelValues := list 0 1 2 3 4 5 6 7 8 9 10 }}
   {{- if (has .Values.provisioner.logLevel $logLevelValues) }}
     {{- .Values.provisioner.logLevel }}
   {{- else }}
-    {{- "debug" }}
+    {{- 4 }}
   {{- end }}
 {{- end }}
 
