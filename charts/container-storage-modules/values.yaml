@@ -31,11 +31,11 @@ csi-powerstore:
     nodeSelector:
     replication:
       enabled: false
-      image: dellemc/dell-csi-replicator:v1.5.0
+      image: dellemc/dell-csi-replicator:v1.6.0
     vgsnapshot:
       enabled: false
       image: dellemc/csi-volumegroup-snapshotter:v1.2.0
-    metadataretriever: dellemc/csi-metadata-retriever:v1.4.0
+    metadataretriever: dellemc/csi-metadata-retriever:v1.5.0
     snapshot:
       enabled: true
     resizer:
@@ -76,7 +76,7 @@ csi-powerstore:
   # Enable this feature only after contact support for additional information
   podmon:
     enabled: false
-    image: dellemc/podmon:v1.6.0
+    image: dellemc/podmon:v1.7.0
     controller:
       args:
         - "--csisock=unix:/var/run/csi/csi.sock"
@@ -142,14 +142,14 @@ csi-powermax:
     deployAsSidecar: true
   replication:
     enabled: false
-    image: dellemc/dell-csi-replicator:v1.5.0
+    image: dellemc/dell-csi-replicator:v1.6.0
   migration:
     enabled: false
-    image: dellemc/dell-csi-migrator:v1.1.1
-    nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.0.1
+    image: dellemc/dell-csi-migrator:v1.2.0
+    nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.1.0
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
     proxyHost:
   vSphere:
     enabled: false
@@ -173,7 +173,7 @@ csi-isilon:
     nodeSelector:
     replication:
       enabled: false
-      image: dellemc/dell-csi-replicator:v1.5.0
+      image: dellemc/dell-csi-replicator:v1.6.0
     snapshot:
       enabled: true
     resizer:
@@ -208,7 +208,7 @@ csi-isilon:
   # Enable this feature only after contact support for additional information
   podmon:
     enabled: false
-    image: dellemc/podmon:v1.6.0
+    image: dellemc/podmon:v1.7.0
     #controller:
     #  args:
     #    - "--csisock=unix:/var/run/csi/csi.sock"
@@ -234,7 +234,7 @@ csi-isilon:
     #    - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
     proxyHost:
   encryption:
     enabled: false
@@ -251,7 +251,7 @@ csi-vxflexos:
   controller:
     replication:
       enabled: false
-      image: dellemc/dell-csi-replicator:v1.5.0
+      image: dellemc/dell-csi-replicator:v1.6.0
     healthMonitor:
       enabled: false
     controllerCount: 2
@@ -296,7 +296,7 @@ csi-vxflexos:
   
   podmon:
     enabled: false
-    image: dellemc/podmon:v1.6.0
+    image: dellemc/podmon:v1.7.0
     # controller:
     #  args:
     #    - "--csisock=unix:/var/run/csi/csi.sock"
@@ -317,7 +317,7 @@ csi-vxflexos:
     #     - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
     proxyHost:
 
 ## CSI Unity
@@ -412,7 +412,7 @@ csi-unity:
     #    effect: "NoSchedule"
   podmon:
     enabled: false
-    image: dellemc/podmon:v1.6.0
+    image: dellemc/podmon:v1.7.0
     controller:
       args:
         - "--csisock=unix:/var/run/csi/csi.sock"
