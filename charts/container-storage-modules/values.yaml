@@ -35,7 +35,7 @@ csi-powerstore:
     vgsnapshot:
       enabled: false
       image: dellemc/csi-volumegroup-snapshotter:v1.2.0
-    metadataretriever: dellemc/csi-metadata-retriever:v1.4.0
+    metadataretriever: dellemc/csi-metadata-retriever:v1.5.0
     snapshot:
       enabled: true
     resizer:
