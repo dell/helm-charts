@@ -392,6 +392,7 @@ openshift: false
 # Default value: "false"
 replication:
   enabled: false
+
   # replicationContextPrefix enables side cars to read
   # required information from the volume context
   # Default value: "powermax"

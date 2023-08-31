@@ -60,7 +60,7 @@ imagePullPolicy: IfNotPresent
 # Allowed values:
 #   1) Unix mode: valid octal mode number
 #      Examples: "0777", "777", "0755"
-#   2) NFSv4 acls: valid NFSv4 acls, seperated by comma
+#   2) NFSv4 acls: valid NFSv4 acls, separated by comma
 #      Examples: "A::OWNER@:RWX,A::GROUP@:RWX", "A::OWNER@:rxtncy"
 # Optional: true
 # Default value: "0777"
@@ -130,7 +130,7 @@ controller:
     # image: Image to use for dell-csi-replicator. This shouldn't be changed
     # Allowed values: string
     # Default value: None
-    image: dellemc/dell-csi-replicator:v1.5.0
+    image: dellemc/dell-csi-replicator:v1.6.0
 
     # replicationContextPrefix: prefix to use for naming of resources created by replication feature
     # Allowed values: string
@@ -327,7 +327,7 @@ vgsnapshotter:
 # Enable this feature only after contact support for additional information
 podmon:
   enabled: false
-  image: dellemc/podmon:v1.6.0
+  image: dellemc/podmon:v1.7.0
   #controller:
   # args:
   #   - "--csisock=unix:/var/run/csi/csi.sock"
@@ -358,8 +358,8 @@ authorization:
   enabled: false
 
   # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-  # Default value: dellemc/csm-authorization-sidecar:v1.7.0
-  sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+  # Default value: dellemc/csm-authorization-sidecar:v1.8.0
+  sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
 
   # proxyHost: hostname of the csm-authorization server
   # Default value: None
