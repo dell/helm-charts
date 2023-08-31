@@ -424,10 +424,6 @@ spec:
             - name: X_CSI_NFS_ACLS
               value: "{{ .Values.nfsAcls }}"
             {{- end }}
-            {{- if hasKey .Values "externalAccess" }}
-            - name: X_CSI_POWERFLEX_EXTERNAL_ACCESS
-              value: "{{ .Values.externalAccess }}"
-            {{- end }}
             {{- if hasKey .Values "enableQuota" }}
             {{- if eq .Values.enableQuota true}}
             - name: X_CSI_QUOTA_ENABLED
