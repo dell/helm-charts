@@ -264,6 +264,11 @@ csi-vxflexos:
     healthMonitor:
       enabled: false
     nodeSelector:
+    renameSDC:
+      enabled: false
+      sdcPrefix:
+    approveSDC:
+      enabled: false
     tolerations:
     # Uncomment if CSM for Resiliency and CSI Driver pods monitor is enabled 
     # - key: "offline.vxflexos.storage.dell.com"
@@ -285,7 +290,9 @@ csi-vxflexos:
     #   operator: "Exists"
     #   effect: "NoSchedule"
   storageCapacity:
-    enabled: true  
+    enabled: true
+  nfsAcls:
+  enableQuota: true
   monitor:
     enabled: false
   vgsnapshotter:
