@@ -1,0 +1,29 @@
+name: COSI driver
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: ["**"]
+
+env:
+  GOPRIVATE: github.com/dell/*
+  TOKEN: ${{ secrets.GH_DELL_ACCESS }}
+
+jobs:
+  kube-linter:
+    name: Kube Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure git for private modules
+        run: |
+          git config --global url."https://csmbot:$TOKEN@github.com".insteadOf "https://github.com"
+          echo "machine github.com login csmbot password $TOKEN" >> ~/.netrc
+      - name: Checkout the code
+        uses: actions/checkout@v3.6.0
+      - name: Scan repo with kube-linter
+        uses: stackrox/kube-linter-action@v1.0.4
+        with:
+          directory: charts/cosi
+          config: kubelinter-config.yaml
+
