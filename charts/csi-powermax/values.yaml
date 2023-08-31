@@ -382,7 +382,7 @@ replication:
   enabled: false
   # Change this to use any specific version of the dell-csi-replicator sidecar
   # Default value: None
-  image: dellemc/dell-csi-replicator:v1.5.0
+  image: dellemc/dell-csi-replicator:v1.6.0
   # replicationContextPrefix enables side cars to read
   # required information from the volume context
   # Default value: "powermax"
@@ -403,10 +403,10 @@ migration:
   enabled: false
   # Change this to use any specific version of the dell-csi-migrator sidecar
   # Default value: None
-  image: dellemc/dell-csi-migrator:v1.1.1
+  image: dellemc/dell-csi-migrator:v1.2.0
   # Node rescan sidecar does a rescan on nodes for identifying new paths
-  # Default value: dellemc/dell-csi-node-rescanner:v1.0.1
-  nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.0.1
+  # Default value: None
+  nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.1.0
   # migrationPrefix: Determine if migration is enabled
   # Default value: "migration.storage.dell.com"
   # Examples: "migration.storage.dell.com"
@@ -422,8 +422,8 @@ migration:
 authorization:
   enabled: false
   # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-  # Default value: dellemc/csm-authorization-sidecar:v1.7.0
-  sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+  # Default value: dellemc/csm-authorization-sidecar:v1.8.0
+  sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
   # proxyHost: hostname of the csm-authorization server
   # Default value: None
   proxyHost:
