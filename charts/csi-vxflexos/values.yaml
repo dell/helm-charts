@@ -38,11 +38,6 @@ kubeletConfigDir: /var/lib/kubelet
 # Default value: none
 defaultFsType: ext4
 
-# externalAccess: allows to specify additional entries for host to access NFS volumes. Both single IP address and subnet are valid entries.
-# Allowed Values: x.x.x.x/xx or x.x.x.x
-# Default Value: None
-externalAccess:
-
 # imagePullPolicy: Policy to determine if the image should be pulled prior to starting the container.
 # Allowed values:
 #  Always: Always pull the image.
