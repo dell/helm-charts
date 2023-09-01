@@ -292,7 +292,7 @@ csi-vxflexos:
   storageCapacity:
     enabled: true
   nfsAcls:
-  enableQuota: true
+  enableQuota: false
   monitor:
     enabled: false
   vgsnapshotter:
