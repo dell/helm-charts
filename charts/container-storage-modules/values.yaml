@@ -21,8 +21,6 @@
 csi-powerstore:
   enabled: false
   version: "v2.8.0"
-  images:
-    driverRepository: dellemc
   ## Controller ATTRIBUTES
   controller:
     controllerCount: 2
@@ -31,11 +29,8 @@ csi-powerstore:
     nodeSelector:
     replication:
       enabled: false
-      image: dellemc/dell-csi-replicator:v1.6.0
     vgsnapshot:
       enabled: false
-      image: dellemc/csi-volumegroup-snapshotter:v1.2.0
-    metadataretriever: dellemc/csi-metadata-retriever:v1.5.0
     snapshot:
       enabled: true
     resizer:
@@ -45,7 +40,7 @@ csi-powerstore:
     healthMonitor:
       enabled: false
     nodeSelector:
-      # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled
+    # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled
     # tolerations:
     # - key: "offline.vxflexos.storage.dell.com"
     #   operator: "Exists"
@@ -76,29 +71,6 @@ csi-powerstore:
   # Enable this feature only after contact support for additional information
   podmon:
     enabled: false
-    image: dellemc/podmon:v1.7.0
-    controller:
-      args:
-        - "--csisock=unix:/var/run/csi/csi.sock"
-        - "--labelvalue=csi-powerstore"
-        - "--arrayConnectivityPollRate=60"
-        - "--driverPath=csi-powerstore.dellemc.com"
-        - "--mode=controller"
-        - "--skipArrayConnectionValidation=false"
-        - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
-        - "--driverPodLabelValue=dell-storage"
-        - "--ignoreVolumelessPods=false"
-    node:
-      args:
-        - "--csisock=unix:/var/lib/kubelet/plugins/csi-powerstore.dellemc.com/csi_sock"
-        - "--labelvalue=csi-powerstore"
-        - "--arrayConnectivityPollRate=60"
-        - "--driverPath=csi-powerstore.dellemc.com"
-        - "--mode=node"
-        - "--leaderelection=false"
-        - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
-        - "--driverPodLabelValue=dell-storage"
-        - "--ignoreVolumelessPods=false"
   # maxPowerstoreVolumesPerNode: Specify default value for maximum number of volumes that controller can publish to the node.
   maxPowerstoreVolumesPerNode: 0
 
@@ -120,8 +92,6 @@ csi-powermax:
   #    - endpoint: https://primary-2.unisphe.re:8443
   #    - endpoint: https://backup-2.unisphe.re:8443
   version: "v2.8.0"
-  images:
-    driverRepository: "dellemc"
   clusterPrefix: ABC
   portGroups: PortGroup1, PortGroup2, PortGroup3
   controller:
@@ -138,18 +108,13 @@ csi-powermax:
       enabled: false
     nodeSelector:
   csireverseproxy:
-    image: dellemc/csipowermax-reverseproxy:v2.7.0
     deployAsSidecar: true
   replication:
     enabled: false
-    image: dellemc/dell-csi-replicator:v1.6.0
   migration:
     enabled: false
-    image: dellemc/dell-csi-migrator:v1.2.0
-    nodeRescanSidecarImage: dellemc/dell-csi-node-rescanner:v1.1.0
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
     proxyHost:
   vSphere:
     enabled: false
@@ -163,8 +128,6 @@ csi-powermax:
 csi-isilon:
   enabled: false
   version: "v2.8.0"
-  images:
-    driverRepository: dellemc
   ## Controller ATTRIBUTES
   controller:
     controllerCount: 2
@@ -173,7 +136,6 @@ csi-isilon:
     nodeSelector:
     replication:
       enabled: false
-      image: dellemc/dell-csi-replicator:v1.6.0
     snapshot:
       enabled: true
     resizer:
@@ -208,33 +170,8 @@ csi-isilon:
   # Enable this feature only after contact support for additional information
   podmon:
     enabled: false
-    image: dellemc/podmon:v1.7.0
-    #controller:
-    #  args:
-    #    - "--csisock=unix:/var/run/csi/csi.sock"
-    #    - "--labelvalue=csi-isilon"
-    #    - "--arrayConnectivityPollRate=60"
-    #    - "--driverPath=csi-isilon.dellemc.com"
-    #    - "--mode=controller"
-    #    - "--skipArrayConnectionValidation=false"
-    #    - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
-    #    - "--driverPodLabelValue=dell-storage"
-    #    - "--ignoreVolumelessPods=false"
-
-    #node:
-    #  args:
-    #    - "--csisock=unix:/var/lib/kubelet/plugins/csi-isilon/csi_sock"
-    #    - "--labelvalue=csi-isilon"
-    #    - "--arrayConnectivityPollRate=60"
-    #    - "--driverPath=csi-isilon.dellemc.com"
-    #    - "--mode=node"
-    #    - "--leaderelection=false"
-    #    - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
-    #    - "--driverPodLabelValue=dell-storage"
-    #    - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
     proxyHost:
   encryption:
     enabled: false
@@ -244,14 +181,10 @@ csi-isilon:
 csi-vxflexos:
   enabled: false
   version: v2.8.0
-  images:
-    driverRepository: dellemc
-    powerflexSdc: dellemc/sdc:3.6.1
   certSecretCount: 0
   controller:
     replication:
       enabled: false
-      image: dellemc/dell-csi-replicator:v1.6.0
     healthMonitor:
       enabled: false
     controllerCount: 2
@@ -290,34 +223,14 @@ csi-vxflexos:
     enabled: false
   vgsnapshotter:
     enabled: false
-    image: dellemc/csi-volumegroup-snapshotter:v1.2.0
   # maxVxflexosVolumesPerNode - Maximum number of volumes that controller can publish to the node.
   maxVxflexosVolumesPerNode: 0  
   
   podmon:
     enabled: false
-    image: dellemc/podmon:v1.7.0
-    # controller:
-    #  args:
-    #    - "--csisock=unix:/var/run/csi/csi.sock"
-    #    - "--labelvalue=csi-vxflexos"
-    #    - "--mode=controller"
-    #    - "--skipArrayConnectionValidation=false"
-    #    - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
-    #    - "--driverPodLabelValue=dell-storage"
-    #    - "--ignoreVolumelessPods=false"
-    # node:
-    #   args:
-    #     - "--csisock=unix:/var/lib/kubelet/plugins/vxflexos.emc.dell.com/csi_sock"
-    #     - "--labelvalue=csi-vxflexos"
-    #     - "--mode=node"
-    #     - "--leaderelection=false"
-    #     - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
-    #     - "--driverPodLabelValue=dell-storage"
-    #     - "--ignoreVolumelessPods=false"
+
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
     proxyHost:
 
 ## CSI Unity
@@ -412,27 +325,6 @@ csi-unity:
     #    effect: "NoSchedule"
   podmon:
     enabled: false
-    image: dellemc/podmon:v1.7.0
-    controller:
-      args:
-        - "--csisock=unix:/var/run/csi/csi.sock"
-        - "--labelvalue=csi-unity"
-        - "--driverPath=csi-unity.dellemc.com"
-        - "--mode=controller"
-        - "--skipArrayConnectionValidation=false"
-        - "--driver-config-params=/unity-config/driver-config-params.yaml"
-        - "--driverPodLabelValue=dell-storage"
-        - "--ignoreVolumelessPods=false"
-    node:
-      args:
-        - "--csisock=unix:/var/lib/kubelet/plugins/unity.emc.dell.com/csi_sock"
-        - "--labelvalue=csi-unity"
-        - "--driverPath=csi-unity.dellemc.com"
-        - "--mode=node"
-        - "--leaderelection=false"
-        - "--driver-config-params=/unity-config/driver-config-params.yaml"
-        - "--driverPodLabelValue=dell-storage"
-        - "--ignoreVolumelessPods=false"
 
   # allowRWOMultiPodAccess - Flag to enable sharing of volumes across multiple pods within the same node in RWO access mode.
   allowRWOMultiPodAccess: "false"

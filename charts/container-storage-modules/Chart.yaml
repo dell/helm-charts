@@ -42,36 +42,43 @@ dependencies:
 - name: csi-powerstore
   version: 2.8.0
   repository: https://dell.github.io/helm-charts
+  #repository: file://../csi-powerstore
   condition: csi-powerstore.enabled
 
 - name: csi-powermax
   version: 2.8.0
   repository: https://dell.github.io/helm-charts
+  #repository: file://../csi-powermax
   condition: csi-powermax.enabled
 
 - name: csi-isilon
   version: 2.8.0
   repository: https://dell.github.io/helm-charts
+  #repository: file://../csi-isilon
   condition: csi-isilon.enabled
 
 - name: csi-vxflexos
   version: 2.8.0
   repository: https://dell.github.io/helm-charts
+  #repository: file://../csi-vxflexos
   condition: csi-vxflexos.enabled
 
 - name: csi-unity
   version: 2.8.0
   repository: https://dell.github.io/helm-charts
+  #repository: file://../csi-unity
   condition: csi-unity.enabled
 
 - name: csm-replication
   version: 1.6.0
   repository: https://dell.github.io/helm-charts
+  #repository: file://../csm-replication
   condition: csm-replication.enabled
 
 - name: karavi-observability
   version: 1.6.0
   repository: https://dell.github.io/helm-charts
+  #repository: file://../karavi-observability
   condition: karavi-observability.enabled
 
 - name: cert-manager
