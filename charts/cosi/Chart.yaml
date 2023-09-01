@@ -1,5 +1,3 @@
-#
-#
 # Copyright © 2023 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,12 +8,11 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.
-#
-#
+# limitations under the License
+
 apiVersion: v2
-name: container-storage-modules
-description: Container Storage Modules(https://github.com/dell/csm) open source suite of Kubernetes storage enablers for Dell Technologies storage products.
+name: cosi
+description: Container Object Storage Interface (COSI) Driver for Dell ObjectScale
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -30,51 +27,10 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.1.0
+version: 0.1.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "1.1.0"
-
-dependencies:
-- name: csi-powerstore
-  version: 2.8.0
-  repository: https://dell.github.io/helm-charts
-  condition: csi-powerstore.enabled
-
-- name: csi-powermax
-  version: 2.8.0
-  repository: https://dell.github.io/helm-charts
-  condition: csi-powermax.enabled
-
-- name: csi-isilon
-  version: 2.8.0
-  repository: https://dell.github.io/helm-charts
-  condition: csi-isilon.enabled
-
-- name: csi-vxflexos
-  version: 2.8.0
-  repository: https://dell.github.io/helm-charts
-  condition: csi-vxflexos.enabled
-
-- name: csi-unity
-  version: 2.8.0
-  repository: https://dell.github.io/helm-charts
-  condition: csi-unity.enabled
-
-- name: csm-replication
-  version: 1.6.0
-  repository: https://dell.github.io/helm-charts
-  condition: csm-replication.enabled
-
-- name: karavi-observability
-  version: 1.6.0
-  repository: https://dell.github.io/helm-charts
-  condition: karavi-observability.enabled
-
-- name: cert-manager
-  version: 1.10.0
-  repository: https://charts.jetstack.io
-  condition: cert-manager.enabled
+appVersion: 1.0.0-alpha
