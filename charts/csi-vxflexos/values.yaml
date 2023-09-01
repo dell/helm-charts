@@ -21,10 +21,10 @@ images:
   healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.9.0
 
   # CSM sidecars
-  replication: dellemc/dell-csi-replicator:v1.5.0
+  replication: dellemc/dell-csi-replicator:v1.6.0
   vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.2.0
-  podmon: dellemc/podmon:v1.6.0
-  authorization: dellemc/csm-authorization-sidecar:v1.7.0
+  podmon: dellemc/podmon:v1.7.0
+  authorization: dellemc/csm-authorization-sidecar:v1.8.0
 
 
 # Represents number of certificate secrets, which user is going to create for ssl authentication. (vxflexos-cert-0..vxflexos-cert-n)
@@ -52,11 +52,6 @@ kubeletConfigDir: /var/lib/kubelet
 # Default value: none
 defaultFsType: ext4
 
-# externalAccess: allows to specify additional entries for host to access NFS volumes. Both single IP address and subnet are valid entries.
-# Allowed Values: x.x.x.x/xx or x.x.x.x
-# Default Value: None
-externalAccess:
-
 # imagePullPolicy: Policy to determine if the image should be pulled prior to starting the container.
 # Allowed values:
 #  Always: Always pull the image.
@@ -74,7 +69,7 @@ imagePullPolicy: IfNotPresent
 # Allowed values:
 #   1) Unix mode: valid octal mode number
 #      Examples: "0777", "777", "0755"
-#   2) NFSv4 acls: valid NFSv4 acls, seperated by comma
+#   2) NFSv4 acls: valid NFSv4 acls, separated by comma
 #      Examples: "A::OWNER@:RWX,A::GROUP@:RWX", "A::OWNER@:rxtncy"
 # Optional: true
 # Default value: "0777"
