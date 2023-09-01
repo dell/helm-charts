@@ -32,13 +32,17 @@ Create chart name and version as used by the chart label.
 
 {{/*
 # COSI driver log level
+# Values are set to the integer value, higher value means more verbose logging
 # Possible values: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
 # Default value: 4
 */}}
 {{- define "cosi.logLevel" }}
-  {{- $logLevelValues := list 0 1 2 3 4 5 6 7 8 9 10 }}
-  {{- if (has .Values.provisioner.logLevel $logLevelValues) }}
-    {{- .Values.provisioner.logLevel }}
+  {{- if (kindIs "int64" .Values.provisioner.logLevel) }}
+    {{- if (or (ge .Values.provisioner.logLevel 0) (le .Values.provisioner.logLevel 10)) }}
+      {{- .Values.provisioner.logLevel }}
+    {{- else }}
+      {{- 4 }}
+    {{- end }}
   {{- else }}
     {{- 4 }}
   {{- end }}
@@ -47,12 +51,18 @@ Create chart name and version as used by the chart label.
 {{/*
 # COSI driver sidecar log level
 # Values are set to the integer value, higher value means more verbose logging
+# Possible values: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+# Default value: 4
 */}}
 {{- define "cosi.provisionerSidecarVerbosity" }}
-  {{- if (kindIs "int" .Values.sidecar.verbosity) }}
-    {{- .Values.sidecar.verbosity }}
+  {{- if (kindIs "int64" .Values.sidecar.verbosity) }}
+    {{- if (or (ge .Values.sidecar.verbosity 0) (le .Values.sidecar.verbosity 10)) }}
+      {{- .Values.sidecar.verbosity }}
+    {{- else }}
+      {{- 4 }}
+    {{- end }}
   {{- else }}
-    {{- 5 }}
+    {{- 4 }}
   {{- end }}
 {{- end }}
 
