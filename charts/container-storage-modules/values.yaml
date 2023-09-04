@@ -45,7 +45,7 @@ csi-powerstore:
     healthMonitor:
       enabled: false
     nodeSelector:
-      # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled
+    # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled
     # tolerations:
     # - key: "offline.vxflexos.storage.dell.com"
     #   operator: "Exists"
@@ -209,29 +209,29 @@ csi-isilon:
   podmon:
     enabled: false
     image: dellemc/podmon:v1.7.0
-    #controller:
-    #  args:
-    #    - "--csisock=unix:/var/run/csi/csi.sock"
-    #    - "--labelvalue=csi-isilon"
-    #    - "--arrayConnectivityPollRate=60"
-    #    - "--driverPath=csi-isilon.dellemc.com"
-    #    - "--mode=controller"
-    #    - "--skipArrayConnectionValidation=false"
-    #    - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
-    #    - "--driverPodLabelValue=dell-storage"
-    #    - "--ignoreVolumelessPods=false"
+    controller:
+      args:
+        - "--csisock=unix:/var/run/csi/csi.sock"
+        - "--labelvalue=csi-isilon"
+        - "--arrayConnectivityPollRate=60"
+        - "--driverPath=csi-isilon.dellemc.com"
+        - "--mode=controller"
+        - "--skipArrayConnectionValidation=false"
+        - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
+        - "--driverPodLabelValue=dell-storage"
+        - "--ignoreVolumelessPods=false"
 
-    #node:
-    #  args:
-    #    - "--csisock=unix:/var/lib/kubelet/plugins/csi-isilon/csi_sock"
-    #    - "--labelvalue=csi-isilon"
-    #    - "--arrayConnectivityPollRate=60"
-    #    - "--driverPath=csi-isilon.dellemc.com"
-    #    - "--mode=node"
-    #    - "--leaderelection=false"
-    #    - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
-    #    - "--driverPodLabelValue=dell-storage"
-    #    - "--ignoreVolumelessPods=false"
+    node:
+      args:
+        - "--csisock=unix:/var/lib/kubelet/plugins/csi-isilon/csi_sock"
+        - "--labelvalue=csi-isilon"
+        - "--arrayConnectivityPollRate=60"
+        - "--driverPath=csi-isilon.dellemc.com"
+        - "--mode=node"
+        - "--leaderelection=false"
+        - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
+        - "--driverPodLabelValue=dell-storage"
+        - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
     sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
@@ -304,24 +304,24 @@ csi-vxflexos:
   podmon:
     enabled: false
     image: dellemc/podmon:v1.7.0
-    # controller:
-    #  args:
-    #    - "--csisock=unix:/var/run/csi/csi.sock"
-    #    - "--labelvalue=csi-vxflexos"
-    #    - "--mode=controller"
-    #    - "--skipArrayConnectionValidation=false"
-    #    - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
-    #    - "--driverPodLabelValue=dell-storage"
-    #    - "--ignoreVolumelessPods=false"
-    # node:
-    #   args:
-    #     - "--csisock=unix:/var/lib/kubelet/plugins/vxflexos.emc.dell.com/csi_sock"
-    #     - "--labelvalue=csi-vxflexos"
-    #     - "--mode=node"
-    #     - "--leaderelection=false"
-    #     - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
-    #     - "--driverPodLabelValue=dell-storage"
-    #     - "--ignoreVolumelessPods=false"
+    controller:
+      args:
+        - "--csisock=unix:/var/run/csi/csi.sock"
+        - "--labelvalue=csi-vxflexos"
+        - "--mode=controller"
+        - "--skipArrayConnectionValidation=false"
+        - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
+        - "--driverPodLabelValue=dell-storage"
+        - "--ignoreVolumelessPods=false"
+    node:
+      args:
+        - "--csisock=unix:/var/lib/kubelet/plugins/vxflexos.emc.dell.com/csi_sock"
+        - "--labelvalue=csi-vxflexos"
+        - "--mode=node"
+        - "--leaderelection=false"
+        - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
+        - "--driverPodLabelValue=dell-storage"
+        - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
     sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
