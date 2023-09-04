@@ -291,7 +291,6 @@ csi-vxflexos:
     #   effect: "NoSchedule"
   storageCapacity:
     enabled: true
-  nfsAcls: "0777"
   enableQuota: false
   monitor:
     enabled: false
