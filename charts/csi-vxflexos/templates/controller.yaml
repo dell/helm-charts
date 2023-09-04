@@ -420,10 +420,6 @@ spec:
               value: "{{ .Values.controller.healthMonitor.enabled }}"
             {{- end }}
             {{- end }}
-            {{- if hasKey .Values "nfsAcls" }}
-            - name: X_CSI_NFS_ACLS
-              value: "{{ .Values.nfsAcls }}"
-            {{- end }}
             {{- if hasKey .Values "enableQuota" }}
             {{- if eq .Values.enableQuota true}}
             - name: X_CSI_QUOTA_ENABLED
