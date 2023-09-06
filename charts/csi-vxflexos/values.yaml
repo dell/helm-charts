@@ -301,7 +301,7 @@ monitor:
 # These options control the running of the vgsnapshotter container
 vgsnapshotter:
   enabled: false
-  image: dellemc/csi-volumegroup-snapshotter:v1.2.0
+  image: dellemc/csi-volumegroup-snapshotter:v1.3.0
 
 # Podmon is an optional feature under development and tech preview.
 # Enable this feature only after contact support for additional information
