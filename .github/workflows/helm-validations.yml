@@ -3,6 +3,7 @@ name: helm-validations
 
 # Check runs on PRs created to merge to main branch
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
