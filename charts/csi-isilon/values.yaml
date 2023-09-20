@@ -2,7 +2,7 @@
 ########################
 # version: version of this values file
 # Note: Do not change this value
-version: "v2.7.0"
+version: "v2.8.0"
 
 # CSI driver log level
 # Allowed values: "error", "warn"/"warning", "info", "debug"
@@ -127,7 +127,7 @@ controller:
     # image: Image to use for dell-csi-replicator. This shouldn't be changed
     # Allowed values: string
     # Default value: None
-    image: dellemc/dell-csi-replicator:v1.5.0
+    image: dellemc/dell-csi-replicator:v1.6.0
 
     # replicationContextPrefix: prefix to use for naming of resources created by replication feature
     # Allowed values: string
@@ -360,8 +360,8 @@ autoProbe: true
 authorization:
   enabled: false
   # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-  # Default value: dellemc/csm-authorization-sidecar:v1.7.0
-  sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.7.0
+  # Default value: dellemc/csm-authorization-sidecar:v1.8.0
+  sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
   # proxyHost: hostname of the csm-authorization server
   # Default value: None
   proxyHost:
@@ -389,7 +389,7 @@ storageCapacity:
 # Enable this feature only after contact support for additional information
 podmon:
   enabled: false
-  image: dellemc/podmon:v1.6.0
+  image: dellemc/podmon:v1.7.0
   #controller:
   #  args:
   #    - "--csisock=unix:/var/run/csi/csi.sock"
