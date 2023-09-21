@@ -1,8 +1,11 @@
+## PROFINET
+[![PROFINET CI](https://github.com/chbinousamy/_profinet/actions/workflows/build.yml/badge.svg)](https://github.com/chbinousamy/_profinet/actions/workflows/build.yml)
+
+
 ## Position GNSS-SDR
 [![CI](https://github.com/chbinousamy/gnss-sdr/actions/workflows/main.yml/badge.svg)](https://github.com/chbinousamy/gnss-sdr/actions/workflows/main.yml)
 [![CI](https://github.com/chbinousamy/gnss-sdr/actions/workflows/volk_gnsssdr_archs.yml/badge.svg)](https://github.com/chbinousamy/gnss-sdr/actions/workflows/volk_gnsssdr_archs.yml)
 [![CI](https://github.com/chbinousamy/gnss-sdr/actions/workflows/gnss-sdr_archs.yml/badge.svg)](https://github.com/chbinousamy/gnss-sdr/actions/workflows/gnss-sdr_archs.yml)
-
 
 ## Linux-CAN / SocketCAN
 can-utils
@@ -20,8 +23,9 @@ can-tests
 ## Porcinet
 [![Porcinet CI](https://github.com/chbinousamy/porcinet/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/chbinousamy/porcinet/actions/workflows/c-cpp.yml)
 
-## PROFINET
-[![PROFINET CI](https://github.com/chbinousamy/_profinet/actions/workflows/build.yml/badge.svg)](https://github.com/chbinousamy/_profinet/actions/workflows/build.yml)
+## Python
+[![Python Test](https://github.com/chbinousamy/cpython/actions/workflows/build.yml/badge.svg)](https://github.com/chbinousamy/cpython/actions/workflows/build.yml)
+
 
 <!--
 Copyright (c) 2021 Dell Inc., or its subsidiaries. All Rights Reserved.
