@@ -20,6 +20,8 @@ can-tests
 ## Porcinet
 [![Porcinet CI](https://github.com/chbinousamy/porcinet/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/chbinousamy/porcinet/actions/workflows/c-cpp.yml)
 
+## PROFINET
+[![PROFINET CI](https://github.com/chbinousamy/_profinet/actions/workflows/build.yml/badge.svg)](https://github.com/chbinousamy/_profinet/actions/workflows/build.yml)
 
 <!--
 Copyright (c) 2021 Dell Inc., or its subsidiaries. All Rights Reserved.
