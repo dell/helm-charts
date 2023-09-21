@@ -1,3 +1,9 @@
+## Position GNSS-SDR
+[![CI](https://github.com/chbinousamy/gnss-sdr/actions/workflows/main.yml/badge.svg)](https://github.com/chbinousamy/gnss-sdr/actions/workflows/main.yml)
+[![CI](https://github.com/chbinousamy/gnss-sdr/actions/workflows/volk_gnsssdr_archs.yml/badge.svg)](https://github.com/chbinousamy/gnss-sdr/actions/workflows/volk_gnsssdr_archs.yml)
+[![CI](https://github.com/chbinousamy/gnss-sdr/actions/workflows/gnss-sdr_archs.yml/badge.svg)](https://github.com/chbinousamy/gnss-sdr/actions/workflows/gnss-sdr_archs.yml)
+
+
 ## Linux-CAN / SocketCAN
 can-utils
 
@@ -8,20 +14,11 @@ can-utils
 [![SocketCAN Build in aarch64](https://github.com/chbinousamy/can-utils/actions/workflows/build-aarch64.yml/badge.svg)](https://github.com/chbinousamy/can-utils/actions/workflows/build-aarch64.yml)
 
 can-tests
-
 [![Build](https://github.com/chbinousamy/can-tests/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/chbinousamy/actions/workflows/c-cpp.yml)
 
 
 ## Porcinet
-
 [![Porcinet CI](https://github.com/chbinousamy/porcinet/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/chbinousamy/porcinet/actions/workflows/c-cpp.yml)
-
-
-## GNSS-SDR
-[![CI](https://github.com/chbinousamy/gnss-sdr/actions/workflows/main.yml/badge.svg)](https://github.com/chbinousamy/gnss-sdr/actions/workflows/main.yml)
-[![CI](https://github.com/chbinousamy/gnss-sdr/actions/workflows/volk_gnsssdr_archs.yml/badge.svg)](https://github.com/chbinousamy/gnss-sdr/actions/workflows/volk_gnsssdr_archs.yml)
-[![CI](https://github.com/chbinousamy/gnss-sdr/actions/workflows/gnss-sdr_archs.yml/badge.svg)](https://github.com/chbinousamy/gnss-sdr/actions/workflows/gnss-sdr_archs.yml)
-
 
 
 <!--
