@@ -1,0 +1,116 @@
+name: Kind Cluster Unit & Integration Testing
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  cluster-testing:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        ipFamily: [ipv4]
+        deployment: [singleNode, multiNode]
+    env:
+      JOB_NAME: "cluster-${{ matrix.deployment }}-${{ matrix.ipFamily }}"
+      IP_FAMILY: ${{ matrix.ipFamily }}
+    steps:
+      - 
+        name: Update Ubuntu
+        run: |
+          sudo apt update && sudo apt upgrade -y
+#      -
+#        name: Install go version 1.20.4
+#        run: |
+#          curl -Lo ./go1.20.4.linux-amd64.tar.gz https://go.dev/dl/go1.20.4.linux-amd64.tar.gz
+#          sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.20.4.linux-amd64.tar.gz
+#          sudo sh -c "echo export PATH=\$PATH:/usr/local/go/bin >> /etc/profile"
+#          cat /etc/profile
+      - 
+        name: Check out code into the Go module directory
+        uses: actions/checkout@v4
+        with:
+          repository: chbinousamy/kind
+      - 
+        name: Build kind
+        run: make build ##&& sudo make install # INSTALL_DIR=/usr/local/bin
+      -
+        name: Install kubectl
+        run: |
+          curl -LO https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+          chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+     # - name: Install helm
+     #   run: |
+     #     curl -Lo ./get-helm-3 https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+     #     chmod +x get-helm-3
+     #     sudo ./get-helm-3
+     #     helm repo update
+      - 
+        name: Enable ipv4 and ipv6 forwarding
+        run: |
+          sudo sysctl -w net.ipv6.conf.all.forwarding=1
+          sudo sysctl -w net.ipv4.ip_forward=1
+      - 
+        name: Create single node cluster
+        if: ${{ matrix.deployment == 'singleNode' }}
+        run: |
+          which kind
+          cat <<EOF | kind create cluster -v7 --wait 1m --retain --config=-
+          kind: Cluster
+          apiVersion: kind.x-k8s.io/v1alpha4
+          networking:
+            ipFamily: ${IP_FAMILY}
+          EOF
+      - 
+        name: Create multi node cluster
+        if: ${{ matrix.deployment == 'multiNode' }}
+        run: |
+          which kind
+          cat <<EOF | kind create cluster -v7 --wait 1m --retain --config=-
+          kind: Cluster
+          apiVersion: kind.x-k8s.io/v1alpha4
+          networking:
+            ipFamily: ${IP_FAMILY}
+          nodes:
+          - role: control-plane
+          - role: worker
+          - role: worker
+          EOF
+      - 
+        name: Get Cluster status
+        run: |
+          # wait network is ready
+          kubectl wait --for=condition=ready pods --namespace=kube-system -l k8s-app=kube-dns
+          kubectl get nodes -o wide
+          kubectl get pods -A
+          kubectl cluster-info
+      - 
+        name: run unit tests
+        run: make unit
+      - 
+        name: run integration tests
+        run: make integration
+      - 
+        name: Export logs
+        if: always()
+        run: |
+          mkdir -p /tmp/kind/logs
+          /usr/local/bin/kind export logs /tmp/kind/logs
+          sudo chown -R $USER:$USER /tmp/kind/logs
+      - 
+        name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        with:
+          name: kind-logs-${{ env.JOB_NAME }}-${{ github.run_id }}
+          path: /tmp/kind/logs
+      - 
+        name: Delete cluster
+        run: /usr/local/bin/kind delete cluster
