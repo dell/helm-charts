@@ -50,5 +50,3 @@ checks:
     - "use-namespace"
     - "wildcard-in-rules"
     - "writable-host-mount"
-
-

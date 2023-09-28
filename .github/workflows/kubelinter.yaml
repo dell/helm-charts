@@ -1,4 +1,4 @@
-name: COSI driver
+name: Kubelinter
 
 on:
   push:
@@ -12,7 +12,7 @@ env:
 
 jobs:
   kube-linter-cosi:
-    name: COSI Kube Linter
+    name: COSI
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,7 +31,7 @@ jobs:
           config: kubelinter-config-cosi.yaml
 
   kube-linter-csi:
-    name: CSI Kube Linter
+    name: CSI
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -50,7 +50,7 @@ jobs:
           config: kubelinter-config-csi.yaml
 
   kube-linter-modules:
-    name: CSM Modules Kube Linter
+    name: CSM Modules
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -67,4 +67,3 @@ jobs:
         with:
           directory: charts/${{ matrix.module }}
           config: kubelinter-config-modules.yaml
-
