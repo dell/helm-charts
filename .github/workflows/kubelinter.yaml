@@ -11,9 +11,12 @@ env:
   TOKEN: ${{ secrets.GH_DELL_ACCESS }}
 
 jobs:
-  kube-linter:
-    name: Kube Linter
+  kube-linter-cosi:
+    name: COSI Kube Linter
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cosi: [cosi]
     steps:
       - name: Configure git for private modules
         run: |
@@ -21,9 +24,47 @@ jobs:
           echo "machine github.com login csmbot password $TOKEN" >> ~/.netrc
       - name: Checkout the code
         uses: actions/checkout@v3.6.0
-      - name: Scan repo with kube-linter
+      - name: Scan COSi chart with kube-linter
         uses: stackrox/kube-linter-action@v1.0.4
         with:
-          directory: charts
-          config: kubelinter-config.yaml
+          directory: charts/${{ matrix.cosi }}
+          config: kubelinter-config-cosi.yaml
+
+  kube-linter-csi:
+    name: CSI Kube Linter
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        csi: [csi-isilon, csi-powermax, csi-powerstore, csi-unity, csi-vxflexos]
+    steps:
+      - name: Configure git for private modules
+        run: |
+          git config --global url."https://csmbot:$TOKEN@github.com".insteadOf "https://github.com"
+          echo "machine github.com login csmbot password $TOKEN" >> ~/.netrc
+      - name: Checkout the code
+        uses: actions/checkout@v3.6.0
+      - name: Scan CSI charts with kube-linter
+        uses: stackrox/kube-linter-action@v1.0.4
+        with:
+          directory: charts/${{ matrix.csi }}
+          config: kubelinter-config-csi.yaml
+
+  kube-linter-modules:
+    name: CSM Modules Kube Linter
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: [csm-application-mobility, csm-authorization, csm-encryption-rekey-controller, csm-installer, csm-replication, karavi-observability]
+    steps:
+      - name: Configure git for private modules
+        run: |
+          git config --global url."https://csmbot:$TOKEN@github.com".insteadOf "https://github.com"
+          echo "machine github.com login csmbot password $TOKEN" >> ~/.netrc
+      - name: Checkout the code
+        uses: actions/checkout@v3.6.0
+      - name: Scan modules charts with kube-linter
+        uses: stackrox/kube-linter-action@v1.0.4
+        with:
+          directory: charts/${{ matrix.module }}
+          config: kubelinter-config-modules.yaml
 
