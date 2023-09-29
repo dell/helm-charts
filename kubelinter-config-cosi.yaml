@@ -62,6 +62,8 @@ checks:
     - "no-readiness-probe"
     - "no-rolling-update-strategy"
     - "non-isolated-pod"
+    - "pdb-max-unavailable"
+    - "pdb-min-available"
     - "required-annotation-email"
     - "required-label-owner"
     - "unset-cpu-requirements"
