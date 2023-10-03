@@ -39,6 +39,34 @@ subjects:
   name: system:serviceaccounts:{{ include "custom.namespace" . }}
   apiGroup: rbac.authorization.k8s.io
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: proxy-server
+  namespace: authorization
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: proxy-server
+rules:
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["storages"]
+    verbs: ["get", "list"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: proxy-server
+subjects:
+  - kind: ServiceAccount
+    name: proxy-server
+    namespace: authorization
+roleRef:
+  kind: ClusterRole
+  name: proxy-server
+  apiGroup: rbac.authorization.k8s.io
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -56,6 +84,7 @@ spec:
       labels:
         app: proxy-server
     spec:
+      serviceAccount: proxy-server
       containers:
       - name: proxy-server
         image: {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}
