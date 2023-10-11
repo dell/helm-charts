@@ -29,7 +29,7 @@ provisioner:
   # image specifies the COSI driver provisioner container image.
   image:
     # repository is the COSI driver provisioner container image repository.
-    repository: "docker.io/dell/cosi"
+    repository: "docker.io/dellemc/cosi"
     # tag is the COSI driver provisioner container image tag.
     tag: "v0.1.0"
     # pullPolicy is the COSI driver provisioner container image pull policy.
