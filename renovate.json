@@ -1,6 +1,19 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:base",
+    ":rebaseStalePrs"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "ingress-nginx",
+        "cert-manager",
+        "velero",
+        "nginxinc/nginx-unprivileged",
+        "otel/opentelemetry-collector"
+      ],
+      "enabled": false
+    }
   ]
 }
