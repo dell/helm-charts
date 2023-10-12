@@ -4,9 +4,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.12.0
-  name: csmroles.csm-authorization.dell.com
+  name: csmroles.csm-authorization.storage.dell.com
 spec:
-  group: csm-authorization.dell.com
+  group: csm-authorization.storage.dell.com
   names:
     kind: CSMRole
     listKind: CSMRoleList
