@@ -48,6 +48,10 @@ spec:
       - name: storage-service
         image: {{ required "Must provide the storage-service image." .Values.authorization.images.storageService }}
         imagePullPolicy: Always
+        args:
+          - "--vault-address={{ .Values.vault.address }}"
+          - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
+          - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
         ports:
         - containerPort: 50051
           name: grpc
@@ -55,16 +59,20 @@ spec:
           - name: NAMESPACE
             value: {{ include "custom.namespace" . }}
         volumeMounts:
-        - name: storage-volume
-          mountPath: /etc/karavi-authorization/storage
+        - name: vault-config
+          mountPath: /etc/vault
         - name: config-volume
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
       volumes:
-      - name: storage-volume
-        secret:
-          secretName: karavi-storage-secret
+      - name: vault-config
+        projected:
+          sources:
+          - secret:
+              name: vault-cert
+          - secret:
+              name: vault-auth
       - name: config-volume
         secret:
           secretName: karavi-config-secret

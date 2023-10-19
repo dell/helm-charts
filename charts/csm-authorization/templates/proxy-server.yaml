@@ -94,13 +94,16 @@ spec:
           - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--role-service=role-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--storage-service=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
+          - "--vault-address={{ .Values.vault.address }}"
+          - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
+          - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
         ports:
         - containerPort: 8080
         volumeMounts:
         - name: config-volume
           mountPath: /etc/karavi-authorization/config
-        - name: storage-volume
-          mountPath: /etc/karavi-authorization/storage
+        - name: vault-config
+          mountPath: /etc/vault
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
       - name: opa
@@ -124,9 +127,13 @@ spec:
       - name: config-volume
         secret:
           secretName: karavi-config-secret
-      - name: storage-volume
-        secret:
-          secretName: karavi-storage-secret
+      - name: vault-config
+        projected:
+          sources:
+          - secret:
+              name: vault-cert
+          - secret:
+              name: vault-auth
       - name: csm-config-params
         configMap:
           name: csm-config-params
