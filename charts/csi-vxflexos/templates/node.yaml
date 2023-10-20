@@ -67,7 +67,6 @@ metadata:
   {{- if eq .Values.authorization.enabled true }}
   annotations:
     com.dell.karavi-authorization-proxy: "true"
-    kubectl.kubernetes.io/default-container: "driver"
   {{ end }}
   {{ end }}
 spec:
@@ -81,6 +80,8 @@ spec:
 {{- if eq .Values.podmon.enabled true }}
         driver.dellemc.com: dell-storage
 {{- end }}
+      annotations:
+        kubectl.kubernetes.io/default-container: "driver"
     spec:
       {{- if .Values.node.nodeSelector }}
       nodeSelector:

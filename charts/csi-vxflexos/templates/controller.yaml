@@ -146,7 +146,6 @@ metadata:
   {{- if eq .Values.authorization.enabled true }}
   annotations:
     com.dell.karavi-authorization-proxy: "true"
-    kubectl.kubernetes.io/default-container: "driver"
   {{ end }}
   {{ end }}
 spec:
@@ -168,6 +167,8 @@ spec:
         vg-snapshotter-enabled: "false"
       {{- end }}
         name: {{ .Release.Name }}-controller
+      annotations:
+        kubectl.kubernetes.io/default-container: "driver"
     spec:
       affinity:
         nodeSelector:

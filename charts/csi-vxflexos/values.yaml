@@ -1,10 +1,6 @@
 ---
 # k8s/driver attributes
 
-# "version" is used to verify the values file matches driver version
-# Not recommend to change
-version: v2.9.0
-
 images:
   # "driver" defines the container image, used for the driver container.
   driver: dellemc/csi-vxflexos:v2.9.0
