@@ -172,6 +172,16 @@ entries:
   cosi:
   - apiVersion: v2
     appVersion: 1.0.0-alpha
+    created: "2023-10-20T08:39:04.111831361Z"
+    description: Container Object Storage Interface (COSI) Driver for Dell ObjectScale
+    digest: 7a27a3aa26e4d8c8bea115652946388e815bece3feccb67337b1f03854230576
+    name: cosi
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/cosi-0.1.1/cosi-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.0.0-alpha
     created: "2023-09-20T12:58:39.290797317Z"
     description: Container Object Storage Interface (COSI) Driver for Dell ObjectScale
     digest: 60dcc30e82f4a97df666b7b05ebf4b4334aff9f0f8a953d6d5c65643db625c44
