@@ -98,6 +98,8 @@ spec:
       {{- if .Values.podmon.enabled }}
         driver.dellemc.com: dell-storage
       {{- end }}
+      annotations:
+        kubectl.kubernetes.io/default-container: driver
     spec:
       {{ if .Values.node.nodeSelector }}
       nodeSelector:

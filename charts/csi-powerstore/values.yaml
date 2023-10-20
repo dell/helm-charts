@@ -22,9 +22,6 @@
 # Default value: None
 driverName: "csi-powerstore.dellemc.com"
 
-# Driver version required to pull the latest driver image
-version: "v2.9.0"
-
 images:
   # "driver" defines the container image, used for the driver container.
   driver: dellemc/csi-powerstore:v2.9.0

@@ -159,7 +159,7 @@ metadata:
   name: {{ .Release.Name }}-controller
   namespace: {{ .Release.Namespace }}
   annotations:
-    kubectl.kubernetes.io/default-container: csi-driver
+    kubectl.kubernetes.io/default-container: driver
 spec:
   selector:
     matchLabels:
@@ -173,6 +173,8 @@ spec:
     metadata:
       labels:
         name: {{ .Release.Name }}-controller
+      annotations:
+        kubectl.kubernetes.io/default-container: driver
     spec:
       {{ if .Values.controller.nodeSelector }}
       nodeSelector:
