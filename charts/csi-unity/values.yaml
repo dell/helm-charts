@@ -10,15 +10,15 @@ images:
   # "driver" defines the container image, used for the driver container.
   driver: dellemc/csi-unity:v2.8.0
   # CSI sidecars
-  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.3.0
-  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.5.0
-  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v6.2.2
-  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.8.0
-  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.8.0
-  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.9.0
+  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.0
+  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.0
+  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v6.3.0
+  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.9.0
+  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.0
+  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
 
   # CSM sidecars
-  podmon: dellemc/podmon:v1.6.0
+  podmon: dellemc/podmon:v1.7.0
 
 # LogLevel is used to set the logging level of the driver.
 # Allowed values: "error", "warn"/"warning", "info", "debug"
