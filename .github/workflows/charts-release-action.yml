@@ -35,6 +35,6 @@ jobs:
                 charts/csi-powermax
                 charts/csi-powerstore
                 charts/csi-unity
-                chart/container-storage-modules
+                charts/container-storage-modules
                  
     
