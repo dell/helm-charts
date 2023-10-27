@@ -30,4 +30,11 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_SKIP_EXISTING: "true"
         with:  
-          charts_dir: charts
+          charts_dir: 
+                charts/csi-isilon
+                charts/csi-powermax
+                charts/csi-powerstore
+                charts/csi-unity
+                chart/container-storage-modules
+                 
+    
