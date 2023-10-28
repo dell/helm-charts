@@ -4,7 +4,7 @@ Return the appropriate sidecar images based on k8s version
 {{- define "csi-powerstore.attacherImage" -}}
   {{- if eq .Capabilities.KubeVersion.Major "1" }}
     {{- if and (ge (trimSuffix "+" .Capabilities.KubeVersion.Minor) "24") (le (trimSuffix "+" .Capabilities.KubeVersion.Minor) "28") -}}
-      {{- print "registry.k8s.io/sig-storage/csi-attacher:v4.4.0" -}}
+      {{- print "registry.k8s.io/sig-storage/csi-attacher:v4.4.1" -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
