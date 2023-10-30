@@ -70,7 +70,7 @@ dependencies:
   condition: csm-replication.enabled
 
 - name: karavi-observability
-  version: 1.6.0
+  version: 1.7.0
   repository: https://dell.github.io/helm-charts
   condition: karavi-observability.enabled
 
