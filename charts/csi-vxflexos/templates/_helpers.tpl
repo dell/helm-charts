@@ -1,4 +1,3 @@
-
 {{/*
 Return true if storage capacity tracking is enabled and is supported based on k8s version
 */}}
