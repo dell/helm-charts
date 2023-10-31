@@ -41,7 +41,8 @@ jobs:
       # Lint and version increment checks on updated charts   
       - name: Run lint/version increment checks
         id: versionIncrement
-        uses: helm/chart-testing-action@v2.4.0
+        # Bump to proper version after this issue is fixed : https://github.com/helm/chart-testing-action/issues/132
+        uses: helm/chart-testing-action@cb49023b9227b1097e5eddd8824f48bdea11b1aa
         with:
           command: lint
           config: lintConfig.yaml
@@ -62,7 +63,7 @@ jobs:
       # Run a check on karavi-observability chart for updated dependency versions
       - name: Run dependency version checks
         id: lint
-        uses: helm/chart-testing-action@v2.4.0
+        uses: helm/chart-testing-action@cb49023b9227b1097e5eddd8824f48bdea11b1aa
         with:
           command: lint
           config: dependencyConfig.yaml
