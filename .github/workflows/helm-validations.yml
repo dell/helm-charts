@@ -41,6 +41,7 @@ jobs:
       # Lint and version increment checks on updated charts   
       - name: Run lint/version increment checks
         id: versionIncrement
+        # Bump to proper version after this issue is fixed : https://github.com/helm/chart-testing-action/issues/132
         uses: helm/chart-testing-action@cb49023b9227b1097e5eddd8824f48bdea11b1aa
         with:
           command: lint
