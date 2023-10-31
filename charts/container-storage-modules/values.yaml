@@ -20,7 +20,7 @@
 ########################
 csi-powerstore:
   enabled: false
-  version: "v2.8.0"
+  version: "v2.9.0"
   images:
     driverRepository: dellemc
   ## Controller ATTRIBUTES
@@ -247,10 +247,10 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
-  version: v2.8.0
+  version: v2.9.0
   images:
     driverRepository: dellemc
-    powerflexSdc: dellemc/sdc:3.6.1
+    powerflexSdc: dellemc/sdc:4.5
   certSecretCount: 0
   controller:
     replication:
