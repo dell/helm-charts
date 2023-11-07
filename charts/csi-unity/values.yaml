@@ -6,6 +6,20 @@
 # Examples : "v2.8.0" , "nightly"
 version: "v2.8.0"
 
+images:
+  # "driver" defines the container image, used for the driver container.
+  driver: dellemc/csi-unity:v2.8.0
+  # CSI sidecars
+  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.0
+  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.0
+  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v6.3.0
+  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.9.0
+  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.0
+  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
+
+  # CSM sidecars
+  podmon: dellemc/podmon:v1.7.0
+
 # LogLevel is used to set the logging level of the driver.
 # Allowed values: "error", "warn"/"warning", "info", "debug"
 # Default value: "info"
@@ -194,7 +208,6 @@ podmon:
   # allowed values - string
   # default value : None
   # Example : "podman:latest", "pod:latest"
-  image: dellemc/podmon:v1.7.0
   controller:
     args:
       - "--csisock=unix:/var/run/csi/csi.sock"
@@ -255,7 +268,3 @@ storageCapacity:
   # Allowed values: 1m,2m,3m,...,10m,...,60m etc
   # Default value: 5m
   pollInterval: 5m
-
-images:
-  # "driver" defines the container image, used for the driver container.
-  driverRepository: dellemc
