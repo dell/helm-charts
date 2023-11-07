@@ -373,15 +373,9 @@ autoProbe: true
 
 authorization:
   enabled: false
-<<<<<<< HEAD
   # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
   # Default value: dellemc/csm-authorization-sidecar:v1.8.0
   sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
-<<<<<<< HEAD
-=======
->>>>>>> 6523e78 (Centralized images)
-=======
->>>>>>> d36eaf4 (update auth to 1.8 (#271))
   # proxyHost: hostname of the csm-authorization server
   # Default value: None
   proxyHost:
@@ -409,7 +403,6 @@ storageCapacity:
 # Enable this feature only after contact support for additional information
 podmon:
   enabled: false
-<<<<<<< HEAD
   controller:
    args:
      - "--csisock=unix:/var/run/csi/csi.sock"
@@ -421,20 +414,6 @@ podmon:
      - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
      - "--driverPodLabelValue=dell-storage"
      - "--ignoreVolumelessPods=false"
-=======
-  image: dellemc/podmon:v1.7.0
-  #controller:
-  #  args:
-  #    - "--csisock=unix:/var/run/csi/csi.sock"
-  #    - "--labelvalue=csi-isilon"
-  #    - "--arrayConnectivityPollRate=60"
-  #    - "--driverPath=csi-isilon.dellemc.com"
-  #    - "--mode=controller"
-  #    - "--skipArrayConnectionValidation=false"
-  #    - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
-  #    - "--driverPodLabelValue=dell-storage"
-  #    - "--ignoreVolumelessPods=false"
->>>>>>> d36eaf4 (update auth to 1.8 (#271))
 
   node:
    args:
