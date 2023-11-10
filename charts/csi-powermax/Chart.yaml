@@ -1,7 +1,7 @@
 apiVersion: v2
-appVersion: "2.8.0"
+appVersion: "2.9.0"
 name: csi-powermax
-version: 2.8.0
+version: 2.9.0
 description: |
   PowerMax CSI (Container Storage Interface) driver Kubernetes
   integration. This chart includes everything required to provision via CSI as
@@ -16,7 +16,7 @@ keywords:
 - storage
 dependencies:
   - name: csireverseproxy
-    version: 2.7.0
+    version: 2.8.0
     condition: required
 home: https://github.com/dell/csi-powermax
 icon: https://avatars1.githubusercontent.com/u/20958494?s=200&v=4
