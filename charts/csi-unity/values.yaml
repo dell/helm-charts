@@ -3,12 +3,12 @@
 
 # version: version of this values file
 # Note: Do not change this value
-# Examples : "v2.8.0" , "nightly"
-version: "v2.8.0"
+# Examples : "v2.9.0" , "nightly"
+version: "v2.9.0"
 
 images:
   # "driver" defines the container image, used for the driver container.
-  driver: dellemc/csi-unity:v2.8.0
+  driver: dellemc/csi-unity:v2.9.0
   # CSI sidecars
   attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.0
   provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.0
