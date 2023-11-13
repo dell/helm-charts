@@ -204,10 +204,6 @@ podmon:
   # defaule value : None
   # Examples : true , false
   enabled: false
-  # image - image name
-  # allowed values - string
-  # default value : None
-  # Example : "podman:latest", "pod:latest"
   controller:
     args:
       - "--csisock=unix:/var/run/csi/csi.sock"
