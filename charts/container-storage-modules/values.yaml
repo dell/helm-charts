@@ -143,7 +143,7 @@ csi-powermax:
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
     # CSM sidecars
     replication: dellemc/dell-csi-replicator:v1.6.0
-    authorization: dellemc/csm-authorization-sidecar:v1.8.0
+    authorization: dellemc/csm-authorization-sidecar:v1.9.0
     migration: dellemc/dell-csi-migrator:v1.2.0
     noderescan: dellemc/dell-csi-node-rescanner:v1.1.0
   clusterPrefix: ABC
@@ -198,7 +198,7 @@ csi-isilon:
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
     # CSM sidecars
     replication: dellemc/dell-csi-replicator:v1.6.0
-    podmon: dellemc/podmon:v1.7.0
+    podmon: dellemc/podmon:v1.8.0
     authorization: dellemc/csm-authorization-sidecar:v1.8.0
     metadataretriever: dellemc/csi-metadata-retriever:v1.4.0
     encryption: dellemc/csm-encryption:v0.3.0
