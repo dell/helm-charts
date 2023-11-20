@@ -12,7 +12,7 @@ images:
   # "driver" defines the container image, used for the driver container.
   driver: dellemc/csi-vxflexos:v2.9.0
   # "powerflexSdc" defines the SDC image for init container.
-  powerflexSdc: dellemc/sdc:4.5
+  powerflexSdc: dellemc/sdc:3.6.1
   # CSI sidecars
   attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.2
   provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.2
