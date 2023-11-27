@@ -194,7 +194,7 @@ csi-isilon:
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.2
     snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v6.3.2
     resizer: registry.k8s.io/sig-storage/csi-resizer:v1.9.2
-    registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.2
+    registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.1
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
     # CSM sidecars
     replication: dellemc/dell-csi-replicator:v1.6.0
