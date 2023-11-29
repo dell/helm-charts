@@ -129,11 +129,11 @@ csi-powermax:
       - endpoint: https://backup-1.unisphe.re:8443
   #    - endpoint: https://primary-2.unisphe.re:8443
   #    - endpoint: https://backup-2.unisphe.re:8443
-  version: "v2.8.0"
+  version: "v2.9.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-powermax:v2.8.0
-    csireverseproxy: dellemc/csipowermax-reverseproxy:v2.7.0
+    driver: dellemc/csi-powermax:v2.9.0
+    csireverseproxy: dellemc/csipowermax-reverseproxy:v2.8.0
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.0
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.0
