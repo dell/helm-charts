@@ -57,14 +57,14 @@ images:
   driver: dellemc/csi-powermax:v2.9.0
   csireverseproxy: dellemc/csipowermax-reverseproxy:v2.8.0
   # CSI sidecars
-  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.1
-  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.1
-  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v6.3.1
-  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.9.0
-  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.0
+  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.2
+  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.2
+  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v6.3.2
+  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.9.2
+  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.1
   healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
   # CSM sidecars
-  replication: dellemc/dell-csi-replicator:v1.6.0
+  replication: dellemc/dell-csi-replicator:v1.7.0
   authorization: dellemc/csm-authorization-sidecar:v1.9.0
   migration: dellemc/dell-csi-migrator:v1.2.0
   # Node rescan sidecar does a rescan on nodes for identifying new paths
