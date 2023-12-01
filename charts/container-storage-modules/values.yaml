@@ -338,6 +338,7 @@ csi-vxflexos:
   storageCapacity:
     enabled: true
   enableQuota: false
+  externalAccess:
   monitor:
     enabled: false
   vgsnapshotter:
