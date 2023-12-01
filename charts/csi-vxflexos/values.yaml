@@ -59,6 +59,11 @@ defaultFsType: ext4
 # Default value: None
 imagePullPolicy: IfNotPresent
 
+# externalAccess: allows to specify additional entries for hostAccess of NFS volumes. Both single IP address and subnet are valid entries.
+# Allowed Values: x.x.x.x/xx or x.x.x.x
+# Default Value: None
+externalAccess:
+
 # enableQuota: a boolean that, when enabled, will set quota limit for a newly provisioned NFS volume.
 # Allowed values:
 #   true: set quota for volume
