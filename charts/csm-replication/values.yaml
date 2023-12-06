@@ -5,7 +5,7 @@ replicas: 1
 
 # image: Defines controller image. This shouldn't be changed
 # Allowed values: string
-image: dellemc/dell-replication-controller:v1.6.0
+image: dellemc/dell-replication-controller:v1.7.0
 
 # logLevel: Defines initial log level for controller. This can be changed in runtime
 # Allowed values: "debug", "info", "warn", "error", "panic"
