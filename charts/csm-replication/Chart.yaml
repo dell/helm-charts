@@ -3,5 +3,5 @@ name: csm-replication
 type: application
 description: |
   CSM for Replication helm charts
-version: 1.6.0
-appVersion: "1.6.0"
+version: 1.7.0
+appVersion: "1.7.0"
