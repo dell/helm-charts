@@ -1,9 +1,9 @@
 apiVersion: v2
-appVersion: "1.6.0"
+appVersion: "1.7.0"
 name: karavi-observability
 description: CSM for Observability is part of the [Container Storage Modules](https://github.com/dell/csm) open source suite of Kubernetes storage enablers for Dell EMC storage products. CSM for Observability provides Kubernetes administrators with visibility into metrics and topology data related to containerized storage.
 type: application
-version: 1.6.0
+version: 1.7.0
 dependencies:
 - name: cert-manager
   version: 1.10.0

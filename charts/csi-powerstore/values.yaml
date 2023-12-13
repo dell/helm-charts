@@ -21,9 +21,28 @@
 # Allowed values: string
 # Default value: None
 driverName: "csi-powerstore.dellemc.com"
+# "version" is used to verify the values file matches driver version
+# Not recommend to change
+version: v2.9.0
 
-# Driver version required to pull the latest driver image
-version: "v2.8.0"
+# "images" defines every container images used for the driver and its sidecars.
+#  To use your own images, or a private registry, change the values here.
+images:
+  # "driver" defines the container image, used for the driver container.
+  driver: dellemc/csi-powerstore:v2.9.0
+  # CSI sidecars
+  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.2
+  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.2
+  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v6.3.2
+  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.9.2
+  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.1
+  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
+
+  # CSM sidecars
+  replication: dellemc/dell-csi-replicator:v1.7.0
+  vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.4.0
+  podmon: dellemc/podmon:v1.8.0
+  metadataretriever: dellemc/csi-metadata-retriever:v1.6.0
 
 # Specify kubelet config dir path.
 # Ensure that the config.yaml file is present at this path.
@@ -103,10 +122,6 @@ controller:
     #   false: disable volume-group-snapshot feature(do not install vg-snapshotter sidecar)
     # Default value: false
     enabled: false
-    # image: Image to use for volume-group-snapshotter. This shouldn't be changed
-    # Allowed values: string
-    # Default value: dellemc/csi-volumegroup-snapshotter:v1.3.0
-    image: dellemc/csi-volumegroup-snapshotter:v1.3.0
 
   # snapshot: allows to enable/disable snapshot feature
   # snapshot CRDs needs to be installed before enabling this feature
@@ -155,11 +170,6 @@ controller:
     # Default value: false
     enabled: false
 
-    # image: Image to use for dell-csi-replicator. This shouldn't be changed
-    # Allowed values: string
-    # Default value: None
-    image: dellemc/dell-csi-replicator:v1.6.0
-
     # replicationContextPrefix: prefix to use for naming of resources created by replication feature
     # Allowed values: string
     # Default value: powerstore
@@ -169,9 +179,6 @@ controller:
     # Allowed values: string
     # Default value: replication.storage.dell.com
     replicationPrefix: "replication.storage.dell.com"
-
-  # Image for csi-metadata-retriever
-  metadataretriever: dellemc/csi-metadata-retriever:v1.5.0
 
   # nodeSelector: Define node selection constraints for controller pods.
   # For the pod to be eligible to run on a node, the node must have each
@@ -318,7 +325,6 @@ storageCapacity:
 # Enable this feature only after contact support for additional information
 podmon:
   enabled: false
-  image: dellemc/podmon:v1.7.0
   controller:
     args:
       - "--csisock=unix:/var/run/csi/csi.sock"
@@ -342,7 +348,3 @@ podmon:
       - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
       - "--driverPodLabelValue=dell-storage"
       - "--ignoreVolumelessPods=false"
-
-images:
-  # "driver" defines the container image, used for the driver container.
-  driverRepository: dellemc
