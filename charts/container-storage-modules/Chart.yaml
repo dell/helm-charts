@@ -55,12 +55,12 @@ dependencies:
   condition: csi-isilon.enabled
 
 - name: csi-vxflexos
-  version: 2.9.0
+  version: 2.10.0
   repository: https://dell.github.io/helm-charts
   condition: csi-vxflexos.enabled
 
 - name: csi-unity
-  version: 2.9.0
+  version: 2.10.0
   repository: https://dell.github.io/helm-charts
   condition: csi-unity.enabled
 

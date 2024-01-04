@@ -276,10 +276,10 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
-  version: v2.9.0
+  version: v2.10.0
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-vxflexos:v2.9.0
+    driver: dellemc/csi-vxflexos:v2.10.0
     # "powerflexSdc" defines the SDC image for init container.
     powerflexSdc: dellemc/sdc:4.5
     # CSI sidecars
@@ -375,10 +375,10 @@ csi-vxflexos:
 ########################
 csi-unity:
   enabled: false
-  version: "v2.9.0"
+  version: "v2.10.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-unity:v2.9.0
+    driver: dellemc/csi-unity:v2.10.0
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.0
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.0
