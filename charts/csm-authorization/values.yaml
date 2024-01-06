@@ -11,10 +11,10 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v1.9.0
+    proxyService: dellemc/csm-authorization-proxy:aaron
     tenantService: dellemc/csm-authorization-tenant:v1.9.0
     roleService: dellemc/csm-authorization-role:v1.9.0
-    storageService: dellemc/csm-authorization-storage:v1.9.0
+    storageService: dellemc/csm-authorization-storage:aaron
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
@@ -41,8 +41,8 @@ authorization:
     ingressClassName: nginx
 
     # additional host rules for the proxy-server ingress
-    hosts: []
-      # - application-ingress-nginx-controller.namespace.svc.cluster.local
+    hosts:
+      - authorization-ingress-nginx-controller.authorization.svc.cluster.local
 
     # additional annotations for the proxy-server ingress
     annotations: {}
@@ -53,4 +53,9 @@ redis:
     commander: rediscommander/redis-commander:latest
 
   # set the storageClass for redis to use. otherwise, the default storage class is used
-  # storageClass: local-storage
+  storageClass: local-storage
+
+vault:
+  enabled: true
+  global:
+    externalVaultAddr: http://10.0.0.1:8200

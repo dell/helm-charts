@@ -42,6 +42,10 @@ spec:
     metadata:
       labels:
         app: storage-service
+      annotations:
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/agent-inject-status: "update"
+        vault.hashicorp.com/role: csm-authorization
     spec:
       serviceAccountName: storage-service
       containers:
@@ -49,9 +53,9 @@ spec:
         image: {{ required "Must provide the storage-service image." .Values.authorization.images.storageService }}
         imagePullPolicy: Always
         args:
-          - "--vault-address={{ .Values.vault.address }}"
-          - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
-          - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
+          #- "--vault-address={{ .Values.vault.address }}"
+          #- "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
+          #- "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
         ports:
         - containerPort: 50051
           name: grpc

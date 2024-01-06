@@ -83,6 +83,10 @@ spec:
     metadata:
       labels:
         app: proxy-server
+      annotations:
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/agent-inject-status: "update"
+        vault.hashicorp.com/role: csm-authorization
     spec:
       serviceAccount: proxy-server
       containers:
@@ -94,9 +98,9 @@ spec:
           - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--role-service=role-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--storage-service=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
-          - "--vault-address={{ .Values.vault.address }}"
-          - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
-          - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
+          #- "--vault-address={{ .Values.vault.address }}"
+          #- "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
+          #- "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
         ports:
         - containerPort: 8080
         volumeMounts:
