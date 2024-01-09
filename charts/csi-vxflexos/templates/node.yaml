@@ -219,6 +219,11 @@ spec:
               value: "{{ .Values.node.renameSDC.prefix }}"
             {{- end }}
             {{- end }}
+            - name: X_CSI_POWERFLEX_KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com
