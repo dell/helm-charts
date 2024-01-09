@@ -1,5 +1,5 @@
 karaviTopology:
-  image: dellemc/csm-topology:v1.6.0
+  image: dellemc/csm-topology:v1.7.0
   enabled: true
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
   provisionerNames: csi-vxflexos.dellemc.com,csi-powerstore.dellemc.com,csi-isilon.dellemc.com,csi-powermax.dellemc.com
@@ -13,7 +13,7 @@ karaviTopology:
     probability: 0.0
 
 karaviMetricsPowerflex:
-  image: dellemc/csm-metrics-powerflex:v1.6.0
+  image: dellemc/csm-metrics-powerflex:v1.7.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
@@ -40,8 +40,8 @@ karaviMetricsPowerflex:
   authorization:
     enabled: false
     # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-    # Default value: dellemc/csm-authorization-sidecar:v1.8.0
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
+    # Default value: dellemc/csm-authorization-sidecar:v1.9.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.9.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -53,7 +53,7 @@ karaviMetricsPowerflex:
     skipCertificateValidation: true
 
 karaviMetricsPowerstore:
-  image: dellemc/csm-metrics-powerstore:v1.6.0
+  image: dellemc/csm-metrics-powerstore:v1.7.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powerstore.dellemc.com)
@@ -79,7 +79,7 @@ karaviMetricsPowerstore:
     probability: 0.0
 
 karaviMetricsPowerscale:
-  image: dellemc/csm-metrics-powerscale:v1.3.0
+  image: dellemc/csm-metrics-powerscale:v1.4.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-isilon.dellemc.com)
@@ -116,8 +116,8 @@ karaviMetricsPowerscale:
   authorization:
     enabled: false
     # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-    # Default value: dellemc/csm-authorization-sidecar:v1.8.0
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
+    # Default value: dellemc/csm-authorization-sidecar:v1.9.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.9.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -129,7 +129,7 @@ karaviMetricsPowerscale:
     skipCertificateValidation: true
 
 karaviMetricsPowermax:
-  image: dellemc/csm-metrics-powermax:v1.1.0
+  image: dellemc/csm-metrics-powermax:v1.2.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powermax.dellemc.com)
@@ -153,8 +153,8 @@ karaviMetricsPowermax:
   authorization:
     enabled: false
     # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
-    # Default value: dellemc/csm-authorization-sidecar:v1.8.0
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.8.0
+    # Default value: dellemc/csm-authorization-sidecar:v1.9.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.9.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
