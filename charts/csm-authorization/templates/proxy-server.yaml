@@ -43,7 +43,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: proxy-server
-  namespace: authorization
+  namespace: {{ include "custom.namespace" . }}
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -67,6 +67,20 @@ roleRef:
   name: proxy-server
   apiGroup: rbac.authorization.k8s.io
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: proxy-server-tokenreview-binding
+  namespace: {{ include "custom.namespace" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+  - kind: ServiceAccount
+    name: proxy-server
+    namespace: {{ include "custom.namespace" . }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -83,10 +97,6 @@ spec:
     metadata:
       labels:
         app: proxy-server
-      annotations:
-        vault.hashicorp.com/agent-inject: 'true'
-        vault.hashicorp.com/agent-inject-status: "update"
-        vault.hashicorp.com/role: csm-authorization
     spec:
       serviceAccount: proxy-server
       containers:
@@ -98,6 +108,9 @@ spec:
           - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--role-service=role-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--storage-service=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
+          - "--vault-address={{ .Values.vault.address }}"
+          - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
+          - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -105,6 +118,8 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
+        - name: proxy-server-selfsigned-tls
+          mountPath: /etc/csm-authorization
       - name: opa
         image: {{ required "Must provide the openpolicyagent image." .Values.authorization.images.opa }}
         imagePullPolicy: IfNotPresent
@@ -129,6 +144,9 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
+      - name: proxy-server-selfsigned-tls
+        secret:
+          secretName: proxy-server-self-signed-tls
 ---
 apiVersion: v1
 kind: Service
@@ -143,3 +161,30 @@ spec:
     protocol: TCP
     port: 8080
     targetPort: 8080
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: proxy-server-selfsigned-tls
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  secretName: proxy-server-self-signed-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - dellemc
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - csm-authorization-proxy-server
+  issuerRef:
+    name: selfsigned
+    kind: Issuer
+    group: cert-manager.io

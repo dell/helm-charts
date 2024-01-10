@@ -26,6 +26,20 @@ roleRef:
   name: storage-service
   apiGroup: rbac.authorization.k8s.io
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: storage-service-tokenreview-binding
+  namespace: {{ include "custom.namespace" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+  - kind: ServiceAccount
+    name: storage-service
+    namespace: {{ include "custom.namespace" . }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -42,10 +56,6 @@ spec:
     metadata:
       labels:
         app: storage-service
-      annotations:
-        vault.hashicorp.com/agent-inject: 'true'
-        vault.hashicorp.com/agent-inject-status: "update"
-        vault.hashicorp.com/role: csm-authorization
     spec:
       serviceAccountName: storage-service
       containers:
@@ -53,6 +63,9 @@ spec:
         image: {{ required "Must provide the storage-service image." .Values.authorization.images.storageService }}
         imagePullPolicy: Always
         args:
+          - "--vault-address={{ .Values.vault.address }}"
+          - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
+          - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
         ports:
         - containerPort: 50051
           name: grpc
@@ -64,6 +77,8 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
+        - name: storage-service-selfsigned-tls
+          mountPath: /etc/csm-authorization
       volumes:
       - name: config-volume
         secret:
@@ -71,6 +86,9 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
+      - name: storage-service-selfsigned-tls
+        secret:
+          secretName: storage-service-self-signed-tls
 ---
 apiVersion: v1
 kind: Service
@@ -84,3 +102,30 @@ spec:
   - port: 50051
     targetPort: 50051
     name: grpc
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: storage-service-selfsigned-tls
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  secretName: storage-service-self-signed-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - dellemc
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+  - csm-authorization-storage-service
+  issuerRef:
+    name: selfsigned
+    kind: Issuer
+    group: cert-manager.io

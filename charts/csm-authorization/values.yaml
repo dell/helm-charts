@@ -11,10 +11,10 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:aaron
+    proxyService: 10.247.98.98:5000/csm-authorization-proxy:aaron
     tenantService: dellemc/csm-authorization-tenant:v1.9.0
     roleService: dellemc/csm-authorization-role:v1.9.0
-    storageService: dellemc/csm-authorization-storage:aaron
+    storageService: 10.247.98.98:5000/csm-authorization-storage:aaron
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
@@ -57,5 +57,7 @@ redis:
 
 vault:
   enabled: true
-  global:
-    externalVaultAddr: http://10.0.0.1:8200
+  address: https://10.0.0.1:8400
+  kvEnginePath: secret
+  skipCertificateValidation: true
+ 
