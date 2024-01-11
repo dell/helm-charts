@@ -77,8 +77,8 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        - name: storage-service-selfsigned-tls
-          mountPath: /etc/csm-authorization
+        - name: vault-client-certificate
+          mountPath: /etc/vault
       volumes:
       - name: config-volume
         secret:
@@ -86,9 +86,21 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      - name: storage-service-selfsigned-tls
-        secret:
-          secretName: storage-service-self-signed-tls
+      - name: vault-client-certificate
+        projected:
+          sources:
+        {{- if and (.Values.vault.clientCertificate) (.Values.vault.clientKey) }}
+          - secret:
+              name: vault-client-certificate
+        {{- else }}
+          - secret:
+              name: storage-service-selfsigned-tls
+        {{- end }}
+        {{- if .Values.vault.certificateAuthority }}
+          - secret:
+              name: vault-certificate-authority
+        {{- end }}
+
 ---
 apiVersion: v1
 kind: Service
@@ -103,13 +115,46 @@ spec:
     targetPort: 50051
     name: grpc
 ---
+{{- if .Values.vault.certificateAuthority }}
+{{- $certificateFileContents := .Values.vault.certificateAuthority }}
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: vault-certificate-authority
+  namespace: {{ include "custom.namespace" . }}
+data:
+  ca.crt: {{ $certificateFileContents | b64enc }}
+{{- end }}
+---
+{{- if and (.Values.vault.clientCertificate) (.Values.vault.clientKey) }}
+{{- $certificateFileContents := .Values.vault.clientCertificate }}
+{{- $keyFileContents := .Values.vault.clientKey }}
+apiVersion: v1
+data:
+  tls.crt: {{ $certificateFileContents | b64enc }}
+  tls.key: {{ $keyFileContents | b64enc }}
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: vault-client-certificate
+  namespace: {{ include "custom.namespace" . }}
+{{- else }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: storage-service-selfsigned
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  selfSigned: {}
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: storage-service-selfsigned-tls
+  name: storage-service-selfsigned
   namespace: {{ include "custom.namespace" . }}
 spec:
-  secretName: storage-service-self-signed-tls
+  secretName: storage-service-selfsigned-tls
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
@@ -121,11 +166,11 @@ spec:
     encoding: PKCS1
     size: 2048
   usages:
-    - server auth
     - client auth
   dnsNames:
   - csm-authorization-storage-service
   issuerRef:
-    name: selfsigned
+    name: storage-service-selfsigned
     kind: Issuer
     group: cert-manager.io
+{{- end }}
