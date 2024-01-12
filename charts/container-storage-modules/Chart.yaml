@@ -65,12 +65,12 @@ dependencies:
   condition: csi-unity.enabled
 
 - name: csm-replication
-  version: 1.7.0
+  version: 1.8.0
   repository: https://dell.github.io/helm-charts
   condition: csm-replication.enabled
 
 - name: karavi-observability
-  version: 1.7.0
+  version: 1.8.0
   repository: https://dell.github.io/helm-charts
   condition: karavi-observability.enabled
 
