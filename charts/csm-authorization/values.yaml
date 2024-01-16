@@ -42,7 +42,7 @@ authorization:
 
     # additional host rules for the proxy-server ingress
     hosts: []
-      # - application-ingress-nginx-controller.namespace.svc.cluster.local
+      # - authorization-ingress-nginx-controller.authorization.svc.cluster.local
 
     # additional annotations for the proxy-server ingress
     annotations: {}
@@ -54,3 +54,10 @@ redis:
 
   # set the storageClass for redis to use. otherwise, the default storage class is used
   # storageClass: local-storage
+
+vault:
+  enabled: true
+  address: https://10.0.0.1:8400
+  kvEnginePath: secret
+  skipCertificateValidation: true
+ 
