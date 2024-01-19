@@ -21,7 +21,11 @@ rules:
     verbs: ["list", "watch", "create", "update", "patch"]
   - apiGroups: [""]
     resources: ["nodes"]
-    verbs: ["get", "list", "watch"]
+    {{- if eq .Values.podmon.enabled true }}
+    verbs: [ "get", "list", "watch", "patch" ]
+    {{- else }}
+    verbs: [ "get", "list", "watch" ]
+    {{- end }}
   - apiGroups: [""]
     resources: ["persistentvolumes"]
     verbs: ["get", "list", "watch", "create", "delete", "update", "patch" ]
@@ -34,9 +38,13 @@ rules:
   - apiGroups: [""]
     resources: ["persistentvolumeclaims/status"]
     verbs: ["update", "patch"]
-  - apiGroups: ["storage.k8s.io"]
-    resources: ["volumeattachments"]
-    verbs: ["get", "list", "watch", "update", "patch" ]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "volumeattachments" ]
+  {{- if eq .Values.podmon.enabled true }}
+    verbs: [ "get", "list", "watch", "update", "patch", "delete" ]
+  {{- else }}
+    verbs: [ "get", "list", "watch", "update", "patch" ]
+  {{- end }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["csinodes"]
     verbs: ["get", "list", "watch", "update"]
@@ -46,8 +54,15 @@ rules:
   - apiGroups: ["csi.storage.k8s.io"]
     resources: ["csinodeinfos"]
     verbs: ["get", "list", "watch"]
-  - apiGroups: [""]
-    resources: ["pods"]
+  - apiGroups: [ "" ]
+    resources: [ "pods" ]
+  {{- if hasKey .Values "podmon" }}
+  {{- if eq .Values.podmon.enabled true }}
+    verbs: [ "get", "list", "watch", "update", "delete" ]
+  {{- else }}
+    verbs: [ "get", "list", "watch" ]
+  {{- end }}
+  {{- end }}
     verbs: ["get", "list", "watch"]
 # below for snapshotter
   - apiGroups: [""]
@@ -97,9 +112,6 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["csistoragecapacities"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-  - apiGroups: [""]
-    resources: ["pods"]
-    verbs: ["get"]
   - apiGroups: ["apps"]
     resources: ["replicasets"]
     verbs: ["get"]
@@ -167,6 +179,33 @@ spec:
                 - {{ .Release.Name }}-controller
             topologyKey: kubernetes.io/hostname
       containers:
+        {{- if hasKey .Values "podmon" }}
+        {{- if eq .Values.podmon.enabled true }}
+        - name: podmon
+          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args:
+                    {{- toYaml .Values.podmon.controller.args | nindent 12 }}
+          env:
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/run/csi
+            - name: powermax-config-params
+              mountPath: /powermax-config-params
+                {{- end }}
+                {{- end }}
         - name: attacher
           image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -447,6 +486,20 @@ spec:
                   name: {{ .Values.vSphere.vCenterCredSecret }}
                   key: password
             {{- end }}
+            {{- if hasKey .Values "podmon" }}
+            - name: X_CSI_PODMON_ENABLED
+              value: "{{ .Values.podmon.enabled }}"
+            {{- if eq .Values.podmon.enabled true }}
+              {{- range $key, $value := .Values.podmon.controller.args }}
+                {{- if contains "--arrayConnectivityPollRate" $value }}
+            - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
+              value: "{{ (split "=" $value)._1 }}"
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            {{- end }}
+            - name: X_CSI_PODMON_API_PORT
+              value: "{{ .Values.podmonAPIPort }}"
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi

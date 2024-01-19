@@ -67,6 +67,7 @@ images:
   replication: dellemc/dell-csi-replicator:v1.8.0
   authorization: dellemc/csm-authorization-sidecar:v1.10.0
   migration: dellemc/dell-csi-migrator:v1.3.0
+  podmon: dellemc/podmon:v1.8.0
   # Node rescan sidecar does a rescan on nodes for identifying new paths
   # Default value: dellemc/dell-csi-node-rescanner:v1.0.1
   noderescan: dellemc/dell-csi-node-rescanner:v1.2.0
@@ -123,6 +124,12 @@ fsGroupPolicy: ReadWriteOnceWithFSType
 # Allowed values: n, where n >= 0
 # Default value: 0
 maxPowerMaxVolumesPerNode: 0
+
+# podmonAPIPort: Defines the port to be used within the kubernetes cluster
+# Allowed values:
+#   Any valid and free port.
+# Default value: 8083
+podmonAPIPort: 8083
 
 # controller: configure controller specific parameters
 controller:
@@ -463,3 +470,31 @@ vSphere:
   vCenterHost: "00.000.000.00"
   # vCenterCredSecret: secret name for the vCenter credentials
   vCenterCredSecret: vcenter-creds
+
+
+# Enable this feature only after contact support for additional information
+podmon:
+  enabled: false
+  controller:
+    args:
+      - "--csisock=unix:/var/run/csi/csi.sock"
+      - "--labelvalue=csi-powermax"
+      - "--arrayConnectivityPollRate=60"
+      - "--driverPath=csi-powermax.dellemc.com"
+      - "--mode=controller"
+      - "--skipArrayConnectionValidation=false"
+      - "--driver-config-params=/powermax-config-params/driver-config-params.yaml"
+      - "--driverPodLabelValue=dell-storage"
+      - "--ignoreVolumelessPods=false"
+
+  node:
+    args:
+      - "--csisock=unix:/var/lib/kubelet/plugins/csi-powermax.dellemc.com/csi_sock"
+      - "--labelvalue=csi-powermax"
+      - "--arrayConnectivityPollRate=60"
+      - "--driverPath=csi-powermax.dellemc.com"
+      - "--mode=node"
+      - "--leaderelection=false"
+      - "--driver-config-params=/powermax-config-params/driver-config-params.yaml"
+      - "--driverPodLabelValue=dell-storage"
+      - "--ignoreVolumelessPods=false"
