@@ -23,7 +23,7 @@ spec:
     secretName: user-provided-tls
     {{- else }}
     secretName: karavi-selfsigned-tls
-    {{- end}}
+    {{- end }}
   rules:
   - host: {{ .Values.authorization.hostname }}
     http:
@@ -48,7 +48,7 @@ spec:
               port:
                 number: 8080
   {{- end }}
-  {{- end}}
+  {{- end }}
   - http:
       paths:
       - backend:
