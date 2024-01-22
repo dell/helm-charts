@@ -40,37 +40,37 @@ appVersion: "1.2.2"
 
 dependencies:
 - name: csi-powerstore
-  version: 2.9.1
+  version: 2.10.0
   repository: https://dell.github.io/helm-charts
   condition: csi-powerstore.enabled
 
 - name: csi-powermax
-  version: 2.9.1
+  version: 2.10.0
   repository: https://dell.github.io/helm-charts
   condition: csi-powermax.enabled
 
 - name: csi-isilon
-  version: 2.9.1
+  version: 2.10.0
   repository: https://dell.github.io/helm-charts
   condition: csi-isilon.enabled
 
 - name: csi-vxflexos
-  version: 2.9.2
+  version: 2.10.0
   repository: https://dell.github.io/helm-charts
   condition: csi-vxflexos.enabled
 
 - name: csi-unity
-  version: 2.9.1
+  version: 2.10.0
   repository: https://dell.github.io/helm-charts
   condition: csi-unity.enabled
 
 - name: csm-replication
-  version: 1.7.1
+  version: 1.8.0
   repository: https://dell.github.io/helm-charts
   condition: csm-replication.enabled
 
 - name: karavi-observability
-  version: 1.7.0
+  version: 1.8.0
   repository: https://dell.github.io/helm-charts
   condition: karavi-observability.enabled
 
