@@ -20,10 +20,10 @@
 ########################
 csi-powerstore:
   enabled: false
-  version: "v2.9.1"
+  version: "v2.10.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-powerstore:v2.9.1
+    driver: dellemc/csi-powerstore:v2.10.0
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.2
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.2
@@ -33,10 +33,10 @@ csi-powerstore:
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
 
     # CSM sidecars
-    replication: dellemc/dell-csi-replicator:v1.7.1
+    replication: dellemc/dell-csi-replicator:v1.8.0
     vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.4.0
-    podmon: dellemc/podmon:v1.8.1
-    metadataretriever: dellemc/csi-metadata-retriever:v1.6.1
+    podmon: dellemc/podmon:v1.9.0
+    metadataretriever: dellemc/csi-metadata-retriever:v1.6.0
   ## Controller ATTRIBUTES
   controller:
     controllerCount: 2
@@ -129,11 +129,11 @@ csi-powermax:
       - endpoint: https://backup-1.unisphe.re:8443
   #    - endpoint: https://primary-2.unisphe.re:8443
   #    - endpoint: https://backup-2.unisphe.re:8443
-  version: "v2.9.1"
+  version: "v2.10.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-powermax:v2.9.1
-    csireverseproxy: dellemc/csipowermax-reverseproxy:v2.8.1
+    driver: dellemc/csi-powermax:v2.10.0
+    csireverseproxy: dellemc/csipowermax-reverseproxy:v2.8.0
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.0
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.0
@@ -142,8 +142,8 @@ csi-powermax:
     registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.0
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
     # CSM sidecars
-    replication: dellemc/dell-csi-replicator:v1.7.1
-    authorization: dellemc/csm-authorization-sidecar:v1.9.1
+    replication: dellemc/dell-csi-replicator:v1.8.0
+    authorization: dellemc/csm-authorization-sidecar:v1.10.0
     migration: dellemc/dell-csi-migrator:v1.3.0
     noderescan: dellemc/dell-csi-node-rescanner:v1.2.0
   clusterPrefix: ABC
@@ -185,10 +185,10 @@ csi-powermax:
 ########################
 csi-isilon:
   enabled: false
-  version: "v2.9.1"
+  version: "v2.10.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-isilon:v2.9.1
+    driver: dellemc/csi-isilon:v2.10.0
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.2          
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.2
@@ -197,10 +197,10 @@ csi-isilon:
     registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.1
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
     # CSM sidecars
-    replication: dellemc/dell-csi-replicator:v1.7.1
-    podmon: dellemc/podmon:v1.8.1
-    authorization: dellemc/csm-authorization-sidecar:v1.9.1
-    metadataretriever: dellemc/csi-metadata-retriever:v1.6.1
+    replication: dellemc/dell-csi-replicator:v1.8.0
+    podmon: dellemc/podmon:v1.9.0
+    authorization: dellemc/csm-authorization-sidecar:v1.10.0
+    metadataretriever: dellemc/csi-metadata-retriever:v1.4.0
     encryption: dellemc/csm-encryption:v0.3.0
   ## Controller ATTRIBUTES
   controller:
@@ -276,10 +276,10 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
-  version: v2.9.1
+  version: v2.10.0
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-vxflexos:v2.9.1
+    driver: dellemc/csi-vxflexos:v2.10.0
     # "powerflexSdc" defines the SDC image for init container.
     powerflexSdc: dellemc/sdc:4.5
     # CSI sidecars
@@ -290,10 +290,10 @@ csi-vxflexos:
     registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.1
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
     # CSM sidecars
-    replication: dellemc/dell-csi-replicator:v1.7.1
+    replication: dellemc/dell-csi-replicator:v1.8.0
     vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.4.0
-    podmon: dellemc/podmon:v1.8.1
-    authorization: dellemc/csm-authorization-sidecar:v1.9.1
+    podmon: dellemc/podmon:v1.9.0
+    authorization: dellemc/csm-authorization-sidecar:v1.10.0
   certSecretCount: 0
   controller:
     replication:
@@ -368,17 +368,17 @@ csi-vxflexos:
         - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.9.1
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.10.0
     proxyHost:
 
 ## CSI Unity
 ########################
 csi-unity:
   enabled: false
-  version: "v2.9.1"
+  version: "v2.10.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-unity:v2.9.1
+    driver: dellemc/csi-unity:v2.10.0
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.0
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.0
@@ -387,7 +387,7 @@ csi-unity:
     registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.0
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.10.0
     # CSM sidecars
-    podmon: dellemc/podmon:v1.8.1
+    podmon: dellemc/podmon:v1.9.0
   # certSecretCount: Represents number of certificate secrets, which user is going to create for
   # ssl authentication. (unity-cert-0..unity-cert-n)
   # Allowed values: n, where n > 0
