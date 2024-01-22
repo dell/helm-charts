@@ -61,7 +61,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: proxy-server
-    namespace: authorization
+    namespace: {{ include "custom.namespace" . }}
 roleRef:
   kind: ClusterRole
   name: proxy-server
