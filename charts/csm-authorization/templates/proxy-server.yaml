@@ -116,7 +116,7 @@ spec:
         image: {{ required "Must provide the opaKubeMgmt image." .Values.authorization.images.opaKubeMgmt }}
         imagePullPolicy: IfNotPresent
         args:
-        - "--policies={{ include "custom.namespace" . }}"
+        - "--policies={{ .Release.Namespace }}"
         - "--enable-data"
       volumes:
       - name: config-volume
