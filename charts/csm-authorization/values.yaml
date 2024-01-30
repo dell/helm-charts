@@ -18,9 +18,9 @@ authorization:
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
-  # base hostname for the ingress rules that expose the services
-  # the proxy-server ingress will use this hostname
-  # the role-service ingress will use role.hostname
+  # proxy-server ingress will use this hostname
+  # NOTE: additional hostnames can be configured in authorization.proxyServerIngress.hosts
+  # NOTE: proxy-server ingress is configured to accept IP address connections so hostnames are not required
   hostname: csm-authorization.com
 
   # log level for csm-authorization
@@ -54,5 +54,5 @@ redis:
 
   # by default, csm-authorization will deploy a local (https://kubernetes.io/docs/concepts/storage/storage-classes/#local) volume for redis
   # to use a different storage class for redis, uncomment the following line and specify the name of the storage class
-  # NOTE: the storage class must NOT be a storage class provisioned by a CSI driver using CSM Authorization
+  # NOTE: the storage class must NOT be a storage class provisioned by a CSI driver to be configured with this instance of CSM Authorization
   #storageClass:
