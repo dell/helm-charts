@@ -25,9 +25,9 @@ jobs:
      
      # Run the helm chart release command
       - name: Run karavi chart-releaser
-        uses: helm/chart-releaser-action@v1.0.0
+        uses: helm/chart-releaser-action@v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_SKIP_EXISTING: "true"
         with:  
           charts_dir: charts
+          skip_existing: true
