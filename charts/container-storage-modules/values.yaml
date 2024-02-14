@@ -133,7 +133,7 @@ csi-powermax:
   images:
     # "driver" defines the container image, used for the driver container.
     driver: dellemc/csi-powermax:v2.10.0
-    csireverseproxy: dellemc/csipowermax-reverseproxy:v2.8.0
+    csireverseproxy: dellemc/csipowermax-reverseproxy:v2.9.0
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.4.0
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v3.6.0
