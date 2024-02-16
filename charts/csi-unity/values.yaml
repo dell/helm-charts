@@ -12,7 +12,7 @@ images:
   # CSI sidecars
   attacher: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
   provisioner: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
-  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.0
+  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
   resizer: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
   registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
   healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
