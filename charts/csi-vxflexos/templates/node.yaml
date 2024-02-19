@@ -302,6 +302,8 @@ spec:
               mountPath: /storage
             - name: udev-d
               mountPath: /rules.d
+            - name: host-opt-emc-path
+              mountPath: /host_opt_emc_path
         {{- end }}
       initContainers:
         - name: sdc
@@ -328,6 +330,8 @@ spec:
               mountPath: /dev
             - name: os-release
               mountPath: /host-os-release
+            - name: host-opt-emc-path
+              mountPath: /host_opt_emc_path
             - name: sdc-storage
               mountPath: /storage 
             - name: udev-d
@@ -374,6 +378,10 @@ spec:
         - name: os-release
           hostPath:
             path: /etc/os-release
+            type: File
+        - name: host-opt-emc-path
+          hostPath:
+            path: /opt/emc
             type: File
         - name: vxflexos-config
           secret:
