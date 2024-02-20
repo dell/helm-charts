@@ -382,7 +382,7 @@ spec:
         - name: host-opt-emc-path
           hostPath:
             path: /opt/emc
-            type: File
+            type: Directory
         - name: vxflexos-config
           secret:
             secretName: {{ .Release.Name }}-config
