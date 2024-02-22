@@ -330,6 +330,8 @@ spec:
               mountPath: /dev
             - name: os-release
               mountPath: /host-os-release
+            - name: host-opt-emc-path
+              mountPath: /host_opt_emc_path
             - name: sdc-storage
               mountPath: /storage 
             - name: host-opt-emc-path
