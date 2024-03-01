@@ -104,7 +104,7 @@ imagePullPolicy: IfNotPresent
 
 # Specify kubelet config dir path.
 # Ensure that the config.yaml file is present at this path.
-# Default value: None
+# Default value: /var/lib/kubelet
 kubeletConfigDir: /var/lib/kubelet
 
 # fsGroupPolicy: Defines if the underlying volume supports changing ownership and permission of the volume before being mounted.
