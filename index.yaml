@@ -2,6 +2,50 @@ apiVersion: v1
 entries:
   container-storage-modules:
   - apiVersion: v2
+    appVersion: 1.2.2
+    created: "2024-03-01T16:10:32.657858753Z"
+    dependencies:
+    - condition: csi-powerstore.enabled
+      name: csi-powerstore
+      repository: https://dell.github.io/helm-charts
+      version: 2.9.1
+    - condition: csi-powermax.enabled
+      name: csi-powermax
+      repository: https://dell.github.io/helm-charts
+      version: 2.9.1
+    - condition: csi-isilon.enabled
+      name: csi-isilon
+      repository: https://dell.github.io/helm-charts
+      version: 2.9.1
+    - condition: csi-vxflexos.enabled
+      name: csi-vxflexos
+      repository: https://dell.github.io/helm-charts
+      version: 2.9.2
+    - condition: csi-unity.enabled
+      name: csi-unity
+      repository: https://dell.github.io/helm-charts
+      version: 2.9.1
+    - condition: csm-replication.enabled
+      name: csm-replication
+      repository: https://dell.github.io/helm-charts
+      version: 1.7.1
+    - condition: karavi-observability.enabled
+      name: karavi-observability
+      repository: https://dell.github.io/helm-charts
+      version: 1.7.0
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.10.0
+    description: Container Storage Modules(https://github.com/dell/csm) open source
+      suite of Kubernetes storage enablers for Dell Technologies storage products.
+    digest: 2517c252a6665cb673480a644ac70fc6a17cefe1bb2ca8200548a321064279ab
+    name: container-storage-modules
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/container-storage-modules-1.2.2/container-storage-modules-1.2.2.tgz
+    version: 1.2.2
+  - apiVersion: v2
     appVersion: 1.2.1
     created: "2024-02-02T15:47:20.444494847Z"
     dependencies:
@@ -1460,4 +1504,4 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/karavi-topology-0.1.0/karavi-topology-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-01T16:01:11.072049561Z"
+generated: "2024-03-01T16:10:32.657982664Z"
