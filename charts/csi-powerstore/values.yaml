@@ -46,7 +46,7 @@ images:
 
 # Specify kubelet config dir path.
 # Ensure that the config.yaml file is present at this path.
-# Default value: None
+# Default value: /var/lib/kubelet
 kubeletConfigDir: /var/lib/kubelet
 
 # nodeFCPortsFilterFile: It is the name of the environment variable which store path to the file which
