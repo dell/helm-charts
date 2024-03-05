@@ -65,7 +65,7 @@ verbose: 1
 
 # Specify kubelet config dir path.
 # Ensure that the config.yaml file is present at this path.
-# Default value: None
+# Default value: /var/lib/kubelet
 kubeletConfigDir: /var/lib/kubelet
 
 # enableCustomTopology: Specify if custom topology label <provisionerName>.dellemc.com/<powerscalefqdnorip>:<provisionerName>
