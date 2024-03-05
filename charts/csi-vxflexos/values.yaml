@@ -22,7 +22,7 @@ images:
   healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
   # CSM sidecars
   replication: dellemc/dell-csi-replicator:v1.8.0
-  vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.4.0
+  vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.5.0
   podmon: dellemc/podmon:v1.9.0
   authorization: dellemc/csm-authorization-sidecar:v1.10.0
 
