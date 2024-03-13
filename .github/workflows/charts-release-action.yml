@@ -8,13 +8,13 @@ on:
       - main
 
 jobs:
-  # This job will perform a helm release of all the karavi charts that have been updated
+  # This job will perform a helm release of all the csm charts that have been updated
   release:
     runs-on: ubuntu-latest
     steps:
       # Check out code
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -24,7 +24,7 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"    
      
      # Run the helm chart release command
-      - name: Run karavi chart-releaser
+      - name: Run csm chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
