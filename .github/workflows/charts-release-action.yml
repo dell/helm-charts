@@ -9,7 +9,7 @@ on:
 
 jobs:
   # This job will perform a helm release of all the csm charts that have been updated
-  release:
+  release-csm:
     runs-on: ubuntu-latest
     steps:
       # Check out code
