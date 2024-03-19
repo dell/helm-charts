@@ -207,6 +207,9 @@ controller:
   #   operator: "Exists"
   #   effect: "NoSchedule"
 
+  ## Assign a PriorityClassName to pods if set
+  priorityClassName: ""
+
 # node: configure node pod specific parameters
 node:
   # nodeSelector: Define node selection constraints for pods of node daemonset
@@ -263,6 +266,9 @@ node:
   #  - key: "isilon.podmon.storage.dell.com"
   #    operator: "Exists"
   #    effect: "NoSchedule"
+
+  ## Assign a PriorityClassName to pods if set
+  priorityClassName: ""
 
   # dnsPolicy: Determines the DNS Policy of the Node service.
   # Allowed values:
