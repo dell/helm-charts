@@ -1,5 +1,5 @@
 # Rekey controller image name.
-image: dellemc/csm-encryption-rekey-controller:v0.2.0
+image: dellemc/csm-encryption-rekey-controller:v0.3.0
 
 # Rekey controller image pull policy.
 # Allowed values:
