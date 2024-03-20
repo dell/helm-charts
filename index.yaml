@@ -334,6 +334,26 @@ entries:
     version: 0.1.0
   csi-isilon:
   - apiVersion: v2
+    appVersion: 2.10.0
+    created: "2024-03-20T16:44:33.693380652Z"
+    description: 'PowerScale CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as an Isilon
+      StorageClass. '
+    digest: 33f8b69751607bdf55b57518ff100aef712dd09b0f7655407892ae446869a41f
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.21.0 < 1.30.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-isilon
+    sources:
+    - https://github.com/dell/csi-isilon
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-isilon-2.10.0/csi-isilon-2.10.0.tgz
+    version: 2.10.0
+  - apiVersion: v2
     appVersion: 2.9.1
     created: "2024-02-02T15:33:39.836850436Z"
     description: 'PowerScale CSI (Container Storage Interface) driver Kubernetes integration.
@@ -414,6 +434,33 @@ entries:
     - https://github.com/dell/helm-charts/releases/download/csi-isilon-2.7.0/csi-isilon-2.7.0.tgz
     version: 2.7.0
   csi-powermax:
+  - apiVersion: v2
+    appVersion: 2.10.0
+    created: "2024-03-20T16:44:33.805275355Z"
+    dependencies:
+    - condition: required
+      name: csireverseproxy
+      repository: ""
+      version: 2.9.0
+    description: 'PowerMax CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a PowerMax
+      StorageClass. '
+    digest: 0c27a65f3c800a5b96f06956e25d1b522876d7ec34e4e17cca339c2f824288e7
+    home: https://github.com/dell/csi-powermax
+    icon: https://avatars1.githubusercontent.com/u/20958494?s=200&v=4
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.23.0 < 1.30.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-powermax
+    sources:
+    - https://github.com/dell/csi-powermax
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-powermax-2.10.0/csi-powermax-2.10.0.tgz
+    version: 2.10.0
   - apiVersion: v2
     appVersion: 2.9.1
     created: "2024-02-02T15:33:39.984877162Z"
@@ -550,6 +597,27 @@ entries:
     version: 2.6.0
   csi-powerstore:
   - apiVersion: v2
+    appVersion: 2.10.0
+    created: "2024-03-20T16:44:33.910933762Z"
+    description: 'PowerStore CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a PowerStore
+      StorageClass. '
+    digest: 983ddf6574bab958ca3ec6448c47d3fb8e7b37514d6116ade0ce38a23c888d84
+    home: https://github.com/dell/csi-powerstore
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.24.0 < 1.30.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-powerstore
+    sources:
+    - https://github.com/dell/csi-powerstore
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-powerstore-2.10.0/csi-powerstore-2.10.0.tgz
+    version: 2.10.0
+  - apiVersion: v2
     appVersion: 2.9.1
     created: "2024-02-02T15:33:40.099870781Z"
     description: 'PowerStore CSI (Container Storage Interface) driver Kubernetes integration.
@@ -655,6 +723,26 @@ entries:
     version: 2.6.0
   csi-unity:
   - apiVersion: v2
+    appVersion: 2.10.0
+    created: "2024-03-20T16:44:34.012788894Z"
+    description: 'Unity XT CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a Unity
+      XT StorageClass. '
+    digest: b07ee4a253ee934ef73e7441c9123b63d3ea462a7fa6d650414423a9ba52555c
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.24.0 < 1.30.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-unity
+    sources:
+    - https://github.com/dell/csi-unity
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-unity-2.10.0/csi-unity-2.10.0.tgz
+    version: 2.10.0
+  - apiVersion: v2
     appVersion: 2.9.1
     created: "2024-02-02T15:33:40.230010452Z"
     description: 'Unity XT CSI (Container Storage Interface) driver Kubernetes integration.
@@ -735,6 +823,25 @@ entries:
     - https://github.com/dell/helm-charts/releases/download/csi-unity-2.7.0/csi-unity-2.7.0.tgz
     version: 2.7.0
   csi-vxflexos:
+  - apiVersion: v2
+    appVersion: 2.10.0
+    created: "2024-03-20T16:44:34.121438256Z"
+    description: 'VxFlex OS CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a VxFlex
+      OS StorageClass. '
+    digest: 00d38a296b4cdef66f415fbd46f19e96e60432a789e595060fa82489f6c5cb19
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.21.0 < 1.30.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-vxflexos
+    sources:
+    - https://github.com/dell/csi-vxflexos
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-vxflexos-2.10.0/csi-vxflexos-2.10.0.tgz
+    version: 2.10.0
   - apiVersion: v2
     appVersion: 2.9.2
     created: "2024-03-01T16:01:11.071918327Z"
@@ -908,6 +1015,28 @@ entries:
     - https://github.com/dell/helm-charts/releases/download/csm-application-mobility-0.1.0/csm-application-mobility-0.1.0.tgz
     version: 0.1.0
   csm-authorization:
+  - apiVersion: v2
+    appVersion: 1.10.0
+    created: "2024-03-20T16:44:34.365771739Z"
+    dependencies:
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.11.0
+    - condition: ingress-nginx.enabled
+      name: ingress-nginx
+      repository: https://kubernetes.github.io/ingress-nginx
+      version: 4.0.19
+    description: 'CSM for Authorization is part of the [Container Storage Modules](https://github.com/dell/csm)
+      open source suite of Kubernetes  storage enablers for Dell EMC storage products.  CSM
+      for Authorization provides storage and Kubernetes administrators the ability
+      to apply RBAC for Dell CSI Drivers. '
+    digest: 163c3058a7991c9a3599cafbf3448dea05b14f1a955a8e4c66faf6488c9b5a68
+    name: csm-authorization
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csm-authorization-1.10.0/csm-authorization-1.10.0.tgz
+    version: 1.10.0
   - apiVersion: v2
     appVersion: 1.9.1
     created: "2024-02-02T15:33:40.468845011Z"
@@ -1150,6 +1279,16 @@ entries:
     version: 1.0.0
   csm-replication:
   - apiVersion: v2
+    appVersion: 1.8.0
+    created: "2024-03-20T16:44:34.48892635Z"
+    description: 'CSM for Replication helm charts '
+    digest: 2d5e99f28fe97be8638c24432576e7dcb30602c58d8ec9b5feab2eedca594398
+    name: csm-replication
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csm-replication-1.8.0/csm-replication-1.8.0.tgz
+    version: 1.8.0
+  - apiVersion: v2
     appVersion: 1.7.1
     created: "2024-02-02T15:33:40.595670187Z"
     description: 'CSM for Replication helm charts '
@@ -1211,6 +1350,24 @@ entries:
     - https://github.com/dell/helm-charts/releases/download/karavi-metrics-powerflex-0.1.0/karavi-metrics-powerflex-0.1.0.tgz
     version: 0.1.0
   karavi-observability:
+  - apiVersion: v2
+    appVersion: 1.8.0
+    created: "2024-03-20T16:44:34.595432143Z"
+    dependencies:
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.10.0
+    description: CSM for Observability is part of the [Container Storage Modules](https://github.com/dell/csm)
+      open source suite of Kubernetes storage enablers for Dell EMC storage products.
+      CSM for Observability provides Kubernetes administrators with visibility into
+      metrics and topology data related to containerized storage.
+    digest: 3d6b5d4f78438966e03c5a7ba7cdb08fdddf9cee33e2c9451cb5de2856ecf396
+    name: karavi-observability
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/karavi-observability-1.8.0/karavi-observability-1.8.0.tgz
+    version: 1.8.0
   - apiVersion: v2
     appVersion: 1.7.0
     created: "2023-12-13T16:51:24.852933651Z"
@@ -1504,4 +1661,4 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/karavi-topology-0.1.0/karavi-topology-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-01T16:10:32.657982664Z"
+generated: "2024-03-20T16:44:34.595601718Z"
