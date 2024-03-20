@@ -1,4 +1,4 @@
-# Copyright © 2023 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright © 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ provisioner:
     # repository is the COSI driver provisioner container image repository.
     repository: "docker.io/dellemc/cosi"
     # tag is the COSI driver provisioner container image tag.
-    tag: "v0.1.1"
+    tag: "v0.2.0"
     # pullPolicy is the COSI driver provisioner container image pull policy.
     pullPolicy: "IfNotPresent"
 
