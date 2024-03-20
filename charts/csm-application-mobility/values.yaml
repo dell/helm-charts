@@ -8,7 +8,7 @@ image:
   pullPolicy: IfNotPresent
 
 controller:
-  image: dellemc/csm-application-mobility-controller:v0.4.0
+  image: dellemc/csm-application-mobility-controller:v1.0.2
 
 # csm-application-mobility requires cert-manager. If cert-manager is not already present in cluster, set enabled to true to install it too.
 cert-manager:
@@ -70,7 +70,7 @@ velero:
 
   initContainers:
   - name: dell-custom-velero-plugin
-    image: dellemc/csm-application-mobility-velero-plugin:v0.4.0
+    image: dellemc/csm-application-mobility-velero-plugin:v1.0.2
     volumeMounts:
     - mountPath: /target
       name: plugins
