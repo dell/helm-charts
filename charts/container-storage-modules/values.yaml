@@ -534,5 +534,5 @@ karavi-observability:
 
 ## K8S/Cert-manager ATTRIBUTES
 ########################
-cert-manager:
+cert-manager: 
   enabled: false
