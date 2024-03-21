@@ -17,7 +17,7 @@ jobs:
     outputs:
      run_tests: ${{ steps.diff.outputs.run_tests }}
     steps:
-     - uses: actions/checkout@v3
+     - uses: actions/checkout@v4
      - name: Check for files changed
        id: diff
        run: |
@@ -34,7 +34,7 @@ jobs:
     steps:
       # Check out the repo
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with: 
          fetch-depth: "0"
          
@@ -56,7 +56,7 @@ jobs:
     steps:
       # Check out the repo
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with: 
          fetch-depth: "0"
          
