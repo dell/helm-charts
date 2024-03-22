@@ -176,6 +176,9 @@ spec:
       tolerations:
       {{- toYaml .Values.controller.tolerations | nindent 8 }}
       {{ end }}
+      {{- with .Values.controller.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       containers:
         {{- $encModes := list false }}
         {{- if eq .Values.encryption.enabled true }}
