@@ -1,0 +1,36 @@
+# This Github action will create a Github release for the csm installation wizard
+name: installation-wizard-release-action
+
+# Triggers the action when a chart release has been created and deployed
+on:
+  workflow_run:
+    workflows:
+      - pages-build-deployment
+    types:
+      - completed
+
+jobs:
+  # This job will perform a helm release of the installation wizard chart if it has been updated
+  release-installation-wizard:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} && ${{ github.event.release.action == 'released' }}
+    steps:
+      # Check out code
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      
+      # Run the helm chart release command
+      - name: Run csm chart-releaser for container-storage-modules
+        uses: helm/chart-releaser-action@v1.6.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:  
+          charts_dir: installation-wizard
+          skip_existing: true
