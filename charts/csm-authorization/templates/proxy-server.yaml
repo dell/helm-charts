@@ -54,7 +54,7 @@ rules:
     resources: ["events"]
     verbs: ["watch"]
   - apiGroups: ["csm-authorization.storage.dell.com"]
-    resources: ["storages"]
+    resources: ["storages","csmtenants"]
     verbs: ["get", "list"]
 ---
 kind: ClusterRoleBinding
