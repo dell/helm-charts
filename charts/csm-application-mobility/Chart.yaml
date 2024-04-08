@@ -16,7 +16,7 @@ appVersion: "0.3.0"
 
 dependencies:
 - name: cert-manager
-  version: 1.8.2
+  version: 1.11.0
   repository: https://charts.jetstack.io
   condition: cert-manager.enabled
 - name: velero
