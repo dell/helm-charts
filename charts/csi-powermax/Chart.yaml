@@ -10,7 +10,7 @@ type: application
 kubeVersion: ">= 1.23.0 < 1.31.0"
 # If you are using a complex K8s version like "v1.23.3-mirantis-1", use this kubeVersion check instead
 # WARNING: this version of the check will allow the use of alpha and beta versions, which is NOT SUPPORTED
-# kubeVersion: ">= 1.23.0-0 < 1.30.0-0"
+# kubeVersion: ">= 1.23.0-0 < 1.31.0-0"
 keywords:
 - csi
 - storage
