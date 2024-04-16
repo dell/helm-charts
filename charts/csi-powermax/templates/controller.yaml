@@ -144,6 +144,8 @@ spec:
       name: {{ .Release.Name }}-controller
   template:
     metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: "driver"
       labels:
         name: {{ .Release.Name }}-controller
     spec:
