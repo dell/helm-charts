@@ -160,6 +160,8 @@ spec:
               value: "true"
             - name: X_CSI_UNITY_ALLOW_MULTI_POD_ACCESS
               value: {{ .Values.allowRWOMultiPodAccess | default "false" | lower | quote }}
+            - name: X_CSI_ALLOWED_NETWORKS
+              value: "{{ .Values.allowedNetworks }}"
             - name: X_CSI_PRIVATE_MOUNT_DIR
               value: "{{ .Values.kubeletConfigDir }}/plugins/unity.emc.dell.com/disks"
             - name: X_CSI_EPHEMERAL_STAGING_PATH
