@@ -46,6 +46,9 @@ authorization:
 
     # additional annotations for the proxy-server ingress
     annotations: {}
+  
+  # storage poll interval in seconds
+  storagePollInterval: 30
 
 redis:
   images:
