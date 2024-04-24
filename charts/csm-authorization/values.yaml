@@ -48,7 +48,7 @@ authorization:
     annotations: {}
   
   # storage poll interval in seconds
-  storagePollInterval: 30
+  storageCapacityPollInterval: 5m
 
 redis:
   images:

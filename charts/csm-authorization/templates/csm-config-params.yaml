@@ -10,5 +10,5 @@ data:
     {{- if (.Values.authorization.zipkin.collectoruri) }}
     zipkin.collectoruri: {{ .Values.authorization.zipkin.collectoruri }}
     zipkin.probability: {{ .Values.authorization.zipkin.probability }}
-    storagePollInterval: {{ .Values.authorization.storagePollInterval }}
+    storageCapacityPollInterval: {{ .Values.authorization.storageCapacityPollInterval }}
     {{- end }}
