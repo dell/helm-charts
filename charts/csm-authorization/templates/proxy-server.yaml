@@ -61,7 +61,7 @@ spec:
         image:  {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}
         imagePullPolicy: Always
         args:
-          - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
+          - "--redis-host={{ .Values.redis.name }}.{{ .Release.Namespace }}.svc.cluster.local:6379"
           - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--role-service=role-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--storage-service=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"

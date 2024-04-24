@@ -1,0 +1,8 @@
+redis:
+  name: redis-csm
+  sentinel: sentinel
+  rediscommander: rediscommander
+  images:
+    redis: redis
+    commander: rediscommander/redis-commander:latest
+ 
