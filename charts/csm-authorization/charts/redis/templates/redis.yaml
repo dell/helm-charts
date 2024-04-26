@@ -43,14 +43,29 @@ spec:
     metadata:
       labels:
         app: {{ .Values.redis.name }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
     spec:
       initContainers:
       - name: config
         image: {{ .Values.redis.images.redis }}
+        env:
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-csm-secret
+                key: password
+
         command: [ "sh", "-c" ]
         args:
           - |
             cp /csm-auth-redis-cm/redis.conf /etc/redis/redis.conf
+
+            #REDIS_PASSWORD=`echo $REDIS_PASSWORD | base64 -d`
+            echo "Password - " $REDIS_PASSWORD
+            
+            echo "masterauth $REDIS_PASSWORD" >> /etc/redis/redis.conf
+            echo "requirepass $REDIS_PASSWORD" >> /etc/redis/redis.conf
             
             echo "Finding master..."
             MASTER_FDQN=`hostname  -f | sed -e 's/redis-csm-[0-9]\./redis-csm-0./'`
@@ -115,18 +130,28 @@ spec:
       labels:
         app: {{ .Values.redis.rediscommander }}
         tier: backend
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
     spec:
       containers:
       - name: {{ .Values.redis.rediscommander }}
         image: {{ .Values.redis.images.commander }}
         imagePullPolicy: IfNotPresent
         env:
-        - name: REDIS_HOSTS
-          value: "rbac:{{ .Values.redis.name }}-0.{{ include "custom.namespace" . }}.svc.cluster.local:6379"
+        - name: SENTINELS
+          value: "sentinel-0.sentinel.default.svc.cluster.local:5000,sentinel-1.sentinel.default.svc.cluster.local:5000"        
         - name: K8S_SIGTERM
           value: "1"
         - name: REDIS_PASSWORD
-          value: "password123"
+          valueFrom:
+            secretKeyRef:
+              name: redis-csm-secret
+              key: password  
+        - name: SENTINEL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-csm-secret
+              key: password          
         ports:
         - name: {{ .Values.redis.rediscommander }}
           containerPort: 8081

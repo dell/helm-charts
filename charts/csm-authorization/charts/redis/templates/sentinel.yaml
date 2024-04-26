@@ -12,14 +12,23 @@ spec:
     metadata:
       labels:
         app: {{ .Values.redis.sentinel }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
     spec:
       initContainers:
       - name: config
         image: {{ .Values.redis.images.redis }}
         command: [ "sh", "-c" ]
+        env:
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-csm-secret
+                key: password
         args:         
           - |
-            REDIS_PASSWORD=password123
+            #REDIS_PASSWORD=`echo $REDIS_PASSWORD | base64 -d`
+            echo "Password - " $REDIS_PASSWORD
             nodes=redis-csm-0.redis-csm,redis-csm-1.redis-csm,redis-csm-2.redis-csm,redis-csm-3.redis-csm,redis-csm-4.redis-csm
             loop=$(echo $nodes | sed -e "s/,/\n/g")
 
