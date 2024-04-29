@@ -489,7 +489,7 @@ podmon:
 
   node:
     args:
-      - "--csisock=unix:/var/lib/kubelet/plugins/csi-powermax.dellemc.com/csi_sock"
+      - "--csisock=unix:/var/lib/kubelet/plugins/powermax.emc.dell.com/csi_sock"
       - "--labelvalue=csi-powermax"
       - "--arrayConnectivityPollRate=60"
       - "--driverPath=csi-powermax.dellemc.com"
