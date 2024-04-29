@@ -1,6 +1,10 @@
+# set to true if installing on an OpenShift Container Platform
+openshift: false
+
+# set to true if installing on a Kubernetes Container Platform
 # if enabled, nginx ingress controller will be deployed
 # if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
-ingress-nginx:
+nginx:
   enabled: true
 
 # if enabled, cert-manager will be deployed
