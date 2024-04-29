@@ -14,20 +14,6 @@ spec:
     targetPort: 6379
     name: {{ .Values.redis.name }}
 ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: {{ .Values.redis.name }}-svc
-# spec:
-#   type: NodePort  
-#   ports:
-#   - port: 6379
-#     targetPort: 6379
-#     nodePort: 32001
-#     name: {{ .Values.redis.name }}-svc
-#   selector:
-#     app: {{ .Values.redis.name }}    
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -35,7 +21,7 @@ metadata:
   namespace: {{ include "custom.namespace" . }}
 spec:
   serviceName: {{ .Values.redis.name }}
-  replicas: 5
+  replicas: {{ .Values.redis.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.redis.name }}
@@ -139,7 +125,10 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: SENTINELS
-          value: "sentinel-0.sentinel.default.svc.cluster.local:5000,sentinel-1.sentinel.default.svc.cluster.local:5000"        
+          value: "sentinel-0.sentinel.{{ include "custom.namespace" . }}.svc.cluster.local:5000,
+                  sentinel-1.sentinel.{{ include "custom.namespace" . }}.svc.cluster.local:5000, 
+                  sentinel-2.sentinel.{{ include "custom.namespace" . }}.svc.cluster.local:5000,
+                  sentinel-3.sentinel.{{ include "custom.namespace" . }}.svc.cluster.local:5000"        
         - name: K8S_SIGTERM
           value: "1"
         - name: REDIS_PASSWORD

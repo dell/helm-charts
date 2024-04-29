@@ -102,7 +102,7 @@ spec:
  ports:
  - port: 5000
    targetPort: 5000
-   nodePort: 32002
+   nodePort: 32003
    name: {{ .Values.redis.sentinel }}-svc
  selector:
    app: {{ .Values.redis.sentinel }}

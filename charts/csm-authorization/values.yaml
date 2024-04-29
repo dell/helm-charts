@@ -11,7 +11,7 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v1.10.0
+    proxyService: 10.247.98.98:5000/proxy-server:bharath-proxy-server
     tenantService: dellemc/csm-authorization-tenant:v1.10.0
     roleService: dellemc/csm-authorization-role:v1.10.0
     storageService: dellemc/csm-authorization-storage:v1.10.0
@@ -47,11 +47,15 @@ authorization:
     # additional annotations for the proxy-server ingress
     annotations: {}
 
-# redis:
-#   images:
-#     redis: redis:6.0.8-alpine
-#     commander: rediscommander/redis-commander:latest
-
+redis:
+  name: redis-csm
+  sentinel: sentinel
+  rediscommander: rediscommander
+  replicas: 5
+  images:
+    redis: redis
+    commander: rediscommander/redis-commander:latest
+    
   # by default, csm-authorization will deploy a local (https://kubernetes.io/docs/concepts/storage/storage-classes/#local) volume for redis
   # to use a different storage class for redis, uncomment the following line and specify the name of the storage class
   # NOTE: the storage class must NOT be a storage class provisioned by a CSI driver to be configured with this instance of CSM Authorization

@@ -2,6 +2,7 @@ redis:
   name: redis-csm
   sentinel: sentinel
   rediscommander: rediscommander
+  replicas: 5
   images:
     redis: redis
     commander: rediscommander/redis-commander:latest
