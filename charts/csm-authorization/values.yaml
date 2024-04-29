@@ -1,8 +1,10 @@
 # set to true if installing on an OpenShift Container Platform
+# if enabled, the OpenShift Ingress Operator will be used
+# if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
 openshift: false
 
 # set to true if installing on a Kubernetes Container Platform
-# if enabled, nginx ingress controller will be deployed
+# if enabled, NGINX Ingress Controller will be deployed
 # if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
 nginx:
   enabled: true
