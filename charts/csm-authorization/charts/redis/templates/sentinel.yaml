@@ -4,7 +4,11 @@ metadata:
   name: {{ .Values.redis.sentinel }}
 spec:
   serviceName: {{ .Values.redis.sentinel }}
+<<<<<<< HEAD
   replicas: {{ .Values.redis.replicas }}
+=======
+  replicas: 5
+>>>>>>> 9057dd8 (REDIS helm chart for auth-proxy)
   selector:
     matchLabels:
       app: {{ .Values.redis.sentinel }}
@@ -26,6 +30,7 @@ spec:
                 name: redis-csm-secret
                 key: password
         args:         
+<<<<<<< HEAD
           - |         
             replicas=$( expr {{ .Values.redis.replicas | int }} - 1)          
             for i in $(seq 0 $replicas)
@@ -46,6 +51,25 @@ spec:
                     MASTER=
                 else
                     echo "Master found at $MASTER..."
+=======
+          - |
+            #REDIS_PASSWORD=`echo $REDIS_PASSWORD | base64 -d`
+            echo "Password - " $REDIS_PASSWORD
+            nodes=redis-csm-0.redis-csm,redis-csm-1.redis-csm,redis-csm-2.redis-csm,redis-csm-3.redis-csm,redis-csm-4.redis-csm
+            loop=$(echo $nodes | sed -e "s/,/\n/g")
+
+            for i in $loop
+            do                
+                echo "finding master at $i"
+                MASTER=$(redis-cli --no-auth-warning --raw -h $i -a $REDIS_PASSWORD info replication | awk '{print $1}' | grep master_host: | cut -d ":" -f2)
+                if [ "$MASTER" = "" ]; then
+                    echo "Master not found"
+                    echo "sleeping 5 seconds for pods to come up"
+                    sleep 5
+                    MASTER=
+                else
+                    echo "Master found at $MASTER"
+>>>>>>> 9057dd8 (REDIS helm chart for auth-proxy)
                     break
                 fi
             done
