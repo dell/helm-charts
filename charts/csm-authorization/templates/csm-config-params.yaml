@@ -7,7 +7,7 @@ data:
   csm-config-params.yaml: |
     CONCURRENT_POWERFLEX_REQUESTS: {{ .Values.authorization.concurrentPowerFlexRequests }}
     LOG_LEVEL: {{ .Values.authorization.logLevel }}
-    storageCapacityPollInterval: {{ .Values.authorization.storageCapacityPollInterval }}
+    STORAGE_CAPACITY_POLL_INTERVAL: {{ .Values.authorization.storageCapacityPollInterval }}
     {{- if (.Values.authorization.zipkin.collectoruri) }}
     zipkin.collectoruri: {{ .Values.authorization.zipkin.collectoruri }}
     zipkin.probability: {{ .Values.authorization.zipkin.probability }}
