@@ -17,10 +17,27 @@ spec:
     spec:
       containers:
       - name: tenant-service
-        image: {{ required "Must provide the tenant-service image." .Values.authorization.images.tenantService }}
-        imagePullPolicy: Always
+        #image: {{ required "Must provide the tenant-service image." .Values.authorization.images.tenantService }}
+        image: 10.247.98.98:5000/csm-authorization-tenant:bharath-csm-authorization-tenant
+        imagePullPolicy: Always        
+        env:
+          {{- $str := "" -}}
+          {{- $ns := include "custom.namespace" . -}} 
+          {{- $replicas := .Values.redis.replicas | int }}
+          {{- range $i, $e := until $replicas  }} 
+          {{- if $i }}         
+          {{- $str = print $str "," -}}
+          {{- end }}           
+          {{- $str = printf "%ssentinel-%d.sentinel.%s.svc.cluster.local:5000" $str $i $ns -}}          
+          {{- end }}
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-csm-secret
+                key: password
         args:
-          - "--redis-sentinel=sentinel-0.sentinel.{{ include "custom.namespace" . }}.svc.cluster.local:5000"
+          - "--redis-sentinel={{ $str }}"
+          - "--redis-password=$(REDIS_PASSWORD)"
         ports:
         - containerPort: 50051
           name: grpc
