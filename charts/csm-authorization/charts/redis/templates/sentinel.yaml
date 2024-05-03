@@ -28,10 +28,16 @@ spec:
         args:         
           - |
             #REDIS_PASSWORD=`echo $REDIS_PASSWORD | base64 -d`
-            echo "Password - " $REDIS_PASSWORD
-            nodes=redis-csm-0.redis-csm,redis-csm-1.redis-csm,redis-csm-2.redis-csm,redis-csm-3.redis-csm,redis-csm-4.redis-csm
-            loop=$(echo $nodes | sed -e "s/,/\n/g")
-
+          
+            replicas=$( expr {{ .Values.redis.replicas | int }} - 1)          
+            for i in $(seq 0 $replicas)
+            do               
+                node=$( echo "{{ .Values.redis.name }}-$i.{{ .Values.redis.name }}" )
+                nodes=$( echo "$nodes*$node" )
+                #nodes+=$( echo "*" )
+            done            
+            loop=$(echo $nodes | sed -e "s/"*"/\n/g")
+           
             for i in $loop
             do                
                 echo "finding master at $i"
