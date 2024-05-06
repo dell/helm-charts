@@ -17,18 +17,18 @@ spec:
     spec:
       containers:
       - name: tenant-service
-        #image: {{ required "Must provide the tenant-service image." .Values.authorization.images.tenantService }}
-        image: 10.247.98.98:5000/csm-authorization-tenant:bharath-csm-authorization-tenant
+        image: {{ required "Must provide the tenant-service image." .Values.authorization.images.tenantService }}        
         imagePullPolicy: Always        
         env:
           {{- $str := "" -}}
           {{- $ns := include "custom.namespace" . -}} 
           {{- $replicas := .Values.redis.replicas | int }}
-          {{- range $i, $e := until $replicas  }} 
+          {{- $sentinel := .Values.redis.sentinel }}
+          {{- range $i, $e := until $replicas }} 
           {{- if $i }}         
           {{- $str = print $str "," -}}
           {{- end }}           
-          {{- $str = printf "%ssentinel-%d.sentinel.%s.svc.cluster.local:5000" $str $i $ns -}}          
+          {{- $str = printf "%s%s-%d.%s.%s.svc.cluster.local:5000" $str $sentinel $i $sentinel $ns -}}
           {{- end }}
           - name: REDIS_PASSWORD
             valueFrom:

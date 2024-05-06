@@ -91,18 +91,18 @@ spec:
       containers:
       
       - name: proxy-server
-        #image:  {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}
-        image: 10.247.98.98:5000/proxy-server:bharath-proxy-server
+        image:  {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}        
         imagePullPolicy: Always
         env:
           {{- $str := "" -}}
           {{- $ns := include "custom.namespace" . -}} 
           {{- $replicas := .Values.redis.replicas | int }}
-          {{- range $i, $e := until $replicas  }} 
+          {{- $sentinel := .Values.redis.sentinel }}
+          {{- range $i, $e := until $replicas }} 
           {{- if $i }}         
           {{- $str = print $str "," -}}
           {{- end }}           
-          {{- $str = printf "%ssentinel-%d.sentinel.%s.svc.cluster.local:5000" $str $i $ns -}}          
+          {{- $str = printf "%s%s-%d.%s.%s.svc.cluster.local:5000" $str $sentinel $i $sentinel $ns -}}
           {{- end }}
           - name: REDIS_PASSWORD
             valueFrom:
@@ -110,7 +110,6 @@ spec:
                 name: redis-csm-secret
                 key: password
         args:           
-          #- "--redis-host={{ .Values.redis.name }}.{{ .Release.Namespace }}.svc.cluster.local:6379"
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
           - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
