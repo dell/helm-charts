@@ -55,15 +55,15 @@ spec:
             MASTER_FDQN=`hostname  -f | sed -e 's/{{ .Values.redis.name }}-[0-9]\./{{ .Values.redis.name }}-0./'`
             echo "Master at " $MASTER_FQDN
             if [ "$(redis-cli -h sentinel -p 5000 ping)" != "PONG" ]; then
-              echo "No sentinel found."
+              echo "No sentinel found..."
               if [ "$(hostname)" = "{{ .Values.redis.name }}-0" ]; then
-                echo "This is redis master, not updating config..."
+                echo "This is redis master, not updating redis.conf..."
               else
                 echo "This is redis slave, updating redis.conf..."               
                 echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf                
               fi
             else
-              echo "Sentinel found, finding master"
+              echo "Sentinel found, finding master..."
               MASTER="$(redis-cli -h sentinel -p 5000 sentinel get-master-addr-by-name mymaster | grep -E '(^redis-csm-\d{1,})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})')"              
               echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf 
             fi
@@ -124,11 +124,12 @@ spec:
           {{- $str := "" -}}
           {{- $ns := include "custom.namespace" . -}} 
           {{- $replicas := .Values.redis.replicas | int }}
-          {{- range $i, $e := until $replicas  }} 
+          {{- $sentinel := .Values.redis.sentinel }}
+          {{- range $i, $e := until $replicas }} 
           {{- if $i }}         
           {{- $str = print $str "," -}}
           {{- end }}           
-          {{- $str = printf "%ssentinel-%d.sentinel.%s.svc.cluster.local:5000" $str $i $ns -}}          
+          {{- $str = printf "%s%s-%d.%s.%s.svc.cluster.local:5000" $str $sentinel $i $sentinel $ns -}}
           {{- end }}
         - name: SENTINELS        
           value: {{ $str | quote }}                                     

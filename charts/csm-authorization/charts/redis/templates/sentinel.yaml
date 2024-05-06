@@ -34,21 +34,20 @@ spec:
             do               
                 node=$( echo "{{ .Values.redis.name }}-$i.{{ .Values.redis.name }}" )
                 nodes=$( echo "$nodes*$node" )
-                #nodes+=$( echo "*" )
             done            
             loop=$(echo $nodes | sed -e "s/"*"/\n/g")
            
             for i in $loop
             do                
-                echo "finding master at $i"
+                echo "Finding master at $i"
                 MASTER=$(redis-cli --no-auth-warning --raw -h $i -a $REDIS_PASSWORD info replication | awk '{print $1}' | grep master_host: | cut -d ":" -f2)
                 if [ "$MASTER" = "" ]; then
-                    echo "Master not found"
-                    echo "sleeping 5 seconds for pods to come up"
+                    echo "Master not found..."
+                    echo "Sleeping 3 seconds for pods to come up..."
                     sleep 5
                     MASTER=
                 else
-                    echo "Master found at $MASTER"
+                    echo "Master found at $MASTER..."
                     break
                 fi
             done
