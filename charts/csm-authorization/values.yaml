@@ -69,10 +69,7 @@ redis:
   # to use a different storage class for redis, uncomment the following line and specify the name of the storage class
   # NOTE: the storage class must NOT be a storage class provisioned by a CSI driver to be configured with this instance of CSM Authorization
   #storageClass:
-<<<<<<< HEAD
-=======
 
->>>>>>> 9057dd8 (REDIS helm chart for auth-proxy)
 vault:
   enabled: true
   address: https://10.247.63.110:8400

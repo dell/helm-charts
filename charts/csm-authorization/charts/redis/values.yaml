@@ -4,10 +4,6 @@ redis:
   rediscommander: rediscommander
   replicas: 5
   images:
-<<<<<<< HEAD
     redis: redis:7.2.4-alpine
-=======
-    redis: redis
->>>>>>> 9057dd8 (REDIS helm chart for auth-proxy)
     commander: rediscommander/redis-commander:latest
  
