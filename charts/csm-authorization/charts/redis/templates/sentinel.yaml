@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.redis.sentinel }}
 spec:
   serviceName: {{ .Values.redis.sentinel }}
-  replicas: 5
+  replicas: {{ .Values.redis.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.redis.sentinel }}
@@ -26,9 +26,7 @@ spec:
                 name: redis-csm-secret
                 key: password
         args:         
-          - |
-            #REDIS_PASSWORD=`echo $REDIS_PASSWORD | base64 -d`
-          
+          - |         
             replicas=$( expr {{ .Values.redis.replicas | int }} - 1)          
             for i in $(seq 0 $replicas)
             do               
@@ -43,7 +41,7 @@ spec:
                 MASTER=$(redis-cli --no-auth-warning --raw -h $i -a $REDIS_PASSWORD info replication | awk '{print $1}' | grep master_host: | cut -d ":" -f2)
                 if [ "$MASTER" = "" ]; then
                     echo "Master not found..."
-                    echo "Sleeping 3 seconds for pods to come up..."
+                    echo "Sleeping 5 seconds for pods to come up..."
                     sleep 5
                     MASTER=
                 else
