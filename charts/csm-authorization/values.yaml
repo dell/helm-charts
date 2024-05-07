@@ -72,7 +72,7 @@ redis:
 
 vault:
   enabled: true
-  address: https://10.247.63.110:8400
+  address: https://10.0.0.1:8400
   kvEnginePath: secret
   skipCertificateValidation: true
 
