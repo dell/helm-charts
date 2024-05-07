@@ -75,3 +75,4 @@ vault:
   address: https://10.247.63.110:8400
   kvEnginePath: secret
   skipCertificateValidation: true
+
