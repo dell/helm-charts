@@ -91,7 +91,6 @@ spec:
       containers:
       
       - name: proxy-server
-<<<<<<< HEAD
         image:  {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}        
         imagePullPolicy: Always
         env:
@@ -113,14 +112,6 @@ spec:
         args:           
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
-=======
-        #image:  {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}
-        image: 10.247.98.98:5000/proxy-server:bharath-proxy-server
-        imagePullPolicy: Always
-        args:
-          #- "--redis-host={{ .Values.redis.name }}.{{ .Release.Namespace }}.svc.cluster.local:6379"
-          - "--redis-sentinel={{ .Values.redis.sentinel }}-0.{{ .Values.redis.sentinel }}.{{ .Release.Namespace }}.svc.cluster.local:5000"
->>>>>>> 9057dd8 (REDIS helm chart for auth-proxy)
           - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--role-service=role-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--storage-service=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
