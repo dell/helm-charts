@@ -17,16 +17,16 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v1.10.0
-    tenantService: dellemc/csm-authorization-tenant:v1.10.0
+    proxyService: 10.247.98.98:5000/proxy-server:bharath-proxy-server
+    tenantService: 10.247.98.98:5000/csm-authorization-tenant:bharath-csm-authorization-tenant
     roleService: dellemc/csm-authorization-role:v1.10.0
     storageService: dellemc/csm-authorization-storage:v1.10.0
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
-  # proxy-server ingress will use this hostname
-  # NOTE: additional hostnames can be configured in authorization.proxyServerIngress.hosts
-  # NOTE: proxy-server ingress is configured to accept IP address connections so hostnames are not required
+  # base hostname for the ingress rules that expose the services
+  # the proxy-server ingress will use this hostname
+  # the role-service ingress will use role.hostname
   hostname: csm-authorization.com
 
   # log level for csm-authorization
@@ -62,16 +62,11 @@ redis:
   rediscommander: rediscommander
   replicas: 5
   images:
-    redis: redis
+    redis: redis:7.2.4-alpine
     commander: rediscommander/redis-commander:latest
     
-  # by default, csm-authorization will deploy a local (https://kubernetes.io/docs/concepts/storage/storage-classes/#local) volume for redis
-  # to use a different storage class for redis, uncomment the following line and specify the name of the storage class
-  # NOTE: the storage class must NOT be a storage class provisioned by a CSI driver to be configured with this instance of CSM Authorization
-  #storageClass:
-
 vault:
-  enabled: true
+  enabled: truef
   address: https://10.0.0.1:8400
   kvEnginePath: secret
   skipCertificateValidation: true
