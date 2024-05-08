@@ -17,8 +17,8 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: 10.247.98.98:5000/proxy-server:bharath-proxy-server
-    tenantService: 10.247.98.98:5000/csm-authorization-tenant:bharath-csm-authorization-tenant
+    proxyService: dellemc/csm-authorization-proxy:v1.10.0
+    tenantService: dellemc/csm-authorization-tenant:v1.10.0
     roleService: dellemc/csm-authorization-role:v1.10.0
     storageService: dellemc/csm-authorization-storage:v1.10.0
     opa: openpolicyagent/opa
