@@ -66,7 +66,7 @@ redis:
     commander: rediscommander/redis-commander:latest
     
 vault:
-  enabled: truef
+  enabled: true
   address: https://10.0.0.1:8400
   kvEnginePath: secret
   skipCertificateValidation: true
