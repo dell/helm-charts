@@ -24,7 +24,7 @@ authorization:
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
-  # base hostname for the ingress rules that expose the services
+  # Base hostname for the ingress rules that expose the services
   # the proxy-server ingress will use this hostname
   # the role-service ingress will use role.hostname
   hostname: csm-authorization.com
