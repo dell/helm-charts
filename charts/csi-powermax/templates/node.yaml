@@ -1,8 +1,9 @@
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ .Release.Name }}-node
-  namespace: {{ .Release.Namespace }}
+  name: {{.Release.Name}}-node
+  namespace: {{.Release.Namespace}}
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -16,6 +17,21 @@ rules:
   - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["get", "list", "watch", "update", "patch"]
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumes" ]
+    verbs: [ "create", "delete", "get", "list", "watch", "update" ]
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumesclaims" ]
+    verbs: [ "get", "list", "watch", "update" ]
+  - apiGroups: [ "" ]
+    resources: [ "events" ]
+    verbs: [ "get", "list", "watch", "create", "update", "patch" ]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "volumeattachments" ]
+    verbs: [ "get", "list", "watch", "update" ]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "storageclasses" ]
+    verbs: [ "get", "list", "watch" ]
   {{- if eq .Values.openshift true }}
   - apiGroups: ["security.openshift.io"]
     resources: ["securitycontextconstraints"]
@@ -40,6 +56,14 @@ rules:
     resources: [ "pods" ]
     verbs: [ "get", "list", "watch", "update", "patch" ]
   {{- end}}
+   #below for podmon
+  {{- if hasKey .Values "podmon" }}
+  {{- if eq .Values.podmon.enabled true }}
+  - apiGroups: [ "" ]
+    resources: [ "pods" ]
+    verbs: [ "get", "list", "watch", "update", "delete" ]
+  {{- end }}
+  {{- end }}
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -83,6 +107,9 @@ spec:
         kubectl.kubernetes.io/default-container: "driver"
       labels:
         app: {{ .Release.Name }}-node
+        {{- if .Values.podmon.enabled }}
+        driver.dellemc.com: dell-storage
+        {{- end }}
     spec:
       serviceAccountName: {{ .Release.Name }}-node
       {{ if .Values.node.nodeSelector }}
@@ -168,7 +195,7 @@ spec:
             {{- end }}
             - name: X_CSI_POWERMAX_PROXY_SERVICE_NAME
               value: {{ .Release.Name }}-reverseproxy
-            - name: X_CSI_ISCSI_CHROOT
+            - name: X_CSI_NODE_CHROOT
               value: {{ .Values.ISCSIChroot | default "/noderoot" }}
             - name: X_CSI_GRPC_MAX_THREADS
               value: "50"
@@ -218,11 +245,28 @@ spec:
                   name: {{ .Values.vSphere.vCenterCredSecret }}
                   key: password
             {{- end }}
+            {{- if hasKey .Values "podmon" }}
+            - name: X_CSI_PODMON_ENABLED
+              value: "{{ .Values.podmon.enabled }}"
+            {{- if eq .Values.podmon.enabled true }}
+              {{- range $key, $value := .Values.podmon.node.args }}
+                {{- if contains "--arrayConnectivityPollRate" $value }}
+            - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_POLL_RATE
+              value: "{{ (split "=" $value)._1 }}"
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            {{- end }}
+            - name: X_CSI_PODMON_API_PORT
+              value: "{{ .Values.podmon.podmonAPIPort }}"
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/powermax.emc.dell.com
             - name: volumedevices-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi/volumeDevices
+              mountPropagation: "Bidirectional"
+            - name: csi-path
+              mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
               mountPropagation: "Bidirectional"
             - name: pods-path
               mountPath: {{ .Values.kubeletConfigDir }}/pods
@@ -342,6 +386,58 @@ spec:
               mountPath: /etc/karavi-authorization
         {{ end }}
         {{ end }}
+        {{- if hasKey .Values "podmon" }}
+        {{- if eq .Values.podmon.enabled true }}
+        - name: podmon
+          securityContext:
+            privileged: true
+            capabilities:
+              add: [ "SYS_ADMIN" ]
+            allowPrivilegeEscalation: true
+          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args:
+            {{- toYaml .Values.podmon.node.args | nindent 12 }}
+          env:
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: X_CSI_PRIVATE_MOUNT_DIR
+              value: {{ .Values.kubeletConfigDir }}
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: kubelet-pods
+              mountPath: {{ .Values.kubeletConfigDir }}/pods
+              mountPropagation: "Bidirectional"
+            - name: driver-path
+              mountPath: {{ .Values.kubeletConfigDir }}/plugins/powermax.emc.dell.com
+              mountPropagation: "Bidirectional"
+            - name: csi-path
+              mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
+              mountPropagation: "Bidirectional"
+            - name: dev
+              mountPath: /dev
+            - name: usr-bin
+              mountPath: /usr-bin
+            - name: var-run
+              mountPath: /var/run
+            - name: powermax-config-params
+              mountPath: /powermax-config-params
+        {{- end }}
+        {{- end }}
       volumes:
         - name: registration-dir
           hostPath:
@@ -359,6 +455,9 @@ spec:
           hostPath:
             path: {{ .Values.kubeletConfigDir }}/pods
             type: Directory
+        - name: csi-path
+          hostPath:
+            path: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
         - name: dev
           hostPath:
             path: /dev
@@ -378,6 +477,10 @@ spec:
         - name: powermax-config-params
           configMap:
             name: {{ .Release.Name }}-config-params
+        - name: certs
+          secret:
+            secretName: {{ .Release.Name }}-certs
+            optional: true
       {{- if hasKey .Values.node "topologyControl" }}
       {{- if eq .Values.node.topologyControl.enabled true }}
         - name: node-topology-config
@@ -385,10 +488,6 @@ spec:
             name: node-topology-config
       {{- end }}
       {{- end }}
-        - name: certs
-          secret:
-              secretName: {{ .Release.Name }}-certs
-              optional: true
       {{- if hasKey .Values "authorization" }}
       {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-config
@@ -399,3 +498,15 @@ spec:
             secretName: proxy-server-root-certificate
       {{ end }}
       {{ end }}
+        - name: usr-bin
+          hostPath:
+            path: /usr/bin
+            type: Directory
+        - name: kubelet-pods
+          hostPath:
+            path: /var/lib/kubelet/pods
+            type: Directory
+        - name: var-run
+          hostPath:
+            path: /var/run
+            type: Directory
