@@ -57,7 +57,7 @@ spec:
               if [ "$(hostname)" = "{{ .Values.redis.name }}-0" ]; then
                 echo "This is Redis master, not updating redis.conf..."
               else
-                echo "This is Redis slave, updating redis.conf..."               
+                echo "This is Redis replica, updating redis.conf..."               
                 echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf                
               fi
             else
