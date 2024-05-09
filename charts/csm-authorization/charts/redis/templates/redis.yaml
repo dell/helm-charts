@@ -1,87 +1,150 @@
-apiVersion: apps/v1 
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: redis-primary
+  name: {{ .Values.redis.name }}
   namespace: {{ include "custom.namespace" . }}
-  labels:
-    app: redis
 spec:
+  type:
+  clusterIP: None
+  selector:
+    app: {{ .Values.redis.name }}
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
+    name: {{ .Values.redis.name }}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.redis.name }}
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  serviceName: {{ .Values.redis.name }}
+  replicas: {{ .Values.redis.replicas }}
   selector:
     matchLabels:
-      app: redis
-      role: primary
-      tier: backend
-  replicas: 1
+      app: {{ .Values.redis.name }}
   template:
     metadata:
       labels:
-        app: redis
-        role: primary
-        tier: backend
+        app: {{ .Values.redis.name }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
     spec:
+      initContainers:
+      - name: config
+        image: {{ .Values.redis.images.redis }}
+        env:
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-csm-secret
+                key: password
+
+        command: [ "sh", "-c" ]
+        args:
+          - |
+            cp /csm-auth-redis-cm/redis.conf /etc/redis/redis.conf
+            echo "masterauth $REDIS_PASSWORD" >> /etc/redis/redis.conf
+            echo "requirepass $REDIS_PASSWORD" >> /etc/redis/redis.conf
+            
+            echo "Finding master..."
+            MASTER_FDQN=`hostname  -f | sed -e 's/{{ .Values.redis.name }}-[0-9]\./{{ .Values.redis.name }}-0./'`
+            echo "Master at " $MASTER_FQDN
+            if [ "$(redis-cli -h sentinel -p 5000 ping)" != "PONG" ]; then
+              echo "No sentinel found..."
+              if [ "$(hostname)" = "{{ .Values.redis.name }}-0" ]; then
+                echo "This is Redis master, not updating redis.conf..."
+              else
+                echo "This is Redis replica, updating redis.conf..."               
+                echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf                
+              fi
+            else
+              echo "Sentinel found, finding master..."
+              MASTER="$(redis-cli -h sentinel -p 5000 sentinel get-master-addr-by-name mymaster | grep -E '(^redis-csm-\d{1,})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})')"              
+              echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf 
+            fi
+        volumeMounts: 
+        - name: redis-primary-volume
+          mountPath: /data
+        - name: configmap
+          mountPath: /csm-auth-redis-cm/
+        - name: config
+          mountPath: /etc/redis/
       containers:
-      - name: primary
-        image: {{ .Values.images.redis }}
-        imagePullPolicy: IfNotPresent
-        args: ["--appendonly", "yes", "--appendfsync", "always"]
-        resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
+      - name: {{ .Values.redis.name }}
+        image: {{ .Values.redis.images.redis }}
+        command: ["redis-server"]
+        args: ["/etc/redis/redis.conf"]
         ports:
         - containerPort: 6379
+          name: {{ .Values.redis.name }}
         volumeMounts:
-          - name: redis-primary-volume
-            mountPath: /data
-      volumes:
         - name: redis-primary-volume
-          persistentVolumeClaim:
-            claimName: redis-primary-pv-claim
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: redis-primary-pv-claim
-  namespace: {{ include "custom.namespace" . }}
-  labels:
-    app: redis-primary
-spec:
-  accessModes:
-    - ReadWriteOnce
-  {{- if (.Values.storageClass) }}
-  storageClassName: {{.Values.storageClass }}
-  {{- end}}
-  resources:
-    requests:
-      storage: 8Gi
+          mountPath: /data
+        - name: configmap
+          mountPath: /csm-auth-redis-cm/
+        - name: config
+          mountPath: /etc/redis/
+      volumes:
+      - name: redis-primary-volume        
+        emptyDir: {}
+      - name: config 
+        emptyDir: {}
+      - name: configmap
+        configMap:
+          name: redis-csm-cm          
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-commander
+  name: {{ .Values.redis.rediscommander }}
   namespace: {{ include "custom.namespace" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis-commander
+      app: {{ .Values.redis.rediscommander }}
   template:
     metadata:
       labels:
-        app: redis-commander
+        app: {{ .Values.redis.rediscommander }}
         tier: backend
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
     spec:
       containers:
-      - name: redis-commander
-        image: {{ .Values.images.commander }}
+      - name: {{ .Values.redis.rediscommander }}
+        image: {{ .Values.redis.images.commander }}
         imagePullPolicy: IfNotPresent
         env:
-        - name: REDIS_HOSTS
-          value: "rbac:redis.{{ include "custom.namespace" . }}.svc.cluster.local:6379"
+          {{- $str := "" -}}
+          {{- $ns := include "custom.namespace" . -}} 
+          {{- $replicas := .Values.redis.replicas | int }}
+          {{- $sentinel := .Values.redis.sentinel }}
+          {{- range $i, $e := until $replicas }} 
+          {{- if $i }}         
+          {{- $str = print $str "," -}}
+          {{- end }}           
+          {{- $str = printf "%s%s-%d.%s.%s.svc.cluster.local:5000" $str $sentinel $i $sentinel $ns -}}
+          {{- end }}
+        - name: SENTINELS        
+          value: {{ $str | quote }}                                     
         - name: K8S_SIGTERM
           value: "1"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-csm-secret
+              key: password  
+        - name: SENTINEL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-csm-secret
+              key: password          
         ports:
-        - name: redis-commander
+        - name: {{ .Values.redis.rediscommander }}
           containerPort: 8081
         livenessProbe:
           httpGet:
@@ -104,24 +167,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis
+  name: {{ .Values.redis.rediscommander }}
   namespace: {{ include "custom.namespace" . }}
 spec:
   selector:
-    app: redis
-  ports:
-  - protocol: TCP
-    port: 6379
-    targetPort: 6379
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: redis-commander
-  namespace: {{ include "custom.namespace" . }}
-spec:
-  selector:
-    app: redis-commander
+    app: {{ .Values.redis.rediscommander }}
   ports:
   - protocol: TCP
     port: 8081

@@ -89,11 +89,29 @@ spec:
     spec:
       serviceAccount: proxy-server
       containers:
+      
       - name: proxy-server
-        image:  {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}
+        image:  {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}        
         imagePullPolicy: Always
-        args:
-          - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
+        env:
+          {{- $str := "" -}}
+          {{- $ns := include "custom.namespace" . -}} 
+          {{- $replicas := .Values.redis.replicas | int }}
+          {{- $sentinel := .Values.redis.sentinel }}
+          {{- range $i, $e := until $replicas }} 
+          {{- if $i }}         
+          {{- $str = print $str "," -}}
+          {{- end }}           
+          {{- $str = printf "%s%s-%d.%s.%s.svc.cluster.local:5000" $str $sentinel $i $sentinel $ns -}}
+          {{- end }}
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-csm-secret
+                key: password
+        args:           
+          - "--redis-sentinel={{ $str }}"
+          - "--redis-password=$(REDIS_PASSWORD)"
           - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--role-service=role-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--storage-service=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
@@ -102,6 +120,8 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/karavi-authorization/config
+        - name: storage-volume
+          mountPath: /etc/karavi-authorization/storage
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
       - name: opa
@@ -119,12 +139,15 @@ spec:
         image: {{ required "Must provide the opaKubeMgmt image." .Values.authorization.images.opaKubeMgmt }}
         imagePullPolicy: IfNotPresent
         args:
-        - "--policies={{ .Release.Namespace }}"
+        - "--policies={{ include "custom.namespace" . }}"
         - "--enable-data"
       volumes:
       - name: config-volume
         secret:
           secretName: karavi-config-secret
+      - name: storage-volume
+        secret:
+          secretName: karavi-storage-secret
       - name: csm-config-params
         configMap:
           name: csm-config-params
