@@ -49,7 +49,7 @@ authorization:
 
     # additional host rules for the proxy-server ingress
     hosts: []
-      # - authorization-ingress-nginx-controller.authorization.svc.cluster.local
+      # - application-ingress-nginx-controller.namespace.svc.cluster.local
 
     # additional annotations for the proxy-server ingress
     annotations: {}
@@ -58,16 +58,17 @@ authorization:
   storageCapacityPollInterval: 5m
 
 redis:
+  name: redis-csm
+  sentinel: sentinel
+  rediscommander: rediscommander
+  replicas: 5
   images:
-    redis: redis:6.0.8-alpine
+    redis: redis:7.2.4-alpine
     commander: rediscommander/redis-commander:latest
-
-  # set the storageClass for redis to use. otherwise, the default storage class is used
-  # storageClass: local-storage
-
+    
 vault:
   enabled: true
   address: https://10.0.0.1:8400
   kvEnginePath: secret
   skipCertificateValidation: true
- 
+
