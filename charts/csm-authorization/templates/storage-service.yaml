@@ -12,6 +12,9 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get", "patch","post"]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["storages", "csmtenants", "csmroles"]
+    verbs: ["get", "list"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -66,6 +69,7 @@ spec:
           - "--vault-address={{ .Values.vault.address }}"
           - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
           - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
+          - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
         ports:
         - containerPort: 50051
           name: grpc
