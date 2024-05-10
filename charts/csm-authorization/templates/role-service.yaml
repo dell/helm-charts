@@ -51,8 +51,6 @@ spec:
       - name: role-service
         image: {{ required "Must provide the role-service image." .Values.authorization.images.roleService }}
         imagePullPolicy: Always
-        args:
-          - "--storage-service=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
         ports:
         - containerPort: 50051
           name: grpc
