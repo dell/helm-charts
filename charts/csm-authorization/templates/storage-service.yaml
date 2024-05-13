@@ -65,6 +65,7 @@ spec:
         args:
           - "--vault-address={{ .Values.vault.address }}"
           - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
+          - "--vault-role={{ .Values.vault.role }}"
           - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
         ports:
         - containerPort: 50051
