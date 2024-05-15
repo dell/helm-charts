@@ -57,7 +57,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: snapshots-create
+  name: snapshot-create
   namespace: {{ .Release.Namespace }}
 data:
-  {{- (.Files.Glob "policies/snapshots-create.rego").AsConfig | nindent 2 }}
+  {{- (.Files.Glob "policies/snapshot-create.rego").AsConfig | nindent 2 }}
