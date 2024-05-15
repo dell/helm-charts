@@ -10,8 +10,14 @@ metadata:
   name: storage-service
 rules:
   - apiGroups: [""]
-    resources: ["secrets"]
-    verbs: ["get", "patch", "post"]
+    resources: ["secrets", "events"]
+    verbs: ["get", "patch","post", create]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["storages", "csmtenants", "csmroles"]
+    verbs: ["get", "list"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["create", "update", "get", "list"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -62,17 +68,33 @@ spec:
       - name: storage-service
         image: {{ required "Must provide the storage-service image." .Values.authorization.images.storageService }}
         imagePullPolicy: Always
+        env:
+          {{- $str := "" -}}
+          {{- $ns := include "custom.namespace" . -}} 
+          {{- $replicas := .Values.redis.replicas | int }}
+          {{- $sentinel := .Values.redis.sentinel }}
+          {{- range $i, $e := until $replicas }} 
+          {{- if $i }}         
+          {{- $str = print $str "," -}}
+          {{- end }}           
+          {{- $str = printf "%s%s-%d.%s.%s.svc.cluster.local:5000" $str $sentinel $i $sentinel $ns -}}
+          {{- end }}
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-csm-secret
+                key: password
         args:
           - "--vault-address={{ .Values.vault.address }}"
           - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
           - "--vault-role={{ .Values.vault.role }}"
           - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
+          - "--redis-sentinel={{ $str }}"
+          - "--redis-password=$(REDIS_PASSWORD)"
+          - "--leader-election=true"
         ports:
         - containerPort: 50051
           name: grpc
-        env:
-          - name: NAMESPACE
-            value: {{ include "custom.namespace" . }}
         volumeMounts:
         - name: config-volume
           mountPath: /etc/karavi-authorization/config
