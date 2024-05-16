@@ -276,7 +276,7 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
-  version: v2.10.2
+  version: v2.10.1
   images:
     # "driver" defines the container image, used for the driver container.
     driver: dellemc/csi-vxflexos:v2.10.1
