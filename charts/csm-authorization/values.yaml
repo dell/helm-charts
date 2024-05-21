@@ -21,6 +21,7 @@ authorization:
     tenantService: dellemc/csm-authorization-tenant:v1.10.0
     roleService: dellemc/csm-authorization-role:v1.10.0
     storageService: dellemc/csm-authorization-storage:v1.10.0
+    authorizationController: dellemc/csm-authorization-controller:v2.0.0-alpha
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
