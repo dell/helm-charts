@@ -143,6 +143,16 @@ spec:
             secretKeyRef:
               name: redis-csm-secret
               key: password          
+        - name: HTTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-csm-secret
+              key: password          
+        - name: HTTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: redis-csm-secret
+              key: commander_user         
         ports:
         - name: {{ .Values.redis.rediscommander }}
           containerPort: 8081
