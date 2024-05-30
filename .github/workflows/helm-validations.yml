@@ -15,16 +15,16 @@ jobs:
   check_files:
     runs-on: ubuntu-latest
     outputs:
-     run_tests: ${{ steps.diff.outputs.run_tests }}
+      run_tests: ${{ steps.diff.outputs.run_tests }}
     steps:
-     - uses: actions/checkout@v4
-     - name: Check for files changed
-       id: diff
-       run: |
-            URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files"
-            FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
-            echo $FILES | grep \.yaml && echo '::set-output name=run_tests::true' || true
- 
+      - uses: actions/checkout@v4
+      - name: Check for files changed
+        id: diff
+        run: |
+          URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files"
+          FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
+          echo $FILES | grep \.yaml && echo '::set-output name=run_tests::true' || true
+
   # This job will run helm lint and version increment check on updated charts
   lint:
     runs-on: ubuntu-latest
@@ -35,10 +35,10 @@ jobs:
       # Check out the repo
       - name: Checkout
         uses: actions/checkout@v4
-        with: 
-         fetch-depth: "0"
-         
-      # Lint and version increment checks on updated charts   
+        with:
+          fetch-depth: "0"
+
+      # Lint and version increment checks on updated charts
       - name: Run lint/version increment checks
         id: versionIncrement
         # Bump to proper version after this issue is fixed : https://github.com/helm/chart-testing-action/issues/132
@@ -46,8 +46,8 @@ jobs:
         with:
           command: lint
           config: lintConfig.yaml
- 
- # This job checks that dependency versions have been updated on the karavi-observability chart
+
+  # This job checks that dependency versions have been updated on the karavi-observability chart
   dependency:
     runs-on: ubuntu-latest
     # Only run job when .yaml file is changed
@@ -57,9 +57,9 @@ jobs:
       # Check out the repo
       - name: Checkout
         uses: actions/checkout@v4
-        with: 
-         fetch-depth: "0"
-         
+        with:
+          fetch-depth: "0"
+
       # Run a check on karavi-observability chart for updated dependency versions
       - name: Run dependency version checks
         id: lint
