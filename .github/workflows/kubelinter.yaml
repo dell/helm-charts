@@ -26,4 +26,3 @@ jobs:
         with:
           directory: charts/cosi
           config: kubelinter-config.yaml
-
