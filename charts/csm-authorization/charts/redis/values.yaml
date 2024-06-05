@@ -1,0 +1,12 @@
+# Redis and sentinel chart values 
+# This file enables testing of redis charts without having to deploy authorization charts
+# Global values take predence over the values specified in here. 
+
+name: redis-csm
+sentinel: sentinel
+rediscommander: rediscommander
+replicas: 5
+images:
+  redis: redis:7.2.4-alpine
+  commander: rediscommander/redis-commander:latest
+ 

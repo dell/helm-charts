@@ -57,6 +57,9 @@ authorization:
   # storage capacity poll interval
   storageCapacityPollInterval: 5m
 
+
+# Redis chart values. 
+# Modifications here will take precedence over the values specified in charts/redis/
 redis:
   name: redis-csm
   sentinel: sentinel
