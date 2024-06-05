@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.redis.sentinel }}
+  name: {{ .Values.sentinel }}
 spec:
-  serviceName: {{ .Values.redis.sentinel }}
-  replicas: {{ .Values.redis.replicas }}
+  serviceName: {{ .Values.sentinel }}
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.redis.sentinel }}
+      app: {{ .Values.sentinel }}
   template:
     metadata:
       labels:
-        app: {{ .Values.redis.sentinel }}
+        app: {{ .Values.sentinel }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
     spec:
       initContainers:
       - name: config
-        image: {{ .Values.redis.images.redis }}
+        image: {{ .Values.images.redis }}
         command: [ "sh", "-c" ]
         env:
           - name: REDIS_PASSWORD
@@ -27,10 +27,10 @@ spec:
                 key: password
         args:         
           - |         
-            replicas=$( expr {{ .Values.redis.replicas | int }} - 1)          
+            replicas=$( expr {{ .Values.replicas | int }} - 1)          
             for i in $(seq 0 $replicas)
             do               
-                node=$( echo "{{ .Values.redis.name }}-$i.{{ .Values.redis.name }}" )
+                node=$( echo "{{ .Values.name }}-$i.{{ .Values.name }}" )
                 nodes=$( echo "$nodes*$node" )
             done            
             loop=$(echo $nodes | sed -e "s/"*"/\n/g")
@@ -87,12 +87,12 @@ spec:
           mountPath: /etc/redis/
       containers:
       - name: sentinel
-        image: {{ .Values.redis.images.redis }}
+        image: {{ .Values.images.redis }}
         command: ["redis-sentinel"]
         args: ["/etc/redis/sentinel.conf"]
         ports:
         - containerPort: 5000
-          name: {{ .Values.redis.sentinel }}
+          name: {{ .Values.sentinel }}
         volumeMounts:
         - name: redis-config
           mountPath: /etc/redis/
@@ -107,7 +107,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.redis.sentinel }}
+  name: {{ .Values.sentinel }}
 spec:
   clusterIP: None
   ports:
@@ -120,13 +120,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
- name: {{ .Values.redis.sentinel }}-svc
+ name: {{ .Values.sentinel }}-svc
 spec: 
  type: NodePort
  ports:
  - port: 5000
    targetPort: 5000
    nodePort: 32003
-   name: {{ .Values.redis.sentinel }}-svc
+   name: {{ .Values.sentinel }}-svc
  selector:
-   app: {{ .Values.redis.sentinel }}
+   app: {{ .Values.sentinel }}

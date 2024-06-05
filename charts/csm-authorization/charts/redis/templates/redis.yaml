@@ -1,40 +1,40 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.redis.name }}
+  name: {{ .Values.name }}
   namespace: {{ include "custom.namespace" . }}
 spec:
   type:
   clusterIP: None
   selector:
-    app: {{ .Values.redis.name }}
+    app: {{ .Values.name }}
   ports:
   - protocol: TCP
     port: 6379
     targetPort: 6379
-    name: {{ .Values.redis.name }}
+    name: {{ .Values.name }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.redis.name }}
+  name: {{ .Values.name }}
   namespace: {{ include "custom.namespace" . }}
 spec:
-  serviceName: {{ .Values.redis.name }}
-  replicas: {{ .Values.redis.replicas }}
+  serviceName: {{ .Values.name }}
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.redis.name }}
+      app: {{ .Values.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.redis.name }}
+        app: {{ .Values.name }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
     spec:
       initContainers:
       - name: config
-        image: {{ .Values.redis.images.redis }}
+        image: {{ .Values.images.redis }}
         env:
           - name: REDIS_PASSWORD
             valueFrom:
@@ -50,11 +50,11 @@ spec:
             echo "requirepass $REDIS_PASSWORD" >> /etc/redis/redis.conf
             
             echo "Finding master..."
-            MASTER_FDQN=`hostname  -f | sed -e 's/{{ .Values.redis.name }}-[0-9]\./{{ .Values.redis.name }}-0./'`
+            MASTER_FDQN=`hostname  -f | sed -e 's/{{ .Values.name }}-[0-9]\./{{ .Values.name }}-0./'`
             echo "Master at " $MASTER_FQDN
             if [ "$(redis-cli -h sentinel -p 5000 ping)" != "PONG" ]; then
               echo "No sentinel found..."
-              if [ "$(hostname)" = "{{ .Values.redis.name }}-0" ]; then
+              if [ "$(hostname)" = "{{ .Values.name }}-0" ]; then
                 echo "This is Redis master, not updating redis.conf..."
               else
                 echo "This is Redis replica, updating redis.conf..."               
@@ -73,13 +73,13 @@ spec:
         - name: config
           mountPath: /etc/redis/
       containers:
-      - name: {{ .Values.redis.name }}
-        image: {{ .Values.redis.images.redis }}
+      - name: {{ .Values.name }}
+        image: {{ .Values.images.redis }}
         command: ["redis-server"]
         args: ["/etc/redis/redis.conf"]
         ports:
         - containerPort: 6379
-          name: {{ .Values.redis.name }}
+          name: {{ .Values.name }}
         volumeMounts:
         - name: redis-primary-volume
           mountPath: /data
@@ -99,30 +99,30 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.redis.rediscommander }}
+  name: {{ .Values.rediscommander }}
   namespace: {{ include "custom.namespace" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.redis.rediscommander }}
+      app: {{ .Values.rediscommander }}
   template:
     metadata:
       labels:
-        app: {{ .Values.redis.rediscommander }}
+        app: {{ .Values.rediscommander }}
         tier: backend
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
     spec:
       containers:
-      - name: {{ .Values.redis.rediscommander }}
-        image: {{ .Values.redis.images.commander }}
+      - name: {{ .Values.rediscommander }}
+        image: {{ .Values.images.commander }}
         imagePullPolicy: IfNotPresent
         env:
           {{- $str := "" -}}
           {{- $ns := include "custom.namespace" . -}} 
-          {{- $replicas := .Values.redis.replicas | int }}
-          {{- $sentinel := .Values.redis.sentinel }}
+          {{- $replicas := .Values.replicas | int }}
+          {{- $sentinel := .Values.sentinel }}
           {{- range $i, $e := until $replicas }} 
           {{- if $i }}         
           {{- $str = print $str "," -}}
@@ -154,7 +154,7 @@ spec:
               name: redis-csm-secret
               key: commander_user         
         ports:
-        - name: {{ .Values.redis.rediscommander }}
+        - name: {{ .Values.rediscommander }}
           containerPort: 8081
         livenessProbe:
           httpGet:
@@ -177,11 +177,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.redis.rediscommander }}
+  name: {{ .Values.rediscommander }}
   namespace: {{ include "custom.namespace" . }}
 spec:
   selector:
-    app: {{ .Values.redis.rediscommander }}
+    app: {{ .Values.rediscommander }}
   ports:
   - protocol: TCP
     port: 8081
