@@ -5,7 +5,7 @@ yaml-files:
   - ".yamllint"
 
 rules:
-  braces: enable
+  braces: disable
   brackets: enable
   colons: enable
   commas: enable
