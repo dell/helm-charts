@@ -33,4 +33,4 @@ rules:
 
 ignore:
   - .github/workflows/
-  - /templates/*.yaml
+  - '*/templates/*.yaml'
