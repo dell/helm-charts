@@ -8,7 +8,9 @@ rules:
   braces:
     level: warning
     max-spaces-inside: 1
-  brackets: enable
+  brackets:
+    level: warning
+    max-spaces-inside: 1
   colons: enable
   commas: enable
   comments:
@@ -31,6 +33,9 @@ rules:
   truthy:
     level: warning
 
-ignore:
-  - .github/workflows/
-  - '*/templates/*.yaml'
+ignore: |
+  .github/workflows/
+  charts/*/templates/
+  charts/*/*/*/templates/
+  charts/csi-powermax/charts/csireverseproxy/conf/config.yaml
+  charts/csm-replication/crds/replicationcrds.all.yaml
