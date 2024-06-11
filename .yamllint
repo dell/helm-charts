@@ -13,8 +13,7 @@ rules:
   commas: enable
   comments:
     level: warning
-  comments-indentation:
-    level: warning
+  comments-indentation: disable
   document-end: disable
   document-start: disable
   empty-lines: enable
@@ -34,3 +33,4 @@ rules:
 
 ignore:
   - .github/workflows/
+  - /templates/*.yaml
