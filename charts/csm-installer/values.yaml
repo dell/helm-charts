@@ -33,10 +33,10 @@ dbPort: 26257
 dbSSLEnabled: "true"
 
 # CSM Installer image
-installerImage: dellemc/dell-csm-installer:v1.0.2
+installerImage: dellemc/dell-csm-installer:v1.0.1
 
 # CSM Data collector image
-dataCollectorImage: dellemc/csm-data-collector:v1.0.2
+dataCollectorImage: dellemc/csm-data-collector:v1.0.1
 
 # Admin username of CSM Installer
 adminUserName:
