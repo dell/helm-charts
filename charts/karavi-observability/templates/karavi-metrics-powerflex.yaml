@@ -53,7 +53,7 @@ spec:
         image: {{ .Values.karaviMetricsPowerflex.image }}
         resources: {}
         env:
-        - name: POWERFLEX_METRICS_ENDPOINT	
+        - name: POWERFLEX_METRICS_ENDPOINT
           value: "{{ .Values.karaviMetricsPowerflex.endpoint }}"
         - name: POWERFLEX_METRICS_NAMESPACE
           valueFrom:
@@ -130,4 +130,3 @@ spec:
 status: {}
 
 {{ end }}
-

@@ -22,9 +22,9 @@ global:
     - storageArrayId: "000000000001"
       endpoint: https://primary-1.unisphe.re:8443
       backupEndpoint: https://backup-1.unisphe.re:8443
-#    - storageArrayId: "000000000002"
-#      endpoint: https://primary-2.unisphe.re:8443
-#      backupEndpoint: https://backup-2.unisphe.re:8443
+  # - storageArrayId: "000000000002"
+  #   endpoint: https://primary-2.unisphe.re:8443
+  #   backupEndpoint: https://backup-2.unisphe.re:8443
   managementServers:
     - endpoint: https://primary-1.unisphe.re:8443
       credentialsSecret: primary-1-secret
