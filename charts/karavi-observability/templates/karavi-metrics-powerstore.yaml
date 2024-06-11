@@ -47,7 +47,7 @@ spec:
         image: {{ .Values.karaviMetricsPowerstore.image }}
         resources: {}
         env:
-        - name: POWERSTORE_METRICS_ENDPOINT	
+        - name: POWERSTORE_METRICS_ENDPOINT
           value: "{{ .Values.karaviMetricsPowerstore.endpoint }}"
         - name: POWERSTORE_METRICS_NAMESPACE
           valueFrom:
@@ -90,4 +90,3 @@ spec:
 status: {}
 
 {{ end }}
-

@@ -24,7 +24,7 @@ jobs:
             URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files"
             FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
             echo $FILES | grep \.yaml && echo '::set-output name=run_tests::true' || true
- 
+
   # This job will run helm lint and version increment check on updated charts
   lint:
     runs-on: ubuntu-latest
@@ -35,10 +35,10 @@ jobs:
       # Check out the repo
       - name: Checkout
         uses: actions/checkout@v4
-        with: 
+        with:
          fetch-depth: "0"
-         
-      # Lint and version increment checks on updated charts   
+
+      # Lint and version increment checks on updated charts
       - name: Run lint/version increment checks
         id: versionIncrement
         # Bump to proper version after this issue is fixed : https://github.com/helm/chart-testing-action/issues/132
@@ -46,7 +46,7 @@ jobs:
         with:
           command: lint
           config: lintConfig.yaml
- 
+
  # This job checks that dependency versions have been updated on the karavi-observability chart
   dependency:
     runs-on: ubuntu-latest
@@ -57,9 +57,9 @@ jobs:
       # Check out the repo
       - name: Checkout
         uses: actions/checkout@v4
-        with: 
+        with:
          fetch-depth: "0"
-         
+
       # Run a check on karavi-observability chart for updated dependency versions
       - name: Run dependency version checks
         id: lint

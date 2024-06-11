@@ -15,11 +15,11 @@ version: 0.4.0
 appVersion: "0.4.0"
 
 dependencies:
-- name: cert-manager
-  version: 1.11.0
-  repository: https://charts.jetstack.io
-  condition: cert-manager.enabled
-- name: velero
-  version: 2.29.8
-  repository: https://vmware-tanzu.github.io/helm-charts
-  condition: velero.enabled
+  - name: cert-manager
+    version: 1.11.0
+    repository: https://charts.jetstack.io
+    condition: cert-manager.enabled
+  - name: velero
+    version: 2.29.8
+    repository: https://vmware-tanzu.github.io/helm-charts
+    condition: velero.enabled

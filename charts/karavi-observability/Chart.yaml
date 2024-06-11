@@ -5,7 +5,7 @@ description: CSM for Observability is part of the [Container Storage Modules](ht
 type: application
 version: 1.9.0
 dependencies:
-- name: cert-manager
-  version: 1.10.0
-  repository: https://charts.jetstack.io
-  condition: cert-manager.enabled
+  - name: cert-manager
+    version: 1.10.0
+    repository: https://charts.jetstack.io
+    condition: cert-manager.enabled

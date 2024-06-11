@@ -7,6 +7,6 @@ spec:
     fsGroupPolicy: {{ .Values.fsGroupPolicy }}
     attachRequired: true
     podInfoOnMount: true
-    volumeLifecycleModes: 
+    volumeLifecycleModes:
     - Persistent
     - Ephemeral

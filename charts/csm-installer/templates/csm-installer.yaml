@@ -150,7 +150,7 @@ spec:
         {{ if eq .Values.dbSSLEnabled "true" }}
         - name: dell-csm-installer-dbclient-certificates
           secret:
-            secretName: dell-csm-installer-dbclient-certificates            
+            secretName: dell-csm-installer-dbclient-certificates
         {{ end }}
         - name: csm-admin-creds
           secret:
