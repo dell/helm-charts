@@ -180,14 +180,14 @@ spec:
                 operator: In
                 values:
                 - {{ .Release.Name }}-controller
-            topologyKey: kubernetes.io/hostname        
+            topologyKey: kubernetes.io/hostname
       serviceAccountName: {{ .Release.Name }}-controller
       {{- if .Values.controller.nodeSelector }}
       nodeSelector:
       {{- toYaml .Values.controller.nodeSelector | nindent 8 }}
       {{- end }}
       {{- if .Values.controller.tolerations }}
-      tolerations: 
+      tolerations:
       {{- toYaml .Values.controller.tolerations | nindent 6 }}
       {{- end }}
       containers:
@@ -260,7 +260,7 @@ spec:
         {{- end }}
         {{- end }}
         - name: provisioner
-          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner }}	
+          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -285,7 +285,7 @@ spec:
             - name: POD_NAME
               valueFrom:
                 fieldRef:
-                  fieldPath: metadata.name  
+                  fieldPath: metadata.name
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi

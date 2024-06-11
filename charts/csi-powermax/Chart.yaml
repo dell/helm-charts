@@ -11,8 +11,8 @@ kubeVersion: ">= 1.23.0"
 # If you are using a complex K8s version like "v1.23.3-mirantis-1", use this kubeVersion check instead
 # WARNING: this version of the check will allow the use of alpha and beta versions, which is NOT SUPPORTED
 keywords:
-- csi
-- storage
+  - csi
+  - storage
 dependencies:
   - name: csireverseproxy
     version: 2.10.0
@@ -20,6 +20,6 @@ dependencies:
 home: https://github.com/dell/csi-powermax
 icon: https://avatars1.githubusercontent.com/u/20958494?s=200&v=4
 sources:
-- https://github.com/dell/csi-powermax
+  - https://github.com/dell/csi-powermax
 maintainers:
-- name: DellEMC
+  - name: DellEMC

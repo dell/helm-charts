@@ -16,7 +16,7 @@
 ## K8S/DRIVER ATTRIBUTES
 ###################################
 
-## CSI PowerStore 
+## CSI PowerStore
 ########################
 csi-powerstore:
   enabled: false
@@ -121,9 +121,9 @@ csi-powermax:
       - storageArrayId: "000000000001"
         endpoint: https://primary-1.unisphe.re:8443
         backupEndpoint: https://backup-1.unisphe.re:8443
-  #    - storageArrayId: "000000000002"
-  #      endpoint: https://primary-2.unisphe.re:8443
-  #      backupEndpoint: https://backup-2.unisphe.re:8443
+    #    - storageArrayId: "000000000002"
+    #      endpoint: https://primary-2.unisphe.re:8443
+    #      backupEndpoint: https://backup-2.unisphe.re:8443
     managementServers:
       - endpoint: https://primary-1.unisphe.re:8443
       - endpoint: https://backup-1.unisphe.re:8443
@@ -179,7 +179,6 @@ csi-powermax:
   storageCapacity:
     enabled: true
   maxPowerMaxVolumesPerNode: 0
-  
 
 ## CSI PowerScale
 ########################
@@ -316,7 +315,7 @@ csi-vxflexos:
     approveSDC:
       enabled: false
     tolerations:
-    # Uncomment if CSM for Resiliency and CSI Driver pods monitor is enabled 
+    # Uncomment if CSM for Resiliency and CSI Driver pods monitor is enabled
     # - key: "offline.vxflexos.storage.dell.com"
     #   operator: "Exists"
     #   effect: "NoSchedule"
@@ -344,8 +343,8 @@ csi-vxflexos:
   vgsnapshotter:
     enabled: false
   # maxVxflexosVolumesPerNode - Maximum number of volumes that controller can publish to the node.
-  maxVxflexosVolumesPerNode: 0  
-  
+  maxVxflexosVolumesPerNode: 0
+
   podmon:
     enabled: false
     controller:
@@ -397,13 +396,13 @@ csi-unity:
   # Allowed values:
   #   ReadWriteOnceWithFSType: supports volume ownership and permissions change only if the fsType is defined
   #   and the volume's accessModes contains ReadWriteOnce.
-  #   File: kubernetes may use fsGroup to change permissions and ownership of the volume 
+  #   File: kubernetes may use fsGroup to change permissions and ownership of the volume
   #   to match user requested fsGroup in the pod's security policy regardless of fstype or access mode.
   #   None: volumes will be mounted with no modifications.
   # Default value: ReadWriteOnceWithFSType
   fsGroupPolicy: ReadWriteOnceWithFSType
 
-  #To set nodeSelectors and tolerations for controller.
+  # To set nodeSelectors and tolerations for controller.
   # controller: configure controller pod specific parameters
   controller:
     controllerCount: 2
@@ -453,7 +452,7 @@ csi-unity:
     #  - key: "node.kubernetes.io/network-unavailable"
     #    operator: "Exists"
     #    effect: "NoExecute"
-    # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled 
+    # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled
     #  - key: "offline.vxflexos.storage.dell.com"
     #    operator: "Exists"
     #    effect: "NoSchedule"
@@ -534,5 +533,5 @@ karavi-observability:
 
 ## K8S/Cert-manager ATTRIBUTES
 ########################
-cert-manager: 
+cert-manager:
   enabled: false
