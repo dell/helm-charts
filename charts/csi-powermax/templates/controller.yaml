@@ -90,8 +90,8 @@ rules:
     verbs: [ "get", "patch", "update" ]
   - apiGroups: [""]
     resources: ["configmaps"]
-    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]  
-  {{- end}} 
+    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
+  {{- end}}
   # Permissions for Storage Capacity
   {{- if eq (include "csi-powermax.isStorageCapacitySupported" .) "true" }}
   - apiGroups: ["storage.k8s.io"]
@@ -144,6 +144,8 @@ spec:
       name: {{ .Release.Name }}-controller
   template:
     metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: "driver"
       labels:
         name: {{ .Release.Name }}-controller
     spec:
@@ -214,7 +216,7 @@ spec:
             - name: socket-dir
               mountPath: /var/run/csi
         {{- if hasKey .Values.controller "snapshot" }}
-        {{- if eq .Values.controller.snapshot.enabled true }}      
+        {{- if eq .Values.controller.snapshot.enabled true }}
         - name: snapshotter
           image: {{ required "Must provide the CSI snapshotter container image." .Values.images.snapshotter }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -283,7 +285,7 @@ spec:
               mountPath: /var/run/csi
             - name: powermax-config-params
               mountPath: /powermax-config-params
-        {{- end }}  
+        {{- end }}
         {{- if hasKey .Values.controller "resizer" }}
         {{- if eq .Values.controller.resizer.enabled true }}
         - name: resizer
@@ -418,7 +420,7 @@ spec:
             - name: X_CSI_REPLICATION_PREFIX
               value: {{ .Values.replication.replicationPrefix | default "replication.storage.dell.com"}}
             - name: X_CSI_MIGRATION_PREFIX
-              value: {{ .Values.migration.migrationPrefix | default "migration.storage.dell.com"}}  
+              value: {{ .Values.migration.migrationPrefix | default "migration.storage.dell.com"}}
             - name: X_CSI_UNISPHERE_TIMEOUT
               value: {{.Values.unisphereTimeout | default "5m"}}
             {{- if hasKey .Values.controller "healthMonitor" }}

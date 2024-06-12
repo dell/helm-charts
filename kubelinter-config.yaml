@@ -54,7 +54,7 @@ checks:
   # NOTE: manually exclude failing for documentation, fix them in future or
   # comment why are they disabled.
   exclude:
-    - "access-to-secrets" # NOTE: COSI Provisioner Sidecar requires access to secrets
+    - "access-to-secrets"  # NOTE: COSI Provisioner Sidecar requires access to secrets
     - "dnsconfig-options"
     - "minimum-three-replicas"
     - "no-liveness-probe"

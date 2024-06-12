@@ -16,14 +16,14 @@
 ## K8S/DRIVER ATTRIBUTES
 ###################################
 
-## CSI PowerStore 
+## CSI PowerStore
 ########################
 csi-powerstore:
   enabled: false
-  version: "v2.10.0"
+  version: "v2.11.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-powerstore:v2.10.0
+    driver: dellemc/csi-powerstore:v2.11.0
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
@@ -33,10 +33,10 @@ csi-powerstore:
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
 
     # CSM sidecars
-    replication: dellemc/dell-csi-replicator:v1.8.0
-    vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.5.0
-    podmon: dellemc/podmon:v1.9.0
-    metadataretriever: dellemc/csi-metadata-retriever:v1.7.2
+    replication: dellemc/dell-csi-replicator:v1.9.0
+    vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.6.0
+    podmon: dellemc/podmon:v1.10.0
+    metadataretriever: dellemc/csi-metadata-retriever:v1.8.0
   ## Controller ATTRIBUTES
   controller:
     controllerCount: 2
@@ -121,19 +121,19 @@ csi-powermax:
       - storageArrayId: "000000000001"
         endpoint: https://primary-1.unisphe.re:8443
         backupEndpoint: https://backup-1.unisphe.re:8443
-  #    - storageArrayId: "000000000002"
-  #      endpoint: https://primary-2.unisphe.re:8443
-  #      backupEndpoint: https://backup-2.unisphe.re:8443
+    #    - storageArrayId: "000000000002"
+    #      endpoint: https://primary-2.unisphe.re:8443
+    #      backupEndpoint: https://backup-2.unisphe.re:8443
     managementServers:
       - endpoint: https://primary-1.unisphe.re:8443
       - endpoint: https://backup-1.unisphe.re:8443
   #    - endpoint: https://primary-2.unisphe.re:8443
   #    - endpoint: https://backup-2.unisphe.re:8443
-  version: "v2.10.0"
+  version: "v2.11.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-powermax:v2.10.0
-    csireverseproxy: dellemc/csipowermax-reverseproxy:v2.9.0
+    driver: dellemc/csi-powermax:v2.11.0
+    csireverseproxy: dellemc/csipowermax-reverseproxy:v2.10.0
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
@@ -142,10 +142,10 @@ csi-powermax:
     registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
     # CSM sidecars
-    replication: dellemc/dell-csi-replicator:v1.8.0
-    authorization: dellemc/csm-authorization-sidecar:v1.10.0
-    migration: dellemc/dell-csi-migrator:v1.3.0
-    noderescan: dellemc/dell-csi-node-rescanner:v1.2.0
+    replication: dellemc/dell-csi-replicator:v1.9.0
+    authorization: dellemc/csm-authorization-sidecar:v1.11.0
+    migration: dellemc/dell-csi-migrator:v1.4.0
+    noderescan: dellemc/dell-csi-node-rescanner:v1.3.0
   clusterPrefix: ABC
   portGroups: PortGroup1, PortGroup2, PortGroup3
   controller:
@@ -179,16 +179,15 @@ csi-powermax:
   storageCapacity:
     enabled: true
   maxPowerMaxVolumesPerNode: 0
-  
 
 ## CSI PowerScale
 ########################
 csi-isilon:
   enabled: false
-  version: "v2.10.0"
+  version: "v2.11.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-isilon:v2.10.0
+    driver: dellemc/csi-isilon:v2.11.0
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
@@ -197,10 +196,10 @@ csi-isilon:
     registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
     # CSM sidecars
-    replication: dellemc/dell-csi-replicator:v1.8.0
-    podmon: dellemc/podmon:v1.9.0
-    authorization: dellemc/csm-authorization-sidecar:v1.10.0
-    metadataretriever: dellemc/csi-metadata-retriever:v1.7.2
+    replication: dellemc/dell-csi-replicator:v1.9.0
+    podmon: dellemc/podmon:v1.10.0
+    authorization: dellemc/csm-authorization-sidecar:v1.11.0
+    metadataretriever: dellemc/csi-metadata-retriever:v1.8.0
     encryption: dellemc/csm-encryption:v0.3.0
   ## Controller ATTRIBUTES
   controller:
@@ -276,10 +275,10 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
-  version: v2.10.0
+  version: v2.11.0
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-vxflexos:v2.10.0
+    driver: dellemc/csi-vxflexos:v2.11.0
     # "powerflexSdc" defines the SDC image for init container.
     powerflexSdc: dellemc/sdc:4.5.1
     # CSI sidecars
@@ -290,10 +289,10 @@ csi-vxflexos:
     registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
     # CSM sidecars
-    replication: dellemc/dell-csi-replicator:v1.8.0
-    vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.5.0
-    podmon: dellemc/podmon:v1.9.0
-    authorization: dellemc/csm-authorization-sidecar:v1.10.0
+    replication: dellemc/dell-csi-replicator:v1.9.0
+    vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.6.0
+    podmon: dellemc/podmon:v1.10.0
+    authorization: dellemc/csm-authorization-sidecar:v1.11.0
   certSecretCount: 0
   controller:
     replication:
@@ -316,7 +315,7 @@ csi-vxflexos:
     approveSDC:
       enabled: false
     tolerations:
-    # Uncomment if CSM for Resiliency and CSI Driver pods monitor is enabled 
+    # Uncomment if CSM for Resiliency and CSI Driver pods monitor is enabled
     # - key: "offline.vxflexos.storage.dell.com"
     #   operator: "Exists"
     #   effect: "NoSchedule"
@@ -344,8 +343,8 @@ csi-vxflexos:
   vgsnapshotter:
     enabled: false
   # maxVxflexosVolumesPerNode - Maximum number of volumes that controller can publish to the node.
-  maxVxflexosVolumesPerNode: 0  
-  
+  maxVxflexosVolumesPerNode: 0
+
   podmon:
     enabled: false
     controller:
@@ -368,17 +367,17 @@ csi-vxflexos:
         - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.10.0
+    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.11.0
     proxyHost:
 
 ## CSI Unity
 ########################
 csi-unity:
   enabled: false
-  version: "v2.10.0"
+  version: "v2.11.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-unity:v2.10.0
+    driver: dellemc/csi-unity:v2.11.0
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
@@ -387,7 +386,7 @@ csi-unity:
     registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
     # CSM sidecars
-    podmon: dellemc/podmon:v1.9.0
+    podmon: dellemc/podmon:v1.10.0
   # certSecretCount: Represents number of certificate secrets, which user is going to create for
   # ssl authentication. (unity-cert-0..unity-cert-n)
   # Allowed values: n, where n > 0
@@ -397,13 +396,13 @@ csi-unity:
   # Allowed values:
   #   ReadWriteOnceWithFSType: supports volume ownership and permissions change only if the fsType is defined
   #   and the volume's accessModes contains ReadWriteOnce.
-  #   File: kubernetes may use fsGroup to change permissions and ownership of the volume 
+  #   File: kubernetes may use fsGroup to change permissions and ownership of the volume
   #   to match user requested fsGroup in the pod's security policy regardless of fstype or access mode.
   #   None: volumes will be mounted with no modifications.
   # Default value: ReadWriteOnceWithFSType
   fsGroupPolicy: ReadWriteOnceWithFSType
 
-  #To set nodeSelectors and tolerations for controller.
+  # To set nodeSelectors and tolerations for controller.
   # controller: configure controller pod specific parameters
   controller:
     controllerCount: 2
@@ -453,7 +452,7 @@ csi-unity:
     #  - key: "node.kubernetes.io/network-unavailable"
     #    operator: "Exists"
     #    effect: "NoExecute"
-    # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled 
+    # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled
     #  - key: "offline.vxflexos.storage.dell.com"
     #    operator: "Exists"
     #    effect: "NoSchedule"
@@ -534,5 +533,5 @@ karavi-observability:
 
 ## K8S/Cert-manager ATTRIBUTES
 ########################
-cert-manager: 
+cert-manager:
   enabled: false

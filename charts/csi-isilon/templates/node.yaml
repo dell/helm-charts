@@ -75,6 +75,8 @@ spec:
       app: {{ .Release.Name }}-node
   template:
     metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: "driver"
       labels:
         app: {{ .Release.Name }}-node
 {{- if .Values.podmon.enabled }}

@@ -154,6 +154,8 @@ spec:
       maxUnavailable: 1
   template:
     metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: "driver"
       labels:
         app: {{ .Release.Name }}-controller
     spec:
@@ -271,7 +273,7 @@ spec:
               mountPath: /var/run/csi
         {{ end }}
         {{ end }}
-        - name: csi-metadata-retriever {{ $csiSidecarSuffix }}
+        - name: csi-metadata-retriever{{ $csiSidecarSuffix }}
           image: {{ required "Must provide the CSI metadata retriever container image." .Values.images.metadataretriever }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
@@ -281,7 +283,7 @@ spec:
           command: [ "/csi-metadata-retriever" ]
           env:
             - name: CSI_RETRIEVER_ENDPOINT
-              value: /var/run/csi/csi_retriever.sock
+              value: /var/run/csi/csi_retriever{{ $csiSidecarSuffix }}.sock
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
