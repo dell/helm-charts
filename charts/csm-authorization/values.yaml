@@ -25,6 +25,9 @@ authorization:
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
+  # controllerReconcileInterval: interval for the authorization controllers to reconcile with Redis.
+  controllerReconcileInterval: 5m
+
   # Base hostname for the ingress rules that expose the services
   # the proxy-server ingress will use this hostname
   # the role-service ingress will use role.hostname

@@ -89,6 +89,7 @@ spec:
           - "--tenant-service-address=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--storage-service-address=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--role-service-address=role-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
+          - "--controller-reconcile-interval={{ .Values.authorization.controllerReconcileInterval  }}"
         env:
           - name: NAMESPACE
             value: {{ include "custom.namespace" . }}
