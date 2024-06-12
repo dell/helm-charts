@@ -171,7 +171,6 @@ spec:
         kubectl.kubernetes.io/default-container: "driver"
     spec:
       affinity:
-        nodeSelector:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
