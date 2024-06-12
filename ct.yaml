@@ -1,0 +1,7 @@
+# See https://github.com/helm/chart-testing#configuration
+remote: origin
+target-branch: main
+# Not executed on installation-wizard because of the dependency on other charts
+chart-dirs:
+  - charts
+validate-maintainers: false
