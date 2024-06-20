@@ -33,10 +33,10 @@ certSecretCount: 1
 
 # allowedNetworks: Custom networks for Unity export
 # Specify list of networks which can be used for NFS I/O traffic; CIDR format should be used.
-# Allowed values: list of one or more networks
+# Allowed values: list of one or more networks (comma separated)
 # Default value: None
-# Examples: [192.168.1.0/24, 192.168.100.0/22]
-allowedNetworks: []
+# Examples: 192.168.1.0/24, 192.168.100.0/22
+allowedNetworks:
 
 # imagePullPolicy: Policy to determine if the image should be pulled prior to starting the container.
 # Allowed values:
