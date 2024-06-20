@@ -3,8 +3,8 @@ name: csi-isilon
 version: 2.10.1
 appVersion: "2.10.1"
 kubeVersion: ">= 1.23.0"
-#If you are using a complex K8s version like "v1.23.3-mirantis-1", use this kubeVersion check instead
-#kubeVersion: ">= 1.23.0-0"
+# If you are using a complex K8s version like "v1.23.3-mirantis-1", use this kubeVersion check instead
+# kubeVersion: ">= 1.23.0-0"
 description: |
   PowerScale CSI (Container Storage Interface) driver Kubernetes
   integration. This chart includes everything required to provision via CSI as
