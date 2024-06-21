@@ -82,54 +82,6 @@ spec:
           name: {{ .Values.redis.name }}
         volumeMounts:
         - name: redis-primary-volume
-<<<<<<< HEAD
-          persistentVolumeClaim:
-            claimName: redis-primary-pv-claim
----
-{{- if not (.Values.storageClass) }}
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: csm-authorization-local-storage
-provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: WaitForFirstConsumer
-
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: csm-authorization-redis
-spec:
-  capacity:
-    storage: 8Gi
-  volumeMode: Filesystem
-  accessModes:
-  - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Recycle
-  storageClassName: csm-authorization-local-storage
-  hostPath:
-    path: /csm-authorization/redis
-{{- end}}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: redis-primary-pv-claim
-  namespace: {{ include "custom.namespace" . }}
-  labels:
-    app: redis-primary
-spec:
-  accessModes:
-    - ReadWriteOnce
-  {{- if (.Values.storageClass) }}
-  storageClassName: {{.Values.storageClass }}
-  {{ else }}
-  storageClassName: csm-authorization-local-storage
-  {{- end}}
-  resources:
-    requests:
-      storage: 8Gi
-=======
           mountPath: /data
         - name: configmap
           mountPath: /csm-auth-redis-cm/
@@ -143,7 +95,6 @@ spec:
       - name: configmap
         configMap:
           name: redis-csm-cm          
->>>>>>> 3fca425 (Sreekb/krv 17923 gitops (#419))
 ---
 apiVersion: apps/v1
 kind: Deployment
