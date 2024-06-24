@@ -17,10 +17,10 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v1.10.0
-    tenantService: dellemc/csm-authorization-tenant:v1.10.0
-    roleService: dellemc/csm-authorization-role:v1.10.0
-    storageService: dellemc/csm-authorization-storage:v1.10.0
+    proxyService: dellemc/csm-authorization-proxy:v2.0.0-alpha
+    tenantService: dellemc/csm-authorization-tenant:v2.0.0-alpha
+    roleService: dellemc/csm-authorization-role:v2.0.0-alpha
+    storageService: dellemc/csm-authorization-storage:v2.0.0-alpha
     authorizationController: dellemc/csm-authorization-controller:v2.0.0-alpha
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
@@ -50,7 +50,7 @@ authorization:
 
     # additional host rules for the proxy-server ingress
     hosts: []
-      # - application-ingress-nginx-controller.namespace.svc.cluster.local
+      # - [application name]-ingress-nginx-controller.[namespace].svc.cluster.local
 
     # additional annotations for the proxy-server ingress
     annotations: {}
