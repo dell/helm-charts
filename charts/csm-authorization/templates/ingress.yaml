@@ -3,14 +3,19 @@ kind: Ingress
 metadata:
   name: proxy-server
   namespace: {{ include "custom.namespace" . }}
-  {{- if .Values.authorization.proxyServerIngress.annotations }}
   annotations:
+    {{- if eq .Values.openshift true }}
+    route.openshift.io/termination: "edge"
+    {{- end }}
+    {{- if .Values.authorization.proxyServerIngress.annotations }}
     {{- range $key, $value := .Values.authorization.proxyServerIngress.annotations }}
     {{ $key }}: {{ tpl $value $ | quote }}
     {{- end }}
   {{- end }}
 spec:
+  {{- if eq .Values.nginx.enabled true }}
   ingressClassName: {{ .Values.authorization.proxyServerIngress.ingressClassName }}
+  {{- end }}
   tls:
   - hosts:
       - {{ .Values.authorization.hostname }}
@@ -28,25 +33,25 @@ spec:
   - host: {{ .Values.authorization.hostname }}
     http:
       paths:
-        - path: /
-          pathType: Prefix
-          backend:
+        - backend:
             service:
               name: proxy-server
               port:
                 number: 8080
+          path: /
+          pathType: Prefix
   {{- if .Values.authorization.proxyServerIngress.hosts  }}
   {{- range .Values.authorization.proxyServerIngress.hosts }}
   - host: {{ tpl . $}}
     http:
       paths:
-        - path: /
-          pathType: Prefix
-          backend:
+        - backend:
             service:
               name: proxy-server
               port:
                 number: 8080
+          path: /
+          pathType: Prefix
   {{- end }}
   {{- end }}
   - http:
