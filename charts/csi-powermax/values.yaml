@@ -276,11 +276,11 @@ enableCHAP: false
 
 # csireverseproxy: Refers to the subchart csireverseproxy
 csireverseproxy:
-  # "tlsSecret" defines the TLS secret that is created with certificate
+  # "tlsCertSecret" defines the TLS secret that is created with certificate
   # and its associated key
   # Default value: None
   # Example: "tls-secret"
-  tlsSecret: csirevproxy-tls-secret
+  tlsCertSecret: csirevproxy-tls-secret
   # Set enabled to true if you want to deploy csireverseproxy as sidecar
   # Allowed values:
   #   "true"  - CSI reverse proxy will be deployed as a sidecar
