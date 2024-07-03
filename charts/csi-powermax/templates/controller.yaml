@@ -446,17 +446,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.vSphere.vCenterCredSecret }}
                   key: password
-            - name: X_CSI_CSIREVPROXY_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.csireverseproxy.tlsCertSecret }}
-                  key: username
-            - name: X_CSI_CSIREVPROXY_PWD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.csireverseproxy.tlsCertSecret }}
-                  key: password
-            {{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
