@@ -30,6 +30,16 @@ spec:
               value: /app/tls
             - name: X_CSI_REVPROXY_WATCH_NAMESPACE
               value: {{ .Release.Namespace }}
+            - name: X_CSI_CSIREVPROXY_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.csireverseproxy.tlsCertSecret }}
+                  key: username
+            - name: X_CSI_CSIREVPROXY_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.csireverseproxy.tlsCertSecret }}
+                  key: password
           volumeMounts:
             - name: configmap-volume
               mountPath: /etc/config/configmap
@@ -41,10 +51,7 @@ spec:
         - name: configmap-volume
           configMap:
             name: {{ .Release.Name }}-reverseproxy-config
-            optional: true
-        - name: tls-secret
-          secret:
-            secretName: {{ .Values.tlsSecret }}
+            optional: true        
         - name: cert-dir
           emptyDir:
 {{- end }}
