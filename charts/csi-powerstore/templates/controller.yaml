@@ -438,7 +438,7 @@ spec:
             - name: GOPOWERSTORE_DEBUG
               value: "true"
             - name: CSI_AUTO_ROUND_OFF_FILESYSTEM_SIZE
-              value: "{{ .Values.allowAutoRoundOffFilesystemSize | default false }}"
+              value: "{{ .Values.allowAutoRoundOffFilesystemSize | default true }}"
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
