@@ -306,7 +306,7 @@ logFormat: "JSON"
 fsGroupPolicy: ReadWriteOnceWithFSType
 
 # Allows the controller to round off filesystem to 3Gi which is the minimum supported value
-allowAutoRoundOffFilesystemSize: false
+allowAutoRoundOffFilesystemSize: true
 
 # Storage Capacity Tracking
 # Note: Capacity tracking is supported in kubernetes v1.24 and above, this feature will be automatically disabled in older versions.
