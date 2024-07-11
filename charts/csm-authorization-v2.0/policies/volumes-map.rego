@@ -1,4 +1,4 @@
-# Copyright © 2023 Dell Inc., or its subsidiaries. All Rights Reserved.
+# Copyright © 2022 Dell Inc., or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,12 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package karavi.sdc.approve
+package karavi.volumes.map
 
 import data.karavi.common
-
-# Allow requests by default.
-default allow = true
 
 default response = {
 	"allowed": true
@@ -30,6 +27,11 @@ response = {
 } {
     reason = concat(", ", deny)
     reason != ""
+}
+
+deny[msg] {
+  common.roles == {}
+  msg := sprintf("no role data found", [])
 }
 
 default claims = {}

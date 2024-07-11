@@ -1,9 +1,0 @@
-redis:
-  name: redis-csm
-  sentinel: sentinel
-  rediscommander: rediscommander
-  replicas: 5
-  images:
-    redis: redis:7.2.4-alpine
-    commander: rediscommander/redis-commander:latest
- 
