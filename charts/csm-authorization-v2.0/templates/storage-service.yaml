@@ -70,13 +70,13 @@ spec:
         imagePullPolicy: Always
         env:
           {{- $str := "" -}}
-          {{- $ns := include "custom.namespace" . -}} 
+          {{- $ns := include "custom.namespace" . -}}
           {{- $replicas := .Values.redis.replicas | int }}
           {{- $sentinel := .Values.redis.sentinel }}
-          {{- range $i, $e := until $replicas }} 
-          {{- if $i }}         
+          {{- range $i, $e := until $replicas }}
+          {{- if $i }}
           {{- $str = print $str "," -}}
-          {{- end }}           
+          {{- end }}
           {{- $str = printf "%s%s-%d.%s.%s.svc.cluster.local:5000" $str $sentinel $i $sentinel $ns -}}
           {{- end }}
           - name: REDIS_PASSWORD
