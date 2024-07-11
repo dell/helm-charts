@@ -42,7 +42,7 @@ deny[msg] {
 #
 default claims = {}
 claims = input.claims
-deny[msg] {                                                                                       
+deny[msg] {
   claims == {}
   msg := sprintf("missing claims", [])
 }

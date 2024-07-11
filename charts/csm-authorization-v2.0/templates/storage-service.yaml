@@ -1,0 +1,199 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: storage-service
+rules:
+  - apiGroups: [""]
+    resources: ["secrets", "events"]
+    verbs: ["get", "patch","post", create]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["storages", "csmtenants", "csmroles"]
+    verbs: ["get", "list"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["create", "update", "get", "list"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: storage-service
+subjects:
+  - kind: ServiceAccount
+    name: storage-service
+    namespace: {{ include "custom.namespace" . }}
+roleRef:
+  kind: ClusterRole
+  name: storage-service
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: storage-service-tokenreview-binding
+  namespace: {{ include "custom.namespace" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+  - kind: ServiceAccount
+    name: storage-service
+    namespace: {{ include "custom.namespace" . }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app: storage-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: storage-service
+  template:
+    metadata:
+      labels:
+        app: storage-service
+    spec:
+      serviceAccountName: storage-service
+      containers:
+      - name: storage-service
+        image: {{ required "Must provide the storage-service image." .Values.authorization.images.storageService }}
+        imagePullPolicy: Always
+        env:
+          {{- $str := "" -}}
+          {{- $ns := include "custom.namespace" . -}} 
+          {{- $replicas := .Values.redis.replicas | int }}
+          {{- $sentinel := .Values.redis.sentinel }}
+          {{- range $i, $e := until $replicas }} 
+          {{- if $i }}         
+          {{- $str = print $str "," -}}
+          {{- end }}           
+          {{- $str = printf "%s%s-%d.%s.%s.svc.cluster.local:5000" $str $sentinel $i $sentinel $ns -}}
+          {{- end }}
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-csm-secret
+                key: password
+        args:
+          - "--vault-address={{ .Values.vault.address }}"
+          - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
+          - "--vault-role={{ .Values.vault.role }}"
+          - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
+          - "--redis-sentinel={{ $str }}"
+          - "--redis-password=$(REDIS_PASSWORD)"
+          - "--leader-election=true"
+        ports:
+        - containerPort: 50051
+          name: grpc
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/karavi-authorization/config
+        - name: csm-config-params
+          mountPath: /etc/karavi-authorization/csm-config-params
+        - name: vault-client-certificate
+          mountPath: /etc/vault
+      volumes:
+      - name: config-volume
+        secret:
+          secretName: karavi-config-secret
+      - name: csm-config-params
+        configMap:
+          name: csm-config-params
+      - name: vault-client-certificate
+        projected:
+          sources:
+        {{- if and (.Values.vault.clientCertificate) (.Values.vault.clientKey) }}
+          - secret:
+              name: vault-client-certificate
+        {{- else }}
+          - secret:
+              name: storage-service-selfsigned-tls
+        {{- end }}
+        {{- if .Values.vault.certificateAuthority }}
+          - secret:
+              name: vault-certificate-authority
+        {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  selector:
+    app: storage-service
+  ports:
+  - port: 50051
+    targetPort: 50051
+    name: grpc
+---
+{{- if .Values.vault.certificateAuthority }}
+{{- $certificateFileContents := .Values.vault.certificateAuthority }}
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: vault-certificate-authority
+  namespace: {{ include "custom.namespace" . }}
+data:
+  ca.crt: {{ $certificateFileContents | b64enc }}
+{{- end }}
+---
+{{- if and (.Values.vault.clientCertificate) (.Values.vault.clientKey) }}
+{{- $certificateFileContents := .Values.vault.clientCertificate }}
+{{- $keyFileContents := .Values.vault.clientKey }}
+apiVersion: v1
+data:
+  tls.crt: {{ $certificateFileContents | b64enc }}
+  tls.key: {{ $keyFileContents | b64enc }}
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: vault-client-certificate
+  namespace: {{ include "custom.namespace" . }}
+{{- else }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: storage-service-selfsigned
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: storage-service-selfsigned
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  secretName: storage-service-selfsigned-tls
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - dellemc
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - client auth
+  dnsNames:
+  - csm-authorization-storage-service
+  issuerRef:
+    name: storage-service-selfsigned
+    kind: Issuer
+    group: cert-manager.io
+{{- end }}

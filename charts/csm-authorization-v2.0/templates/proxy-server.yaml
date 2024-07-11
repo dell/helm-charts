@@ -39,6 +39,37 @@ subjects:
   name: system:serviceaccounts:{{ include "custom.namespace" . }}
   apiGroup: rbac.authorization.k8s.io
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: proxy-server
+  namespace: {{ include "custom.namespace" . }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: proxy-server
+rules:
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["watch"]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["storages", "csmtenants"]
+    verbs: ["get", "list"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: proxy-server
+subjects:
+  - kind: ServiceAccount
+    name: proxy-server
+    namespace: {{ include "custom.namespace" . }}
+roleRef:
+  kind: ClusterRole
+  name: proxy-server
+  apiGroup: rbac.authorization.k8s.io
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -56,12 +87,31 @@ spec:
       labels:
         app: proxy-server
     spec:
+      serviceAccount: proxy-server
       containers:
+      
       - name: proxy-server
-        image:  {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}
+        image: {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService }}
         imagePullPolicy: Always
-        args:
-          - "--redis-host=redis.{{ .Release.Namespace }}.svc.cluster.local:6379"
+        env:
+          {{- $str := "" -}}
+          {{- $ns := include "custom.namespace" . -}} 
+          {{- $replicas := .Values.redis.replicas | int }}
+          {{- $sentinel := .Values.redis.sentinel }}
+          {{- range $i, $e := until $replicas }} 
+          {{- if $i }}         
+          {{- $str = print $str "," -}}
+          {{- end }}           
+          {{- $str = printf "%s%s-%d.%s.%s.svc.cluster.local:5000" $str $sentinel $i $sentinel $ns -}}
+          {{- end }}
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-csm-secret
+                key: password
+        args:           
+          - "--redis-sentinel={{ $str }}"
+          - "--redis-password=$(REDIS_PASSWORD)"
           - "--tenant-service=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--role-service=role-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
           - "--storage-service=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"

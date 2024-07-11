@@ -1,7 +1,13 @@
 ---
-# if enabled, nginx ingress controller will be deployed
+# set to true if installing on an OpenShift Container Platform
+# if enabled, the OpenShift Ingress Operator will be used
 # if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
-ingress-nginx:
+openshift: false
+
+# set to true if installing on a Kubernetes Container Platform
+# if enabled, NGINX Ingress Controller will be deployed
+# if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
+nginx:
   enabled: true
 
 # if enabled, cert-manager will be deployed
@@ -12,10 +18,11 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v1.11.0
-    tenantService: dellemc/csm-authorization-tenant:v1.11.0
-    roleService: dellemc/csm-authorization-role:v1.11.0
-    storageService: dellemc/csm-authorization-storage:v1.11.0
+    proxyService: dellemc/csm-authorization-proxy:v2.0.0-alpha
+    tenantService: dellemc/csm-authorization-tenant:v2.0.0-alpha
+    roleService: dellemc/csm-authorization-role:v2.0.0-alpha
+    storageService: dellemc/csm-authorization-storage:v2.0.0-alpha
+    authorizationController: dellemc/csm-authorization-controller:v2.0.0-alpha
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
@@ -45,17 +52,25 @@ authorization:
     # additional host rules for the proxy-server ingress
     hosts:
       []
-      # - application-ingress-nginx-controller.namespace.svc.cluster.local
+      # - [application name]-ingress-nginx-controller.[namespace].svc.cluster.local
 
     # additional annotations for the proxy-server ingress
     annotations: {}
 
+  # storage capacity poll interval
+  storageCapacityPollInterval: 5m
+
 redis:
+  name: redis-csm
+  sentinel: sentinel
+  rediscommander: rediscommander
+  replicas: 5
   images:
-    redis: redis:6.0.8-alpine
+    redis: redis:7.2.4-alpine
     commander: rediscommander/redis-commander:latest
 
-  # by default, csm-authorization will deploy a local (https://kubernetes.io/docs/concepts/storage/storage-classes/#local) volume for redis
-  # to use a different storage class for redis, uncomment the following line and specify the name of the storage class
-  # NOTE: the storage class must NOT be a storage class provisioned by a CSI driver to be configured with this instance of CSM Authorization
-  # storageClass:
+vault:
+  address: https://10.0.0.1:8400
+  kvEnginePath: secret
+  role: csm-authorization
+  skipCertificateValidation: true
