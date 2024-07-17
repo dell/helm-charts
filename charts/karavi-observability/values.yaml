@@ -39,9 +39,10 @@ karaviMetricsPowerflex:
   logFormat: text
   authorization:
     enabled: false
-    # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
+    # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
     # Default value: dellemc/csm-authorization-sidecar:v1.10.1
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.10.1
+    sidecarProxy:
+      image: dellemc/csm-authorization-sidecar:v1.10.1
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -115,9 +116,10 @@ karaviMetricsPowerscale:
     isiLogVerbose: 0
   authorization:
     enabled: false
-    # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
+    # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
     # Default value: dellemc/csm-authorization-sidecar:v1.10.1
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.10.1
+    sidecarProxy:
+      image: dellemc/csm-authorization-sidecar:v1.10.1
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -152,9 +154,10 @@ karaviMetricsPowermax:
   logFormat: text
   authorization:
     enabled: false
-    # sidecarProxyImage: the container image used for the csm-authorization-sidecar.
+    # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
     # Default value: dellemc/csm-authorization-sidecar:v1.10.1
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.10.1
+    sidecarProxy:
+      image: dellemc/csm-authorization-sidecar:v1.10.1
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:

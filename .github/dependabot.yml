@@ -5,6 +5,87 @@
 
 version: 2
 updates:
+  # cosi packages
+  - package-ecosystem: docker
+    directories:
+      - /charts/cosi
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      cosi:
+        patterns:
+          - "*"
+
+  # csi-isilon packages
+  - package-ecosystem: docker
+    directories:
+      - /charts/csi-isilon
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      csi-isilon:
+        patterns:
+          - "*"
+  
+    # csi-powermax packages
+  - package-ecosystem: docker
+    directories:
+      - /charts/csi-powermax
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      csi-powermax:
+        patterns:
+          - "*"
+
+  # csi-powerstore packages
+  - package-ecosystem: docker
+    directories:
+      - /charts/csi-powerstore
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      csi-powerstore:
+        patterns:
+          - "*"
+
+  # csi-unity packages
+  - package-ecosystem: docker
+    directories:
+      - /charts/csi-unity
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      csi-unity:
+        patterns:
+          - "*"
+
+  # csi-vxflexos packages
   - package-ecosystem: docker
     directories:
       - /charts/csi-vxflexos
@@ -19,6 +100,24 @@ updates:
       csi-vxflexos:
         patterns:
           - "*"
+  
+  # csm-application-mobility packages
+  - package-ecosystem: docker
+    directories:
+      - /charts/csm-application-mobility
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      csm-application-mobility:
+        patterns:
+          - "*"
+
+  # csm-authorization packages
   - package-ecosystem: docker
     directories:
       - /charts/csm-authorization
@@ -33,9 +132,11 @@ updates:
       csm-authorization:
         patterns:
           - "*"
+  
+  # csm-encryption-rekey-controller packages
   - package-ecosystem: docker
     directories:
-      - /charts/csm-application-mobility
+      - /charts/csm-encryption-rekey-controller
     labels:
       - dependencies
     schedule:
@@ -44,6 +145,54 @@ updates:
       # at 6pm UTC
       time: "18:00"
     groups:
-      csm-application-mobility:
+      csm-encryption-rekey-controller:
+        patterns:
+          - "*"
+
+  # csm-installer packages
+  - package-ecosystem: docker
+    directories:
+      - /charts/csm-installer
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      csm-installer:
+        patterns:
+          - "*"
+
+  # csm-replication packages
+  - package-ecosystem: docker
+    directories:
+      - /charts/csm-replication
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      csm-replication:
+        patterns:
+          - "*"
+
+  # karavi-observability packages
+  - package-ecosystem: docker
+    directories:
+      - /charts/karavi-observability
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      karavi-observability:
         patterns:
           - "*"
