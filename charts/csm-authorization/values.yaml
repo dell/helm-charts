@@ -11,12 +11,18 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v1.10.1
-    tenantService: dellemc/csm-authorization-tenant:v1.10.1
-    roleService: dellemc/csm-authorization-role:v1.10.1
-    storageService: dellemc/csm-authorization-storage:v1.10.1
-    opa: openpolicyagent/opa
-    opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
+    proxyService:
+      image: dellemc/csm-authorization-proxy:v1.10.1
+    tenantService:
+      image: dellemc/csm-authorization-tenant:v1.10.1
+    roleService:
+      image: dellemc/csm-authorization-role:v1.10.1
+    storageService:
+      image: dellemc/csm-authorization-storage:v1.10.1
+    opa:
+      image: openpolicyagent/opa
+    opaKubeMgmt:
+      image: openpolicyagent/kube-mgmt:0.11
 
   # proxy-server ingress will use this hostname
   # NOTE: additional hostnames can be configured in authorization.proxyServerIngress.hosts
@@ -49,8 +55,10 @@ authorization:
 
 redis:
   images:
-    redis: redis:6.0.8-alpine
-    commander: rediscommander/redis-commander:latest
+    redis:
+      image: redis:6.0.8-alpine
+    commander:
+      image: rediscommander/redis-commander:latest
 
   # by default, csm-authorization will deploy a local (https://kubernetes.io/docs/concepts/storage/storage-classes/#local) volume for redis
   # to use a different storage class for redis, uncomment the following line and specify the name of the storage class
