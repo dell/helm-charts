@@ -7,7 +7,7 @@ version: 2
 updates:
   - package-ecosystem: docker
     directories:
-      - /charts/csi*
+      - /charts/csi-vxflexos
     labels:
       - dependencies
     schedule:
@@ -16,13 +16,12 @@ updates:
       # at 6pm UTC
       time: "18:00"
     groups:
-      csi:
+      csi-vxflexos:
         patterns:
           - "*"
   - package-ecosystem: docker
     directories:
-      - /charts/csm*
-      - /charts/karavi*
+      - /charts/csm-authorization
     labels:
       - dependencies
     schedule:
@@ -31,12 +30,12 @@ updates:
       # at 6pm UTC
       time: "18:00"
     groups:
-      csm:
+      csm-authorization:
         patterns:
           - "*"
   - package-ecosystem: docker
     directories:
-      - /charts/cosi*
+      - /charts/csm-application-mobility
     labels:
       - dependencies
     schedule:
@@ -45,6 +44,6 @@ updates:
       # at 6pm UTC
       time: "18:00"
     groups:
-      cosi:
+      csm-application-mobility:
         patterns:
           - "*"
