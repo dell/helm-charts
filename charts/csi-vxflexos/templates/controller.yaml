@@ -194,7 +194,7 @@ spec:
 {{- if hasKey .Values "podmon" }}
 {{- if eq .Values.podmon.enabled true }}
         - name: podmon
-          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
+          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             {{- toYaml .Values.podmon.controller.args | nindent 12 }}
@@ -219,7 +219,7 @@ spec:
 {{- end }}
 {{- end }}
         - name: attacher
-          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher }}
+          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -234,7 +234,7 @@ spec:
         {{- if hasKey .Values.controller "replication" }}
         {{- if eq .Values.controller.replication.enabled true}}
         - name: dell-csi-replicator
-          image: {{ required "Must provide the Dell CSI Replicator image." .Values.images.replication }}
+          image: {{ required "Must provide the Dell CSI Replicator image." .Values.images.replication.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -260,7 +260,7 @@ spec:
         {{- end }}
         {{- end }}
         - name: provisioner
-          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner }}	
+          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -292,7 +292,7 @@ spec:
         {{- if hasKey .Values.controller "healthMonitor" }}
         {{- if eq .Values.controller.healthMonitor.enabled true}}
         - name: csi-external-health-monitor-controller
-          image: {{ required "Must provide the CSI external health monitor image." .Values.images.healthmonitor }}
+          image: {{ required "Must provide the CSI external health monitor image." .Values.images.healthmonitor.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -313,7 +313,7 @@ spec:
 {{- if hasKey .Values "vgsnapshotter" }}
 {{- if eq .Values.vgsnapshotter.enabled true }}
         - name: vg-snapshotter
-          image: {{ required "Must provide the vgsnapshotter container image." .Values.images.vgsnapshotter }}
+          image: {{ required "Must provide the vgsnapshotter container image." .Values.images.vgsnapshotter.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: ADDRESS
@@ -326,7 +326,7 @@ spec:
 {{- if hasKey .Values.controller "snapshot" }}
 {{- if eq .Values.controller.snapshot.enabled true }}
         - name: snapshotter
-          image: {{ required "Must provide the CSI snapshotter container image. " .Values.images.snapshotter }}
+          image: {{ required "Must provide the CSI snapshotter container image. " .Values.images.snapshotter.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -344,7 +344,7 @@ spec:
 {{- if hasKey .Values.controller "resizer" }}
 {{- if eq .Values.controller.resizer.enabled true }}
         - name: resizer
-          image: {{ required "Must provide the CSI resizer container image." .Values.images.resizer }}
+          image: {{ required "Must provide the CSI resizer container image." .Values.images.resizer.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -361,7 +361,7 @@ spec:
 {{- if hasKey .Values "authorization" }}
 {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
-          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization }}
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: PROXY_HOST
@@ -390,7 +390,7 @@ spec:
 {{- end }}
 {{- end }}
         - name: driver
-          image: "{{ required "Must provide the driver image repository." .Values.images.driver }}"
+          image: "{{ required "Must provide the driver image repository." .Values.images.driver.image }}"
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           command: [ "/csi-vxflexos.sh" ]
           args:
