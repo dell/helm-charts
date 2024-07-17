@@ -39,6 +39,6 @@ updates:
       interval: weekly
       day: sunday
     groups:
-      csm:
+      cosi:
         patterns:
           - "*"
