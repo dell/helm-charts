@@ -4,10 +4,42 @@
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
 # initial version
-
 version: 2
 updates:
-  - package-ecosystem: "" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: docker
+    directories:
+      - /charts/csi*
+    labels:
+      - dependencies
     schedule:
-      interval: "weekly"
+      interval: weekly
+      day: sunday
+    groups:
+      csi:
+        patterns:
+          - "*"
+  - package-ecosystem: docker
+    directories:
+      - /charts/csm*
+      - /charts/karavi*
+    labels:
+      - dependencies
+    schedule:
+      interval: weekly
+      day: sunday
+    groups:
+      csm:
+        patterns:
+          - "*"
+  - package-ecosystem: docker
+    directories:
+      - /charts/cosi*
+    labels:
+      - dependencies
+    schedule:
+      interval: weekly
+      day: sunday
+    groups:
+      csm:
+        patterns:
+          - "*"
