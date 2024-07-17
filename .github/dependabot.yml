@@ -11,8 +11,10 @@ updates:
     labels:
       - dependencies
     schedule:
-      interval: weekly
-      day: sunday
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
     groups:
       csi:
         patterns:
@@ -24,8 +26,10 @@ updates:
     labels:
       - dependencies
     schedule:
-      interval: weekly
-      day: sunday
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
     groups:
       csm:
         patterns:
@@ -36,8 +40,10 @@ updates:
     labels:
       - dependencies
     schedule:
-      interval: weekly
-      day: sunday
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
     groups:
       cosi:
         patterns:
