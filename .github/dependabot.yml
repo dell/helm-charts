@@ -192,6 +192,9 @@ updates:
       interval: daily
       # at 6pm UTC
       time: "18:00"
+    ignore:
+      # ignore all updates to otel/opentelemetry-collector
+      - dependency-name: "otel/opentelemetry-collector"
     groups:
       karavi-observability:
         patterns:
