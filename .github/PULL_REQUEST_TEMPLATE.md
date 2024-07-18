@@ -39,3 +39,4 @@ Yes/No
 - [ ] Chart Version bumped
 - [ ] Variables are documented in the chart README.md
 - [ ] Title of the PR starts with the chart name (e.g. `[charts_dir/mychartname]`) if applicable
+- [ ] For new charts, has a dependabot configuration been added to the [config file](.github/dependabot.yaml)
