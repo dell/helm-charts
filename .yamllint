@@ -1,0 +1,44 @@
+---
+yaml-files:
+  - "*.yaml"
+  - "*.yml"
+  - ".yamllint"
+
+rules:
+  braces:
+    level: warning
+    max-spaces-inside: 1
+  brackets:
+    level: warning
+    max-spaces-inside: 1
+  colons: enable
+  commas: enable
+  comments:
+    level: warning
+  comments-indentation: disable
+  document-end: disable
+  document-start: disable
+  empty-lines: enable
+  empty-values: disable
+  hyphens: enable
+  indentation: enable
+  key-duplicates: enable
+  key-ordering: disable
+  line-length: disable
+  new-line-at-end-of-file: enable
+  new-lines: enable
+  octal-values: disable
+  quoted-strings: disable
+  trailing-spaces: enable
+  truthy:
+    level: warning
+
+ignore: |
+  .github/workflows/
+  charts/*/templates/
+  charts/*/*/*/templates/
+  charts/csi-powermax/charts/csireverseproxy/conf/config.yaml
+  charts/csm-replication/crds/replicationcrds.all.yaml
+  charts/csm-authorization-v2.0/crds/csm-authorization.storage.dell.com_csmroles.yaml
+  charts/csm-authorization-v2.0/crds/csm-authorization.storage.dell.com_csmtenants.yaml
+  charts/csm-authorization-v2.0/crds/csm-authorization.storage.dell.com_storages.yaml
