@@ -8,6 +8,7 @@ description: |
   well as a PowerMax StorageClass.
 type: application
 kubeVersion: ">= 1.23.0"
+kubeVersion: ">= 1.23.0"
 # If you are using a complex K8s version like "v1.23.3-mirantis-1", use this kubeVersion check instead
 # kubeVersion: ">= 1.23.0-0
 keywords:
