@@ -66,11 +66,11 @@ images:
   # CSM sidecars
   replication: dellemc/dell-csi-replicator:v1.9.0
   authorization: dellemc/csm-authorization-sidecar:v1.11.0
-  migration: dellemc/dell-csi-migrator:v1.4.0
+  migration: dellemc/dell-csi-migrator:v1.5.0
   podmon: dellemc/podmon:v1.10.0
   # Node rescan sidecar does a rescan on nodes for identifying new paths
-  # Default value: dellemc/dell-csi-node-rescanner:v1.3.0
-  noderescan: dellemc/dell-csi-node-rescanner:v1.3.0
+  # Default value: dellemc/dell-csi-node-rescanner:v1.4.0
+  noderescan: dellemc/dell-csi-node-rescanner:v1.4.0
 ## K8S/DRIVER ATTRIBUTES
 ########################
 # customDriverName: If enabled, sets the driver name to the
