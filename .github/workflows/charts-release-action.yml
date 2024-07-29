@@ -23,7 +23,7 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      # Run the helm chart release command
+     # Run the helm chart release command
       - name: Run csm chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         env:

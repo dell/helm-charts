@@ -13,7 +13,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
-    matchLabels: 
+    matchLabels:
       {{- include "cosi.selectorLabels" . | trim | nindent 6 }}
   template:
     metadata:

@@ -1,0 +1,76 @@
+---
+# set to true if installing on an OpenShift Container Platform
+# if enabled, the OpenShift Ingress Operator will be used
+# if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
+openshift: false
+
+# set to true if installing on a Kubernetes Container Platform
+# if enabled, NGINX Ingress Controller will be deployed
+# if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
+nginx:
+  enabled: true
+
+# if enabled, cert-manager will be deployed
+# if cert-manager is already deployed, keep this false
+cert-manager:
+  enabled: true
+
+authorization:
+  # images to use in installation
+  images:
+    proxyService: dellemc/csm-authorization-proxy:v2.0.0-alpha
+    tenantService: dellemc/csm-authorization-tenant:v2.0.0-alpha
+    roleService: dellemc/csm-authorization-role:v2.0.0-alpha
+    storageService: dellemc/csm-authorization-storage:v2.0.0-alpha
+    authorizationController: dellemc/csm-authorization-controller:v2.0.0-alpha
+    opa: openpolicyagent/opa
+    opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
+
+  # proxy-server ingress will use this hostname
+  # NOTE: additional hostnames can be configured in authorization.proxyServerIngress.hosts
+  # NOTE: proxy-server ingress is configured to accept IP address connections so hostnames are not required
+  hostname: csm-authorization.com
+
+  # log level for csm-authorization
+  logLevel: debug
+
+  # number, as a string, of concurrent requests for the storage-service to make to PowerFlex
+  # currently only used with dellctl to list tenant volumes
+  concurrentPowerFlexRequests: "10"
+
+  # tracing configuration
+  # this can be updated on the fly via the csm-config-params configMap
+  zipkin:
+    {}
+    # collectoruri: http://DNS-hostname:9411/api/v2/spans
+    # probability: 1
+
+  # proxy-server ingress configuration
+  proxyServerIngress:
+    ingressClassName: nginx
+
+    # additional host rules for the proxy-server ingress
+    hosts:
+      []
+      # - [application name]-ingress-nginx-controller.[namespace].svc.cluster.local
+
+    # additional annotations for the proxy-server ingress
+    annotations: {}
+
+  # storage capacity poll interval
+  storageCapacityPollInterval: 5m
+
+redis:
+  name: redis-csm
+  sentinel: sentinel
+  rediscommander: rediscommander
+  replicas: 5
+  images:
+    redis: redis:7.2.4-alpine
+    commander: rediscommander/redis-commander:latest
+
+vault:
+  address: https://10.0.0.1:8400
+  kvEnginePath: secret
+  role: csm-authorization
+  skipCertificateValidation: true
