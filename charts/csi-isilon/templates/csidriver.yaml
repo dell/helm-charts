@@ -7,6 +7,6 @@ spec:
     podInfoOnMount: true
     storageCapacity: {{ (include "csi-isilon.isStorageCapacitySupported" .) | default false }}
     fsGroupPolicy: {{ .Values.fsGroupPolicy }}
-    volumeLifecycleModes: 
+    volumeLifecycleModes:
     - Persistent
     - Ephemeral

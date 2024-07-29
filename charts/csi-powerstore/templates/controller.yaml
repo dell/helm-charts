@@ -69,7 +69,7 @@ rules:
     resources: ["dellcsivolumegroupsnapshots","dellcsivolumegroupsnapshots/status"]
     verbs: ["create", "list", "watch", "delete", "update"]
   {{- end }}
-  {{- end }} 
+  {{- end }}
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshotclasses"]
     verbs: ["get", "list", "watch"]
@@ -87,7 +87,7 @@ rules:
   {{- else }}
     verbs: ["get", "list", "watch", "update"]
   {{- end }}
-  {{- end }}    
+  {{- end }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments/status"]
     verbs: ["patch"]
@@ -438,7 +438,7 @@ spec:
             - name: GOPOWERSTORE_DEBUG
               value: "true"
             - name: CSI_AUTO_ROUND_OFF_FILESYSTEM_SIZE
-              value: "{{ .Values.allowAutoRoundOffFilesystemSize | default false }}"
+              value: "{{ .Values.allowAutoRoundOffFilesystemSize | default true }}"
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi

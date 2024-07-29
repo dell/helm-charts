@@ -99,7 +99,7 @@ spec:
       {{- else }}
       hostPID: false
       {{- end }}
-      containers:  
+      containers:
 {{- if hasKey .Values "podmon" }}
 {{- if eq .Values.podmon.enabled true }}
         - name: podmon
@@ -333,11 +333,11 @@ spec:
             - name: host-opt-emc-path
               mountPath: /host_opt_emc_path
             - name: sdc-storage
-              mountPath: /storage 
+              mountPath: /storage
             - name: udev-d
               mountPath: /rules.d
             - name: scaleio-path-opt
-              mountPath: /host_drv_cfg_path 
+              mountPath: /host_drv_cfg_path
       volumes:
         - name: registration-dir
           hostPath:

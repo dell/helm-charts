@@ -22,9 +22,9 @@ global:
     - storageArrayId: "000000000001"
       endpoint: https://primary-1.unisphe.re:8443
       backupEndpoint: https://backup-1.unisphe.re:8443
-#    - storageArrayId: "000000000002"
-#      endpoint: https://primary-2.unisphe.re:8443
-#      backupEndpoint: https://backup-2.unisphe.re:8443
+  # - storageArrayId: "000000000002"
+  #   endpoint: https://primary-2.unisphe.re:8443
+  #   backupEndpoint: https://backup-2.unisphe.re:8443
   managementServers:
     - endpoint: https://primary-1.unisphe.re:8443
       credentialsSecret: primary-1-secret
@@ -48,28 +48,29 @@ global:
 
 # Current version of the driver
 # Don't modify this value as this value will be used by the install script
-version: "v2.10.1"
+version: "v2.11.0"
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
 images:
   # "driver" defines the container image, used for the driver container.
-  driver: dellemc/csi-powermax:v2.10.1
-  csireverseproxy: dellemc/csipowermax-reverseproxy:v2.9.1
+  driver: dellemc/csi-powermax:v2.11.0
+  csireverseproxy: dellemc/csipowermax-reverseproxy:v2.10.0
   # CSI sidecars
-  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
-  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
-  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
-  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
-  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
-  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.11.0
+  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.6.1
+  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v5.0.1
+  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v8.0.1
+  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.11.1
+  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.1
+  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.12.1
   # CSM sidecars
-  replication: dellemc/dell-csi-replicator:v1.8.1
-  authorization: dellemc/csm-authorization-sidecar:v1.10.1
-  migration: dellemc/dell-csi-migrator:v1.3.1
+  replication: dellemc/dell-csi-replicator:v1.9.0
+  authorization: dellemc/csm-authorization-sidecar:v1.11.0
+  migration: dellemc/dell-csi-migrator:v1.5.0
+  podmon: dellemc/podmon:v1.10.0
   # Node rescan sidecar does a rescan on nodes for identifying new paths
-  # Default value: dellemc/dell-csi-node-rescanner:v1.0.1
-  noderescan: dellemc/dell-csi-node-rescanner:v1.3.1
+  # Default value: dellemc/dell-csi-node-rescanner:v1.4.0
+  noderescan: dellemc/dell-csi-node-rescanner:v1.4.0
 ## K8S/DRIVER ATTRIBUTES
 ########################
 # customDriverName: If enabled, sets the driver name to the
@@ -463,3 +464,36 @@ vSphere:
   vCenterHost: "00.000.000.00"
   # vCenterCredSecret: secret name for the vCenter credentials
   vCenterCredSecret: vcenter-creds
+
+
+# Enable this feature only after contact support for additional information
+podmon:
+  # podmonAPIPort: Defines the port to be used within the kubernetes cluster
+  # Allowed values:
+  # Any valid and free port.
+  # Default value: 8083
+  podmonAPIPort: 8083
+  enabled: false
+  controller:
+    args:
+      - "--csisock=unix:/var/run/csi/csi.sock"
+      - "--labelvalue=csi-powermax"
+      - "--arrayConnectivityPollRate=60"
+      - "--driverPath=csi-powermax.dellemc.com"
+      - "--mode=controller"
+      - "--skipArrayConnectionValidation=false"
+      - "--driver-config-params=/powermax-config-params/driver-config-params.yaml"
+      - "--driverPodLabelValue=dell-storage"
+      - "--ignoreVolumelessPods=false"
+
+  node:
+    args:
+      - "--csisock=unix:/var/lib/kubelet/plugins/powermax.emc.dell.com/csi_sock"
+      - "--labelvalue=csi-powermax"
+      - "--arrayConnectivityPollRate=60"
+      - "--driverPath=csi-powermax.dellemc.com"
+      - "--mode=node"
+      - "--leaderelection=false"
+      - "--driver-config-params=/powermax-config-params/driver-config-params.yaml"
+      - "--driverPodLabelValue=dell-storage"
+      - "--ignoreVolumelessPods=false"

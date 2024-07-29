@@ -120,11 +120,11 @@ The key here is asking for help and discuss issues to understand how more experi
 
 In case there is an uncertainty around the prioritization of an issue, please ask the maintainers for help.
 
-| Label                             | Description                                                                                                              |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `priority/critical`               | Highest priority. Must be actively worked on as someone's top priority right now.                                        |
-| `priority/high`                   | Must be worked on soon, ideally in time for the next release.                                                            |
-| `priority/low`                    | Lowest priority. Possibly useful, but not yet enough interest in it.                                                     |
+| Label               | Description                                                                       |
+| ------------------- | --------------------------------------------------------------------------------- |
+| `priority/critical` | Highest priority. Must be actively worked on as someone's top priority right now. |
+| `priority/high`     | Must be worked on soon, ideally in time for the next release.                     |
+| `priority/low`      | Lowest priority. Possibly useful, but not yet enough interest in it.              |
 
 ### Critical priority
 
@@ -194,52 +194,52 @@ This workflow starts off with a GitHub issue of type bug being created.
 The following flow chart outlines the triage process:
 
 <!-- https://textik.com/#38ec14781648871c -->
-```                                                                                                                                                     
-                                               +--------------------------+                                                                              
-                                               | New bug issue opened/more|                                                                              
-                                               | information added        |                                                                              
-                                               +-------------|------------+                                                                              
-                                                             |                                                                                           
-                                                             |                                                                                           
-   +----------------------------------+  NO   +--------------|-------------+                                                                             
-   | label: triage/needs-information  ---------  All required information  |                                                                             
-   |                                  |       |  contained in issue?       |                                                                             
-   +-----------------------------|----+       +--------------|-------------+                                                                             
-                                 |                           | YES                                                                                       
-                                 |                           |                                                                                           
-   +--------------------------+  |                +---------------------+ YES +---------------------------------------+                                  
-   |label:                    |  |                |  Duplicate Issue?    ------- Comment `Duplicate of #<issue number>`                                   
-   |triage/needs-investigation|  | NO             |                     |     | Remove needs-triage label             |                                  
-   +------|-------------------+  |                +----------|----------+     | label: triage/duplicate               |                                  
-          |                      |                           | NO             +-----------------|---------------------+                                  
-      YES |                      |                           |                                  |                                                        
-          |      +---------------|----+   NO    +------------|------------+                     |                                                        
-          |      |Needs investigation?|----------  Can it be reproduced?  |                     |                                                        
-          |-------                    |         +------------|------------+                     |                                                        
-                 +--------------------+                      | YES                              |                                                        
-                                                             |                       +----------|----------+                                             
-   +----------------------------------+         +------------|------------+          |  Close Issue        |                                             
-   | Update issue with details        -----------  Works as intended?     |          |                     |                                             
-   |                                  |   NO    |                         |          +----------|----------+                                             
-   +-----------------|----------------+         +------------|------------+                     |                                                        
-                     |                                       |                                  |                                                        
-                     |                                       | YES                              |                                                        
-                     |                      +----------------|----------------+                 |                                                        
-                     |                      | Add comment                     |                 |                                                        
-                     |                      | Remove needs-triage label       ------------------|                                                        
-                     |                      | label: triage/works-as-intended |                                                                          
-                     |                      +---------------------------------+                                                                          
-                     |                                                                                                                                   
-           +---------|---------+          +----------+                                                                                                   
-           |   Needs priority? -----------|   Done   ----------------------------------------                                                            
-           +-------|-----------+   NO     +----|-----+                                      |                                                            
-                   |   YES                     |NO                                          |                                                            
-     +-------------|------------+              |                         +------------------|------------------+                                         
-     | label: priority/*        |         +----|----------------+ YES    |  Add details to issue               |                                         
-     | milestone?               -----------  Signal Community?  ----------  label: help wanted                 |                                         
-     | Remove needs-triage label|         |                     |        |  label: beginner friendly (optional)|                                         
-     +--------------------------+         +---------------------+        +-------------------------------------+                                         
-                                                                                                                                                                                              
+```
+                                               +--------------------------+
+                                               | New bug issue opened/more|
+                                               | information added        |
+                                               +-------------|------------+
+                                                             |
+                                                             |
+   +----------------------------------+  NO   +--------------|-------------+
+   | label: triage/needs-information  ---------  All required information  |
+   |                                  |       |  contained in issue?       |
+   +-----------------------------|----+       +--------------|-------------+
+                                 |                           | YES
+                                 |                           |
+   +--------------------------+  |                +---------------------+ YES +---------------------------------------+
+   |label:                    |  |                |  Duplicate Issue?    ------- Comment `Duplicate of #<issue number>`
+   |triage/needs-investigation|  | NO             |                     |     | Remove needs-triage label             |
+   +------|-------------------+  |                +----------|----------+     | label: triage/duplicate               |
+          |                      |                           | NO             +-----------------|---------------------+
+      YES |                      |                           |                                  |
+          |      +---------------|----+   NO    +------------|------------+                     |
+          |     | Needs investigation? | ----------  Can it be reproduced? |  |
+          | --- |+------------|------------+                     |
+                 +--------------------+                      | YES                              |
+                                                             |                       +----------|----------+
+   +----------------------------------+         +------------|------------+          |  Close Issue        |
+   | Update issue with details        -----------  Works as intended?     |          |                     |
+   |                                  |   NO    |                         |          +----------|----------+
+   +-----------------|----------------+         +------------|------------+                     |
+                     |                                       |                                  |
+                     |                                       | YES                              |
+                     |                      +----------------|----------------+                 |
+                     |                      | Add comment                     |                 |
+                     |                      | Remove needs-triage label       ------------------|
+                     |                      | label: triage/works-as-intended |
+                     |                      +---------------------------------+
+                     |
+           +---------|---------+          +----------+
+           |   Needs priority? -----------|   Done   ----------------------------------------
+           +-------|-----------+   NO     +----|-----+                                      |
+                   |   YES                     |NO                                          |
+     +-------------|------------+              |                         +------------------|------------------+
+     | label: priority/*        |         +----|----------------+ YES    |  Add details to issue               |
+     | milestone?               -----------  Signal Community?  ----------  label: help wanted                 |
+     | Remove needs-triage label|         |                     |        |  label: beginner friendly (optional)|
+     +--------------------------+         +---------------------+        +-------------------------------------+
+
 ```
 
 If the author does not respond to a request for more information within the timespan of a week, close the issue with a kind note stating that the author can request for the issue to be reopened when the necessary information is provided.
@@ -254,34 +254,34 @@ This workflow starts off with a GitHub issue of type feature request being creat
 The following flow chart outlines the triage process:
 
 <!-- https://textik.com/#81e81fc717f63429 -->
-```                                                                                                                                 
-                                            +---------------------------------+                                                  
-                                            |New feature request issue opened/|                                                  
-                                            |more information added           |                                                  
-                                            +----------------|----------------+                                                  
-                                                             |                                                                   
-                                                             |                                                                   
-    +---------------------------------+ NO     +-------------|------------+                                                      
-    | label: triage/needs-information ---------- All required information |                                                      
-    |                                 |        | contained in issue?      |                                                      
-    +---------------------------------+        +-------------|------------+                                                      
-                                                             |                                                                   
-                                                             |                                                                   
-    +---------------------------------------+                |                                                                   
-    |Comment `Duplicate of #<issue number>` | YES +----------|----------+                                                        
-    |Remove needs-triage label              -------  Duplicate issue?   |                                                        
-    |label: triage/duplicate                |     |                     |                                                        
-    +-----------------|---------------------+     +-----------|---------+                                                        
-                      |                                       |                                                                  
-                      |                                    NO |                                                                  
-                      |                        +--------------|---------------+                                                  
-                      |                        | Assign priority              |                                                  
-                      |                        | label: priority/*            |                                                  
-                      |                        | label: type/feature          |                                                  
-           +----------|-----+    +--------+    | Remove needs-triage label    |                                                  
-           | Close issue    |    |  Done  ------ Remove type/feature-request  |                                                  
-           |                |    |        |    | milestone?                   |                                                  
-           +----------------+    +--------+    +------------------------------+                                                                                                               
+```
+                                            +---------------------------------+
+                                            |New feature request issue opened/|
+                                            |more information added           |
+                                            +----------------|----------------+
+                                                             |
+                                                             |
+    +---------------------------------+ NO     +-------------|------------+
+    | label: triage/needs-information ---------- All required information |
+    |                                 |        | contained in issue?      |
+    +---------------------------------+        +-------------|------------+
+                                                             |
+                                                             |
+    +---------------------------------------+                |
+    |Comment `Duplicate of #<issue number>` | YES +----------|----------+
+    |Remove needs-triage label              -------  Duplicate issue?   |
+    |label: triage/duplicate                |     |                     |
+    +-----------------|---------------------+     +-----------|---------+
+                      |                                       |
+                      |                                    NO |
+                      |                        +--------------|---------------+
+                      |                        | Assign priority              |
+                      |                        | label: priority/*            |
+                      |                        | label: type/feature          |
+           +----------|-----+    +--------+    | Remove needs-triage label    |
+           | Close issue    |    |  Done  ------ Remove type/feature-request  |
+           |                |    |        |    | milestone?                   |
+           +----------------+    +--------+    +------------------------------+
 ```
 
 If the author does not respond to a request for more information within the timespan of a week, close the issue with a kind note stating that the author can request for the issue to be reopened when the necessary information is provided.

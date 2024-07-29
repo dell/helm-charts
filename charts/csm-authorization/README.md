@@ -8,7 +8,7 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 -->
 
-# Container Storage Modules (CSM) for Authorization Dell Community Helm Chart 
+# Container Storage Modules (CSM) for Authorization Dell Community Helm Chart
 
 CSM for Authorization can be deployed using Helm.
 

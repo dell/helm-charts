@@ -16,7 +16,5 @@ You may obtain a copy of the License at
 * @hoppea2
 * @coulof
 * @shaynafinocchiaro
-* @lj-software
-* @medegw01
 * @sharmilarama
 * @tdawe

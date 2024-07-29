@@ -39,3 +39,6 @@ ignore: |
   charts/*/*/*/templates/
   charts/csi-powermax/charts/csireverseproxy/conf/config.yaml
   charts/csm-replication/crds/replicationcrds.all.yaml
+  charts/csm-authorization-v2.0/crds/csm-authorization.storage.dell.com_csmroles.yaml
+  charts/csm-authorization-v2.0/crds/csm-authorization.storage.dell.com_csmtenants.yaml
+  charts/csm-authorization-v2.0/crds/csm-authorization.storage.dell.com_storages.yaml
