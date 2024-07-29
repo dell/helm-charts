@@ -75,7 +75,7 @@ rules:
     verbs: ["update", "patch"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshotcontents/status"]
-    verbs: ["update"]
+    verbs: ["update", "patch"]
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]
     verbs: ["create", "list", "watch", "delete"]
@@ -154,6 +154,8 @@ spec:
       maxUnavailable: 1
   template:
     metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: "driver"
       labels:
         app: {{ .Release.Name }}-controller
     spec:
@@ -271,20 +273,6 @@ spec:
               mountPath: /var/run/csi
         {{ end }}
         {{ end }}
-        - name: csi-metadata-retriever{{ $csiSidecarSuffix }}
-          image: {{ required "Must provide the CSI metadata retriever container image." .Values.images.metadataretriever }}
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
-          args:
-            - "--csi-address={{ $driverSockPath }}"
-            - "--timeout=120s"
-            - "--v=5"
-          command: [ "/csi-metadata-retriever" ]
-          env:
-            - name: CSI_RETRIEVER_ENDPOINT
-              value: /var/run/csi/csi_retriever.sock
-          volumeMounts:
-            - name: socket-dir
-              mountPath: /var/run/csi
         - name: attacher{{ $csiSidecarSuffix }}
           image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -308,6 +296,16 @@ spec:
             - name: socket-dir
               mountPath: /var/run/csi
         {{- if not $encrypted }}
+        - name: csi-metadata-retriever
+          image: {{ required "Must provide the CSI metadata retriever container image." .Values.images.metadataretriever }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command: [ "/csi-metadata-retriever" ]
+          env:
+            - name: CSI_RETRIEVER_ENDPOINT
+              value: /var/run/csi/csi_retriever.sock
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/run/csi
         {{- if hasKey .Values.controller "healthMonitor" }}
         {{- if eq .Values.controller.healthMonitor.enabled true }}
         - name: external-health-monitor-controller

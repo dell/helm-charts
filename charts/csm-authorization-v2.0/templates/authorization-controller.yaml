@@ -1,0 +1,111 @@
+# Controller
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: authorization-controller
+  namespace: {{ include "custom.namespace" . }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: authorization-controller
+rules:
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["csmroles"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["csmroles/status"]
+    verbs: ["get", "update", "patch"]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["csmroles/finalizers"]
+    verbs: ["update"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["csmtenants"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["csmtenants/status"]
+    verbs: ["get", "update", "patch"]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["csmtenants/finalizers"]
+    verbs: ["update"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["storages"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["storages/status"]
+    verbs: ["get", "update", "patch"]
+  - apiGroups: ["csm-authorization.storage.dell.com"]
+    resources: ["storages/finalizers"]
+    verbs: ["update"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["create", "update", "get", "list"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: authorization-controller
+subjects:
+  - kind: ServiceAccount
+    name: authorization-controller
+    namespace: {{ include "custom.namespace" . }}
+roleRef:
+  kind: ClusterRole
+  name: authorization-controller
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authorization-controller
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app: authorization-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authorization-controller
+  template:
+    metadata:
+      labels:
+        app: authorization-controller
+    spec:
+      serviceAccountName: authorization-controller
+      containers:
+      - name: authorization-controller
+        image: {{ required "Must provide the controller image." .Values.authorization.images.authorizationController }}
+        imagePullPolicy: Always
+        args:
+          - "--authorization-namespace={{ .Release.Namespace }}"
+          - "--health-probe-bind-address=:8081"
+          - "--leader-elect=true"
+          - "--tenant-service-address=tenant-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
+          - "--storage-service-address=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
+          - "--role-service-address=role-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
+        env:
+          - name: NAMESPACE
+            value: {{ include "custom.namespace" . }}
+        ports:
+        - containerPort: 50052
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authorization-controller
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  selector:
+    app: authorization-controller
+  ports:
+  - port: 50052
+    targetPort: 50052
+    name: http
+---

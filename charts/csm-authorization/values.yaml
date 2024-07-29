@@ -1,3 +1,4 @@
+---
 # if enabled, nginx ingress controller will be deployed
 # if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
 ingress-nginx:
@@ -11,10 +12,10 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v1.10.1
-    tenantService: dellemc/csm-authorization-tenant:v1.10.1
-    roleService: dellemc/csm-authorization-role:v1.10.1
-    storageService: dellemc/csm-authorization-storage:v1.10.1
+    proxyService: dellemc/csm-authorization-proxy:v1.11.0
+    tenantService: dellemc/csm-authorization-tenant:v1.11.0
+    roleService: dellemc/csm-authorization-role:v1.11.0
+    storageService: dellemc/csm-authorization-storage:v1.11.0
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
@@ -32,7 +33,8 @@ authorization:
 
   # tracing configuration
   # this can be updated on the fly via the csm-config-params configMap
-  zipkin: {}
+  zipkin:
+    {}
     # collectoruri: http://DNS-hostname:9411/api/v2/spans
     # probability: 1
 
@@ -41,7 +43,8 @@ authorization:
     ingressClassName: nginx
 
     # additional host rules for the proxy-server ingress
-    hosts: []
+    hosts:
+      []
       # - application-ingress-nginx-controller.namespace.svc.cluster.local
 
     # additional annotations for the proxy-server ingress
@@ -55,4 +58,4 @@ redis:
   # by default, csm-authorization will deploy a local (https://kubernetes.io/docs/concepts/storage/storage-classes/#local) volume for redis
   # to use a different storage class for redis, uncomment the following line and specify the name of the storage class
   # NOTE: the storage class must NOT be a storage class provisioned by a CSI driver to be configured with this instance of CSM Authorization
-  #storageClass:
+  # storageClass:

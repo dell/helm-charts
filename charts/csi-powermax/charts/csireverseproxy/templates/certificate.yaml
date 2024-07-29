@@ -43,7 +43,7 @@ spec:
   secretName: csirevproxy-tls-secret
   commonName: powermax-reverseproxy
   duration: 2160h # 90d
-  renewBefore: 360h # 15d
+  renewBefore: 360h  # 15d
   subject:
     organizations:
       - dellemc
