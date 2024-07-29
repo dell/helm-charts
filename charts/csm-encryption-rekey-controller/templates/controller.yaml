@@ -3,7 +3,7 @@ kind: ServiceAccount
 metadata:
   name: {{ .Release.Namespace }}-encryption-rekey-controller
   namespace: {{ .Release.Namespace }}
---- 
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

@@ -74,7 +74,7 @@ test_small_request_allowed {
   allow with input as {
     "claims": {
         "aud": "karavi",
-        "exp": 1615426023, 
+        "exp": 1615426023,
         "group": "DevOpsGroup1",
         "iss":"com.dell.karavi",
         "roles":"us-east-1",
@@ -97,7 +97,7 @@ test_large_request_not_allowed {
   not allow with input as {
     "claims": {
         "aud": "karavi",
-        "exp": 1615426023, 
+        "exp": 1615426023,
         "group": "DevOpsGroup1",
         "iss":"com.dell.karavi",
         "roles":"us-west-2-small,us-west-2-large",

@@ -69,8 +69,8 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at our Slack group. 
-Click [Here](http://del.ly/Slack_request) to request your invite. 
+reported to the community leaders responsible for enforcement at our Slack group.
+Click [Here](http://del.ly/Slack_request) to request your invite.
 
 All complaints will be reviewed and investigated promptly and fairly.
 

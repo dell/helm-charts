@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.redis.sentinel }}
+spec:
+  serviceName: {{ .Values.redis.sentinel }}
+  replicas: {{ .Values.redis.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.redis.sentinel }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.redis.sentinel }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
+    spec:
+      initContainers:
+      - name: config
+        image: {{ .Values.redis.images.redis }}
+        command: [ "sh", "-c" ]
+        env:
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-csm-secret
+                key: password
+        args:         
+          - |         
+            replicas=$( expr {{ .Values.redis.replicas | int }} - 1)          
+            for i in $(seq 0 $replicas)
+            do               
+                node=$( echo "{{ .Values.redis.name }}-$i.{{ .Values.redis.name }}" )
+                nodes=$( echo "$nodes*$node" )
+            done            
+            loop=$(echo $nodes | sed -e "s/"*"/\n/g")
+           
+            for i in $loop
+            do                
+                echo "Finding master at $i"
+                MASTER=$(redis-cli --no-auth-warning --raw -h $i -a $REDIS_PASSWORD info replication | awk '{print $1}' | grep master_host: | cut -d ":" -f2)
+                if [ "$MASTER" = "" ]; then
+                    echo "Master not found..."
+                    echo "Sleeping 5 seconds for pods to come up..."
+                    sleep 5
+                    MASTER=
+                else
+                    echo "Master found at $MASTER..."
+                    break
+                fi
+            done
+
+            echo "sentinel monitor mymaster $MASTER 6379 2" >> /tmp/master
+            echo "port 5000
+            sentinel resolve-hostnames yes
+            sentinel announce-hostnames yes
+            $(cat /tmp/master)
+            sentinel down-after-milliseconds mymaster 5000
+            sentinel failover-timeout mymaster 60000
+            sentinel parallel-syncs mymaster 2
+            sentinel auth-pass mymaster $REDIS_PASSWORD
+            " > /etc/redis/sentinel.conf
+            cat /etc/redis/sentinel.conf
+        volumeMounts:
+        - name: redis-config
+          mountPath: /etc/redis/
+      containers:
+      - name: sentinel
+        image: {{ .Values.redis.images.redis }}
+        command: ["redis-sentinel"]
+        args: ["/etc/redis/sentinel.conf"]
+        ports:
+        - containerPort: 5000
+          name: {{ .Values.redis.sentinel }}
+        volumeMounts:
+        - name: redis-config
+          mountPath: /etc/redis/
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: redis-config
+        emptyDir: {}
+      - name: data
+        emptyDir : {}  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.redis.sentinel }}
+spec:
+  clusterIP: None
+  ports:
+  - port: 5000
+    targetPort: 5000
+    name: sentinel
+  selector:
+    app: sentinel
+---
+apiVersion: v1
+kind: Service
+metadata:
+ name: {{ .Values.redis.sentinel }}-svc
+spec: 
+ type: NodePort
+ ports:
+ - port: 5000
+   targetPort: 5000
+   nodePort: 32003
+   name: {{ .Values.redis.sentinel }}-svc
+ selector:
+   app: {{ .Values.redis.sentinel }}

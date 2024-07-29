@@ -5,3 +5,4 @@ target-branch: main
 chart-dirs:
   - charts
 validate-maintainers: ***REMOVED***
+check-version-increment: ***REMOVED***
