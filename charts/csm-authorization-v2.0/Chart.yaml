@@ -8,6 +8,9 @@ description: |
   storage enablers for Dell EMC storage products.  CSM for Authorization provides storage and Kubernetes administrators the ability
   to apply RBAC for Dell CSI Drivers.
 dependencies:
+  - name: redis-csm
+    version: 0.1.0
+    condition: required
   - name: cert-manager
     version: 1.11.0
     repository: https://charts.jetstack.io
