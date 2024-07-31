@@ -4,5 +4,5 @@ redis:
   rediscommander: rediscommander
   replicas: 5
   images:
-    redis: amaas-eos-mw1.cec.lab.emc.com:5046/redis:7.2.4-alpine
+    redis: redis:7.2.4-alpine
     commander: rediscommander/redis-commander:latest
