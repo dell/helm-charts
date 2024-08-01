@@ -226,6 +226,16 @@ node:
     # Default value: None
     enabled: false
 
+  # Topology control provides a way to filter topology keys
+  # Please refer to the doc website about a detailed explanation on its configuration and usage
+  topologyControl:
+    # enabled: Enable/Disable Topology Control
+    # Allowed values:
+    #   true: enable the filtration based on config map
+    #   false: disable the filtration based on config map
+    # Default value: false
+    enabled: false
+
   # nodeSelector: Define node selection constraints for node pods.
   # For the pod to be eligible to run on a node, the node must have each
   # of the indicated key-value pairs as labels.

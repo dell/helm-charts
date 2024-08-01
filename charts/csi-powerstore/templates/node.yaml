@@ -214,6 +214,12 @@ spec:
             {{- end }}
             - name: X_CSI_POWERSTORE_CONFIG_PATH
               value: /powerstore-config/config
+            {{- if hasKey .Values.node "topologyControl" }}
+            {{- if eq .Values.node.topologyControl.enabled true }}
+            - name: X_CSI_POWERSTORE_TOPOLOGY_CONFIG_PATH
+              value: /node-topology-config/topologyConfig.yaml
+            {{- end }}
+            {{- end }}
             - name: X_CSI_POWERSTORE_CONFIG_PARAMS_PATH
               value: /powerstore-config-params/driver-config-params.yaml
             - name: GOPOWERSTORE_DEBUG
@@ -222,6 +228,12 @@ spec:
             {{- if eq .Values.node.healthMonitor.enabled true}}
             - name: X_CSI_HEALTH_MONITOR_ENABLED
               value: "{{ .Values.controller.healthMonitor.enabled }}"
+            {{- end }}
+            {{- end }}
+            {{- if hasKey .Values.node "topologyControl" }}
+            {{- if eq .Values.node.topologyControl.enabled true }}
+            - name: X_CSI_TOPOLOGY_CONTROL_ENABLED
+              value: "{{ .Values.node.topologyControl.enabled }}"
             {{- end }}
             {{- end }}
             {{- if hasKey .Values "podmon" }}
@@ -265,6 +277,12 @@ spec:
               mountPath: /powerstore-config
             - name: powerstore-config-params
               mountPath: /powerstore-config-params
+            {{- if hasKey .Values.node "topologyControl" }}
+            {{- if eq .Values.node.topologyControl.enabled true }}
+            - name: node-topology-config
+              mountPath: /node-topology-config
+            {{- end }}
+            {{- end }}
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -332,6 +350,13 @@ spec:
         - name: powerstore-config-params
           configMap:
             name: {{ .Release.Name }}-config-params
+        {{- if hasKey .Values.node "topologyControl" }}
+        {{- if eq .Values.node.topologyControl.enabled true }}
+        - name: node-topology-config
+        configMap:
+          name: node-topology-config
+        {{- end }}
+        {{- end }}
         - name: powerstore-config
           secret:
             secretName: {{ .Release.Name }}-config
