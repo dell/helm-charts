@@ -344,6 +344,8 @@ spec:
               mountPath: /rules.d
             - name: scaleio-path-opt
               mountPath: /host_drv_cfg_path
+            - name: usr-src
+              mountPath: /usr/src
       volumes:
         - name: registration-dir
           hostPath:
@@ -389,6 +391,10 @@ spec:
           hostPath:
             path: /opt/emc
             type: Directory
+        - name: usr-src
+          hostPath:
+            path: /usr/src
+            type: Directory    
         - name: vxflexos-config
           secret:
             secretName: {{ .Release.Name }}-config
