@@ -318,6 +318,12 @@ spec:
                   fieldPath: spec.nodeName
             - name: MODE
               value: "config"
+            - name: REPO_ADDRESS
+              value: "https://mft.dell.com"
+            - name: REPO_USER
+              value: "PowerFlexRepo"
+            - name: REPO_PASSWORD
+              value: "V3Die83$BK"    
             - name: MDM
               valueFrom:
                 secretKeyRef:
