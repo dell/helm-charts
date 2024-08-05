@@ -319,11 +319,9 @@ spec:
             - name: MODE
               value: "config"
             - name: REPO_ADDRESS
-              value: "https://mft.dell.com"
+              value: "sftp://mft.dell.com"
             - name: REPO_USER
-              value: "PowerFlexRepo"
-            - name: REPO_PASSWORD
-              value: "V3Die83$BK"    
+              value: "PowerFlexRepo"   
             - name: MDM
               valueFrom:
                 secretKeyRef:
@@ -331,6 +329,8 @@ spec:
                   key: MDM
             - name: HOST_DRV_CFG_PATH
               value: /opt/emc/scaleio/sdc/bin
+            - name: MODULE_SIGCHECK
+              value: "0"  
           volumeMounts:
             - name: dev
               mountPath: /dev
@@ -346,6 +346,8 @@ spec:
               mountPath: /host_drv_cfg_path
             - name: usr-src
               mountPath: /usr/src
+            - name: config
+              mountPath: /config
       volumes:
         - name: registration-dir
           hostPath:
@@ -394,7 +396,11 @@ spec:
         - name: usr-src
           hostPath:
             path: /usr/src
-            type: Directory    
+            type: Directory
+        - name: config
+          hostPath:
+            path: /root/keys
+            type: Directory          
         - name: vxflexos-config
           secret:
             secretName: {{ .Release.Name }}-config
