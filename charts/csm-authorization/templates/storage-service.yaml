@@ -46,7 +46,7 @@ spec:
       serviceAccountName: storage-service
       containers:
       - name: storage-service
-        image: {{ required "Must provide the storage-service image." .Values.authorization.images.storageService }}
+        image: {{ required "Must provide the storage-service image." .Values.authorization.images.storageService.image }}
         imagePullPolicy: Always
         ports:
         - containerPort: 50051
