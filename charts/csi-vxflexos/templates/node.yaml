@@ -351,7 +351,8 @@ spec:
             - name: scaleio-path-opt
               mountPath: /host_drv_cfg_path
             - name: config
-              mountPath: /config
+              mountPath: "/config"
+              readOnly: true
       volumes:
         - name: registration-dir
           hostPath:
@@ -398,9 +399,8 @@ spec:
             path: /opt/emc
             type: Directory
         - name: config
-          hostPath:
-            path: /root/keys
-            type: Directory          
+          secret:
+            secretName: sdc-keys   
         - name: vxflexos-config
           secret:
             secretName: {{ .Release.Name }}-config
