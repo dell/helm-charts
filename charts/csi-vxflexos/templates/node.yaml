@@ -399,7 +399,8 @@ spec:
             type: Directory
         - name: config
           secret:
-            secretName: sdc-keys   
+            secretName: sdc-keys
+            defaultMode: 256   
         - name: vxflexos-config
           secret:
             secretName: {{ .Release.Name }}-config
