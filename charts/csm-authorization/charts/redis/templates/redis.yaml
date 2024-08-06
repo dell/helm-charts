@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: primary
-        image: {{ .Values.images.redis }}
+        image: {{ .Values.images.redis.image }}
         imagePullPolicy: IfNotPresent
         args: ["--appendonly", "yes", "--appendfsync", "always"]
         resources:
@@ -100,7 +100,7 @@ spec:
     spec:
       containers:
       - name: redis-commander
-        image: {{ .Values.images.commander }}
+        image: {{ .Values.images.commander.image }}
         imagePullPolicy: IfNotPresent
         env:
         - name: REDIS_HOSTS
