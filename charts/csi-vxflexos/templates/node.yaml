@@ -319,9 +319,15 @@ spec:
             - name: MODE
               value: "config"
             - name: REPO_ADDRESS
-              value: "sftp://mft.dell.com"
+              valueFrom:
+                secretKeyRef:
+                  name: sdc-config
+                  key: REPO_ADDRESS
             - name: REPO_USER
-              value: "PowerFlexRepo"   
+              valueFrom:
+                secretKeyRef:
+                  name: sdc-config
+                  key: REPO_USER  
             - name: MDM
               valueFrom:
                 secretKeyRef:
@@ -344,8 +350,6 @@ spec:
               mountPath: /rules.d
             - name: scaleio-path-opt
               mountPath: /host_drv_cfg_path
-            - name: usr-src
-              mountPath: /usr/src
             - name: config
               mountPath: /config
       volumes:
@@ -392,10 +396,6 @@ spec:
         - name: host-opt-emc-path
           hostPath:
             path: /opt/emc
-            type: Directory
-        - name: usr-src
-          hostPath:
-            path: /usr/src
             type: Directory
         - name: config
           hostPath:
