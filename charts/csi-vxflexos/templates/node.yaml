@@ -309,10 +309,8 @@ spec:
         - name: sdc
           securityContext:
             privileged: true
-            runAsUser: 0
           image: {{ required "Must provide the PowerFlex SDC container image." .Values.images.powerflexSdc }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          command: ['sh', '-c', 'chmod 600 /config/user_private_rsa_key']
           env:
             - name: NODENAME
               valueFrom:
