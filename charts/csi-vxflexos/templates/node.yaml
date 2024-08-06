@@ -311,6 +311,7 @@ spec:
             privileged: true
           image: {{ required "Must provide the PowerFlex SDC container image." .Values.images.powerflexSdc }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command: ['sh', '-c', 'chmod 600 /config/user_private_rsa_key']
           env:
             - name: NODENAME
               valueFrom:
@@ -352,7 +353,6 @@ spec:
               mountPath: /host_drv_cfg_path
             - name: config
               mountPath: "/config"
-              readOnly: true
       volumes:
         - name: registration-dir
           hostPath:
