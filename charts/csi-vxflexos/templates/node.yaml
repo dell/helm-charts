@@ -399,7 +399,7 @@ spec:
             type: Directory
         - name: config
           secret:
-            secretName: sdc-keys
+            secretName: sdc-config
             defaultMode: 0600   
         - name: vxflexos-config
           secret:
