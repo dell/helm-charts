@@ -471,3 +471,16 @@ spec:
                       path: cert-{{ $e }}
 {{- end }}
 {{- end }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sdc-config
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  REPO_ADDRESS: {{ toString .Values.sdcConfig.repo_address | b64enc }}
+  REPO_USER: {{ toString .Values.sdcConfig.repo_user | b64enc }}
+  repo_public_rsa_key: {{ .Values.sdcConfig.publicKey  }}
+  user_private_rsa_key: {{ .Values.sdcConfig.privateKey  }}
+  
