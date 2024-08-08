@@ -38,6 +38,10 @@ authorization:
   # currently only used with dellctl to list tenant volumes
   concurrentPowerFlexRequests: "10"
 
+  # number, as a string, of concurrent requests for the storage-service to make to PowerScale
+  # currently only used with dellctl to list tenant volumes
+  concurrentPowerScaleRequests: "10"
+
   # tracing configuration
   # this can be updated on the fly via the csm-config-params configMap
   zipkin:
@@ -70,7 +74,21 @@ redis:
     commander: rediscommander/redis-commander:latest
 
 vault:
-  address: https://10.0.0.1:8400
-  kvEnginePath: secret
-  role: csm-authorization
-  skipCertificateValidation: true
+  - identifier: vault0
+    address: https://10.0.0.1:8400
+    role: csm-authorization
+    skipCertificateValidation: true
+    # set clientCertificate and clientKey if you want to use custom certificates for vault
+    clientCertificate:
+    clientKey:
+    # validate vault server certificate with a certificateAuthority certificate
+    certificateAuthority:
+  # - identifier: vault1
+  #   address: https://10.0.0.2:8400
+  #   role: csm-authorization
+  #   skipCertificateValidation: true
+  #   # set clientCertificate and clientKey if you want to use custom certificates for vault
+  #   clientCertificate:
+  #   clientKey:
+  #   # validate vault server certificate with a certificateAuthority certificate
+  #   certificateAuthority:
