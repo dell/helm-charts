@@ -6,6 +6,7 @@ metadata:
 data:
   csm-config-params.yaml: |
     CONCURRENT_POWERFLEX_REQUESTS: {{ .Values.authorization.concurrentPowerFlexRequests }}
+    CONCURRENT_POWERSCALE_REQUESTS: {{ .Values.authorization.concurrentPowerScaleRequests }}
     LOG_LEVEL: {{ .Values.authorization.logLevel }}
     STORAGE_CAPACITY_POLL_INTERVAL: {{ .Values.authorization.storageCapacityPollInterval }}
     {{- if (.Values.authorization.zipkin.collectoruri) }}

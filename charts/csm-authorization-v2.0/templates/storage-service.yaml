@@ -11,7 +11,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["secrets", "events"]
-    verbs: ["get", "patch","post", create]
+    verbs: ["get", "patch", "post", "create"]
   - apiGroups: ["csm-authorization.storage.dell.com"]
     resources: ["storages", "csmtenants", "csmroles"]
     verbs: ["get", "list"]
@@ -85,10 +85,9 @@ spec:
                 name: redis-csm-secret
                 key: password
         args:
-          - "--vault-address={{ .Values.vault.address }}"
-          - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
-          - "--vault-role={{ .Values.vault.role }}"
-          - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
+          {{- range .Values.vault }}
+          - "--vault={{.identifier}},{{.address}},{{.role}},{{.skipCertificateValidation}}"
+          {{- end }}
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
           - "--leader-election=true"
@@ -100,8 +99,10 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        - name: vault-client-certificate
-          mountPath: /etc/vault
+        {{- range .Values.vault }}
+        - name: vault-client-certificate-{{ .identifier }}
+          mountPath: /etc/vault/{{ .identifier }}
+        {{- end }}
       volumes:
       - name: config-volume
         secret:
@@ -109,21 +110,22 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      - name: vault-client-certificate
+      {{- range .Values.vault }}
+      - name: vault-client-certificate-{{ .identifier }}
         projected:
           sources:
-        {{- if and (.Values.vault.clientCertificate) (.Values.vault.clientKey) }}
+        {{- if and (.clientCertificate) (.clientKey) }}
           - secret:
-              name: vault-client-certificate
+              name: vault-client-certificate-{{ .identifier }}
         {{- else }}
           - secret:
-              name: storage-service-selfsigned-tls
+              name: storage-service-selfsigned-tls-{{ .identifier }}
         {{- end }}
-        {{- if .Values.vault.certificateAuthority }}
+        {{- if .certificateAuthority }}
           - secret:
-              name: vault-certificate-authority
+              name: vault-certificate-authority-{{ .identifier }}
         {{- end }}
-
+      {{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -138,46 +140,46 @@ spec:
     targetPort: 50051
     name: grpc
 ---
-{{- if .Values.vault.certificateAuthority }}
-{{- $certificateFileContents := .Values.vault.certificateAuthority }}
+{{- $namespace := . }}
+{{- range .Values.vault }}
+{{- if .certificateAuthority }}
 apiVersion: v1
 kind: Secret
 type: Opaque
 metadata:
-  name: vault-certificate-authority
-  namespace: {{ include "custom.namespace" . }}
+  name: vault-certificate-authority-{{ .identifier }}
+  namespace: {{ include "custom.namespace" $namespace }}
 data:
-  ca.crt: {{ $certificateFileContents | b64enc }}
+  ca.crt: {{ .certificateAuthority }}
 {{- end }}
 ---
-{{- if and (.Values.vault.clientCertificate) (.Values.vault.clientKey) }}
-{{- $certificateFileContents := .Values.vault.clientCertificate }}
-{{- $keyFileContents := .Values.vault.clientKey }}
+{{- if and (.clientCertificate) (.clientKey) }}
 apiVersion: v1
 data:
-  tls.crt: {{ $certificateFileContents | b64enc }}
-  tls.key: {{ $keyFileContents | b64enc }}
+  tls.crt: {{ .clientCertificate }}
+  tls.key: {{ .clientKey }}
 kind: Secret
 type: kubernetes.io/tls
 metadata:
-  name: vault-client-certificate
-  namespace: {{ include "custom.namespace" . }}
+  name: vault-client-certificate-{{ .identifier }}
+  namespace: {{ include "custom.namespace" $namespace }}
+---
 {{- else }}
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: storage-service-selfsigned
-  namespace: {{ include "custom.namespace" . }}
+  name: storage-service-selfsigned-{{ .identifier }}
+  namespace: {{ include "custom.namespace" $namespace }}
 spec:
   selfSigned: {}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: storage-service-selfsigned
-  namespace: {{ include "custom.namespace" . }}
+  name: storage-service-selfsigned-{{ .identifier }}
+  namespace: {{ include "custom.namespace" $namespace }}
 spec:
-  secretName: storage-service-selfsigned-tls
+  secretName: storage-service-selfsigned-tls-{{ .identifier }}
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
@@ -193,7 +195,8 @@ spec:
   dnsNames:
   - csm-authorization-storage-service
   issuerRef:
-    name: storage-service-selfsigned
+    name: storage-service-selfsigned-{{ .identifier }}
     kind: Issuer
     group: cert-manager.io
+{{- end }}
 {{- end }}
