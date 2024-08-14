@@ -24,7 +24,7 @@ authorization:
     storageService: dellemc/csm-authorization-storage:v2.0.0-alpha
     authorizationController: dellemc/csm-authorization-controller:v2.0.0-alpha
     opa: openpolicyagent/opa
-    opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
+    opaKubeMgmt: openpolicyagent/kube-mgmt:8.5.7
 
   # proxy-server ingress will use this hostname
   # NOTE: additional hostnames can be configured in authorization.proxyServerIngress.hosts
