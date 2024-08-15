@@ -4,5 +4,5 @@ redis:
   rediscommander: rediscommander
   replicas: 5
   images:
-    redis: redis:7.2.4-alpine
+    redis: redis:7.4.0-alpine
     commander: rediscommander/redis-commander:latest
