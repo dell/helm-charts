@@ -41,6 +41,8 @@ spec:
             properties:
               endpoint:
                 type: string
+              isiPath:
+                type: string
               pollInterval:
                 type: string
               skipCertificateValidation:
