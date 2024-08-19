@@ -378,7 +378,6 @@ spec:
         {{- if hasKey .Values.controller "snapshot" }}
         {{- if eq .Values.controller.snapshot.enabled true }}
         - name: snapshotter{{ $csiSidecarSuffix }}
-          #image: quay.io/k8scsi/csi-snapshotter:v1.0.0
           image: {{ required "Must provide the CSI snapshotter container image." .Values.images.snapshotter }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
