@@ -40,19 +40,30 @@ spec:
             description: StorageSpec defines the desired state of Storage
             properties:
               endpoint:
+                description: EndPoint is the storage array endpoint
+                type: string
+              isiPath:
+                description: |-
+                  IsiPath the base path for the volumes to be created on PowerScale cluster
+                  Needed only for PowerScale
                 type: string
               pollInterval:
+                description: PollInterval is the interval to poll the storage array
                 type: string
               skipCertificateValidation:
+                description: SkipCertificateValidation is the flag to skip certificate
+                  validation
                 type: boolean
               systemID:
+                description: SystemID is the storage array system ID
                 type: string
               type:
-                description: |-
-                  INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-                  Important: Run "make" to regenerate code after modifying this file
+                description: Type is the storage array type
                 type: string
               vault:
+                description: |-
+                  Vault is the credential manager for storage arrays
+                  Currently support only Hashicorp Vault
                 properties:
                   identifier:
                     type: string
