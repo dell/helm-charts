@@ -368,3 +368,7 @@ authorization:
   #   "false" - TLS certificate will be verified
   # Default value: "true"
   skipCertificateValidation: true
+
+interfaceNames:
+  worker-1-xoulfuvp8vwog: "eth0"
+  worker-2-xoulfuvp8vwog: "eth0"

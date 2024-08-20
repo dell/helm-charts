@@ -123,6 +123,9 @@ rules:
     resources: ["replicasets"]
     verbs: ["get"]
 {{- end }}
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "update"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
