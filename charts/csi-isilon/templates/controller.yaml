@@ -274,7 +274,7 @@ spec:
         {{ end }}
         {{ end }}
         - name: attacher{{ $csiSidecarSuffix }}
-          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacherimage }}
+          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address={{ $driverSockPath }}"
