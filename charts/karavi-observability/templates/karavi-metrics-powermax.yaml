@@ -77,7 +77,7 @@ spec:
       {{- if eq .Values.karaviMetricsPowermax.authorization.enabled true }}
       - name: karavi-authorization-proxy
         imagePullPolicy: IfNotPresent
-        image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowermax.authorization.sidecarProxyImage }}
+        image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowermax.authorization.sidecarProxy.image }}
         env:
           - name: PROXY_HOST
             value: "{{ .Values.karaviMetricsPowermax.authorization.proxyHost }}"
