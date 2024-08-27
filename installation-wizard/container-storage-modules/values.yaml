@@ -275,10 +275,10 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
-  version: v2.11.0
+  version: v2.12.0
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-vxflexos:v2.11.0
+    driver: dellemc/csi-vxflexos:v2.12.0
     # "powerflexSdc" defines the SDC image for init container.
     powerflexSdc: dellemc/sdc:4.5.2.1
     # CSI sidecars
