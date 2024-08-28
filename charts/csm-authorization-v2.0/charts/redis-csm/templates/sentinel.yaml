@@ -17,7 +17,7 @@ spec:
     spec:
       initContainers:
       - name: config
-        image: {{ .Values.redis.images.redis }}
+        image: {{ .Values.redis.images.redis.image }}
         command: [ "sh", "-c" ]
         env:
           - name: REDIS_PASSWORD
@@ -25,18 +25,18 @@ spec:
               secretKeyRef:
                 name: redis-csm-secret
                 key: password
-        args:         
-          - |         
-            replicas=$( expr {{ .Values.redis.replicas | int }} - 1)          
+        args:
+          - |
+            replicas=$( expr {{ .Values.redis.replicas | int }} - 1)
             for i in $(seq 0 $replicas)
-            do               
+            do
                 node=$( echo "{{ .Values.redis.name }}-$i.{{ .Values.redis.name }}" )
                 nodes=$( echo "$nodes*$node" )
-            done            
+            done
             loop=$(echo $nodes | sed -e "s/"*"/\n/g")
-           
+
             for i in $loop
-            do                
+            do
                 echo "Finding master at $i"
                 MASTER=$(redis-cli --no-auth-warning --raw -h $i -a $REDIS_PASSWORD info replication | awk '{print $1}' | grep master_host: | cut -d ":" -f2)
                 if [ "$MASTER" = "" ]; then
@@ -66,7 +66,7 @@ spec:
           mountPath: /etc/redis/
       containers:
       - name: sentinel
-        image: {{ .Values.redis.images.redis }}
+        image: {{ .Values.redis.images.redis.image }}
         command: ["redis-sentinel"]
         args: ["/etc/redis/sentinel.conf"]
         ports:
@@ -81,7 +81,7 @@ spec:
       - name: redis-config
         emptyDir: {}
       - name: data
-        emptyDir : {}  
+        emptyDir : {}
 ---
 apiVersion: v1
 kind: Service
@@ -100,7 +100,7 @@ apiVersion: v1
 kind: Service
 metadata:
  name: {{ .Values.redis.sentinel }}-svc
-spec: 
+spec:
  type: NodePort
  ports:
  - port: 5000
