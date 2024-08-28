@@ -34,7 +34,7 @@ spec:
     spec:
       initContainers:
       - name: config
-        image: {{ .Values.redis.images.redis }}
+        image: {{ .Values.redis.images.redis.image }}
         env:
           - name: REDIS_PASSWORD
             valueFrom:
@@ -48,7 +48,7 @@ spec:
             cp /csm-auth-redis-cm/redis.conf /etc/redis/redis.conf
             echo "masterauth $REDIS_PASSWORD" >> /etc/redis/redis.conf
             echo "requirepass $REDIS_PASSWORD" >> /etc/redis/redis.conf
-            
+
             echo "Finding master..."
             MASTER_FDQN=`hostname  -f | sed -e 's/{{ .Values.redis.name }}-[0-9]\./{{ .Values.redis.name }}-0./'`
             echo "Master at " $MASTER_FQDN
@@ -57,15 +57,15 @@ spec:
               if [ "$(hostname)" = "{{ .Values.redis.name }}-0" ]; then
                 echo "This is Redis master, not updating redis.conf..."
               else
-                echo "This is Redis replica, updating redis.conf..."               
-                echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf                
+                echo "This is Redis replica, updating redis.conf..."
+                echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf
               fi
             else
               echo "Sentinel found, finding master..."
-              MASTER="$(redis-cli -h sentinel -p 5000 sentinel get-master-addr-by-name mymaster | grep -E '(^redis-csm-\d{1,})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})')"              
-              echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf 
+              MASTER="$(redis-cli -h sentinel -p 5000 sentinel get-master-addr-by-name mymaster | grep -E '(^redis-csm-\d{1,})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})')"
+              echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf
             fi
-        volumeMounts: 
+        volumeMounts:
         - name: redis-primary-volume
           mountPath: /data
         - name: configmap
@@ -74,7 +74,7 @@ spec:
           mountPath: /etc/redis/
       containers:
       - name: {{ .Values.redis.name }}
-        image: {{ .Values.redis.images.redis }}
+        image: {{ .Values.redis.images.redis.image }}
         command: ["redis-server"]
         args: ["/etc/redis/redis.conf"]
         ports:
@@ -88,13 +88,13 @@ spec:
         - name: config
           mountPath: /etc/redis/
       volumes:
-      - name: redis-primary-volume        
+      - name: redis-primary-volume
         emptyDir: {}
-      - name: config 
+      - name: config
         emptyDir: {}
       - name: configmap
         configMap:
-          name: redis-csm-cm          
+          name: redis-csm-cm
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -116,43 +116,43 @@ spec:
     spec:
       containers:
       - name: {{ .Values.redis.rediscommander }}
-        image: {{ .Values.redis.images.commander }}
+        image: {{ .Values.redis.images.commander.image }}
         imagePullPolicy: IfNotPresent
         env:
           {{- $str := "" -}}
-          {{- $ns := include "custom.namespace" . -}} 
+          {{- $ns := include "custom.namespace" . -}}
           {{- $replicas := .Values.redis.replicas | int }}
           {{- $sentinel := .Values.redis.sentinel }}
-          {{- range $i, $e := until $replicas }} 
-          {{- if $i }}         
+          {{- range $i, $e := until $replicas }}
+          {{- if $i }}
           {{- $str = print $str "," -}}
-          {{- end }}           
+          {{- end }}
           {{- $str = printf "%s%s-%d.%s.%s.svc.cluster.local:5000" $str $sentinel $i $sentinel $ns -}}
           {{- end }}
-        - name: SENTINELS        
-          value: {{ $str | quote }}                                     
+        - name: SENTINELS
+          value: {{ $str | quote }}
         - name: K8S_SIGTERM
           value: "1"
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: redis-csm-secret
-              key: password  
+              key: password
         - name: SENTINEL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: redis-csm-secret
-              key: password          
+              key: password
         - name: HTTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: redis-csm-secret
-              key: password          
+              key: password
         - name: HTTP_USER
           valueFrom:
             secretKeyRef:
               name: redis-csm-secret
-              key: commander_user         
+              key: commander_user
         ports:
         - name: {{ .Values.redis.rediscommander }}
           containerPort: 8081
