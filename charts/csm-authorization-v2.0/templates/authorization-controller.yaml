@@ -80,7 +80,7 @@ spec:
       serviceAccountName: authorization-controller
       containers:
       - name: authorization-controller
-        image: {{ required "Must provide the controller image." .Values.authorization.images.authorizationController }}
+        image: {{ required "Must provide the controller image." .Values.authorization.images.authorizationController.image }}
         imagePullPolicy: Always
         args:
           - "--authorization-namespace={{ .Release.Namespace }}"
