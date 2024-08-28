@@ -18,13 +18,20 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v2.0.0-alpha
-    tenantService: dellemc/csm-authorization-tenant:v2.0.0-alpha
-    roleService: dellemc/csm-authorization-role:v2.0.0-alpha
-    storageService: dellemc/csm-authorization-storage:v2.0.0-alpha
-    authorizationController: dellemc/csm-authorization-controller:v2.0.0-alpha
-    opa: openpolicyagent/opa
-    opaKubeMgmt: openpolicyagent/kube-mgmt:8.5.7
+    proxyService:
+      image: dellemc/csm-authorization-proxy:v2.0.0-alpha
+    tenantService:
+      image: dellemc/csm-authorization-tenant:v2.0.0-alpha
+    roleService:
+      image: dellemc/csm-authorization-role:v2.0.0-alpha
+    storageService:
+      image: dellemc/csm-authorization-storage:v2.0.0-alpha
+    authorizationController:
+      image: dellemc/csm-authorization-controller:v2.0.0-alpha
+    opa:
+      image: openpolicyagent/opa
+    opaKubeMgmt:
+      image: openpolicyagent/kube-mgmt:8.5.7
 
   # proxy-server ingress will use this hostname
   # NOTE: additional hostnames can be configured in authorization.proxyServerIngress.hosts
@@ -70,8 +77,10 @@ redis:
   rediscommander: rediscommander
   replicas: 5
   images:
-    redis: redis:7.4.0-alpine
-    commander: rediscommander/redis-commander:latest
+    redis:
+      image: redis:7.4.0-alpine
+    commander:
+      image: rediscommander/redis-commander:latest
 
 vault:
   - identifier: vault0
