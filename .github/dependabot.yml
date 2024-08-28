@@ -40,22 +40,6 @@ updates:
     target-branch: "release-v1.12.0"
     directories:
       - /charts/csm-authorization
-    labels:
-      - dependencies
-    schedule:
-      # check daily
-      interval: daily
-      # at 6pm UTC
-      time: "18:00"
-    groups:
-      csm-authorization:
-        patterns:
-          - "*"
-
-  # csm-authorization-v2.0 packages
-  - package-ecosystem: docker
-    target-branch: "release-v1.12.0"
-    directories:
       - /charts/csm-authorization-v2.0
     labels:
       - dependencies
@@ -65,7 +49,7 @@ updates:
       # at 6pm UTC
       time: "18:00"
     groups:
-      csm-authorization-v2.0:
+      csm-authorization:
         patterns:
           - "*"
 
