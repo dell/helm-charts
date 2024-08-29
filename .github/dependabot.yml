@@ -18,6 +18,23 @@ updates:
         patterns:
           - "*"
 
+  # csi-isilon packages
+  - package-ecosystem: docker
+    target-branch: "release-v1.12.0"
+    directories:
+      - /charts/csi-isilon
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      csi-isilon:
+        patterns:
+          - "*"
+
   # csi-vxflexos packages
   - package-ecosystem: docker
     target-branch: "release-v1.12.0"
