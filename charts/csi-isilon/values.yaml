@@ -6,21 +6,33 @@ version: "v2.11.0"
 
 images:
   # "driver" defines the container image, used for the driver container.
-  driver: dellemc/csi-isilon:v2.11.0
+  driver:
+    image: dellemc/csi-isilon:v2.11.0
   # CSI sidecars
-  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.6.1
-  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v5.0.1
-  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v8.0.1
-  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.11.1
-  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.1
-  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.12.1
+  attacher:
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.6.1
+  provisioner:
+    image: registry.k8s.io/sig-storage/csi-provisioner:v5.0.1
+  snapshotter:
+    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.0.1
+  resizer:
+    image: registry.k8s.io/sig-storage/csi-resizer:v1.11.1
+  registrar:
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.1
+  healthmonitor:
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.12.1
 
   # CSM sidecars
-  replication: dellemc/dell-csi-replicator:v1.9.0
-  podmon: dellemc/podmon:v1.10.0
-  authorization: dellemc/csm-authorization-sidecar:v1.11.0
-  metadataretriever: dellemc/csi-metadata-retriever:v1.8.0
-  encryption: dellemc/csm-encryption:v0.6.0
+  replication:
+    image: dellemc/dell-csi-replicator:v1.9.0
+  podmon:
+    image: dellemc/podmon:v1.10.0
+  authorization:
+    image: dellemc/csm-authorization-sidecar:v1.11.0
+  metadataretriever:
+    image: dellemc/csi-metadata-retriever:v1.8.0
+  encryption:
+    image: dellemc/csm-encryption:v0.6.0
 
 # CSI driver log level
 # Allowed values: "error", "warn"/"warning", "info", "debug"
