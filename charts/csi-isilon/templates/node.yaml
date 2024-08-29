@@ -115,7 +115,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
+          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             {{- toYaml .Values.podmon.node.args | nindent 12 }}
@@ -169,7 +169,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: {{ required "Must provide the Isilon driver image repository." .Values.images.driver }}
+          image: {{ required "Must provide the Isilon driver image repository." .Values.images.driver.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: CSI_ENDPOINT
@@ -253,7 +253,7 @@ spec:
               mountPath: /csi-isilon-config-params
         {{- end }}
         - name: registrar{{ $csiSidecarSuffix }}
-          image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar }}
+          image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--v=5"
@@ -275,7 +275,7 @@ spec:
         {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization }}
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
           env:
             - name: PROXY_HOST
               value: "{{ .Values.authorization.proxyHost }}"
@@ -305,7 +305,7 @@ spec:
         {{- end }}
         {{- if $encrypted }}
         - name: driver-sec
-          image: {{ .Values.images.encryption }}
+          image: {{ .Values.images.encryption.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           securityContext:
             privileged: true
