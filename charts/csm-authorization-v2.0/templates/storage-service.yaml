@@ -85,10 +85,6 @@ spec:
                 name: redis-csm-secret
                 key: password
         args:
-          - "--vault-address={{ .Values.vault.address }}"
-          - "--vault-kv-engine-path={{ .Values.vault.kvEnginePath }}"
-          - "--vault-role={{ .Values.vault.role }}"
-          - "--vault-skip-certificate-validation={{ .Values.vault.skipCertificateValidation }}"
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
           - "--leader-election=true"

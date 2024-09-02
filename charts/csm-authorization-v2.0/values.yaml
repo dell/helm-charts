@@ -18,11 +18,11 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v2.0.0-alpha
-    tenantService: dellemc/csm-authorization-tenant:v2.0.0-alpha
-    roleService: dellemc/csm-authorization-role:v2.0.0-alpha
-    storageService: dellemc/csm-authorization-storage:v2.0.0-alpha
-    authorizationController: dellemc/csm-authorization-controller:v2.0.0-alpha
+    proxyService: dellemc/csm-authorization-proxy:v2.0.0
+    tenantService: dellemc/csm-authorization-tenant:v2.0.0
+    roleService: dellemc/csm-authorization-role:v2.0.0
+    storageService: dellemc/csm-authorization-storage:v2.0.0
+    authorizationController: dellemc/csm-authorization-controller:v2.0.0
     opa: openpolicyagent/opa
     opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
 
@@ -37,6 +37,10 @@ authorization:
   # number, as a string, of concurrent requests for the storage-service to make to PowerFlex
   # currently only used with dellctl to list tenant volumes
   concurrentPowerFlexRequests: "10"
+
+  # number, as a string, of concurrent requests for the storage-service to make to PowerScale
+  # currently only used with dellctl to list tenant volumes
+  concurrentPowerScaleRequests: "10"
 
   # tracing configuration
   # this can be updated on the fly via the csm-config-params configMap
