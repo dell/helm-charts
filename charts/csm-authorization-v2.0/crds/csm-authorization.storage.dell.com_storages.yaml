@@ -14,7 +14,7 @@ spec:
     singular: storage
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - name: v1
     schema:
       openAPIV3Schema:
         description: Storage is the Schema for the storages API
