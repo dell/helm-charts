@@ -14,7 +14,7 @@ spec:
     singular: csmtenant
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - name: v1
     schema:
       openAPIV3Schema:
         description: CSMTenant is the Schema for the csmtenants API
