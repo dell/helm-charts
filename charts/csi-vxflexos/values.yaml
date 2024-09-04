@@ -34,7 +34,7 @@ images:
   vgsnapshotter:
     image: dellemc/csi-volumegroup-snapshotter:v1.6.0
   podmon:
-    image: dellemc/podmon:v1.10.0
+    image: dellemc/podmon:v1.11.0
   authorization:
     image: dellemc/csm-authorization-sidecar:v1.11.0
 
