@@ -24,7 +24,7 @@ images:
 
   # CSM sidecars
   replication:
-    image: dellemc/dell-csi-replicator:v1.9.0
+    image: dellemc/dell-csi-replicator:v1.10.0
   podmon:
     image: dellemc/podmon:v1.11.0
   authorization:
