@@ -31,7 +31,7 @@ updates:
       # at 6pm UTC
       time: "18:00"
     groups:
-      csi-isilon:
+      csi-powerstore:
         patterns:
           - "*"
 
