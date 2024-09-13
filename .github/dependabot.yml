@@ -68,7 +68,22 @@ updates:
       csi-vxflexos:
         patterns:
           - "*"
-
+  # csi-unity packages
+  - package-ecosystem: docker
+    target-branch: "release-v1.12.0"
+    directories:
+      - /charts/csi-unity
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      csi-unity:
+        patterns:
+          - "*"
   # csm-authorization packages
   - package-ecosystem: docker
     target-branch: "release-v1.12.0"
