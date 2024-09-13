@@ -68,6 +68,7 @@ updates:
       csi-vxflexos:
         patterns:
           - "*"
+  
   # csi-unity packages
   - package-ecosystem: docker
     target-branch: "release-v1.12.0"
