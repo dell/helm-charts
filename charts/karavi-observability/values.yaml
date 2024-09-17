@@ -1,5 +1,5 @@
 karaviTopology:
-  image: dellemc/csm-topology:v1.9.0
+  image: dellemc/csm-topology:v1.10.0
   enabled: true
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
   provisionerNames: csi-vxflexos.dellemc.com,csi-powerstore.dellemc.com,csi-isilon.dellemc.com,csi-powermax.dellemc.com
@@ -13,7 +13,7 @@ karaviTopology:
     probability: 0.0
 
 karaviMetricsPowerflex:
-  image: dellemc/csm-metrics-powerflex:v1.9.0
+  image: dellemc/csm-metrics-powerflex:v1.10.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
@@ -54,7 +54,7 @@ karaviMetricsPowerflex:
     skipCertificateValidation: true
 
 karaviMetricsPowerstore:
-  image: dellemc/csm-metrics-powerstore:v1.9.0
+  image: dellemc/csm-metrics-powerstore:v1.10.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powerstore.dellemc.com)
@@ -80,7 +80,7 @@ karaviMetricsPowerstore:
     probability: 0.0
 
 karaviMetricsPowerscale:
-  image: dellemc/csm-metrics-powerscale:v1.6.0
+  image: dellemc/csm-metrics-powerscale:v1.7.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-isilon.dellemc.com)
@@ -131,7 +131,7 @@ karaviMetricsPowerscale:
     skipCertificateValidation: true
 
 karaviMetricsPowermax:
-  image: dellemc/csm-metrics-powermax:v1.4.0
+  image: dellemc/csm-metrics-powermax:v1.5.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powermax.dellemc.com)
