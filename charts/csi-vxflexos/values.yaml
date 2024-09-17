@@ -259,6 +259,10 @@ node:
   #   operator: "Exists"
   #   effect: "NoSchedule"
 
+  sdc:
+    # enabled: Enable/Disable SDC
+    enabled: true
+
   # "renameSDC" defines the rename operation for SDC
   # Default value: None
   renameSDC:
