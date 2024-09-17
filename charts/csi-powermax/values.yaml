@@ -88,10 +88,10 @@ images:
   registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.1
   healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.12.1
   # CSM sidecars
-  replication: dellemc/dell-csi-replicator:v1.9.0
+  replication: dellemc/dell-csi-replicator:v1.10.0
   authorization: dellemc/csm-authorization-sidecar:v1.11.0
   migration: dellemc/dell-csi-migrator:v1.5.0
-  podmon: dellemc/podmon:v1.10.0
+  podmon: dellemc/podmon:v1.11.0
   # Node rescan sidecar does a rescan on nodes for identifying new paths
   # Default value: dellemc/dell-csi-node-rescanner:v1.4.0
   noderescan: dellemc/dell-csi-node-rescanner:v1.4.0

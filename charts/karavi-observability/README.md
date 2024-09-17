@@ -12,7 +12,7 @@ You may obtain a copy of the License at
 
 CSM for Observability can be deployed using Helm.
 
-For complete deployment instructions, refer to the [Container Storage Modules documentation](https://dell.github.io/csm-docs/docs/observability/deployment/helm).
+For complete deployment instructions, refer to the [Container Storage Modules documentation](https://dell.github.io/csm-docs/docs/deployment/helm/modules/installation/observability/).
 
 ## Helm Chart Versioning
 
