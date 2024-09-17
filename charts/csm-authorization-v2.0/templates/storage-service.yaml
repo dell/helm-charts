@@ -92,9 +92,12 @@ spec:
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
           - "--leader-election=true"
+          - "--collector-address={{ .Values.authorization.openTelemetryCollectorAddress}}"
         ports:
         - containerPort: 50051
           name: grpc
+        - containerPort: 2112
+          name: promhttp
         volumeMounts:
         - name: config-volume
           mountPath: /etc/karavi-authorization/config
@@ -137,6 +140,9 @@ spec:
   - port: 50051
     targetPort: 50051
     name: grpc
+  - port: 2112
+    targetPort: 2112
+    name: promhttp
 ---
 {{- if .Values.vault.certificateAuthority }}
 {{- $certificateFileContents := .Values.vault.certificateAuthority }}

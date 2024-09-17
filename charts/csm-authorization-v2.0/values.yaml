@@ -45,6 +45,9 @@ authorization:
     # collectoruri: http://DNS-hostname:9411/api/v2/spans
     # probability: 1
 
+  # openTelemetryCollectorAddress: the OTLP receiving endpoint using gRPC
+  openTelemetryCollectorAddress: ""
+
   # proxy-server ingress configuration
   proxyServerIngress:
     ingressClassName: nginx
