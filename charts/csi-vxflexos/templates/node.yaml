@@ -305,6 +305,7 @@ spec:
             - name: host-opt-emc-path
               mountPath: /host_opt_emc_path
         {{- end }}
+      {{- if and (hasKey .Values.node "sdc") (eq .Values.node.sdc.enabled true) }}
       initContainers:
         - name: sdc
           securityContext:
@@ -338,6 +339,7 @@ spec:
               mountPath: /rules.d
             - name: scaleio-path-opt
               mountPath: /host_drv_cfg_path
+      {{- end }}
       volumes:
         - name: registration-dir
           hostPath:
