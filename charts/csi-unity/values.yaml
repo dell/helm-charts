@@ -26,7 +26,7 @@ images:
 
   # CSM sidecars
   podmon:
-    image: dellemc/podmon:v1.10.0
+    image: dellemc/podmon:v1.11.0
 
 # LogLevel is used to set the logging level of the driver.
 # Allowed values: "error", "warn"/"warning", "info", "debug"
