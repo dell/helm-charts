@@ -305,7 +305,7 @@ spec:
             - name: host-opt-emc-path
               mountPath: /host_opt_emc_path
         {{- end }}
-      {{- if and (hasKey .Values.node "sdc") (eq .Values.node.sdc.enabled true) }}
+      {{- if or (not (hasKey (.Values.node.sdc) "enabled")) (eq .Values.node.sdc.enabled true) }}
       initContainers:
         - name: sdc
           securityContext:
