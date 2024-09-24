@@ -121,3 +121,20 @@ updates:
       karavi-observability:
         patterns:
           - "*"
+
+  # csm-replication packages
+  - package-ecosystem: docker
+    target-branch: "release-v1.12.0"
+    directories:
+      - /charts/csm-replication
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      csm-replication:
+        patterns:
+          - "*"
