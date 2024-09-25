@@ -20,10 +20,10 @@
 ########################
 csi-powerstore:
   enabled: false
-  version: "v2.11.0"
+  version: "v2.11.1"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-powerstore:v2.11.0
+    driver: dellemc/csi-powerstore:v2.11.1
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.6.1
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v5.0.1
@@ -374,10 +374,10 @@ csi-vxflexos:
 ########################
 csi-unity:
   enabled: false
-  version: "v2.11.0"
+  version: "v2.11.1"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: dellemc/csi-unity:v2.11.0
+    driver: dellemc/csi-unity:v2.11.1
     # CSI sidecars
     attacher: registry.k8s.io/sig-storage/csi-attacher:v4.6.1
     provisioner: registry.k8s.io/sig-storage/csi-provisioner:v5.0.1
