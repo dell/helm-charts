@@ -887,6 +887,27 @@ entries:
     version: 2.6.0
   csi-powerstore:
   - apiVersion: v2
+    appVersion: 2.11.1
+    created: "2024-09-25T09:48:52.115451344Z"
+    description: 'PowerStore CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a PowerStore
+      StorageClass. '
+    digest: ccff6c8d5003031b44cb054e0a6556201ed3b8e16283d5d54ec536f09b1873f7
+    home: https://github.com/dell/csi-powerstore
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.24.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-powerstore
+    sources:
+    - https://github.com/dell/csi-powerstore
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-powerstore-2.11.1/csi-powerstore-2.11.1.tgz
+    version: 2.11.1
+  - apiVersion: v2
     appVersion: 2.11.0
     created: "2024-07-29T19:17:24.475153051Z"
     description: 'PowerStore CSI (Container Storage Interface) driver Kubernetes integration.
@@ -1054,6 +1075,26 @@ entries:
     - https://github.com/dell/helm-charts/releases/download/csi-powerstore-2.6.0/csi-powerstore-2.6.0.tgz
     version: 2.6.0
   csi-unity:
+  - apiVersion: v2
+    appVersion: 2.11.1
+    created: "2024-09-25T09:48:52.228104612Z"
+    description: 'Unity XT CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a Unity
+      XT StorageClass. '
+    digest: 46de66291e2c55a4e39b7938f4897ad5a80d08cbf72ebc088321048e80cd2f2c
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.24.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-unity
+    sources:
+    - https://github.com/dell/csi-unity
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-unity-2.11.1/csi-unity-2.11.1.tgz
+    version: 2.11.1
   - apiVersion: v2
     appVersion: 2.11.0
     created: "2024-07-29T19:17:24.632791618Z"
@@ -2232,4 +2273,4 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/karavi-topology-0.1.0/karavi-topology-0.1.0.tgz
     version: 0.1.0
-generated: "2024-07-31T19:44:02.059916592Z"
+generated: "2024-09-25T09:48:52.228338972Z"
