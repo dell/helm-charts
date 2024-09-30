@@ -183,7 +183,7 @@ spec:
         {{- if hasKey .Values "podmon" }}
         {{- if eq .Values.podmon.enabled true }}
         - name: podmon
-          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
+          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             {{- toYaml .Values.podmon.controller.args | nindent 12 }}
@@ -208,7 +208,7 @@ spec:
                 {{- end }}
                 {{- end }}
         - name: attacher
-          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher }}
+          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -223,7 +223,7 @@ spec:
             - name: socket-dir
               mountPath: /var/run/csi
         - name: provisioner
-          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner }}
+          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -256,7 +256,7 @@ spec:
         {{- if hasKey .Values.controller "snapshot" }}
         {{- if eq .Values.controller.snapshot.enabled true }}
         - name: snapshotter
-          image: {{ required "Must provide the CSI snapshotter container image." .Values.images.snapshotter }}
+          image: {{ required "Must provide the CSI snapshotter container image." .Values.images.snapshotter.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -275,7 +275,7 @@ spec:
         {{- end }}
         {{- if eq .Values.replication.enabled true}}
         - name: dell-csi-replicator
-          image: {{ required "Must provide the Dell CSI Replicator Resizer image." .Values.images.replication }}
+          image: {{ required "Must provide the Dell CSI Replicator Resizer image." .Values.images.replication.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -301,7 +301,7 @@ spec:
         {{- end }}
         {{- if eq .Values.migration.enabled true}}
         - name: dell-csi-migrator
-          image: {{ required "Must provide the Dell CSI Migrator Resizer image." .Values.images.migration }}
+          image: {{ required "Must provide the Dell CSI Migrator Resizer image." .Values.images.migration.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -327,7 +327,7 @@ spec:
         {{- if hasKey .Values.controller "resizer" }}
         {{- if eq .Values.controller.resizer.enabled true }}
         - name: resizer
-          image: {{ required "Must provide the CSI resizer container image." .Values.images.resizer }}
+          image: {{ required "Must provide the CSI resizer container image." .Values.images.resizer.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -346,7 +346,7 @@ spec:
         {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization }}
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
           env:
             - name: PROXY_HOST
               value: "{{ .Values.authorization.proxyHost }}"
@@ -377,7 +377,7 @@ spec:
         {{- if eq .Values.controller.healthMonitor.enabled true }}
         - name: csi-external-health-monitor-controller
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          image: {{ required "Must provide the CSI external health monitor controller image." .Values.images.healthmonitor }}
+          image: {{ required "Must provide the CSI external health monitor controller image." .Values.images.healthmonitor.image }}
           args:
             - "--v=5"
             - "--csi-address=$(ADDRESS)"
@@ -395,7 +395,7 @@ spec:
         {{- end }}
         {{- end }}
         - name: driver
-          image: {{ required "Must provide the PowerMax driver image repository." .Values.images.driver }}
+          image: {{ required "Must provide the PowerMax driver image repository." .Values.images.driver.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           command: [ "/csi-powermax.sh" ]
           env:
@@ -511,7 +511,7 @@ spec:
               mountPath: /powermax-config-params
         {{- if eq .Values.csireverseproxy.deployAsSidecar true }}
         - name: reverseproxy
-          image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy }}
+          image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: X_CSI_REVPROXY_CONFIG_DIR

@@ -84,6 +84,24 @@ updates:
       csi-unity:
         patterns:
           - "*"
+
+  # csi-powermax packages
+  - package-ecosystem: docker
+    target-branch: "release-v1.12.0"
+    directories:
+      - /charts/csi-powermax
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      csi-powermax:
+        patterns:
+          - "*"
+
   # csm-authorization packages
   - package-ecosystem: docker
     target-branch: "release-v1.12.0"
