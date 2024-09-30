@@ -23,13 +23,13 @@
 driverName: "csi-powerstore.dellemc.com"
 # "version" is used to verify the values file matches driver version
 # Not recommend to change
-version: v2.11.0
+version: v2.11.1
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
 images:
   # "driver" defines the container image, used for the driver container.
-  driver: dellemc/csi-powerstore:v2.11.0
+  driver: dellemc/csi-powerstore:v2.11.1
   # CSI sidecars
   attacher: registry.k8s.io/sig-storage/csi-attacher:v4.6.1
   provisioner: registry.k8s.io/sig-storage/csi-provisioner:v5.0.1
