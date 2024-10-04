@@ -20,7 +20,6 @@ images:
   podmon: dellemc/podmon:v1.10.0
   authorization: dellemc/csm-authorization-sidecar:v1.11.0
   metadataretriever: dellemc/csi-metadata-retriever:v1.8.0
-  encryption: dellemc/csm-encryption:v0.6.0
 
 # CSI driver log level
 # Allowed values: "error", "warn"/"warning", "info", "debug"
@@ -418,36 +417,3 @@ podmon:
       - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
       - "--driverPodLabelValue=dell-storage"
       - "--ignoreVolumelessPods=false"
-
-encryption:
-  # enabled: Enable/disable volume encryption feature.
-  enabled: false
-
-  # pluginName: The name of the provisioner to use for encrypted volumes.
-  pluginName: "sec-isilon.dellemc.com"
-
-  # apiPort: TCP port number used by the REST API server.
-  apiPort: 3838
-
-  # logLevel: Log level of the encryption driver.
-  # Allowed values: "error", "warning", "info", "debug", "trace".
-  logLevel: "error"
-
-  # livenessPort: HTTP liveness probe port number.
-  # Leave empty to disable the liveness probe.
-  # Example: 8080
-  livenessPort:
-
-  # ocp: Enable when running on OpenShift Container Platform with CoreOS worker nodes.
-  ocp: false
-
-  # ocpCoreID: User ID and group ID of user core on CoreOS worker nodes.
-  # Ignored when ocp is set to false.
-  ocpCoreID: "1000:1000"
-
-  # extraArgs: Extra command line parameters to pass to the encryption driver.
-  # Allowed values:
-  # --sharedStorage - may be required by some applications to work properly.
-  # When set, performance is reduced and hard links cannot be created.
-  # See the gocryptfs documentation for more details.
-  extraArgs: []

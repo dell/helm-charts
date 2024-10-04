@@ -95,18 +95,8 @@ spec:
       hostNetwork: true
       dnsPolicy: {{ .Values.node.dnsPolicy }}
       containers:
-        {{- $encModes := list false }}
-        {{- if eq .Values.encryption.enabled true }}
-        {{- $encModes = list false true }}
-        {{- end }}
-{{- range $encrypted := $encModes }}
-{{- with $ }}
         {{- $driverSock := "csi_sock" }}
         {{- $csiSidecarSuffix := "" }}
-        {{- if $encrypted }}
-        {{- $driverSock = "csi_sec_sock" }}
-        {{- $csiSidecarSuffix = "-sec" }}
-        {{- end }}
       {{- if hasKey .Values "podmon" }}
       {{- if eq .Values.podmon.enabled true }}
         - name: podmon
@@ -159,7 +149,6 @@ spec:
               mountPath: /csi-isilon-config-params
       {{- end }}
       {{- end }}
-        {{- if not $encrypted }}
         - name: driver
           command: ["/csi-isilon"]
           args:
@@ -231,14 +220,8 @@ spec:
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/csi-isilon
-            {{- if eq .Values.encryption.enabled true }}
-            - name: staging-dir
-              mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
-              mountPropagation: Bidirectional
-            {{- else }}
             - name: volumedevices-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi/volumeDevices
-            {{- end }}
             - name: pods-path
               mountPath: {{ .Values.kubeletConfigDir }}/pods
               mountPropagation: "Bidirectional"
@@ -251,7 +234,6 @@ spec:
               mountPath: /isilon-configs
             - name: csi-isilon-config-params
               mountPath: /csi-isilon-config-params
-        {{- end }}
         - name: registrar{{ $csiSidecarSuffix }}
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -270,7 +252,6 @@ spec:
               mountPath: /registration
             - name: driver-path
               mountPath: /csi
-        {{- if not $encrypted }}
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
@@ -302,41 +283,6 @@ spec:
               mountPath: /etc/karavi-authorization
         {{ end }}
         {{ end }}
-        {{- end }}
-        {{- if $encrypted }}
-        - name: driver-sec
-          image: {{ .Values.images.encryption }}
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
-          securityContext:
-            privileged: true
-            allowPrivilegeEscalation: true
-            capabilities:
-              add: ["SYS_ADMIN"]
-          args:
-            - --name={{ .Values.encryption.pluginName }}
-            - --nodeId=$(NODE_ID)
-            - "--endpoint=unix://var/run/csi/csi_sec_sock"
-            - "--targetEndpoint=unix://var/run/csi/csi_sock"
-            - --targetType=Isilon
-            - --vaultClientConfig=/etc/dea/vault/client.json
-            - --logLevel={{ .Values.encryption.logLevel }}
-            - --licenseName=/etc/dea/license/license
-            {{- if .Values.encryption.livenessPort }}
-            - --livenessPort={{ .Values.encryption.livenessPort }}
-            {{- end}}
-            - --apiPort={{ .Values.encryption.apiPort }}
-            {{- range index .Values.encryption.extraArgs }}
-            - {{ . | quote }}
-            {{- end }}
-          env:
-            - name: NODE_ID
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            {{- if eq .Values.encryption.ocp true }}
-            - name: CORE_ID
-              value: "{{ required "encryption.ocpCoreID not set to core user uid:gid" .Values.encryption.ocpCoreID }}"
-            {{- end }}
           volumeMounts:
             - name: vault-config
               mountPath: /etc/dea/vault
@@ -349,26 +295,10 @@ spec:
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
               mountPropagation: Bidirectional
             - name: user-home
-              {{- if eq .Values.encryption.ocp true }}
-              mountPath: /corehome
-              {{- else }}
               mountPath: /roothome
-              {{- end }}
             - name: license-config
               mountPath: /etc/dea/license
-          {{- if .Values.encryption.livenessPort }}
-          livenessProbe:
-            httpGet:
-              path: /liveprobe
-              port: {{ .Values.encryption.livenessPort }}
-              initialDelaySeconds: 1500
-              periodSeconds: 1000
-              timeoutSeconds: 3
-              failureThreshold: 100
-          {{- end }}
         {{- end }}
-{{- end }}
-{{- end }}
       volumes:
         - name: registration-dir
           hostPath:
@@ -432,29 +362,4 @@ spec:
             type: Directory
         {{ end }}
         {{ end }}
-        {{- if eq .Values.encryption.enabled true }}
-        - name: vault-config
-          projected:
-            sources:
-            - secret:
-                name: vault-cert
-            - secret:
-                name: vault-auth
-            - configMap:
-                name: vault-client-conf
-        - name: staging-dir
-          hostPath:
-            path: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
-            type: DirectoryOrCreate
-        - name: user-home
-          hostPath:
-            {{- if eq .Values.encryption.ocp true }}
-            path: /home/core
-            {{- else }}
-            path: /root
-            {{- end }}
-            type: Directory
-        - name: license-config
-          secret:
-            secretName: encryption-license
-        {{- end }}
+
