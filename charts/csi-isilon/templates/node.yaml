@@ -283,21 +283,6 @@ spec:
               mountPath: /etc/karavi-authorization
         {{ end }}
         {{ end }}
-          volumeMounts:
-            - name: vault-config
-              mountPath: /etc/dea/vault
-            - name: driver-path
-              mountPath: /var/run/csi
-            - name: pods-path
-              mountPath: {{ .Values.kubeletConfigDir }}/pods
-              mountPropagation: Bidirectional
-            - name: staging-dir
-              mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
-              mountPropagation: Bidirectional
-            - name: user-home
-              mountPath: /roothome
-            - name: license-config
-              mountPath: /etc/dea/license
       volumes:
         - name: registration-dir
           hostPath:
@@ -361,4 +346,3 @@ spec:
             type: Directory
         {{ end }}
         {{ end }}
-
