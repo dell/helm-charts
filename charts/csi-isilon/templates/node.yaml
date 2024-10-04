@@ -298,7 +298,6 @@ spec:
               mountPath: /roothome
             - name: license-config
               mountPath: /etc/dea/license
-        {{- end }}
       volumes:
         - name: registration-dir
           hostPath:
