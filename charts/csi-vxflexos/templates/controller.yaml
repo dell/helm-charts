@@ -63,6 +63,9 @@ rules:
     verbs: ["get", "list", "watch"]
 {{- end }}
 {{- end }}
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "update"]
 # below for snapshotter
   - apiGroups: [""]
     resources: ["secrets"]
