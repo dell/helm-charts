@@ -356,3 +356,7 @@ authorization:
   #   "false" - TLS certificate will be verified
   # Default value: "true"
   skipCertificateValidation: true
+
+interfaceNames:
+  # worker1: "interface1"
+  # worker2: "interface2"
