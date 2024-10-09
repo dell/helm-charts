@@ -31,7 +31,7 @@ authorization:
     opa:
       image: openpolicyagent/opa
     opaKubeMgmt:
-      image: openpolicyagent/kube-mgmt:8.5.8
+      image: openpolicyagent/kube-mgmt:8.5.9
 
   # proxy-server ingress will use this hostname
   # NOTE: additional hostnames can be configured in authorization.proxyServerIngress.hosts
@@ -81,7 +81,7 @@ redis:
   replicas: 5
   images:
     redis:
-      image: redis:7.4.0-alpine
+      image: redis:7.4.1-alpine
     commander:
       image: rediscommander/redis-commander:latest
 
