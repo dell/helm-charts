@@ -37,7 +37,7 @@ installer:
   image: dellemc/dell-csm-installer:v1.0.1
 
 # CSM Data collector image
-dataCollector: 
+dataCollector:
   image: dellemc/csm-data-collector:v1.0.1
 
 # Admin username of CSM Installer
