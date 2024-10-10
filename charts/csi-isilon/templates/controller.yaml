@@ -179,20 +179,9 @@ spec:
       {{- toYaml .Values.controller.tolerations | nindent 8 }}
       {{ end }}
       containers:
-        {{- $encModes := list false }}
-        {{- if eq .Values.encryption.enabled true }}
-        {{- $encModes = list false true }}
-        {{- end }}
-{{- range $encrypted := $encModes }}
-{{- with $ }}
         {{- $driverSock := "csi.sock" }}
         {{- $csiSidecarSuffix := "" }}
-        {{- if $encrypted }}
-        {{- $driverSock = "csi-sec.sock" }}
-        {{- $csiSidecarSuffix = "-sec" }}
-        {{- end }}
         {{- $driverSockPath := printf "/var/run/csi/%s" $driverSock }}
-        {{- if not $encrypted }}
         {{- if hasKey .Values "podmon" }}
         {{- if eq .Values.podmon.enabled true }}
         - name: podmon
@@ -218,7 +207,6 @@ spec:
               mountPath: /var/run/csi
             - name: csi-isilon-config-params
               mountPath: /csi-isilon-config-params
-        {{- end }}
         {{- end }}
         {{- if hasKey .Values.controller "replication" }}
         {{- if eq .Values.controller.replication.enabled true}}
@@ -295,7 +283,6 @@ spec:
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
-        {{- if not $encrypted }}
         - name: csi-metadata-retriever
           image: {{ required "Must provide the CSI metadata retriever container image." .Values.images.metadataretriever.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -335,7 +322,6 @@ spec:
               mountPath: /var/run/csi
         {{end}}
         {{end}}
-        {{- end }}
         - name: provisioner{{ $csiSidecarSuffix }}
           image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -402,7 +388,6 @@ spec:
               mountPath: /var/run/csi
         {{end}}
         {{end}}
-        {{- if not $encrypted }}
         - name: driver
           image: {{ required "Must provide the Isilon driver image repository." .Values.images.driver.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -486,8 +471,6 @@ spec:
               mountPath: /isilon-configs
             - name: csi-isilon-config-params
               mountPath: /csi-isilon-config-params
-        {{- end }}
-        {{- if not $encrypted }}
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
@@ -519,33 +502,6 @@ spec:
               mountPath: /etc/karavi-authorization
         {{ end }}
         {{ end }}
-        {{- end }}
-        {{- if $encrypted }}
-        - name: driver-sec
-          image: {{ .Values.images.encryption.image }}
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
-          args:
-            - --name={{ .Values.encryption.pluginName }}
-            - --nodeId=$(NODE_ID)
-            - "--endpoint=unix://var/run/csi/csi-sec.sock"
-            - "--targetEndpoint=unix://var/run/csi/csi.sock"
-            - --targetType=Isilon
-            - --controller
-            - --logLevel={{ .Values.encryption.logLevel }}
-            {{- range index .Values.encryption.extraArgs }}
-            - {{ . | quote }}
-            {{- end }}
-          env:
-            - name: NODE_ID
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-          volumeMounts:
-            - name: socket-dir
-              mountPath: /var/run/csi
-        {{- end }}
-{{- end }}
-{{- end }}
       volumes:
         - name: socket-dir
           emptyDir:
