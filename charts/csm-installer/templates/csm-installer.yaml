@@ -65,7 +65,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
         - name: "dell-csm-installer"
-          image: {{ required "Must provide the container image." .Values.installerImage }}
+          image: {{ required "Must provide the container image." .Values.installer.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: HOST
@@ -83,7 +83,7 @@ spec:
             - name: KAPP_BINARY
               value: "/app/kapp"
             - name: DATA_COLLECTOR_IMAGE
-              value: {{ .Values.dataCollectorImage }}
+              value: {{ .Values.dataCollector.image }}
             - name: ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
