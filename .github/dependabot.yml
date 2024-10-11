@@ -173,3 +173,21 @@ updates:
       csm-installer:
         patterns:
           - "*"
+
+  # installation-wizard packages
+  - package-ecosystem: docker
+    target-branch: "release-v1.12.0"
+    directories:
+      - /installation-wizard/container-storage-modules
+    labels:
+      - dependencies
+    schedule:
+      # check daily
+      interval: daily
+      # at 6pm UTC
+      time: "18:00"
+    groups:
+      container-storage-modules:
+        patterns:
+          - "*"
+
