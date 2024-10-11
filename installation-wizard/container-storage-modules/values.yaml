@@ -200,7 +200,6 @@ csi-isilon:
     podmon: dellemc/podmon:v1.11.0
     authorization: dellemc/csm-authorization-sidecar:v1.11.0
     metadataretriever: dellemc/csi-metadata-retriever:v1.8.0
-    encryption: dellemc/csm-encryption:v0.6.0
   ## Controller ATTRIBUTES
   controller:
     controllerCount: 2
@@ -268,8 +267,6 @@ csi-isilon:
   authorization:
     enabled: false
     proxyHost:
-  encryption:
-    enabled: false
 
 ## CSI PowerFlex
 ########################
