@@ -23,30 +23,30 @@ csi-powerstore:
   version: "v2.12.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: 
+    driver:
       image: dellemc/csi-powerstore:v2.12.0
     # CSI sidecars
-    attacher: 
+    attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
-    provisioner: 
+    provisioner:
       image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
-    snapshotter: 
+    snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
-    resizer: 
+    resizer:
       image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
-    registrar: 
+    registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
-    healthmonitor: 
+    healthmonitor:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
 
     # CSM sidecars
-    replication: 
+    replication:
       image: dellemc/dell-csi-replicator:v1.10.0
-    vgsnapshotter: 
+    vgsnapshotter:
       image: dellemc/csi-volumegroup-snapshotter:v1.6.0
-    podmon: 
+    podmon:
       image: dellemc/podmon:v1.11.0
-    metadataretriever: 
+    metadataretriever:
       image: dellemc/csi-metadata-retriever:v1.8.0
   ## Controller ATTRIBUTES
   controller:
@@ -143,29 +143,29 @@ csi-powermax:
   version: "v2.12.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: 
+    driver:
       image: dellemc/csi-powermax:v2.12.0
-    csireverseproxy: 
+    csireverseproxy:
       image: dellemc/csipowermax-reverseproxy:v2.10.0
     # CSI sidecars
-    attacher: 
+    attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
-    provisioner: 
+    provisioner:
       image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
-    snapshotter: 
+    snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
-    resizer: 
+    resizer:
       image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
-    registrar: 
+    registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
-    healthmonitor: 
+    healthmonitor:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
     # CSM sidecars
-    replication: 
+    replication:
       image: dellemc/dell-csi-replicator:v1.10.0
-    authorization: 
+    authorization:
       image: dellemc/csm-authorization-sidecar:v1.11.0
-    migration: 
+    migration:
       image: dellemc/dell-csi-migrator:v1.5.0
     podmon:
       image: dellemc/podmon:v1.11.0
@@ -214,29 +214,29 @@ csi-isilon:
   version: "v2.12.0"
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: 
+    driver:
       image: dellemc/csi-isilon:v2.12.0
     # CSI sidecars
-    attacher: 
+    attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
-    provisioner: 
+    provisioner:
       image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
-    snapshotter: 
+    snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
-    resizer: 
+    resizer:
       image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
-    registrar: 
+    registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
-    healthmonitor: 
+    healthmonitor:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
     # CSM sidecars
-    replication: 
+    replication:
       image: dellemc/dell-csi-replicator:v1.10.0
-    podmon: 
+    podmon:
       image: dellemc/podmon:v1.11.0
-    authorization: 
+    authorization:
       image: dellemc/csm-authorization-sidecar:v1.11.0
-    metadataretriever: 
+    metadataretriever:
       image: dellemc/csi-metadata-retriever:v1.8.0
   ## Controller ATTRIBUTES
   controller:
@@ -313,32 +313,32 @@ csi-vxflexos:
   version: v2.12.0
   images:
     # "driver" defines the container image, used for the driver container.
-    driver: 
+    driver:
       image: dellemc/csi-vxflexos:v2.12.0
     # "powerflexSdc" defines the SDC image for init container.
-    powerflexSdc: 
+    powerflexSdc:
       image: dellemc/sdc:4.5.2.1
     # CSI sidecars
-    attacher: 
+    attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
-    provisioner: 
+    provisioner:
       image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
-    snapshotter: 
+    snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
-    resizer: 
+    resizer:
       image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
-    registrar: 
+    registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
-    healthmonitor: 
+    healthmonitor:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
     # CSM sidecars
-    replication: 
+    replication:
       image: dellemc/dell-csi-replicator:v1.10.0
-    vgsnapshotter: 
+    vgsnapshotter:
       image: dellemc/csi-volumegroup-snapshotter:v1.6.0
-    podmon: 
+    podmon:
       image: dellemc/podmon:v1.11.0
-    authorization: 
+    authorization:
       image: dellemc/csm-authorization-sidecar:v1.11.0
   certSecretCount: 0
   controller:
@@ -427,20 +427,20 @@ csi-unity:
     driver:
       image: dellemc/csi-unity:v2.12.0
     # CSI sidecars
-    attacher: 
+    attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
-    provisioner: 
+    provisioner:
       image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
-    snapshotter: 
+    snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
-    resizer: 
+    resizer:
       image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
-    registrar: 
+    registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
-    healthmonitor: 
+    healthmonitor:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
     # CSM sidecars
-    podmon: 
+    podmon:
       image: dellemc/podmon:v1.11.0
   # certSecretCount: Represents number of certificate secrets, which user is going to create for
   # ssl authentication. (unity-cert-0..unity-cert-n)
