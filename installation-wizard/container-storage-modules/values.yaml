@@ -34,7 +34,7 @@ csi-powerstore:
 
     # CSM sidecars
     replication: dellemc/dell-csi-replicator:v1.10.0
-    vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.6.0
+    vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.7.0
     podmon: dellemc/podmon:v1.11.0
     metadataretriever: dellemc/csi-metadata-retriever:v1.8.0
   ## Controller ATTRIBUTES
@@ -287,7 +287,7 @@ csi-vxflexos:
     healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.12.1
     # CSM sidecars
     replication: dellemc/dell-csi-replicator:v1.10.0
-    vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.6.0
+    vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.7.0
     podmon: dellemc/podmon:v1.11.0
     authorization: dellemc/csm-authorization-sidecar:v1.11.0
   certSecretCount: 0
