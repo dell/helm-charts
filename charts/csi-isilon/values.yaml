@@ -7,7 +7,7 @@ version: "v2.11.0"
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-isilon::v2.11.0
+    image: quay.io/dell/container-storage-modules/csi-isilon:v2.11.0
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
