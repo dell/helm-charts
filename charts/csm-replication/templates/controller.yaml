@@ -208,12 +208,12 @@ subjects:
   name: dell-replication-controller-sa
   namespace: {{ .Release.Namespace }}
 ---
-{{- $secret := (lookup "v1" "ConfigMap" "{{ .Release.Namespace }}" "dell-replication-controller-config").data -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: dell-replication-controller-config
   namespace: {{ .Release.Namespace }}
+{{- $secret := (lookup "v1" "ConfigMap" "{{ .Release.Namespace }}" "dell-replication-controller-config").data -}}
 {{ if $secret -}}
 data:
  {{- range $key, $value := $secret }}
