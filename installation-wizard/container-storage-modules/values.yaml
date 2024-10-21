@@ -146,7 +146,7 @@ csi-powermax:
     driver:
       image: dellemc/csi-powermax:v2.12.0
     csireverseproxy:
-      image: dellemc/csipowermax-reverseproxy:v2.10.0
+      image: dellemc/csipowermax-reverseproxy:v2.11.0
     # CSI sidecars
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
