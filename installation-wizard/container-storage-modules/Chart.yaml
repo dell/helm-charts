@@ -40,17 +40,17 @@ appVersion: "1.5.0"
 
 dependencies:
   - name: csi-powerstore
-    version: 2.11.1
+    version: 2.12.0
     repository: https://dell.github.io/helm-charts
     condition: csi-powerstore.enabled
 
   - name: csi-powermax
-    version: 2.11.0
+    version: 2.12.0
     repository: https://dell.github.io/helm-charts
     condition: csi-powermax.enabled
 
   - name: csi-isilon
-    version: 2.11.0
+    version: 2.12.0
     repository: https://dell.github.io/helm-charts
     condition: csi-isilon.enabled
 
