@@ -48,16 +48,16 @@ global:
 
 # Current version of the driver
 # Don't modify this value as this value will be used by the install script
-version: "v2.11.0"
+version: "v2.12.0"
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: dellemc/csi-powermax:v2.11.0
+    image: dellemc/csi-powermax:v2.12.0
   csireverseproxy:
-    image: dellemc/csipowermax-reverseproxy:v2.10.0
+    image: dellemc/csipowermax-reverseproxy:v2.11.0
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
