@@ -7,7 +7,7 @@ version: "v2.12.0"
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: dellemc/csi-isilon:v2.12.0
+    image: quay.io/dell/container-storage-modules/csi-isilon:v2.12.0
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
@@ -24,13 +24,13 @@ images:
 
   # CSM sidecars
   replication:
-    image: dellemc/dell-csi-replicator:v1.10.0
+    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
   podmon:
-    image: dellemc/podmon:v1.11.0
+    image: quay.io/dell/container-storage-modules/podmon:v1.11.0
   authorization:
-    image: dellemc/csm-authorization-sidecar:v1.11.0
+    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.11.0
   metadataretriever:
-    image: dellemc/csi-metadata-retriever:v1.8.0
+    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.8.0
 
 # CSI driver log level
 # Allowed values: "error", "warn"/"warning", "info", "debug"

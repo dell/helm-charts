@@ -24,7 +24,7 @@ csi-powerstore:
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
-      image: dellemc/csi-powerstore:v2.12.0
+      image: quay.io/dell/container-storage-modules/csi-powerstore:v2.12.0
     # CSI sidecars
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
@@ -41,13 +41,13 @@ csi-powerstore:
 
     # CSM sidecars
     replication:
-      image: dellemc/dell-csi-replicator:v1.10.0
+      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
     vgsnapshotter:
-      image: dellemc/csi-volumegroup-snapshotter:v1.7.0
+      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.7.0
     podmon:
-      image: dellemc/podmon:v1.11.0
+      image: quay.io/dell/container-storage-modules/podmon:v1.11.0
     metadataretriever:
-      image: dellemc/csi-metadata-retriever:v1.8.0
+      image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.8.0
   ## Controller ATTRIBUTES
   controller:
     controllerCount: 2
@@ -144,9 +144,9 @@ csi-powermax:
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
-      image: dellemc/csi-powermax:v2.12.0
+      image: quay.io/dell/container-storage-modules/csi-powermax:v2.12.0
     csireverseproxy:
-      image: dellemc/csipowermax-reverseproxy:v2.11.0
+      image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.11.0
     # CSI sidecars
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
@@ -162,17 +162,17 @@ csi-powermax:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
     # CSM sidecars
     replication:
-      image: dellemc/dell-csi-replicator:v1.10.0
+      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
     authorization:
-      image: dellemc/csm-authorization-sidecar:v1.11.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.11.0
     migration:
-      image: dellemc/dell-csi-migrator:v1.5.0
+      image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.5.0
     podmon:
-      image: dellemc/podmon:v1.11.0
+      image: quay.io/dell/container-storage-modules/podmon:v1.11.0
     # Node rescan sidecar does a rescan on nodes for identifying new paths
-    # Default value: dellemc/dell-csi-node-rescanner:v1.4.0
+    # Default value: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.4.0
     noderescan:
-      image: dellemc/dell-csi-node-rescanner:v1.4.0
+      image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.4.0
   clusterPrefix: ABC
   portGroups: PortGroup1, PortGroup2, PortGroup3
   controller:
@@ -215,7 +215,7 @@ csi-isilon:
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
-      image: dellemc/csi-isilon:v2.12.0
+      image: quay.io/dell/container-storage-modules/csi-isilon:v2.12.0
     # CSI sidecars
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
@@ -231,13 +231,13 @@ csi-isilon:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
     # CSM sidecars
     replication:
-      image: dellemc/dell-csi-replicator:v1.10.0
+      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
     podmon:
-      image: dellemc/podmon:v1.11.0
+      image: quay.io/dell/container-storage-modules/podmon:v1.11.0
     authorization:
-      image: dellemc/csm-authorization-sidecar:v1.11.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.11.0
     metadataretriever:
-      image: dellemc/csi-metadata-retriever:v1.8.0
+      image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.8.0
   ## Controller ATTRIBUTES
   controller:
     controllerCount: 2
@@ -314,7 +314,7 @@ csi-vxflexos:
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
-      image: dellemc/csi-vxflexos:v2.12.0
+      image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.12.0
     # "powerflexSdc" defines the SDC image for init container.
     powerflexSdc:
       image: dellemc/sdc:4.5.2.1
@@ -333,13 +333,13 @@ csi-vxflexos:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
     # CSM sidecars
     replication:
-      image: dellemc/dell-csi-replicator:v1.10.0
+      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
     vgsnapshotter:
-      image: dellemc/csi-volumegroup-snapshotter:v1.7.0
+      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.7.0
     podmon:
-      image: dellemc/podmon:v1.11.0
+      image: quay.io/dell/container-storage-modules/podmon:v1.11.0
     authorization:
-      image: dellemc/csm-authorization-sidecar:v1.11.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.11.0
   certSecretCount: 0
   controller:
     replication:
@@ -414,7 +414,7 @@ csi-vxflexos:
         - "--ignoreVolumelessPods=false"
   authorization:
     enabled: false
-    sidecarProxyImage: dellemc/csm-authorization-sidecar:v1.11.0
+    sidecarProxyImage: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.11.0
     proxyHost:
 
 ## CSI Unity
@@ -425,7 +425,7 @@ csi-unity:
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
-      image: dellemc/csi-unity:v2.12.0
+      image: quay.io/dell/container-storage-modules/csi-unity:v2.12.0
     # CSI sidecars
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
@@ -441,7 +441,7 @@ csi-unity:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
     # CSM sidecars
     podmon:
-      image: dellemc/podmon:v1.11.0
+      image: quay.io/dell/container-storage-modules/podmon:v1.11.0
   # certSecretCount: Represents number of certificate secrets, which user is going to create for
   # ssl authentication. (unity-cert-0..unity-cert-n)
   # Allowed values: n, where n > 0
