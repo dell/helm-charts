@@ -214,9 +214,9 @@ kind: ConfigMap
 metadata:
   name: dell-replication-controller-config
   namespace: {{ .Release.Namespace }}
-{{- $configMapName := "dell-replication-controller-config" -}}
-{{- $namespace := .Release.Namespace -}}
-{{- $secret := (lookup "v1" "ConfigMap" $namespace $configMapName).data -}}
+{{- $configMapName := "dell-replication-controller-config" }}
+{{- $namespace := .Release.Namespace }}
+{{- $secret := (lookup "v1" "ConfigMap" $namespace $configMapName).data }}
 {{ if $secret -}}
 data:
  {{- range $key, $value := $secret }}
