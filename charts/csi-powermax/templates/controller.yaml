@@ -511,6 +511,8 @@ spec:
               readOnly: true
             - name: powermax-config-params
               mountPath: /powermax-config-params
+            - name: powermax-array-config
+              mountPath: /powermax-array-config
         {{- if eq .Values.csireverseproxy.deployAsSidecar true }}
         - name: reverseproxy
           image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy.image }}
