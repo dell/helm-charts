@@ -552,6 +552,9 @@ spec:
             secretName: {{ .Values.csireverseproxy.tlsSecret }}
         - name: cert-dir
           emptyDir:
+        - name: powermax-array-config
+          configMap:
+            name: powermax-array-config
         - name: powermax-config-params
           configMap:
             name: {{ .Release.Name }}-config-params
