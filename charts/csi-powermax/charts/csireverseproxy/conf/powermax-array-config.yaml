@@ -1,0 +1,4 @@
+X_CSI_POWERMAX_PORTGROUPS: {{ .Values.global.portGroups }}
+X_CSI_TRANSPORT_PROTOCOL: {{.Values.global.transportProtocol}}
+X_CSI_POWERMAX_ENDPOINT: {{.Values.global.endpoint}}
+X_CSI_MANAGED_ARRAYS: {{.Values.global.managedArrays}}
