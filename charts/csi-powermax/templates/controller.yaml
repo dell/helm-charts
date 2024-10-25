@@ -428,6 +428,8 @@ spec:
                   key: password
             - name: X_CSI_POWERMAX_CONFIG_PATH
               value: /powermax-config-params/driver-config-params.yaml
+            - name: X_CSI_POWERMAX_ARRAY_CONFIG_PATH
+              value: /powermax-array-config/powermax-array-config.yaml
             - name: X_CSI_POWERMAX_DEBUG
               value: {{ .Values.powerMaxDebug | default "false" | lower | quote }}
             - name: X_CSI_POWERMAX_SKIP_CERTIFICATE_VALIDATION
@@ -509,6 +511,8 @@ spec:
               readOnly: true
             - name: powermax-config-params
               mountPath: /powermax-config-params
+            - name: powermax-array-config
+              mountPath: /powermax-array-config
         {{- if eq .Values.csireverseproxy.deployAsSidecar true }}
         - name: reverseproxy
           image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy }}
@@ -546,6 +550,9 @@ spec:
         - name: tls-secret
           secret:
             secretName: {{ .Values.csireverseproxy.tlsSecret }}
+        - name: powermax-array-config
+          configMap:
+            name: {{ .Release.Name }}-array-config
         - name: cert-dir
           emptyDir:
         - name: powermax-config-params
