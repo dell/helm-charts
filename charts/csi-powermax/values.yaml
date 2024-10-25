@@ -101,13 +101,12 @@ images:
   authorization:
     image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
   migration:
-    image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.5.0
+    image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.6.0
   podmon:
     image: quay.io/dell/container-storage-modules/podmon:v1.11.0
   # Node rescan sidecar does a rescan on nodes for identifying new paths
-  # Default value: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.4.0
   noderescan:
-    image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.4.0
+    image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.5.0
 ## K8S/DRIVER ATTRIBUTES
 ########################
 # customDriverName: If enabled, sets the driver name to the
