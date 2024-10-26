@@ -16,7 +16,7 @@ global:
   # The CSI PowerMax ReverseProxy section to fill out the required configuration
   # Please refer to the doc website about a
   # detailed explanation of each configuration parameter
- 
+  
   # X_CSI_MANAGED_ARRAYS: Serial ID of the arrays that will be used for provisioning
   # Default value: None
   # Examples: "000000000001", "000000000002"
@@ -25,7 +25,7 @@ global:
   # In case of multi-array, provide an endpoint of locally attached array
   # Default value: None
   # Example: https://0.0.0.1:8443
-  endpoint: 
+  endpoint:
   # defaultCredentialsSecret
   defaultCredentialsSecret: powermax-creds
   # portGroups: Define the set of existing port groups that the driver will use.
