@@ -9,7 +9,6 @@ global:
   # Allowed values: "TEXT" or "JSON"
   # Default value: "TEXT"
   logFormat: "TEXT"
-
   ##########################
   # PLATFORM ATTRIBUTES
   ##########################
