@@ -230,6 +230,9 @@ spec:
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com
+            - name: disks-path
+              mountPath: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com/disks
+              mountPropagation: "Bidirectional"
             - name: volumedevices-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi/volumeDevices
               mountPropagation: "Bidirectional"
@@ -351,6 +354,10 @@ spec:
         - name: driver-path
           hostPath:
             path: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com
+            type: DirectoryOrCreate
+        - name: disks-path
+          hostPath:
+            path: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com/disks
             type: DirectoryOrCreate
         - name: volumedevices-path
           hostPath:
