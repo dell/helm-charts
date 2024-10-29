@@ -53,7 +53,7 @@ images:
   podmon:
     image: quay.io/dell/container-storage-modules/podmon:v1.11.0
   metadataretriever:
-    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.8.0
+    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.9.0
 
 # Specify kubelet config dir path.
 # Ensure that the config.yaml file is present at this path.
