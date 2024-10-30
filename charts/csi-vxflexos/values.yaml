@@ -3,28 +3,40 @@
 
 # "version" is used to verify the values file matches driver version
 # Not recommend to change
-version: v2.11.0
+version: v2.12.0
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
 
 images:
   # "driver" defines the container image, used for the driver container.
-  driver: dellemc/csi-vxflexos:v2.11.0
+  driver:
+    image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.12.0
   # "powerflexSdc" defines the SDC image for init container.
-  powerflexSdc: dellemc/sdc:4.5.2.1
+  powerflexSdc:
+    image: dellemc/sdc:4.5.2.1
   # CSI sidecars
-  attacher: registry.k8s.io/sig-storage/csi-attacher:v4.6.1
-  provisioner: registry.k8s.io/sig-storage/csi-provisioner:v5.0.1
-  snapshotter: registry.k8s.io/sig-storage/csi-snapshotter:v8.0.1
-  resizer: registry.k8s.io/sig-storage/csi-resizer:v1.11.1
-  registrar: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.1
-  healthmonitor: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.12.1
+  attacher:
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
+  provisioner:
+    image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
+  snapshotter:
+    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+  resizer:
+    image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
+  registrar:
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
+  healthmonitor:
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
   # CSM sidecars
-  replication: dellemc/dell-csi-replicator:v1.9.0
-  vgsnapshotter: dellemc/csi-volumegroup-snapshotter:v1.6.0
-  podmon: dellemc/podmon:v1.10.0
-  authorization: dellemc/csm-authorization-sidecar:v1.11.0
+  replication:
+    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
+  vgsnapshotter:
+    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.7.0
+  podmon:
+    image: quay.io/dell/container-storage-modules/podmon:v1.11.0
+  authorization:
+    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
 
 # Represents number of certificate secrets, which user is going to create for ssl authentication. (vxflexos-cert-0..vxflexos-cert-n)
 # If user does not use certificate, set to 0
@@ -247,6 +259,10 @@ node:
   #   operator: "Exists"
   #   effect: "NoSchedule"
 
+  sdc:
+    # enabled: Enable/Disable SDC
+    enabled: true
+
   # "renameSDC" defines the rename operation for SDC
   # Default value: None
   renameSDC:
@@ -356,3 +372,7 @@ authorization:
   #   "false" - TLS certificate will be verified
   # Default value: "true"
   skipCertificateValidation: true
+
+interfaceNames:
+  # worker1: interface1
+  # worker2: interface2

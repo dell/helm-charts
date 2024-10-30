@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
   name: storages.csm-authorization.storage.dell.com
 spec:
   group: csm-authorization.storage.dell.com
@@ -14,7 +14,7 @@ spec:
     singular: storage
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - name: v1
     schema:
       openAPIV3Schema:
         description: Storage is the Schema for the storages API
@@ -39,23 +39,39 @@ spec:
           spec:
             description: StorageSpec defines the desired state of Storage
             properties:
-              credentialPath:
-                type: string
-              credentialStore:
-                type: string
               endpoint:
+                description: EndPoint is the storage array endpoint
+                type: string
+              isiPath:
+                description: |-
+                  IsiPath the base path for the volumes to be created on PowerScale cluster
+                  Needed only for PowerScale
                 type: string
               pollInterval:
+                description: PollInterval is the interval to poll the storage array
                 type: string
               skipCertificateValidation:
+                description: SkipCertificateValidation is the flag to skip certificate
+                  validation
                 type: boolean
               systemID:
+                description: SystemID is the storage array system ID
                 type: string
               type:
-                description: |-
-                  INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-                  Important: Run "make" to regenerate code after modifying this file
+                description: Type is the storage array type
                 type: string
+              vault:
+                description: |-
+                  Vault is the credential manager for storage arrays
+                  Currently support only Hashicorp Vault
+                properties:
+                  identifier:
+                    type: string
+                  kvEngine:
+                    type: string
+                  path:
+                    type: string
+                type: object
             required:
             - skipCertificateValidation
             type: object

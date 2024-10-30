@@ -44,6 +44,9 @@ rules:
     verbs: ["get", "watch", "list", "delete", "update", "create"]
 {{ end }}
 {{ end }}
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "update"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -108,7 +111,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
+          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             {{- toYaml .Values.podmon.node.args | nindent 12 }}
@@ -150,7 +153,7 @@ spec:
 {{- if hasKey .Values "authorization" }}
 {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
-          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization }}
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: PROXY_HOST
@@ -184,7 +187,7 @@ spec:
             allowPrivilegeEscalation: true
             capabilities:
               add: ["SYS_ADMIN"]
-          image: "{{ required "Must provide the driver image repository." .Values.images.driver }}"
+          image: "{{ required "Must provide the driver image repository." .Values.images.driver.image }}"
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           command: [ "/csi-vxflexos.sh" ]
           args:
@@ -227,6 +230,9 @@ spec:
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com
+            - name: disks-path
+              mountPath: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com/disks
+              mountPropagation: "Bidirectional"
             - name: volumedevices-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi/volumeDevices
               mountPropagation: "Bidirectional"
@@ -247,7 +253,7 @@ spec:
               readOnly: true
 {{- end}}
         - name: registrar
-          image: {{ required "Must provide the CSI registrar container image." .Values.images.registrar }}
+          image: {{ required "Must provide the CSI registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--v=5"
@@ -270,7 +276,7 @@ spec:
         - name: sdc-monitor
           securityContext:
             privileged: true
-          image: {{ required "Must provide the PowerFlex SDC container image." .Values.images.powerflexSdc }}
+          image: {{ required "Must provide the PowerFlex SDC container image." .Values.images.powerflexSdc.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             {{ if eq .Values.monitor.hostPID true }}
@@ -305,11 +311,12 @@ spec:
             - name: host-opt-emc-path
               mountPath: /host_opt_emc_path
         {{- end }}
+      {{- if or (not (hasKey (.Values.node.sdc) "enabled")) (eq .Values.node.sdc.enabled true) }}
       initContainers:
         - name: sdc
           securityContext:
             privileged: true
-          image: {{ required "Must provide the PowerFlex SDC container image." .Values.images.powerflexSdc }}
+          image: {{ required "Must provide the PowerFlex SDC container image." .Values.images.powerflexSdc.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: NODENAME
@@ -338,6 +345,7 @@ spec:
               mountPath: /rules.d
             - name: scaleio-path-opt
               mountPath: /host_drv_cfg_path
+      {{- end }}
       volumes:
         - name: registration-dir
           hostPath:
@@ -346,6 +354,10 @@ spec:
         - name: driver-path
           hostPath:
             path: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com
+            type: DirectoryOrCreate
+        - name: disks-path
+          hostPath:
+            path: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com/disks
             type: DirectoryOrCreate
         - name: volumedevices-path
           hostPath:

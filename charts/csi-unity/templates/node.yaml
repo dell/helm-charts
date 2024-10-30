@@ -99,7 +99,7 @@ spec:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          image: {{ required "Must provide the podmon container image." .Values.images.podmon }}
+          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
           args:
           {{- toYaml .Values.podmon.node.args | nindent 12 }}
           env:
@@ -147,7 +147,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: "{{ required "Must provide the driver image repository." .Values.images.driver }}"
+          image: "{{ required "Must provide the driver image repository." .Values.images.driver.image }}"
           args:
             - "--driver-name=csi-unity.dellemc.com"
             - "--driver-config=/unity-config/driver-config-params.yaml"
@@ -208,7 +208,7 @@ spec:
             - name: unity-secret
               mountPath: /unity-secret
         - name: registrar
-          image: {{ required "Must provide the CSI registrar container image." .Values.images.registrar }}
+          image: {{ required "Must provide the CSI registrar container image." .Values.images.registrar.image }}
           args:
             - "--v=5"
             - "--csi-address=$(ADDRESS)"
