@@ -13,3 +13,8 @@ data:
     PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
     PODMON_NODE_LOG_FORMAT: "{{ .Values.logFormat }}"
     {{ end }}
+    interfaceNames:
+      {{- range $node, $interfaces := .Values.interfaceNames }}
+      {{ $node }}: "{{ $interfaces }}"
+      {{- end }}
+
