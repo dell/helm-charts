@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: common
   namespace: {{ include "custom.namespace" . }}
+  labels:
+    openpolicyagent.org/policy: rego
 data:
   {{- (.Files.Glob "policies/common.rego").AsConfig | nindent 2 }}
 ---
@@ -11,6 +13,8 @@ kind: ConfigMap
 metadata:
   name: volumes-create
   namespace: {{ include "custom.namespace" . }}
+  labels:
+    openpolicyagent.org/policy: rego
 data:
   {{- (.Files.Glob "policies/volumes-create.rego").AsConfig | nindent 2 }}
 ---
@@ -19,6 +23,8 @@ kind: ConfigMap
 metadata:
   name: volumes-delete
   namespace: {{ include "custom.namespace" . }}
+  labels:
+    openpolicyagent.org/policy: rego
 data:
   {{- (.Files.Glob "policies/volumes-delete.rego").AsConfig | nindent 2 }}
 ---
@@ -27,6 +33,8 @@ kind: ConfigMap
 metadata:
   name: volumes-map
   namespace: {{ include "custom.namespace" . }}
+  labels:
+    openpolicyagent.org/policy: rego
 data:
   {{- (.Files.Glob "policies/volumes-map.rego").AsConfig | nindent 2 }}
 ---
@@ -35,6 +43,8 @@ kind: ConfigMap
 metadata:
   name: powermax-volumes-create
   namespace: {{ include "custom.namespace" . }}
+  labels:
+    openpolicyagent.org/policy: rego
 data:
   {{- (.Files.Glob "policies/volumes-powermax-create.rego").AsConfig | nindent 2 }}
 ---
@@ -43,6 +53,8 @@ kind: ConfigMap
 metadata:
   name: volumes-unmap
   namespace: {{ .Release.Namespace }}
+  labels:
+    openpolicyagent.org/policy: rego
 data:
   {{- (.Files.Glob "policies/volumes-unmap.rego").AsConfig | nindent 2 }}
 ---
@@ -51,6 +63,8 @@ kind: ConfigMap
 metadata:
   name: sdc-approve
   namespace: {{ .Release.Namespace }}
+  labels:
+    openpolicyagent.org/policy: rego
 data:
   {{- (.Files.Glob "policies/sdc-approve.rego").AsConfig | nindent 2 }}
 ---
@@ -59,5 +73,7 @@ kind: ConfigMap
 metadata:
   name: snapshot-create
   namespace: {{ .Release.Namespace }}
+  labels:
+    openpolicyagent.org/policy: rego
 data:
   {{- (.Files.Glob "policies/snapshot-create.rego").AsConfig | nindent 2 }}
