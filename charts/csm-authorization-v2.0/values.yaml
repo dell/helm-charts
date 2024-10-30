@@ -18,13 +18,20 @@ cert-manager:
 authorization:
   # images to use in installation
   images:
-    proxyService: dellemc/csm-authorization-proxy:v2.0.0-alpha
-    tenantService: dellemc/csm-authorization-tenant:v2.0.0-alpha
-    roleService: dellemc/csm-authorization-role:v2.0.0-alpha
-    storageService: dellemc/csm-authorization-storage:v2.0.0-alpha
-    authorizationController: dellemc/csm-authorization-controller:v2.0.0-alpha
-    opa: openpolicyagent/opa
-    opaKubeMgmt: openpolicyagent/kube-mgmt:0.11
+    proxyService:
+      image: quay.io/dell/container-storage-modules/csm-authorization-proxy:v2.0.0
+    tenantService:
+      image: quay.io/dell/container-storage-modules/csm-authorization-tenant:v2.0.0
+    roleService:
+      image: quay.io/dell/container-storage-modules/csm-authorization-role:v2.0.0
+    storageService:
+      image: quay.io/dell/container-storage-modules/csm-authorization-storage:v2.0.0
+    authorizationController:
+      image: quay.io/dell/container-storage-modules/csm-authorization-controller:v2.0.0
+    opa:
+      image: openpolicyagent/opa
+    opaKubeMgmt:
+      image: openpolicyagent/kube-mgmt:8.5.10
 
   # proxy-server ingress will use this hostname
   # NOTE: additional hostnames can be configured in authorization.proxyServerIngress.hosts
@@ -38,12 +45,19 @@ authorization:
   # currently only used with dellctl to list tenant volumes
   concurrentPowerFlexRequests: "10"
 
+  # number, as a string, of concurrent requests for the storage-service to make to PowerScale
+  # currently only used with dellctl to list tenant volumes
+  concurrentPowerScaleRequests: "10"
+
   # tracing configuration
   # this can be updated on the fly via the csm-config-params configMap
   zipkin:
     {}
     # collectoruri: http://DNS-hostname:9411/api/v2/spans
     # probability: 1
+
+  # openTelemetryCollectorAddress: the OTLP receiving endpoint using gRPC
+  openTelemetryCollectorAddress: ""
 
   # proxy-server ingress configuration
   proxyServerIngress:
@@ -66,11 +80,29 @@ redis:
   rediscommander: rediscommander
   replicas: 5
   images:
-    redis: redis:7.2.4-alpine
-    commander: rediscommander/redis-commander:latest
+    redis:
+      image: redis:7.4.1-alpine
+    commander:
+      image: rediscommander/redis-commander:latest
 
 vault:
-  address: https://10.0.0.1:8400
-  kvEnginePath: secret
-  role: csm-authorization
-  skipCertificateValidation: true
+  - identifier: vault0
+    address: https://10.0.0.1:8400
+    role: csm-authorization
+    skipCertificateValidation: true
+    # clientCertificate: base64-encoded certificate for cert/private-key pair -- add certificate here to use custom certificates
+    # for self-signed certs, leave empty string
+    clientCertificate:
+    # clientKey: base64-encoded private key for cert/private-key pair -- add private key here to use custom certificates
+    # for self-signed certs, leave empty string
+    clientKey:
+    # certificateAuthority: base64-encoded certificate authority for validating vault server certificate -- add certificate authority here to use custom certificates
+    #  for self-signed certs, leave empty string
+    certificateAuthority:
+  # - identifier: vault1
+  #   address: https://10.0.0.2:8400
+  #   role: csm-authorization
+  #   skipCertificateValidation: true
+  #   clientCertificate:
+  #   clientKey:
+  #   certificateAuthority:

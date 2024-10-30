@@ -41,7 +41,6 @@ jobs:
             echo "modified=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # disabling step temporarily to have more time to look into "chart metadata is missing these dependencies" error
-      # - name: Run chart-testing linter
-      #   if: steps.modified-charts.outputs.modified == 'true'
-      #   run: ct lint --config ct.yaml
+      - name: Run chart-testing linter
+        if: steps.modified-charts.outputs.modified == 'true'
+        run: ct lint --config ct.yaml
