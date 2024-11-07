@@ -37,7 +37,7 @@ jobs:
           app-id: ${{ vars.CSM_RELEASE_APP_ID }}
           private-key: ${{ secrets.CSM_RELEASE_APP_PRIVATE_KEY }}
 
-      - name: Create Pull Request
+      - name: Create PR for Release Updates
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.generate-token.outputs.token }}
