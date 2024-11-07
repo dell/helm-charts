@@ -108,7 +108,7 @@ jobs:
             }
 
             const issueTitle = `Rebase conflict on ${{ env.target-branch }} branch`;
-            const issueBody = `There was a conflict rebasing the ${{ env.target-branch }} branch onto main. Please resolve the conflicts manually. See [Sync Release Branch with Main action](https://github.com/shaynafinocchiaro/helm-charts-test/actions/workflows/rebase-release.yml) for more details.`;
+            const issueBody = `There was a conflict rebasing the ${{ env.target-branch }} branch onto main. Please resolve the conflicts manually. See [Sync Release Branch with Main action](https://github.com/dell/helm-charts/actions/workflows/rebase-release.yml) for more details.`;
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
