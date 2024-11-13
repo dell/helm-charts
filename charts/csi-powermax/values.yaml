@@ -51,7 +51,7 @@ global:
   #   backupEndpoint: https://backup-2.unisphe.re:8443
   managementServers:
     - endpoint: https://primary-1.unisphe.re:8443
-      credentialsSecret: primary-1-secret
+      credentialsSecret: primary-unisphere-secret-1
       skipCertificateValidation: false
       certSecret: primary-cert
       limits:
@@ -60,14 +60,14 @@ global:
         maxOutStandingRead: 50
         maxOutStandingWrite: 50
     - endpoint: https://backup-1.unisphe.re:8443
-      credentialsSecret: backup-1-secret
+      credentialsSecret: backup-unisphere-secret-1
       skipCertificateValidation: false
 #    - endpoint: https://primary-2.unisphe.re:8443
-#      credentialsSecret: primary-2-secret
+#      credentialsSecret: primary-unisphere-secret-2
 #      skipCertificateValidation: true
 #      certSecret: no-secret
 #    - endpoint: https://backup-2.unisphe.re:8443
-#      credentialsSecret: backup-2-secret
+#      credentialsSecret: backup-unisphere-secret-2
 #      skipCertificateValidation: true
 
 # Current version of the driver
