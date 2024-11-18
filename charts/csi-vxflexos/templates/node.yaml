@@ -319,6 +319,14 @@ spec:
           image: {{ required "Must provide the PowerFlex SDC container image." .Values.images.powerflexSdc.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
+        {{- if eq .Values.node.sdcRepo.enabled true }}
+            - name: REPO_ADDRESS
+              value: "{{ .Values.node.sdcRepo.sdcRepoIp }}"
+            - name: REPO_USER
+              value: "{{ .Values.node.sdcRepo.sdcRepoUser }}"
+        {{- end }}
+            - name: MODULE_SIGCHECK
+              value: "0"
             - name: NODENAME
               valueFrom:
                 fieldRef:
@@ -345,6 +353,10 @@ spec:
               mountPath: /rules.d
             - name: scaleio-path-opt
               mountPath: /host_drv_cfg_path
+        {{- if eq .Values.node.sdcRepo.enabled true }}
+            - name: sftp-keys
+              mountPath: /config
+        {{- end }}
       {{- end }}
       volumes:
         - name: registration-dir
@@ -379,6 +391,12 @@ spec:
           hostPath:
             path: /opt/emc/scaleio/sdc/bin
             type: DirectoryOrCreate
+    {{- if eq .Values.node.sdcRepo.enabled true }}
+        - name: sftp-keys
+          hostPath:
+            path: "{{ .Values.node.sdcRepo.sdcRepoKeysPath }}"
+            type: DirectoryOrCreate
+    {{- end }}
         - name: sdc-storage
           hostPath:
             path: /var/emc-scaleio
