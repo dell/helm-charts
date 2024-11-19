@@ -8,6 +8,8 @@ standAloneConfig:
     {{- $_ := first .Values.global.storageArrays }}
     {{- range $index, $value := .Values.global.storageArrays }}
     - storageArrayId: {{ required "Must provide a storage array id." $value.storageArrayId | toJson }}
+    - primaryURL: {{ required "Must provide a primary Unisphere HTTPS endpoint." $value.endpoint }}
+    - backupURL: {{ $value.backupEndpoint | default "" }}
       proxyCredentialSecrets:
         - {{ required "Must provide secret for proxy credentials" $defaultProxyCreds }}
     {{- end }}
