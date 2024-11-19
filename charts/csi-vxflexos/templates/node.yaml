@@ -313,6 +313,55 @@ spec:
         {{- end }}
       {{- if or (not (hasKey (.Values.node.sdc) "enabled")) (eq .Values.node.sdc.enabled true) }}
       initContainers:
+        - name : labels-container
+          image: bitnami/kubectl:latest  # A lightweight container with kubectl
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          command:
+            - "/bin/bash"
+            - "-c"
+            - |
+
+              # Steps: Needs a container with kubectl and JQ. bitnami/kubectl does not have jq, hence installing it. 
+              # 1. Fetch node labels
+              # 2. write zone information to a file as ZONE=<zone>
+              # 3. Source that file to make ZONE available as ENV VAR
+              # 4. Use the ZONE env var in the kubectl get configmap and provide it as key 
+              # 5. write MDM information to a file as MDM=<mdm_ip>
+              # 6. Assumes a config map, currently named zone-cm, is already created in the vxflexos namespace that has the mapping "zoneName->MDM IPs". 
+              #    Ex:
+              #    zoneA: 10.247.13.230,10.247.13.232
+              #    zoneB: 10.247.21.232,10.247.23.198              
+              # NOTE: I used bash instead of sh, as there were some compile issues when running JQ (maybe it was just me, but I did not have time to debug it)
+
+              echo "Inside labels-container"
+              echo "Installing jq"
+              apk add --no-cache jq && sleep 15
+
+              # Fetch node labels and write to a file
+              kubectl get node $NODE_NAME -o json  > /data/node_labels.json
+              jq -r '.metadata.labels["zone.csi-vxflexos.dellemc.com"]' /data/node_labels.json > /data/node_labels.txt
+              echo "ZONE="`cat /data/node_labels.txt` > /data/zones.txt
+              source /data/zones.txt
+              # cat /data/zones.txt
+              echo "Displaying Information from CM"
+              ## ls -l /zone/
+              ## cat /zone/$ZONE*
+              echo 
+              echo "Node is in zone " $ZONE
+              # Fetch MDM IPs from configmap using ZONE as key from above
+              echo "MDM="`kubectl get configmap zone-cm -o json | jq -r .data.$ZONE` > /data/mdm.txt
+              ## cat /data/node_labels.json
+              sleep 5
+          volumeMounts:
+            - name: labels-dir
+              mountPath: /data
+            - name: zone-map
+              mountPath:  /zone
+              readonly: true
         - name: sdc
           securityContext:
             privileged: true
@@ -323,15 +372,25 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: MODE
-              value: "config"
-            - name: MDM
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-config
-                  key: MDM
             - name: HOST_DRV_CFG_PATH
               value: /opt/emc/scaleio/sdc/bin
+          command:
+            - "/bin/bash"
+            - "-c"
+            - |              
+
+              # Changes to existing configuration done in here:
+              # 1. Remove MODE 
+              # 2, Remove MDM from the "env" section in the manifest. MDM will now be provided as an ENV VAR inside the bash by exporting it. 
+              # 3. SDC container is run in command mode by invoking the init.sh script that comes bundled with the container. If PowerFlex team changes it, this will necessitate a change on our end. 
+              #    Also, need to make sure this file is present in all the SDC images (we can ask them about it)
+
+              #Source the MDM file to make them available as shell env variable
+              source /data/mdm.txt
+              #cat /data/mdm.txt
+              echo "MDM="$MDM
+              #Start the SDC container to deploy using init.sh script
+              sh /files/scripts/init.sh
           volumeMounts:
             - name: dev
               mountPath: /dev
@@ -344,9 +403,16 @@ spec:
             - name: udev-d
               mountPath: /rules.d
             - name: scaleio-path-opt
-              mountPath: /host_drv_cfg_path
+              mountPath: /host_drv_cfg_path              
+            - name: labels-dir
+              mountPath: /data
       {{- end }}
       volumes:
+        - name: zone-map
+          configMap:
+            name: zone-cm
+        - name : labels-dir
+          emptyDir: {}
         - name: registration-dir
           hostPath:
             path: {{ .Values.kubeletConfigDir }}/plugins_registry/
