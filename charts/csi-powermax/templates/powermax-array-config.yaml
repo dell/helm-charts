@@ -8,3 +8,7 @@ data:
     X_CSI_POWERMAX_PORTGROUPS: {{ .Values.global.portGroups | toYaml | default "" }}
     X_CSI_TRANSPORT_PROTOCOL: {{ .Values.global.transportProtocol | toYaml | default "" }}
     X_CSI_MANAGED_ARRAYS: {{ .Values.global.managedArrays | toYaml | default "" }}
+    {{- $_ := first .Values.global.storageArrays }}
+    {{- range $index, $value := .Values.global.storageArrays }}
+    X_CSI_POWERMAX_ENDPOINT: {{ $value.endpoint | toYaml | default "" }}
+    {{- end }}
