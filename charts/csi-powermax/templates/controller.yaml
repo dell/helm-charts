@@ -419,11 +419,13 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.global.defaultCredentialsSecret }}
                   key: username
+                  optional: {{ template "skipCredentialsSecret" $ }}
             - name: X_CSI_POWERMAX_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.global.defaultCredentialsSecret }}
                   key: password
+                  optional: {{ template "skipCredentialsSecret" $ }}
             - name: X_CSI_POWERMAX_CONFIG_PATH
               value: /powermax-config-params/driver-config-params.yaml
             - name: X_CSI_POWERMAX_ARRAY_CONFIG_PATH
