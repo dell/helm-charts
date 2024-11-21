@@ -167,13 +167,13 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.global.defaultCredentialsSecret }}
                   key: username
-                  optional: {{ template "skipCredentialsSecret" $ }}
+                  optional: {{ eq .Values.authorization.enabled true }}
             - name: X_CSI_POWERMAX_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.global.defaultCredentialsSecret }}
                   key: password
-                  optional: {{ template "skipCredentialsSecret" $ }}
+                  optional: {{ eq .Values.authorization.enabled true }}
             - name: X_CSI_POWERMAX_NODENAME
               valueFrom:
                 fieldRef:

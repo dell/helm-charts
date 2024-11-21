@@ -6,11 +6,3 @@
   {{- end -}}
 {{- end -}}
 {{- end -}}
-
-{{- define "skipCredentialsSecret" -}}
-{{- if eq .Values.authorization.enabled true -}}
-  {{- true -}}
-{{- else -}}
-  {{- false -}}
-{{- end -}}
-{{- end -}}
