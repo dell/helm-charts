@@ -35,5 +35,4 @@ config:
         maxOutStandingRead: {{ $value.limits.maxOutStandingRead | default 0 }}
         maxOutStandingWrite: {{ $value.limits.maxOutStandingWrite | default 0 }}
       {{- end }}
-    {{- end }}
-    
+    {{- end }}  

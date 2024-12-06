@@ -11,5 +11,4 @@ data:
     {{- range $index, $value := .Values.global.storageArrays }}
     X_CSI_POWERMAX_ENDPOINT: {{ $value.endpoint | toYaml | default "" }}
     {{- end }}
-    X_CSI_MANAGED_ARRAYS: {{ .Values.global.managedArrays | toYaml | default "" }}
-    
+    X_CSI_MANAGED_ARRAYS: {{ .Values.global.managedArrays | toYaml | default "" }}  
