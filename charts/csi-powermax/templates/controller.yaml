@@ -428,6 +428,8 @@ spec:
               value: /powermax-config-params/driver-config-params.yaml
             - name: X_CSI_POWERMAX_ARRAY_CONFIG_PATH
               value: /powermax-array-config/powermax-array-config.yaml
+            - name: X_CSI_POWERMAX_CONFIG_PATH
+              value: /powermax-config/config
             - name: X_CSI_POWERMAX_DEBUG
               value: {{ .Values.powerMaxDebug | default "false" | lower | quote }}
             - name: X_CSI_POWERMAX_SKIP_CERTIFICATE_VALIDATION
@@ -507,6 +509,8 @@ spec:
               mountPath: /powermax-config-params
             - name: powermax-array-config
               mountPath: /powermax-array-config
+            - name: powermax-config
+              mountPath: /powermax-config  
         {{- if eq .Values.csireverseproxy.deployAsSidecar true }}
         - name: reverseproxy
           image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy.image }}
@@ -552,6 +556,9 @@ spec:
         - name: powermax-config-params
           configMap:
             name: {{ .Release.Name }}-config-params
+        - name: powermax-config
+          secret:
+            secretName: {{ .Release.Name }}-config
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-config

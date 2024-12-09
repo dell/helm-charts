@@ -203,6 +203,8 @@ spec:
               value: /powermax-config-params/driver-config-params.yaml
             - name: X_CSI_POWERMAX_ARRAY_CONFIG_PATH
               value: /powermax-array-config/powermax-array-config.yaml
+            - name: X_CSI_POWERMAX_CONFIG_PATH
+              value: /powermax-config/config
             - name: X_CSI_POWERMAX_TOPOLOGY_CONFIG_PATH
               value: /node-topology-config/topologyConfig.yaml
             - name: X_CSI_IG_NODENAME_TEMPLATE
@@ -282,6 +284,8 @@ spec:
               mountPath: /powermax-config-params
             - name: powermax-array-config
               mountPath: /powermax-array-config
+            - name: powermax-config
+              mountPath: /powermax-config 
             {{- if hasKey .Values.node "topologyControl" }}
             {{- if eq .Values.node.topologyControl.enabled true }}
             - name: node-topology-config
@@ -478,6 +482,9 @@ spec:
         - name: powermax-array-config
           configMap:
             name: {{ .Release.Name }}-array-config
+        - name: powermax-config
+          secret:
+            secretName: {{ .Release.Name }}-config
         - name: certs
           secret:
             secretName: {{ .Release.Name }}-certs
