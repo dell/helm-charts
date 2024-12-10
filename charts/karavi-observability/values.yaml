@@ -40,7 +40,7 @@ karaviMetricsPowerflex:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.12.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
     sidecarProxy:
       image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
     # proxyHost: hostname of the csm-authorization server
