@@ -3,7 +3,7 @@
 
 # "version" is used to verify the values file matches driver version
 # Not recommend to change
-version: v2.12.0
+version: v2.13.0
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
@@ -11,7 +11,7 @@ version: v2.12.0
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.12.0
+    image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.13.0
   # "powerflexSdc" defines the SDC image for init container.
   powerflexSdc:
     image: dellemc/sdc:4.5.2.1
@@ -30,13 +30,13 @@ images:
     image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
   # CSM sidecars
   replication:
-    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.10.0
+    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
   vgsnapshotter:
-    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.7.0
+    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.0
   podmon:
-    image: quay.io/dell/container-storage-modules/podmon:v1.11.0
+    image: quay.io/dell/container-storage-modules/podmon:v1.12.0
   authorization:
-    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.0.0
+    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
 
 # Represents number of certificate secrets, which user is going to create for ssl authentication. (vxflexos-cert-0..vxflexos-cert-n)
 # If user does not use certificate, set to 0
