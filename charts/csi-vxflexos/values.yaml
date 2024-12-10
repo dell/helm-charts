@@ -36,7 +36,7 @@ images:
   podmon:
     image: quay.io/dell/container-storage-modules/podmon:v1.12.0
   authorization:
-    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v1.13.0
+    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
 
 # Represents number of certificate secrets, which user is going to create for ssl authentication. (vxflexos-cert-0..vxflexos-cert-n)
 # If user does not use certificate, set to 0
