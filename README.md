@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2021 Dell Inc., or its subsidiaries. All Rights Reserved.
+Copyright (c) 2021-2024 Dell Inc., or its subsidiaries. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ You can also interact with us by creating a [GitHub issue](https://github.com/de
 $ helm repo add dell https://dell.github.io/helm-charts
 ```
 
-For documentation, please visit [Container Storage Modules documentation](https://dell.github.io/csm-docs/docs/observability/deployment/helm#configuration).
+For documentation, please visit [Container Storage Modules documentation](https://dell.github.io/csm-docs/docs/deployment/helm).
 
 ## Contributing to an Existing Chart
 
@@ -38,9 +38,9 @@ We'd love for you to contribute to an existing Chart that you find provides a us
 
 ## Owning and Maintaining A Chart
 
-Individual charts can be maintained by one or more users of [OWNERS](OWNERS). When someone maintains a chart they have the access to merge changes to that chart. To have merge access to a chart someone needs to:
+Individual charts can be maintained by one or more users of [MAINTAINERS](docs/MAINTAINERS.md). When someone maintains a chart they have the access to merge changes to that chart. To have merge access to a chart someone needs to:
 
-1. Be listed on the chart, in the [OWNERS](OWNERS) file, as a maintainer. If you need sponsors and have contributed to the chart, please reach out to the existing maintainers, or if you are having trouble connecting with them, please reach out to one of the [OWNERS](OWNERS) of the charts repository.
+1. Be listed on the chart, in the [MAINTAINERS](docs/MAINTAINERS.md) file, as a maintainer. If you need sponsors and have contributed to the chart, please reach out to the existing maintainers, or if you are having trouble connecting with them, please reach out to one of the [MAINTAINERS](docs/MAINTAINERS.md) of the charts repository.
 
 ## Review Process
 
