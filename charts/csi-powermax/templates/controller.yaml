@@ -428,8 +428,6 @@ spec:
               value: /powermax-config-params/driver-config-params.yaml
             - name: X_CSI_POWERMAX_ARRAY_CONFIG_PATH
               value: /powermax-array-config/powermax-array-config.yaml
-            - name: X_CSI_POWERMAX_CONFIG_PROXY_PATH
-              value: /powermax-config/config
             - name: X_CSI_POWERMAX_DEBUG
               value: {{ .Values.powerMaxDebug | default "false" | lower | quote }}
             - name: X_CSI_POWERMAX_SKIP_CERTIFICATE_VALIDATION
@@ -509,8 +507,6 @@ spec:
               mountPath: /powermax-config-params
             - name: powermax-array-config
               mountPath: /powermax-array-config
-            - name: powermax-config
-              mountPath: /powermax-config  
         {{- if eq .Values.csireverseproxy.deployAsSidecar true }}
         - name: reverseproxy
           image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy.image }}
@@ -520,6 +516,10 @@ spec:
               value: /etc/config/configmap
             - name: X_CSI_REVPROXY_CONFIG_FILE_NAME
               value: config.yaml
+            - name: X_CSI_REVPROXY_SECRET_DIR
+              value: /etc/secret/
+            - name: X_CSI_REVPROXY_SECRET_NAME
+              value: powermax-reverseproxy-secret.yaml
             - name: X_CSI_REVRPOXY_IN_CLUSTER
               value: "true"
             - name: X_CSI_REVPROXY_TLS_CERT_DIR
@@ -529,6 +529,8 @@ spec:
           volumeMounts:
             - name: configmap-volume
               mountPath: /etc/config/configmap
+            - name: reverseproxy-secret
+              mountPath: /etc/secret
             - name: tls-secret
               mountPath: /app/tls
             - name: cert-dir
@@ -548,6 +550,9 @@ spec:
         - name: tls-secret
           secret:
             secretName: {{ .Values.csireverseproxy.tlsSecret }}
+        - name: reverseproxy-secret
+          secret:
+            secretName: {{ .Release.Name }}-reverseproxy-secret
         - name: powermax-array-config
           configMap:
             name: {{ .Release.Name }}-array-config
@@ -556,9 +561,6 @@ spec:
         - name: powermax-config-params
           configMap:
             name: {{ .Release.Name }}-config-params
-        - name: powermax-config
-          secret:
-            secretName: {{ .Release.Name }}-config
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-config
