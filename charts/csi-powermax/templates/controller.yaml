@@ -516,8 +516,8 @@ spec:
               value: /etc/config/configmap
             - name: X_CSI_REVPROXY_CONFIG_FILE_NAME
               value: config.yaml
-            - name: X_CSI_REVPROXY_SECRET_DIR
-              value: /etc/secret/
+            - name: X_CSI_REVPROXY_CONFIG_PATH
+              value: /powermax-reverseproxy-config/config 
             - name: X_CSI_REVPROXY_SECRET_NAME
               value: powermax-reverseproxy-secret.yaml
             - name: X_CSI_REVRPOXY_IN_CLUSTER
@@ -529,8 +529,8 @@ spec:
           volumeMounts:
             - name: configmap-volume
               mountPath: /etc/config/configmap
-            - name: reverseproxy-secret
-              mountPath: /etc/secret
+            - name: powermax-reverseproxy-config
+              mountPath: /powermax-reverseproxy-config
             - name: tls-secret
               mountPath: /app/tls
             - name: cert-dir
@@ -550,9 +550,9 @@ spec:
         - name: tls-secret
           secret:
             secretName: {{ .Values.csireverseproxy.tlsSecret }}
-        - name: reverseproxy-secret
+        - name: powermax-reverseproxy-config
           secret:
-            secretName: {{ .Release.Name }}-reverseproxy-secret
+            secretName: {{ .Release.Name }}-reverseproxy-config
         - name: powermax-array-config
           configMap:
             name: {{ .Release.Name }}-array-config
