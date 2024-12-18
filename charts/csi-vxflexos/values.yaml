@@ -163,7 +163,7 @@ controller:
   # volumeNamePrefix- defines a string prepended to each volume created by the CSI driver.
   # Default value: none
   # Examples: "k8s", "app1"
-  volumeNamePrefix: k8s
+  volumeNamePrefix: csivol
 
   # "controllerCount" defines the number of VxFlex controller pods to deploy
   # Allowed values: n, where n > 0

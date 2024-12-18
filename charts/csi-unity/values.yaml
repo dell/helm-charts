@@ -31,7 +31,7 @@ images:
 # LogLevel is used to set the logging level of the driver.
 # Allowed values: "error", "warn"/"warning", "info", "debug"
 # Default value: "info"
-logLevel: "info"
+logLevel: "debug"
 
 # certSecretCount: Represents number of certificate secrets, which user is going to create for
 # ssl authentication. (unity-cert-0..unity-cert-n)
@@ -52,7 +52,7 @@ allowedNetworks:
 # IfNotPresent: Only pull the image if it does not already exist on the node.
 # Never: Never pull the image.
 # Default value: IfNotPresent
-imagePullPolicy: Always
+imagePullPolicy: IfNotPresent
 
 # Specify kubelet config dir path.
 # Ensure that the config.yaml file is present at this path.

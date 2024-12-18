@@ -119,7 +119,7 @@ controller:
   # volumeNamePrefix: Prefix of PersistentVolume names created
   # Allowed values: string
   # Default value: None
-  volumeNamePrefix: k8s
+  volumeNamePrefix: csivol
 
   # leaderElection: configure leader election parameters
   leaderElection:
@@ -169,7 +169,7 @@ controller:
     # snapNamePrefix: Prefix to apply to the names of a created snapshots
     # Allowed values: string
     # Default value: None
-    snapNamePrefix: snapshot
+    snapNamePrefix: csi-snap
 
   resizer:
     # enabled: Enable/Disable volume expansion feature

@@ -147,7 +147,7 @@ controller:
     # snapNamePrefix: Prefix to apply to the names of a created snapshots
     # Allowed values: string
     # Default value: None
-    snapNamePrefix: csisnap
+    snapNamePrefix: csi-snap
   # resizer: allows to enable/disable resizer feature
   resizer:
     # enabled: Enable/Disable volume expansion feature
