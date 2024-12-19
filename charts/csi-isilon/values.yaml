@@ -34,7 +34,7 @@ images:
 
 # CSI driver log level
 # Allowed values: "error", "warn"/"warning", "info", "debug"
-# Default value: "debug"
+# Default value: "info"
 logLevel: "info"
 
 # certSecretCount: Represents number of certificate secrets, which user is going to create for

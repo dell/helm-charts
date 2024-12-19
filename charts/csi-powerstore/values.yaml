@@ -307,7 +307,7 @@ connection:
 
 # CSI driver log level
 # Allowed values: "error", "warn"/"warning", "info", "debug", "error"
-# Default value: "debug"
+# Default value: "info"
 logLevel: "info"
 
 # CSI driver log format

@@ -44,7 +44,7 @@ certSecretCount: 0
 
 # CSI driver log level
 # Allowed values: "error", "warn"/"warning", "info", "debug"
-# Default value: "debug"
+# Default value: "info"
 logLevel: "info"
 
 # CSI driver log format
