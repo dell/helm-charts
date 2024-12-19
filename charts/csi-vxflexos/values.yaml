@@ -45,7 +45,7 @@ certSecretCount: 0
 # CSI driver log level
 # Allowed values: "error", "warn"/"warning", "info", "debug"
 # Default value: "debug"
-logLevel: "debug"
+logLevel: "info"
 
 # CSI driver log format
 # Allowed values: "TEXT" or "JSON"
@@ -161,7 +161,7 @@ controller:
     interval: 60s
 
   # volumeNamePrefix- defines a string prepended to each volume created by the CSI driver.
-  # Default value: none
+  # Default value: csivol
   # Examples: "k8s", "app1"
   volumeNamePrefix: csivol
 

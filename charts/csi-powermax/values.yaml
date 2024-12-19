@@ -3,7 +3,7 @@ global:
   # CSI driver log level
   # Allowed values: "error", "warn"/"warning", "info", "debug"
   # Default value: "debug"
-  logLevel: "debug"
+  logLevel: "info"
 
   # CSI driver log format
   # Allowed values: "TEXT" or "JSON"
@@ -171,7 +171,7 @@ controller:
 
   # volumeNamePrefix: Define a prefix that is prepended to volumes.
   # THIS MUST BE ALL LOWER CASE.
-  # Default value: None
+  # Default value: csivol
   # Examples: "volumes", "vol"
   volumeNamePrefix: csivol
 
@@ -184,7 +184,7 @@ controller:
     enabled: true
     # snapNamePrefix: Define a prefix that is prepended to snapshots.
     # THIS MUST BE ALL LOWER CASE.
-    # Default value: None
+    # Default value: csi-snap
     # Examples: "snap", "snapshot"
     snapNamePrefix: csi-snap
 

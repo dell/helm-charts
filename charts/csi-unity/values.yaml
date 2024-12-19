@@ -31,7 +31,7 @@ images:
 # LogLevel is used to set the logging level of the driver.
 # Allowed values: "error", "warn"/"warning", "info", "debug"
 # Default value: "info"
-logLevel: "debug"
+logLevel: "info"
 
 # certSecretCount: Represents number of certificate secrets, which user is going to create for
 # ssl authentication. (unity-cert-0..unity-cert-n)
@@ -80,7 +80,8 @@ controller:
 
   # volumeNamePrefix: Prefix of PersistentVolume names created
   # Allowed values: string
-  # Default value: None
+  # Default value: csivol
+  # Examples: "k8s", "app1"
   volumeNamePrefix: csivol
 
   snapshot:
@@ -93,7 +94,8 @@ controller:
 
     # snapNamePrefix: Prefix to apply to the names of a created snapshots
     # Allowed values: string
-    # Default value: None
+    # Default value: csi-snap
+    # Examples: "snap", "snapshot"
     snapNamePrefix: csi-snap
 
   resizer:
