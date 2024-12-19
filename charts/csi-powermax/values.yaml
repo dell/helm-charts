@@ -19,11 +19,6 @@ global:
   # Default value: None
   # Examples: "000000000001", "000000000002"
   managedArrays: "000000000001,000000000002"
-  # X_CSI_POWERMAX_ENDPOINT: Address of the Unisphere server that is managing the PowerMax arrays
-  # In case of multi-array, provide an endpoint of locally attached array
-  # Default value: None
-  # Example: https://0.0.0.1:8443
-  endpoint:
   # defaultCredentialsSecret
   defaultCredentialsSecret: powermax-creds
   # portGroups: Define the set of existing port groups that the driver will use.
