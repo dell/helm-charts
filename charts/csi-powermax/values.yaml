@@ -2,8 +2,8 @@
 global:
   # CSI driver log level
   # Allowed values: "error", "warn"/"warning", "info", "debug"
-  # Default value: "debug"
-  logLevel: "debug"
+  # Default value: "info"
+  logLevel: "info"
 
   # CSI driver log format
   # Allowed values: "TEXT" or "JSON"
@@ -52,7 +52,7 @@ global:
   managementServers:
     - endpoint: https://primary-1.unisphe.re:8443
       credentialsSecret: primary-1-secret
-      skipCertificateValidation: false
+      skipCertificateValidation: true
       certSecret: primary-cert
       limits:
         maxActiveRead: 5
@@ -61,7 +61,7 @@ global:
         maxOutStandingWrite: 50
     - endpoint: https://backup-1.unisphe.re:8443
       credentialsSecret: backup-1-secret
-      skipCertificateValidation: false
+      skipCertificateValidation: true
 #    - endpoint: https://primary-2.unisphe.re:8443
 #      credentialsSecret: primary-2-secret
 #      skipCertificateValidation: true
@@ -171,9 +171,9 @@ controller:
 
   # volumeNamePrefix: Define a prefix that is prepended to volumes.
   # THIS MUST BE ALL LOWER CASE.
-  # Default value: None
+  # Default value: csivol
   # Examples: "volumes", "vol"
-  volumeNamePrefix: pmax
+  volumeNamePrefix: csivol
 
   snapshot:
     # enabled: Enable/Disable volume snapshot feature
@@ -184,9 +184,9 @@ controller:
     enabled: true
     # snapNamePrefix: Define a prefix that is prepended to snapshots.
     # THIS MUST BE ALL LOWER CASE.
-    # Default value: None
+    # Default value: csi-snap
     # Examples: "snap", "snapshot"
-    snapNamePrefix: pmsn
+    snapNamePrefix: csi-snap
 
   resizer:
     # enabled: Enable/Disable volume expansion feature
