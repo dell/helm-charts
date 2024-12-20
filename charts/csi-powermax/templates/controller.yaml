@@ -516,7 +516,7 @@ spec:
               value: /etc/config/configmap
             - name: X_CSI_REVPROXY_CONFIG_FILE_NAME
               value: config.yaml
-            - name: X_CSI_REVPROXY_CONFIG_PATH
+            - name: X_CSI_REVPROXY_SECRET_PATH
               value: /powermax-reverseproxy-config/config 
             - name: X_CSI_REVPROXY_SECRET_NAME
               value: powermax-reverseproxy-secret.yaml
