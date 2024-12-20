@@ -478,9 +478,9 @@ spec:
         - name: powermax-array-config
           configMap:
             name: {{ .Release.Name }}-array-config
-        - name: reverseproxy-secret
+        - name: powermax-reverseproxy-config
           secret:
-            secretName: {{ .Release.Name }}-reverseproxy-secret
+            secretName: {{ .Release.Name }}-reverseproxy-config
         - name: certs
           secret:
             secretName: {{ .Release.Name }}-certs
