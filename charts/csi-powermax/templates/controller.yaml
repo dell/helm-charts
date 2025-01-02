@@ -512,10 +512,6 @@ spec:
           image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
-            - name: X_CSI_REVPROXY_CONFIG_DIR
-              value: /etc/config/configmap
-            - name: X_CSI_REVPROXY_CONFIG_FILE_NAME
-              value: config.yaml
             - name: X_CSI_REVPROXY_SECRET_PATH
               value: /powermax-reverseproxy-config/config 
             - name: X_CSI_REVPROXY_SECRET_NAME
@@ -527,8 +523,6 @@ spec:
             - name: X_CSI_REVPROXY_WATCH_NAMESPACE
               value: {{ .Release.Namespace }}
           volumeMounts:
-            - name: configmap-volume
-              mountPath: /etc/config/configmap
             - name: powermax-reverseproxy-config
               mountPath: /powermax-reverseproxy-config
             - name: tls-secret
@@ -543,10 +537,6 @@ spec:
           secret:
               secretName: {{ .Release.Name }}-certs
               optional: true
-        - name: configmap-volume
-          configMap:
-            name: {{ .Release.Name }}-reverseproxy-config
-            optional: true
         - name: tls-secret
           secret:
             secretName: {{ .Values.csireverseproxy.tlsSecret }}
