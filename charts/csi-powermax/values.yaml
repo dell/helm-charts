@@ -19,8 +19,6 @@ global:
   # Default value: None
   # Examples: "000000000001", "000000000002"
   managedArrays: "000000000001,000000000002"
-  # defaultCredentialsSecret
-  defaultCredentialsSecret: powermax-creds
   # portGroups: Define the set of existing port groups that the driver will use.
   # It is a comma separated list of portgroup names.
   # Required only in case of iSCSI port groups
