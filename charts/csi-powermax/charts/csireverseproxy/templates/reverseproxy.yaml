@@ -20,10 +20,6 @@ spec:
           image: {{ required "Must provided an image for reverseproxy container." .Values.image }}
           imagePullPolicy: Always
           env:
-            - name: X_CSI_REVPROXY_CONFIG_DIR
-              value: /etc/config/configmap
-            - name: X_CSI_REVPROXY_CONFIG_FILE_NAME
-              value: config.yaml
             - name: X_CSI_REVPROXY_SECRET_PATH
               value: /powermax-reverseproxy-config/config 
             - name: X_CSI_REVPROXY_SECRET_NAME
@@ -44,10 +40,6 @@ spec:
             - name: powermax-reverseproxy-config
               mountPath: /powermax-reverseproxy-config
       volumes:
-        - name: configmap-volume
-          configMap:
-            name: {{ .Release.Name }}-reverseproxy-config
-            optional: true
         - name: powermax-reverseproxy-config
           secret:
             secretName: {{ .Release.Name }}-reverseproxy-config
