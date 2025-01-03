@@ -162,16 +162,6 @@ spec:
               value: {{ .Values.skipCertificateValidation | default "true" | lower | quote }}
             - name: X_CSI_K8S_CLUSTER_PREFIX
               value:  {{ required "Must provide a Cluster Prefix." .Values.clusterPrefix }}
-            - name: X_CSI_POWERMAX_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.defaultCredentialsSecret }}
-                  key: username
-            - name: X_CSI_POWERMAX_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.global.defaultCredentialsSecret }}
-                  key: password
             - name: X_CSI_POWERMAX_NODENAME
               valueFrom:
                 fieldRef:
