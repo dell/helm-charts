@@ -21,7 +21,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: X_CSI_REVPROXY_SECRET_PATH
-              value: /powermax-reverseproxy-config/config 
+              value: /powermax-reverseproxy-secret/powermax-reverseproxy-secret.yaml
             - name: X_CSI_REVPROXY_SECRET_NAME
               value: powermax-reverseproxy-secret.yaml
             - name: X_CSI_REVRPOXY_IN_CLUSTER
@@ -35,12 +35,12 @@ spec:
               mountPath: /app/tls
             - name: cert-dir
               mountPath: /app/certs
-            - name: powermax-reverseproxy-config
-              mountPath: /powermax-reverseproxy-config
+            - name: powermax-reverseproxy-secret
+              mountPath: /powermax-reverseproxy-secret
       volumes:
-        - name: powermax-reverseproxy-config
+        - name: powermax-reverseproxy-secret
           secret:
-            secretName: {{ .Release.Name }}-reverseproxy-config
+            secretName: {{ .Release.Name }}-reverseproxy-secret
         - name: tls-secret
           secret:
             secretName: {{ .Values.tlsSecret }}
