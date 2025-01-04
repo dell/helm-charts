@@ -36,7 +36,7 @@ spec:
             - name: cert-dir
               mountPath: /app/certs
             - name: powermax-reverseproxy-secret
-              mountPath: /powermax-reverseproxy-secret
+              mountPath: /powermax-reverseproxy-secret/config
       volumes:
         - name: powermax-reverseproxy-secret
           secret:
