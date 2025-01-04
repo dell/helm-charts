@@ -504,7 +504,7 @@ spec:
           env:
             - name: X_CSI_REVPROXY_SECRET_PATH
               value: "/etc/powermax/secret/config"
-            - name: X_CSI_REVPROXY_CONFIG_FILE_NAME
+            - name: X_CSI_REVPROXY_SECRET_NAME
               value: config.yaml
             - name: X_CSI_REVRPOXY_IN_CLUSTER
               value: "true"
