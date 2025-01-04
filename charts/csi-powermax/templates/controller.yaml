@@ -514,7 +514,7 @@ spec:
               value: {{ .Release.Namespace }}
           volumeMounts:
             - name: powermax-reverseproxy-secret
-              mountPath: /powermax-reverseproxy-secret
+              mountPath: /powermax-reverseproxy-secret/config
             - name: tls-secret
               mountPath: /app/tls
             - name: cert-dir
