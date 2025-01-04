@@ -503,7 +503,7 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: X_CSI_REVPROXY_SECRET_PATH
-              value: /powermax-reverseproxy-secret/config
+              value: /powermax-reverseproxy-secret
             - name: X_CSI_REVPROXY_SECRET_NAME
               value: powermax-reverseproxy-secret
             - name: X_CSI_REVRPOXY_IN_CLUSTER
@@ -514,7 +514,7 @@ spec:
               value: {{ .Release.Namespace }}
           volumeMounts:
             - name: powermax-reverseproxy-secret
-              mountPath: /powermax-reverseproxy-secret/config
+              mountPath: /powermax-reverseproxy-secret
             - name: tls-secret
               mountPath: /app/tls
             - name: cert-dir
