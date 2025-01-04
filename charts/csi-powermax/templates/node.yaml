@@ -272,8 +272,6 @@ spec:
               mountPath: /powermax-config-params
             - name: powermax-array-config
               mountPath: /powermax-array-config 
-            - name: powermax-reverseproxy-secret
-              mountPath: /powermax-reverseproxy-secret
             {{- if hasKey .Values.node "topologyControl" }}
             {{- if eq .Values.node.topologyControl.enabled true }}
             - name: node-topology-config
@@ -470,9 +468,6 @@ spec:
         - name: powermax-array-config
           configMap:
             name: {{ .Release.Name }}-array-config
-        - name: powermax-reverseproxy-secret
-          secret:
-            secretName: {{ .Release.Name }}-reverseproxy-secret
         - name: certs
           secret:
             secretName: {{ .Release.Name }}-certs
