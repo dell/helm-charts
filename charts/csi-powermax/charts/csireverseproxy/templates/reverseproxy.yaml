@@ -21,7 +21,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: X_CSI_REVPROXY_SECRET_PATH
-              value: /powermax-reverseproxy-secret/config
+              value: /powermax-reverseproxy-secret
             - name: X_CSI_REVPROXY_SECRET_NAME
               value: powermax-reverseproxy-secret
             - name: X_CSI_REVRPOXY_IN_CLUSTER
@@ -36,7 +36,7 @@ spec:
             - name: cert-dir
               mountPath: /app/certs
             - name: powermax-reverseproxy-secret
-              mountPath: /powermax-reverseproxy-secret/config
+              mountPath: /powermax-reverseproxy-secret
       volumes:
         - name: powermax-reverseproxy-secret
           secret:
