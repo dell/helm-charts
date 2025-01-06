@@ -261,9 +261,6 @@ spec:
             - name: volumedevices-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi/volumeDevices
               mountPropagation: "Bidirectional"
-            - name: csi-path
-              mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
-              mountPropagation: "Bidirectional"
             - name: pods-path
               mountPath: {{ .Values.kubeletConfigDir }}/pods
               mountPropagation: "Bidirectional"
