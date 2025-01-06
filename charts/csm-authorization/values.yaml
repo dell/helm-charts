@@ -21,7 +21,7 @@ authorization:
     storageService:
       image: quay.io/dell/container-storage-modules/csm-authorization-storage:v1.13.0
     opa:
-      image: openpolicyagent/opa
+      image: docker.io/openpolicyagent/opa:0.70.0
     opaKubeMgmt:
       image: openpolicyagent/kube-mgmt:8.5.12
 
