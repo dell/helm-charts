@@ -245,6 +245,16 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmon.podmonAPIPort }}"
+            - name: X_CSI_POWERMAX_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.defaultCredentialsSecret }}
+                  key: username
+            - name: X_CSI_POWERMAX_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.defaultCredentialsSecret }}
+                  key: password
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/powermax.emc.dell.com
