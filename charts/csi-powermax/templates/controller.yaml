@@ -462,6 +462,16 @@ spec:
               value: {{ required "Must provide host group for vsphere" .Values.vSphere.fcHostName }}
             - name: X_CSI_VCENTER_HOST
               value: {{ required "Must provide host url for vsphere" .Values.vSphere.vCenterHost }}
+            - name: X_CSI_POWERMAX_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.defaultCredentialsSecret }}
+                  key: username
+            - name: X_CSI_POWERMAX_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.defaultCredentialsSecret }}
+                  key: password
             - name: X_CSI_VCENTER_USERNAME
               valueFrom:
                 secretKeyRef:
