@@ -321,6 +321,8 @@ csireverseproxy:
   # Default value: None
   # Examples: "1111", "8080"
   port: 2222
+  # Name of the reverseproxy secret
+  secretName: powermax-reverseproxy-secret
   # Auto-create TLS certificate for csi-reverseproxy
   certManager:
     # Set selfSignedCert to use a self-signed certificate
