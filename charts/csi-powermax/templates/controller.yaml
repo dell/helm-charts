@@ -487,18 +487,6 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmon.podmonAPIPort }}"
-            {{- if eq .Values.csireverseproxy.deployAsSidecar true }}
-            - name: X_CSI_POWERMAX_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.csireverseproxy.secretName }}
-                  key: username
-            - name: X_CSI_POWERMAX_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.csireverseproxy.secretName }}
-                  key: password     
-            {{- end}}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
@@ -516,8 +504,8 @@ spec:
           env:
             - name: X_CSI_REVPROXY_SECRET_PATH
               value: "/etc/powermax/secret/config"
-            - name: X_CSI_REVPROXY_SECRET_NAME
-              value: {{ .Values.csireverseproxy.secretName }}
+            #- name: X_CSI_REVPROXY_SECRET_NAME
+            #  value: {{ .Values.csireverseproxy.secretName }}
             - name: X_CSI_REVRPOXY_IN_CLUSTER
               value: "true"
             - name: X_CSI_REVPROXY_TLS_CERT_DIR
