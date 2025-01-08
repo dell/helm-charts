@@ -17,7 +17,7 @@ images:
     image: dellemc/sdc:4.5.2.1
   # CSI sidecars
   attacher:
-    image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.8.0
   provisioner:
     image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
   snapshotter:
@@ -25,9 +25,9 @@ images:
   resizer:
     image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
   registrar:
-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0
   healthmonitor:
-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
   # CSM sidecars
   replication:
     image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
