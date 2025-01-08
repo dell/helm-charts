@@ -59,6 +59,8 @@ spec:
     - powermax-reverseproxy
     - powermax-reverseproxy.powermax.svc.cluster.local
     - reverseproxy
+  ipAddresses:
+    - 0.0.0.0
   issuerRef:
   {{- if ne .Values.certManager.selfSignedCert true }}
     name: csirevproxy-issuer
