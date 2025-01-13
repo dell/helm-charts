@@ -124,7 +124,17 @@ rules:
     resources: [ "csistoragecapacities" ]
     verbs: [ "get", "list", "watch", "create", "update", "patch", "delete" ]
   {{- end }}
+<<<<<<< HEAD
 
+=======
+  # for csi-nfs
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
+>>>>>>> 0ff8068 (csi-nfs changes)
 ---
 
 kind: ClusterRoleBinding
@@ -433,6 +443,10 @@ spec:
               value: /powerstore-config/config
             - name: X_CSI_POWERSTORE_CONFIG_PARAMS_PATH
               value: /powerstore-config-params/driver-config-params.yaml
+            - name: X_CSI_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             {{- if hasKey .Values "podmon" }}
             - name: X_CSI_PODMON_ENABLED
               value: "{{ .Values.podmon.enabled }}"
