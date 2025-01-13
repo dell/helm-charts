@@ -19,6 +19,8 @@ global:
   # Default value: None
   # Examples: "000000000001", "000000000002"
   managedArrays: "000000000001,000000000002"
+  # defaultCredentialsSecret
+  defaultCredentialsSecret: powermax-creds
   # portGroups: Define the set of existing port groups that the driver will use.
   # It is a comma separated list of portgroup names.
   # Required only in case of iSCSI port groups
@@ -322,7 +324,7 @@ csireverseproxy:
   # Examples: "1111", "8080"
   port: 2222
   # Name of the reverseproxy secret
-  #secretName: powermax-reverseproxy-secret
+  secretName: powermax-reverseproxy-secret
   # Auto-create TLS certificate for csi-reverseproxy
   certManager:
     # Set selfSignedCert to use a self-signed certificate

@@ -414,6 +414,16 @@ spec:
               value: /var/run/csi/csi.sock
             - name: X_CSI_MODE
               value: controller
+            - name: X_CSI_POWERMAX_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.defaultCredentialsSecret }}
+                  key: username
+            - name: X_CSI_POWERMAX_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.defaultCredentialsSecret }}
+                  key: password
             - name: X_CSI_POWERMAX_CONFIG_PATH
               value: /powermax-config-params/driver-config-params.yaml
             - name: X_CSI_POWERMAX_ARRAY_CONFIG_PATH
@@ -502,10 +512,19 @@ spec:
           image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
+              {{- if and (hasKey .Values.csireverseproxy "secretName") (not (empty .Values.csireverseproxy.secretName)) }}
             - name: X_CSI_REVPROXY_SECRET_PATH
-              value: "/etc/powermax/secret/config"
-            #- name: X_CSI_REVPROXY_SECRET_NAME
-            #  value: {{ .Values.csireverseproxy.secretName }}
+              value: "/etc/powermax/secret"
+            - name: X_CSI_REVPROXY_SECRET_NAME
+              value: {{ .Values.csireverseproxy.secretName }}
+            - name: X_CSI_USE_REVPROXY_SECRET
+              value: "true"
+              {{- else}}
+            - name: X_CSI_REVPROXY_CONFIG_DIR
+              value: /etc/config/configmap
+            - name: X_CSI_REVPROXY_CONFIG_FILE_NAME
+              value: config.yaml
+              {{- end }}
             - name: X_CSI_REVRPOXY_IN_CLUSTER
               value: "true"
             - name: X_CSI_REVPROXY_TLS_CERT_DIR
@@ -513,8 +532,13 @@ spec:
             - name: X_CSI_REVPROXY_WATCH_NAMESPACE
               value: {{ .Release.Namespace }}
           volumeMounts:
+              {{- if and (hasKey .Values.csireverseproxy "secretName") (not (empty .Values.csireverseproxy.secretName)) }}
             - name: powermax-reverseproxy-secret
               mountPath: /etc/powermax/secret
+              {{- else }}
+            - name: configmap-volume
+              mountPath: /etc/config/configmap
+              {{- end }}
             - name: tls-secret
               mountPath: /app/tls
             - name: cert-dir
@@ -527,12 +551,19 @@ spec:
           secret:
               secretName: {{ .Release.Name }}-certs
               optional: true
+          {{- if and (hasKey .Values.csireverseproxy "secretName") (not (empty .Values.csireverseproxy.secretName)) }}
+        - name: powermax-reverseproxy-secret
+          secret:
+            secretName: {{ .Values.csireverseproxy.secretName }}
+          {{- else }}
+        - name: configmap-volume
+          configMap:
+            name: {{ .Release.Name }}-reverseproxy-config
+            optional: true
+          {{- end }}
         - name: tls-secret
           secret:
             secretName: {{ .Values.csireverseproxy.tlsSecret }}
-        - name: powermax-reverseproxy-secret
-          secret:
-            secretName: {{ .Release.Name }}-reverseproxy-secret
         - name: powermax-array-config
           configMap:
             name: {{ .Release.Name }}-array-config

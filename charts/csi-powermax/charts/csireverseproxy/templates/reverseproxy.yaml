@@ -20,10 +20,19 @@ spec:
           image: {{ required "Must provided an image for reverseproxy container." .Values.image }}
           imagePullPolicy: Always
           env:
+              {{- if and (hasKey .Values "secretName") (not (empty .Values.secretName)) }}
             - name: X_CSI_REVPROXY_SECRET_PATH
-              value: "/etc/powermax/secret/config"
-            #- name: X_CSI_REVPROXY_SECRET_NAME
-            #  value: powermax-reverseproxy-secret
+              value: "/etc/powermax/secret"
+            - name: X_CSI_REVPROXY_SECRET_NAME
+              value: {{ .Values.secretName }}
+            - name: X_CSI_USE_REVPROXY_SECRET
+              value: "true"
+              {{- else }}
+            - name: X_CSI_REVPROXY_CONFIG_DIR
+              value: /etc/config/configmap
+            - name: X_CSI_REVPROXY_CONFIG_FILE_NAME
+              value: config.yaml
+              {{- end }}
             - name: X_CSI_REVRPOXY_IN_CLUSTER
               value: "true"
             - name: X_CSI_REVPROXY_TLS_CERT_DIR
@@ -31,16 +40,28 @@ spec:
             - name: X_CSI_REVPROXY_WATCH_NAMESPACE
               value: {{ .Release.Namespace }}
           volumeMounts:
+              {{- if and (hasKey .Values "secretName") (not (empty .Values.secretName)) }}
+            - name: powermax-reverseproxy-secret
+              mountPath: /etc/powermax/secret
+              {{- else }}
+            - name: configmap-volume
+              mountPath: /etc/config/configmap
+              {{- end }}
             - name: tls-secret
               mountPath: /app/tls
             - name: cert-dir
               mountPath: /app/certs
-            - name: powermax-reverseproxy-secret
-              mountPath: /etc/powermax/secret
       volumes:
+          {{- if and (hasKey .Values "secretName") (not (empty .Values.secretName)) }}
         - name: powermax-reverseproxy-secret
           secret:
-            secretName: {{ .Release.Name }}-reverseproxy-secret
+            secretName: {{ .Values.secretName }}
+          {{- else }}
+        - name: configmap-volume
+          configMap:
+            name: {{ .Release.Name }}-reverseproxy-config
+            optional: true
+          {{- end }}
         - name: tls-secret
           secret:
             secretName: {{ .Values.tlsSecret }}
