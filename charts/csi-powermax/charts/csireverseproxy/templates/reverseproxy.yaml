@@ -20,7 +20,7 @@ spec:
           image: {{ required "Must provided an image for reverseproxy container." .Values.image }}
           imagePullPolicy: Always
           env:
-              {{- if and (hasKey .Values "secretName") (not (empty .Values.secretName)) }}
+              {{- if not (empty .Values.secretName) }}
             - name: X_CSI_REVPROXY_SECRET_PATH
               value: "/etc/powermax/secret"
             - name: X_CSI_REVPROXY_SECRET_NAME
@@ -40,7 +40,7 @@ spec:
             - name: X_CSI_REVPROXY_WATCH_NAMESPACE
               value: {{ .Release.Namespace }}
           volumeMounts:
-              {{- if and (hasKey .Values "secretName") (not (empty .Values.secretName)) }}
+              {{- if not (empty .Values.secretName) }}
             - name: powermax-reverseproxy-secret
               mountPath: /etc/powermax/secret
               {{- else }}
@@ -52,7 +52,7 @@ spec:
             - name: cert-dir
               mountPath: /app/certs
       volumes:
-          {{- if and (hasKey .Values "secretName") (not (empty .Values.secretName)) }}
+          {{- if not (empty .Values.secretName) }}
         - name: powermax-reverseproxy-secret
           secret:
             secretName: {{ .Values.secretName }}
