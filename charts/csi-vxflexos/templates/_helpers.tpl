@@ -8,3 +8,11 @@ Return true if storage capacity tracking is enabled and is supported based on k8
     {{- end -}}
   {{- end -}}
 {{- end -}}
+
+{{- define "common.labels" -}}
+app.kubernetes.io/name: {{ .Chart.Name }}
+helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
