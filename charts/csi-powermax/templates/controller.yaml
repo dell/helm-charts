@@ -414,6 +414,7 @@ spec:
               value: /var/run/csi/csi.sock
             - name: X_CSI_MODE
               value: controller
+              {{- if empty .Values.csireverseproxy.secretName }}
             - name: X_CSI_POWERMAX_USER
               valueFrom:
                 secretKeyRef:
@@ -424,6 +425,7 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.global.defaultCredentialsSecret }}
                   key: password
+              {{- end }}
             - name: X_CSI_POWERMAX_CONFIG_PATH
               value: /powermax-config-params/driver-config-params.yaml
             - name: X_CSI_POWERMAX_ARRAY_CONFIG_PATH

@@ -19,7 +19,12 @@ global:
   # Default value: None
   # Examples: "000000000001", "000000000002"
   managedArrays: "000000000001,000000000002"
+
   # defaultCredentialsSecret
+  # DEPRECATION NOTICE: The defaultCredentials parameter has been deprecated and will be
+  # removed in a future release. It remains for backward compatibility only.
+  # Please see use the parameter .csireverseproxy.secretName below and refer to the official
+  # documentation website for further details.
   defaultCredentialsSecret: powermax-creds
   # portGroups: Define the set of existing port groups that the driver will use.
   # It is a comma separated list of portgroup names.
@@ -37,6 +42,11 @@ global:
   #   ""      - Automatic selection of transport protocol
   # Default value: "" <empty>
   transportProtocol: ""
+
+  # DEPRECATION NOTICE: The storageArrays parameter has been deprecated in this helm chart
+  # and will be removed in a future release. It remains for backward compatibility only.
+  # storageArrays have been migrated to the 'secret' format. Please refer to the official
+  # documentation website for further details.
   storageArrays:
     - storageArrayId: "000000000001"
       endpoint: https://primary-1.unisphe.re:8443
@@ -44,6 +54,11 @@ global:
   # - storageArrayId: "000000000002"
   #   endpoint: https://primary-2.unisphe.re:8443
   #   backupEndpoint: https://backup-2.unisphe.re:8443
+
+  # DEPRECATION NOTICE: The managementServers parameter has been deprecated in this helm chart
+  # and will be removed in a future release. It remains for backward compatibility only.
+  # managementServers have been migrated to the 'secret' format. Please refer to the official
+  # documentation website for further details.
   managementServers:
     - endpoint: https://primary-1.unisphe.re:8443
       credentialsSecret: primary-1-secret
