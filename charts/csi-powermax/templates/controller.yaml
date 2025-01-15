@@ -428,6 +428,15 @@ spec:
               value: /powermax-config-params/driver-config-params.yaml
             - name: X_CSI_POWERMAX_ARRAY_CONFIG_PATH
               value: /powermax-array-config/powermax-array-config.yaml
+              {{- $useRevProxySecret := not (empty .Values.csireverseproxy.secretName) }}
+            - name: X_CSI_REVPROXY_USE_SECRET
+              value: {{ $useRevProxySecret | quote }}
+              {{- if $useRevProxySecret }}
+            - name: X_CSI_REVPROXY_SECRET_PATH
+              value: "/etc/powermax"
+            - name: X_CSI_REVPROXY_SECRET_NAME
+              value: {{ .Values.csireverseproxy.secretName }}
+              {{- end }}
             - name: X_CSI_POWERMAX_DEBUG
               value: {{ .Values.powerMaxDebug | default "false" | lower | quote }}
             - name: X_CSI_POWERMAX_SKIP_CERTIFICATE_VALIDATION
@@ -507,19 +516,24 @@ spec:
               mountPath: /powermax-config-params
             - name: powermax-array-config
               mountPath: /powermax-array-config
+              {{- if not (empty .Values.csireverseproxy.secretName) }}
+            - name: powermax-reverseproxy-secret
+              mountPath: /etc/powermax
+              {{- end }}
         {{- if eq .Values.csireverseproxy.deployAsSidecar true }}
         - name: reverseproxy
           image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
-              {{- if not (empty .Values.csireverseproxy.secretName) }}
+              {{- $useRevProxySecret := not (empty .Values.csireverseproxy.secretName) }}
+            - name: X_CSI_REVPROXY_USE_SECRET
+              value: {{ $useRevProxySecret | quote }}
+              {{- if $useRevProxySecret }}
             - name: X_CSI_REVPROXY_SECRET_PATH
               value: "/etc/powermax"
             - name: X_CSI_REVPROXY_SECRET_NAME
               value: {{ .Values.csireverseproxy.secretName }}
-            - name: X_CSI_REVPROXY_USE_SECRET
-              value: "true"
-              {{- else}}
+              {{- else }}
             - name: X_CSI_REVPROXY_CONFIG_DIR
               value: /etc/config/configmap
             - name: X_CSI_REVPROXY_CONFIG_FILE_NAME

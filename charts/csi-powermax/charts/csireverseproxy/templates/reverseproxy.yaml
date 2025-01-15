@@ -20,13 +20,14 @@ spec:
           image: {{ required "Must provided an image for reverseproxy container." .Values.image }}
           imagePullPolicy: Always
           env:
-              {{- if not (empty .Values.secretName) }}
+              {{- $useRevProxySecret := not (empty .Values.secretName) }}
+            - name: X_CSI_REVPROXY_USE_SECRET
+              value: {{ $useRevProxySecret | quote }}
+              {{- if $useRevProxySecret }}
             - name: X_CSI_REVPROXY_SECRET_PATH
               value: "/etc/powermax"
             - name: X_CSI_REVPROXY_SECRET_NAME
               value: {{ .Values.secretName }}
-            - name: X_CSI_REVPROXY_USE_SECRET
-              value: "true"
               {{- else }}
             - name: X_CSI_REVPROXY_CONFIG_DIR
               value: /etc/config/configmap

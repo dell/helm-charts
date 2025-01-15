@@ -177,6 +177,15 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
+              {{- $useRevProxySecret := not (empty .Values.csireverseproxy.secretName) }}
+            - name: X_CSI_REVPROXY_USE_SECRET
+              value: {{ $useRevProxySecret | quote }}
+              {{- if $useRevProxySecret }}
+            - name: X_CSI_REVPROXY_SECRET_PATH
+              value: "/etc/powermax"
+            - name: X_CSI_REVPROXY_SECRET_NAME
+              value: {{ .Values.csireverseproxy.secretName }}
+              {{- end }}
             {{- if eq .Values.enableCHAP  true }}
             - name: X_CSI_POWERMAX_ISCSI_ENABLE_CHAP
               value: "true"
@@ -285,6 +294,10 @@ spec:
               mountPath: /node-topology-config
             {{- end }}
             {{- end }}
+              {{- if not (empty .Values.csireverseproxy.secretName) }}
+            - name: powermax-reverseproxy-secret
+              mountPath: /etc/powermax
+              {{- end }}
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           args:
@@ -475,6 +488,11 @@ spec:
         - name: powermax-array-config
           configMap:
             name: {{ .Release.Name }}-array-config
+          {{- if not (empty .Values.csireverseproxy.secretName) }}
+        - name: powermax-reverseproxy-secret
+          secret:
+            secretName: {{ .Values.csireverseproxy.secretName }}
+          {{- end }}
         - name: certs
           secret:
             secretName: {{ .Release.Name }}-certs
