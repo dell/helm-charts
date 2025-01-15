@@ -121,7 +121,8 @@ controller:
 
   # volumeNamePrefix: defines a string prepended to each volume created by the CSI driver.
   # Allowed values: string
-  # Default value: None
+  # Default value: csivol
+  # Examples: "k8s", "app1"
   volumeNamePrefix: csivol
 
   # vgsnapshot: allows to configure volume-group-snapshot
@@ -146,8 +147,9 @@ controller:
 
     # snapNamePrefix: Prefix to apply to the names of a created snapshots
     # Allowed values: string
-    # Default value: None
-    snapNamePrefix: csisnap
+    # Default value: csi-snap
+    # Examples: "snap", "snapshot"
+    snapNamePrefix: csi-snap
   # resizer: allows to enable/disable resizer feature
   resizer:
     # enabled: Enable/Disable volume expansion feature
@@ -305,8 +307,8 @@ connection:
 
 # CSI driver log level
 # Allowed values: "error", "warn"/"warning", "info", "debug", "error"
-# Default value: "debug"
-logLevel: "debug"
+# Default value: "info"
+logLevel: "info"
 
 # CSI driver log format
 # Allowed values: "TEXT" or "JSON"
