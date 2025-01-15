@@ -316,7 +316,7 @@ csi-vxflexos:
       image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.13.0
     # "powerflexSdc" defines the SDC image for init container.
     powerflexSdc:
-      image: dellemc/sdc:4.5.2.1
+      image: quay.io/dell/storage/powerflex/sdc:4.5.2.1
     # CSI sidecars
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.8.0
