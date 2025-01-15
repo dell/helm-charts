@@ -517,7 +517,7 @@ spec:
               value: "/etc/powermax/secret"
             - name: X_CSI_REVPROXY_SECRET_NAME
               value: {{ .Values.csireverseproxy.secretName }}
-            - name: X_CSI_USE_REVPROXY_SECRET
+            - name: X_CSI_REVPROXY_USE_SECRET
               value: "true"
               {{- else}}
             - name: X_CSI_REVPROXY_CONFIG_DIR
