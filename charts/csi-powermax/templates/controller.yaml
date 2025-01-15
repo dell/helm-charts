@@ -514,7 +514,7 @@ spec:
           env:
               {{- if not (empty .Values.csireverseproxy.secretName) }}
             - name: X_CSI_REVPROXY_SECRET_PATH
-              value: "/etc/powermax/secret"
+              value: "/etc/powermax"
             - name: X_CSI_REVPROXY_SECRET_NAME
               value: {{ .Values.csireverseproxy.secretName }}
             - name: X_CSI_REVPROXY_USE_SECRET
@@ -534,7 +534,7 @@ spec:
           volumeMounts:
               {{- if not (empty .Values.csireverseproxy.secretName) }}
             - name: powermax-reverseproxy-secret
-              mountPath: /etc/powermax/secret
+              mountPath: /etc/powermax
               {{- else }}
             - name: configmap-volume
               mountPath: /etc/config/configmap
