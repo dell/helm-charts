@@ -34,8 +34,8 @@ images:
 
 # CSI driver log level
 # Allowed values: "error", "warn"/"warning", "info", "debug"
-# Default value: "debug"
-logLevel: "debug"
+# Default value: "info"
+logLevel: "info"
 
 # certSecretCount: Represents number of certificate secrets, which user is going to create for
 # ssl authentication. (isilon-cert-0..isilon-cert-n)
@@ -118,8 +118,9 @@ controller:
 
   # volumeNamePrefix: Prefix of PersistentVolume names created
   # Allowed values: string
-  # Default value: None
-  volumeNamePrefix: k8s
+  # Default value: csivol
+  # Examples: "k8s", "app1"
+  volumeNamePrefix: csivol
 
   # leaderElection: configure leader election parameters
   leaderElection:
@@ -168,8 +169,9 @@ controller:
 
     # snapNamePrefix: Prefix to apply to the names of a created snapshots
     # Allowed values: string
-    # Default value: None
-    snapNamePrefix: snapshot
+    # Default value: csi-snap
+    # Examples: "snap", "snapshot"
+    snapNamePrefix: csi-snap
 
   resizer:
     # enabled: Enable/Disable volume expansion feature
