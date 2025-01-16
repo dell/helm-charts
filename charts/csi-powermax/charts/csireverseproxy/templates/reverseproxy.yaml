@@ -27,7 +27,7 @@ spec:
             - name: X_CSI_REVPROXY_SECRET_PATH
               value: "/etc/powermax"
             - name: X_CSI_REVPROXY_SECRET_NAME
-              value: {{ .Values.secretName }}
+              value: config
               {{- else }}
             - name: X_CSI_REVPROXY_CONFIG_DIR
               value: /etc/config/configmap
