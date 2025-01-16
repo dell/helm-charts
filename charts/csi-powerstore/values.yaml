@@ -49,7 +49,7 @@ images:
   replication:
     image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
   vgsnapshotter:
-    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.0
+    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
   podmon:
     image: quay.io/dell/container-storage-modules/podmon:v1.12.0
   metadataretriever:
