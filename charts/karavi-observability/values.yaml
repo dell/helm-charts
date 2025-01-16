@@ -1,5 +1,5 @@
 karaviTopology:
-  image: quay.io/dell/container-storage-modules/csm-topology:v1.10.0
+  image: quay.io/dell/container-storage-modules/csm-topology:v1.11.0
   enabled: true
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
   provisionerNames: csi-vxflexos.dellemc.com,csi-powerstore.dellemc.com,csi-isilon.dellemc.com,csi-powermax.dellemc.com
