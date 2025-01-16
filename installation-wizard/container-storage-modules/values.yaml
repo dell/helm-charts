@@ -43,7 +43,7 @@ csi-powerstore:
     replication:
       image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
     vgsnapshotter:
-      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.0
+      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
     podmon:
       image: quay.io/dell/container-storage-modules/podmon:v1.12.0
     metadataretriever:
@@ -166,12 +166,12 @@ csi-powermax:
     authorization:
       image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
     migration:
-      image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.6.0
+      image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.7.0
     podmon:
       image: quay.io/dell/container-storage-modules/podmon:v1.12.0
     # Node rescan sidecar does a rescan on nodes for identifying new paths
     noderescan:
-      image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.5.0
+      image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.6.0
   clusterPrefix: ABC
   portGroups: PortGroup1, PortGroup2, PortGroup3
   controller:
@@ -334,7 +334,7 @@ csi-vxflexos:
     replication:
       image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
     vgsnapshotter:
-      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.0
+      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
     podmon:
       image: quay.io/dell/container-storage-modules/podmon:v1.12.0
     authorization:
