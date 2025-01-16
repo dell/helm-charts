@@ -52,7 +52,7 @@ allowedNetworks:
 # IfNotPresent: Only pull the image if it does not already exist on the node.
 # Never: Never pull the image.
 # Default value: IfNotPresent
-imagePullPolicy: Always
+imagePullPolicy: IfNotPresent
 
 # Specify kubelet config dir path.
 # Ensure that the config.yaml file is present at this path.
@@ -80,7 +80,8 @@ controller:
 
   # volumeNamePrefix: Prefix of PersistentVolume names created
   # Allowed values: string
-  # Default value: None
+  # Default value: csivol
+  # Examples: "k8s", "app1"
   volumeNamePrefix: csivol
 
   snapshot:
@@ -93,7 +94,8 @@ controller:
 
     # snapNamePrefix: Prefix to apply to the names of a created snapshots
     # Allowed values: string
-    # Default value: None
+    # Default value: csi-snap
+    # Examples: "snap", "snapshot"
     snapNamePrefix: csi-snap
 
   resizer:
