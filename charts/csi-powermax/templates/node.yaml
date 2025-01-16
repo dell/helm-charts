@@ -255,6 +255,8 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmon.podmonAPIPort }}"
+            - name: X_CSI_REVPROXY_TLS_CERT_DIR
+              value: /app/tls
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/powermax.emc.dell.com
@@ -285,6 +287,8 @@ spec:
               mountPath: /node-topology-config
             {{- end }}
             {{- end }}
+            - name: tls-secret
+              mountPath: /app/tls
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           args:
@@ -508,3 +512,6 @@ spec:
           hostPath:
             path: /var/run
             type: Directory
+        - name: tls-secret
+          secret:
+            secretName: {{ .Values.csireverseproxy.tlsSecret }}

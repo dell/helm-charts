@@ -43,7 +43,7 @@ jobs:
 
       # Needed for signing commits using Github App tokens
       # See: https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#commit-signing
-      - uses: actions/create-github-app-token@v1.11.0
+      - uses: actions/create-github-app-token@v1.11.1
         id: generate-token
         if: ${{ success() && steps.rebase.outcome == 'success' }}
         with:
