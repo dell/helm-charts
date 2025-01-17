@@ -1,7 +1,14 @@
-image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.12.0
+image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.13.0
 port: 2222
 
 # TLS secret which is used for setting up the proxy HTTPS server
 # Don't change this value unless really necessary
 # If this value is modified, then the installation script will have to be modified
 tlsSecret: "csirevproxy-tls-secret"
+
+# Name of the reverseproxy secret as a Kubernetes resource, containing
+# details required for connecting the csi-powermax driver to Unisphere for
+# PowerMax endpoints.
+# Default value: ""
+# Example: "powermax-reverseproxy-secret"
+secretName: ""
