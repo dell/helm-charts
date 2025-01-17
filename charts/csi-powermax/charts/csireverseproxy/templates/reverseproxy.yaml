@@ -26,6 +26,8 @@ spec:
               {{- if $useRevProxySecret }}
             - name: X_CSI_REVPROXY_SECRET_FILEPATH
               value: "/etc/powermax/config"
+            - name: X_CSI_POWERMAX_CONFIG_PATH
+              value: /powermax-config-params/driver-config-params.yaml
               {{- else }}
             - name: X_CSI_REVPROXY_CONFIG_DIR
               value: /etc/config/configmap
@@ -42,6 +44,8 @@ spec:
               {{- if not (empty .Values.secretName) }}
             - name: powermax-reverseproxy-secret
               mountPath: /etc/powermax
+            - name: powermax-config-params
+              mountPath: /powermax-config-params
               {{- else }}
             - name: configmap-volume
               mountPath: /etc/config/configmap
@@ -55,6 +59,9 @@ spec:
         - name: powermax-reverseproxy-secret
           secret:
             secretName: {{ .Values.secretName }}
+        - name: powermax-config-params
+          configMap:
+            name: {{ .Release.Name }}-config-params
           {{- else }}
         - name: configmap-volume
           configMap:
