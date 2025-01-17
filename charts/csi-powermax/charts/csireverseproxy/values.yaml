@@ -6,7 +6,9 @@ port: 2222
 # If this value is modified, then the installation script will have to be modified
 tlsSecret: "csirevproxy-tls-secret"
 
-# Name of the reverseproxy secret as a Kubernetes resource.
-# Default value: "powermax-reverseproxy-secret"
+# Name of the reverseproxy secret as a Kubernetes resource, containing
+# details required for connecting the csi-powermax driver to Unisphere for
+# PowerMax endpoints.
+# Default value: ""
 # Example: "powermax-reverseproxy-secret"
-secretName: powermax-reverseproxy-secret
+secretName: ""

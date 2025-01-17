@@ -414,7 +414,7 @@ spec:
               value: /var/run/csi/csi.sock
             - name: X_CSI_MODE
               value: controller
-              {{- if empty .Values.csireverseproxy.secretName }}
+              {{- if or (not (hasKey .Values.csireverseproxy "secretName")) (empty .Values.csireverseproxy.secretName) }}
             - name: X_CSI_POWERMAX_USER
               valueFrom:
                 secretKeyRef:
@@ -430,7 +430,7 @@ spec:
               value: /powermax-config-params/driver-config-params.yaml
             - name: X_CSI_POWERMAX_ARRAY_CONFIG_PATH
               value: /powermax-array-config/powermax-array-config.yaml
-              {{- $useRevProxySecret := not (empty .Values.csireverseproxy.secretName) }}
+              {{- $useRevProxySecret := and (hasKey .Values.csireverseproxy "secretName") (not (empty .Values.csireverseproxy.secretName)) }}
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
@@ -518,7 +518,7 @@ spec:
               mountPath: /powermax-config-params
             - name: powermax-array-config
               mountPath: /powermax-array-config
-              {{- if not (empty .Values.csireverseproxy.secretName) }}
+              {{- if and (hasKey .Values.csireverseproxy "secretName") (not (empty .Values.csireverseproxy.secretName)) }}
             - name: powermax-reverseproxy-secret
               mountPath: /etc/powermax
               {{- end }}
@@ -529,7 +529,7 @@ spec:
           image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
-              {{- $useRevProxySecret := not (empty .Values.csireverseproxy.secretName) }}
+              {{- $useRevProxySecret := and (hasKey .Values.csireverseproxy "secretName") (not (empty .Values.csireverseproxy.secretName)) }}
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
@@ -548,7 +548,7 @@ spec:
             - name: X_CSI_REVPROXY_WATCH_NAMESPACE
               value: {{ .Release.Namespace }}
           volumeMounts:
-              {{- if not (empty .Values.csireverseproxy.secretName) }}
+              {{- if and (hasKey .Values.csireverseproxy "secretName") (not (empty .Values.csireverseproxy.secretName)) }}
             - name: powermax-reverseproxy-secret
               mountPath: /etc/powermax
               {{- else }}
@@ -567,7 +567,7 @@ spec:
           secret:
               secretName: {{ .Release.Name }}-certs
               optional: true
-          {{- if not (empty .Values.csireverseproxy.secretName) }}
+          {{- if and (hasKey .Values.csireverseproxy "secretName") (not (empty .Values.csireverseproxy.secretName)) }}
         - name: powermax-reverseproxy-secret
           secret:
             secretName: {{ .Values.csireverseproxy.secretName }}

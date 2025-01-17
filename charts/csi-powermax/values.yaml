@@ -338,10 +338,12 @@ csireverseproxy:
   # Default value: None
   # Examples: "1111", "8080"
   port: 2222
-  # Name of the reverseproxy secret as a Kubernetes resource.
-  # Default value: "powermax-reverseproxy-secret"
+  # Name of the reverseproxy secret as a Kubernetes resource, containing
+  # details required for connecting the csi-powermax driver to Unisphere for
+  # PowerMax endpoints.
+  # Default value: ""
   # Example: "powermax-reverseproxy-secret"
-  secretName: powermax-reverseproxy-secret
+  secretName: ""
   # Auto-create TLS certificate for csi-reverseproxy
   certManager:
     # Set selfSignedCert to use a self-signed certificate
