@@ -30,47 +30,47 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.5.0
+version: 1.6.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "1.5.0"
+appVersion: "1.6.0"
 
 dependencies:
   - name: csi-powerstore
-    version: 2.12.0
+    version: 2.13.0
     repository: https://dell.github.io/helm-charts
     condition: csi-powerstore.enabled
 
   - name: csi-powermax
-    version: 2.12.0
+    version: 2.13.0
     repository: https://dell.github.io/helm-charts
     condition: csi-powermax.enabled
 
   - name: csi-isilon
-    version: 2.12.0
+    version: 2.13.0
     repository: https://dell.github.io/helm-charts
     condition: csi-isilon.enabled
 
   - name: csi-vxflexos
-    version: 2.12.0
+    version: 2.13.0
     repository: https://dell.github.io/helm-charts
     condition: csi-vxflexos.enabled
 
   - name: csi-unity
-    version: 2.12.0
+    version: 2.13.0
     repository: https://dell.github.io/helm-charts
     condition: csi-unity.enabled
 
   - name: csm-replication
-    version: 1.10.0
+    version: 1.11.0
     repository: https://dell.github.io/helm-charts
     condition: csm-replication.enabled
 
   - name: karavi-observability
-    version: 1.10.0
+    version: 1.11.0
     repository: https://dell.github.io/helm-charts
     condition: karavi-observability.enabled
 
