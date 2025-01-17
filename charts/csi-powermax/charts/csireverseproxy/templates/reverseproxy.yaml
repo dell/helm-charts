@@ -24,10 +24,8 @@ spec:
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
-            - name: X_CSI_REVPROXY_SECRET_PATH
-              value: "/etc/powermax"
-            - name: X_CSI_REVPROXY_SECRET_NAME
-              value: config
+            - name: X_CSI_REVPROXY_SECRET_FILEPATH
+              value: "/etc/powermax/config"
               {{- else }}
             - name: X_CSI_REVPROXY_CONFIG_DIR
               value: /etc/config/configmap

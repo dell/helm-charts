@@ -180,10 +180,8 @@ spec:
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
-            - name: X_CSI_REVPROXY_SECRET_PATH
-              value: "/etc/powermax"
-            - name: X_CSI_REVPROXY_SECRET_NAME
-              value: config
+            - name: X_CSI_REVPROXY_SECRET_FILEPATH
+              value: "/etc/powermax/config"
               {{- end }}
             {{- if eq .Values.enableCHAP  true }}
             - name: X_CSI_POWERMAX_ISCSI_ENABLE_CHAP
