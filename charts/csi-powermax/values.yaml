@@ -23,8 +23,8 @@ global:
   # defaultCredentialsSecret
   # The name of the Kubernetes Secret containing the details of the PowerMax arrays,
   # their Unisphere endpoints and their login credentials.
-  # Default: "powermax-creds"
-  defaultCredentialsSecret: "powermax-creds"
+  # Default: "powermax-config"
+  defaultCredentialsSecret: "powermax-config"
   # portGroups: Define the set of existing port groups that the driver will use.
   # It is a comma separated list of portgroup names.
   # Required only in case of iSCSI port groups
