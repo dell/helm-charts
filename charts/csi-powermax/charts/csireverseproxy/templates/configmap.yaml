@@ -6,7 +6,7 @@ usage only.
 {{- /*
 Use the ConfigMap only if the useSecret value is empty or the key is not found
 */}}
-{{- if or (not hasKey .Values "useSecret") (empty .Values.useSecret) }}
+{{- if or (not (hasKey .Values "useSecret")) (empty .Values.useSecret) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
