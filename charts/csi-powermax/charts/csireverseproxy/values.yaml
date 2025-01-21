@@ -6,9 +6,12 @@ port: 2222
 # If this value is modified, then the installation script will have to be modified
 tlsSecret: "csirevproxy-tls-secret"
 
-# Name of the reverseproxy secret as a Kubernetes resource, containing
-# details required for connecting the csi-powermax driver to Unisphere for
-# PowerMax endpoints.
-# Default value: ""
-# Example: "powermax-reverseproxy-secret"
-secretName: ""
+# useSecret
+# Defines if the reverseproxy Secret should be used instead of the
+# deprecated powermax-reverseproxy-config ConfigMap. If set to true, the contents
+# of the secret specified by global.defaultCredentialsSecret will be used,
+# in the new format, to specify Unisphere for PowerMax endpoints, array IDs,
+# and login credentials. If set to false, the deprecated ConfigMap will be used.
+# Default value: true
+# Example: false
+useSecret:
