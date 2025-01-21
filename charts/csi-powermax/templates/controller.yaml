@@ -551,6 +551,8 @@ spec:
               {{- if and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
             - name: powermax-reverseproxy-secret
               mountPath: /etc/powermax
+            - name: powermax-config-params
+              mountPath: /powermax-config-params
               {{- else }}
             - name: configmap-volume
               mountPath: /etc/config/configmap
