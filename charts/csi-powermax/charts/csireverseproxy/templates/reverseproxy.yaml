@@ -20,7 +20,7 @@ spec:
           image: {{ required "Must provided an image for reverseproxy container." .Values.image }}
           imagePullPolicy: Always
           env:
-              {{- $useRevProxySecret := .Values.useSecret | default false }}
+              {{- $useRevProxySecret := and (hasKey .Values "useSecret") (.Values.useSecret | default false) }}
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
@@ -39,7 +39,7 @@ spec:
             - name: X_CSI_REVPROXY_WATCH_NAMESPACE
               value: {{ .Release.Namespace }}
           volumeMounts:
-              {{- if .Values.useSecret | default false }}
+              {{- if and (hasKey .Values "useSecret") (.Values.useSecret | default false) }}
             - name: powermax-reverseproxy-secret
               mountPath: /etc/powermax
               {{- else }}
@@ -51,7 +51,7 @@ spec:
             - name: cert-dir
               mountPath: /app/certs
       volumes:
-          {{- if .Values.useSecret | default false }}
+          {{- if and (hasKey .Values "useSecret") (.Values.useSecret | default false) }}
         - name: powermax-reverseproxy-secret
           secret:
             secretName: {{ required "Must provide defaultCredentialsSecret secret name." .Values.global.defaultCredentialsSecret }}

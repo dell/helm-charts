@@ -4,9 +4,9 @@ be removed in a future release. The ConfigMap remains for backward compatibility
 usage only.
 */}}
 {{- /*
-Use the ConfigMap only if the secretName value is empty or the key is not found
+Use the ConfigMap only if the useSecret value is empty or the key is not found
 */}}
-{{- if not (.Values.useSecret | default false) }}
+{{- if or (not hasKey .Values "useSecret") (empty .Values.useSecret) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

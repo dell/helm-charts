@@ -159,7 +159,7 @@ spec:
               value: {{ .Values.skipCertificateValidation | default "true" | lower | quote }}
             - name: X_CSI_K8S_CLUSTER_PREFIX
               value:  {{ required "Must provide a Cluster Prefix." .Values.clusterPrefix }}
-              {{- if not .Values.csireverseproxy.useSecret | default false }}
+              {{- if or (not (hasKey .Values.csireverseproxy "useSecret")) (empty .Values.csireverseproxy.useSecret) }}
             - name: X_CSI_POWERMAX_USER
               valueFrom:
                 secretKeyRef:
@@ -176,7 +176,7 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-              {{- $useRevProxySecret := .Values.csireverseproxy.useSecret | default false }}
+              {{- $useRevProxySecret := and (hasKey .Values.csireverseproxy "useSecret") (.Values.csireverseproxy.useSecret | default false) }}
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
@@ -293,7 +293,7 @@ spec:
               mountPath: /node-topology-config
             {{- end }}
             {{- end }}
-              {{- if .Values.csireverseproxy.useSecret | default false }}
+              {{- if and (hasKey .Values.csireverseproxy "useSecret") (.Values.csireverseproxy.useSecret | default false) }}
             - name: powermax-reverseproxy-secret
               mountPath: /etc/powermax
               {{- end }}
@@ -489,7 +489,7 @@ spec:
         - name: powermax-array-config
           configMap:
             name: {{ .Release.Name }}-array-config
-          {{- if .Values.csireverseproxy.useSecret | default false }}
+          {{- if and (hasKey .Values.csireverseproxy "useSecret") (.Values.csireverseproxy.useSecret | default false) }}
         - name: powermax-reverseproxy-secret
           secret:
             secretName: {{ required "Must provide defaultCredentialsSecret secret name." .Values.global.defaultCredentialsSecret }}
