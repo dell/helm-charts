@@ -46,6 +46,8 @@ spec:
             - name: configmap-volume
               mountPath: /etc/config/configmap
               {{- end }}
+            - name: powermax-config-params
+              mountPath: /powermax-config-params
             - name: tls-secret
               mountPath: /app/tls
             - name: cert-dir
@@ -61,6 +63,9 @@ spec:
             name: {{ .Release.Name }}-reverseproxy-config
             optional: true
           {{- end }}
+        - name: powermax-config-params
+          configMap:
+            name: {{ .Release.Name }}-config-params
         - name: tls-secret
           secret:
             secretName: {{ .Values.tlsSecret }}
