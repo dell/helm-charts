@@ -5,13 +5,3 @@ port: 2222
 # Don't change this value unless really necessary
 # If this value is modified, then the installation script will have to be modified
 tlsSecret: "csirevproxy-tls-secret"
-
-# useSecret
-# Defines if the reverseproxy Secret should be used instead of the
-# deprecated powermax-reverseproxy-config ConfigMap. If set to true, the contents
-# of the secret specified by global.defaultCredentialsSecret will be used,
-# in the new format, to specify Unisphere for PowerMax endpoints, array IDs,
-# and login credentials. If set to false, the deprecated ConfigMap will be used.
-# Default value: true
-# Example: false
-useSecret:
