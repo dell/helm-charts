@@ -20,10 +20,18 @@ spec:
           image: {{ required "Must provided an image for reverseproxy container." .Values.image }}
           imagePullPolicy: Always
           env:
+              {{- $useRevProxySecret := and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
+            - name: X_CSI_REVPROXY_USE_SECRET
+              value: {{ $useRevProxySecret | quote }}
+              {{- if $useRevProxySecret }}
+            - name: X_CSI_REVPROXY_SECRET_FILEPATH
+              value: "/etc/powermax/config"
+              {{- else }}
             - name: X_CSI_REVPROXY_CONFIG_DIR
               value: /etc/config/configmap
             - name: X_CSI_REVPROXY_CONFIG_FILE_NAME
               value: config.yaml
+              {{- end }}
             - name: X_CSI_REVRPOXY_IN_CLUSTER
               value: "true"
             - name: X_CSI_REVPROXY_TLS_CERT_DIR
@@ -31,17 +39,28 @@ spec:
             - name: X_CSI_REVPROXY_WATCH_NAMESPACE
               value: {{ .Release.Namespace }}
           volumeMounts:
+              {{- if and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
+            - name: powermax-reverseproxy-secret
+              mountPath: /etc/powermax
+              {{- else }}
             - name: configmap-volume
               mountPath: /etc/config/configmap
+              {{- end }}
             - name: tls-secret
               mountPath: /app/tls
             - name: cert-dir
               mountPath: /app/certs
       volumes:
+          {{- if and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
+        - name: powermax-reverseproxy-secret
+          secret:
+            secretName: {{ required "Must provide defaultCredentialsSecret secret name." .Values.global.defaultCredentialsSecret }}
+          {{- else }}
         - name: configmap-volume
           configMap:
             name: {{ .Release.Name }}-reverseproxy-config
             optional: true
+          {{- end }}
         - name: tls-secret
           secret:
             secretName: {{ .Values.tlsSecret }}

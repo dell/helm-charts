@@ -19,8 +19,21 @@ global:
   # Default value: None
   # Examples: "000000000001", "000000000002"
   managedArrays: "000000000001,000000000002"
+
   # defaultCredentialsSecret
-  defaultCredentialsSecret: powermax-creds
+  # The name of the Kubernetes Secret containing the details of the PowerMax arrays,
+  # their Unisphere endpoints and their login credentials.
+  # Default: "powermax-config"
+  defaultCredentialsSecret: "powermax-config"
+  # useSecret
+  # Defines if a Secret should be used to provide Unisphere for PowerMax endpoints
+  # and login credentials instead of the deprecated powermax-reverseproxy-config ConfigMap.
+  # If set to true, the contents of the secret specified by defaultCredentialsSecret
+  # will be used, in the new format, to specify Unisphere for PowerMax endpoints, array IDs,
+  # and login credentials. If set to false, the deprecated ConfigMap will be automatically
+  # created and used.
+  # Default value: false
+  useSecret: false
   # portGroups: Define the set of existing port groups that the driver will use.
   # It is a comma separated list of portgroup names.
   # Required only in case of iSCSI port groups
@@ -37,6 +50,11 @@ global:
   #   ""      - Automatic selection of transport protocol
   # Default value: "" <empty>
   transportProtocol: ""
+
+  # DEPRECATION NOTICE: The storageArrays parameter has been deprecated in this helm chart
+  # and will be removed in a future release. It remains for backward compatibility only.
+  # storageArrays have been migrated to the 'secret' format. Please refer to the official
+  # documentation website for further details.
   storageArrays:
     - storageArrayId: "000000000001"
       endpoint: https://primary-1.unisphe.re:8443
@@ -44,6 +62,11 @@ global:
   # - storageArrayId: "000000000002"
   #   endpoint: https://primary-2.unisphe.re:8443
   #   backupEndpoint: https://backup-2.unisphe.re:8443
+
+  # DEPRECATION NOTICE: The managementServers parameter has been deprecated in this helm chart
+  # and will be removed in a future release. It remains for backward compatibility only.
+  # managementServers have been migrated to the 'secret' format. Please refer to the official
+  # documentation website for further details.
   managementServers:
     - endpoint: https://primary-1.unisphe.re:8443
       credentialsSecret: primary-1-secret
@@ -67,16 +90,16 @@ global:
 
 # Current version of the driver
 # Don't modify this value as this value will be used by the install script
-version: "v2.13.0"
+version: "v2.14.0"
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-powermax:v2.13.0
+    image: quay.io/dell/container-storage-modules/csi-powermax:nightly
   csireverseproxy:
-    image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.12.0
+    image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:nightly
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.8.0

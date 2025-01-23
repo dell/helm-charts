@@ -1,3 +1,12 @@
+{{- /*
+Deprecation notice: use of reverseproxy-config ConfigMap is deprecated and will
+be removed in a future release. The ConfigMap remains for backward compatibility
+usage only.
+*/}}
+{{- /*
+Use the ConfigMap only if the useSecret value is empty or the key is not found
+*/}}
+{{- if or (not (hasKey .Values.global "useSecret")) (empty .Values.global.useSecret) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -5,3 +14,4 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
 {{ tpl (.Files.Glob "conf/config.yaml").AsConfig . | indent 2 }}
+{{- end }}
