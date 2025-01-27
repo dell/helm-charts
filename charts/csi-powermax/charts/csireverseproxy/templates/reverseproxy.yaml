@@ -26,6 +26,8 @@ spec:
               {{- if $useRevProxySecret }}
             - name: X_CSI_REVPROXY_SECRET_FILEPATH
               value: "/etc/powermax/config"
+            - name: X_CSI_POWERMAX_CONFIG_PATH
+              value: "/powermax-config-params/driver-config-params.yaml"
               {{- else }}
             - name: X_CSI_REVPROXY_CONFIG_DIR
               value: /etc/config/configmap
