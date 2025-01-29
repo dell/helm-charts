@@ -148,6 +148,8 @@ karaviMetricsPowermax:
   concurrentPowermaxQueries: 10
   # set the default endpoint for PowerMax service
   endpoint: karavi-metrics-powermax
+  useSecret: true
+  defaultCredentialsSecret: ""
   service:
     type: ClusterIP
   logLevel: INFO
