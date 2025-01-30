@@ -148,7 +148,19 @@ karaviMetricsPowermax:
   concurrentPowermaxQueries: 10
   # set the default endpoint for PowerMax service
   endpoint: karavi-metrics-powermax
-  useSecret: true
+  # useSecret
+  # Defines if a Secret should be used to provide Unisphere for PowerMax endpoints
+  # and login credentials instead of the deprecated powermax-reverseproxy-config ConfigMap.
+  # If set to true, the contents of the secret specified by defaultCredentialsSecret
+  # will be used, in the new format, to specify Unisphere for PowerMax endpoints, array IDs,
+  # and login credentials. If set to false, the deprecated ConfigMap will be automatically
+  # created and used.
+  # Default value: false
+  useSecret: false
+  # defaultCredentialsSecret
+  # The name of the Kubernetes Secret containing the details of the PowerMax arrays,
+  # their Unisphere endpoints and their login credentials if useSecret is set to true.
+  # Default value: ""
   defaultCredentialsSecret: ""
   service:
     type: ClusterIP
