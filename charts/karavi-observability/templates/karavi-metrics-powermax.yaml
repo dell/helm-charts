@@ -53,6 +53,11 @@ spec:
         image: {{ .Values.karaviMetricsPowermax.image }}
         resources: {}
         env:
+        {{- $useRevProxySecret := and (hasKey .Values.karaviMetricsPowermax "useSecret") (.Values.karaviMetricsPowermax.useSecret | default false) }}
+        - name: REVPROXY_USE_SECRET
+          value: {{ $useRevProxySecret | quote }}
+        - name: X_CSI_REVPROXY_SECRET_FILEPATH
+          value: "/etc/powermax/config"
         - name: POWERMAX_METRICS_ENDPOINT
           value: "{{ .Values.karaviMetricsPowermax.endpoint }}"
         - name: POWERMAX_METRICS_NAMESPACE
@@ -64,8 +69,13 @@ spec:
         - name: SSL_CERT_DIR
           value: /certs
         volumeMounts:
+            {{- if and (hasKey .Values.karaviMetricsPowermax "useSecret") (.Values.karaviMetricsPowermax.useSecret | default false) }}
+        - name: powermax-reverseproxy-secret
+          mountPath: /etc/powermax
+            {{- else }}
         - name: powermax-reverseproxy-config
           mountPath: /etc/reverseproxy
+            {{- end }}
         - name: tls-secret
           mountPath: /etc/ssl/certs
           readOnly: true
@@ -105,9 +115,15 @@ spec:
       {{ end }}
       {{ end }}
       volumes:
+          {{- if and (hasKey .Values.karaviMetricsPowermax "useSecret") (.Values.karaviMetricsPowermax.useSecret | default false) }}
+      - name: powermax-reverseproxy-secret
+        secret:
+          secretName: {{ required "Must provide defaultCredentialsSecret secret name." .Values.karaviMetricsPowermax.defaultCredentialsSecret }}
+          {{- else }}
       - name: powermax-reverseproxy-config
         configMap:
           name: powermax-reverseproxy-config
+          {{- end }}
       - name: tls-secret
         secret:
           secretName: otel-collector-tls
