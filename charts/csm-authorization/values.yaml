@@ -59,7 +59,7 @@ authorization:
 redis:
   images:
     redis:
-      image: redis:7.4.1-alpine
+      image: redis:7.4.2-alpine
     commander:
       image: rediscommander/redis-commander:latest
 
