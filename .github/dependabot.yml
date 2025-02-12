@@ -138,13 +138,13 @@ updates:
           - "*"
     ignore:
       # Ignore versions of authorization images that are equal to or greater than 2.0.0
-      - dependency-name: "dell/container-storage-modules/csm-authorization-proxy:*"
+      - dependency-name: "*/csm-authorization-proxy*"
         versions: [ ">=2.0.0" ]
-      - dependency-name: "dell/container-storage-modules/csm-authorization-tenant:*"
+      - dependency-name: "*/csm-authorization-tenant*"
         versions: [ ">=2.0.0" ]
-      - dependency-name: "dell/container-storage-modules/csm-authorization-role:*"
+      - dependency-name: "*/csm-authorization-role*"
         versions: [ ">=2.0.0" ]
-      - dependency-name: "dell/container-storage-modules/csm-authorization-storage:*"
+      - dependency-name: "*/csm-authorization-storage*"
         versions: [ ">=2.0.0" ]
 
   # karavi-observability packages
