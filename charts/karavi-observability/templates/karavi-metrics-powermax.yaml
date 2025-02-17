@@ -54,7 +54,7 @@ spec:
         resources: {}
         env:
         {{- $useRevProxySecret := and (hasKey .Values.karaviMetricsPowermax "useSecret") (.Values.karaviMetricsPowermax.useSecret | default false) }}
-        - name: REVPROXY_USE_SECRET
+        - name: X_CSI_REVPROXY_USE_SECRET
           value: {{ $useRevProxySecret | quote }}
         - name: X_CSI_REVPROXY_SECRET_FILEPATH
           value: "/etc/powermax/config"
