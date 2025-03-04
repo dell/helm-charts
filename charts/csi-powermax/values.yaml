@@ -23,8 +23,8 @@ global:
   # defaultCredentialsSecret
   # The name of the Kubernetes Secret containing the details of the PowerMax arrays,
   # their Unisphere endpoints and their login credentials.
-  # Default: "powermax-config"
-  defaultCredentialsSecret: "powermax-config"
+  # Default: "powermax-creds"
+  defaultCredentialsSecret: "powermax-creds"
   # useSecret
   # Defines if a Secret should be used to provide Unisphere for PowerMax endpoints
   # and login credentials instead of the deprecated powermax-reverseproxy-config ConfigMap.
