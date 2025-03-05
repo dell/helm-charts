@@ -15,28 +15,8 @@ global:
   # The CSI PowerMax ReverseProxy section to fill out the required configuration
   # Please refer to the doc website about a
   # detailed explanation of each configuration parameter
-  # X_CSI_MANAGED_ARRAYS: Serial ID of the arrays that will be used for provisioning
-  # Default value: None
-  # Examples: "000000000001", "000000000002"
-  managedArrays: "000000000001,000000000002"
   # defaultCredentialsSecret
   defaultCredentialsSecret: powermax-creds
-  # portGroups: Define the set of existing port groups that the driver will use.
-  # It is a comma separated list of portgroup names.
-  # Required only in case of iSCSI port groups
-  # Allowed values: iSCSI Port Group names
-  # Default value: None
-  # Examples: "pg1, pg2, pg3", "pg1"
-  portGroups:
-  # "transportProtocol" can be "FC" or "FIBRE" for fibrechannel,
-  # "ISCSI" for iSCSI, or "" for autoselection.
-  # Allowed values:
-  #   "FC"    - Fiber Channel protocol
-  #   "FIBER" - Fiber Channel protocol
-  #   "ISCSI" - iSCSI protocol
-  #   ""      - Automatic selection of transport protocol
-  # Default value: "" <empty>
-  transportProtocol: ""
   storageArrays:
     - storageArrayId: "000000000001"
       endpoint: https://primary-1.unisphe.re:8443
@@ -73,10 +53,11 @@ version: "v2.13.0"
 #  To use your own images, or a private registry, change the values here.
 images:
   # "driver" defines the container image, used for the driver container.
+  # TODO: change nightly to latest version after release
   driver:
-    image: quay.io/dell/container-storage-modules/csi-powermax:v2.13.0
+    image: quay.io/dell/container-storage-modules/csi-powermax:nightly
   csireverseproxy:
-    image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.12.0
+    image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:nightly
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.8.0
@@ -346,6 +327,14 @@ csireverseproxy:
 # Examples: "XYZ"
 clusterPrefix: ABC
 
+# portGroups: Define the set of existing port groups that the driver will use.
+# It is a comma separated list of portgroup names.
+# Required only in case of iSCSI port groups
+# Allowed values: iSCSI Port Group names
+# Default value: None
+# Examples: "pg1, pg2, pg3", "pg1"
+
+portGroups: PortGroup1, PortGroup2, PortGroup3
 # "skipCertificateValidation" determines if driver is going to skip verification
 # of TLS certificates while connecting to Unisphere RESTAPI interface
 # If it is set to false,
@@ -356,6 +345,16 @@ clusterPrefix: ABC
 #   "false" - TLS certificates will be verified
 # Default value: "true"
 skipCertificateValidation: "true"
+
+# "transportProtocol" can be "FC" or "FIBRE" for fibrechannel,
+# "ISCSI" for iSCSI, or "" for autoselection.
+# Allowed values:
+#   "FC"    - Fiber Channel protocol
+#   "FIBER" - Fiber Channel protocol
+#   "ISCSI" - iSCSI protocol
+#   ""      - Automatic selection of transport protocol
+# Default value: "" <empty>
+transportProtocol: ""
 
 # "powerMaxDebug" enables low level and http traffic logging
 # between the CSI driver and Unisphere.

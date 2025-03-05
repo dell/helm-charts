@@ -153,6 +153,8 @@ spec:
               value: "{{ .Values.maxPowerMaxVolumesPerNode }}"
             - name: X_CSI_PRIVATE_MOUNT_DIR
               value: "{{ .Values.kubeletConfigDir }}/plugins/powermax.emc.dell.com/disks"
+            - name: X_CSI_MANAGED_ARRAYS
+              value: {{ $arraysStr | replace " " "," | quote }}
             {{- $managementServer := first .Values.global.managementServers }}
             - name: X_CSI_POWERMAX_ENDPOINT
               value: {{ required "Must provide a Unisphere HTTPS endpoint." $managementServer.endpoint }}
@@ -197,6 +199,8 @@ spec:
               value: {{ .Values.ISCSIChroot | default "/noderoot" }}
             - name: X_CSI_GRPC_MAX_THREADS
               value: "50"
+            - name: X_CSI_TRANSPORT_PROTOCOL
+              value: {{ .Values.transportProtocol | default "" }}
             - name: SSL_CERT_DIR
               value: /certs
             - name: X_CSI_POWERMAX_CONFIG_PATH
@@ -209,6 +213,8 @@ spec:
               value: {{ .Values.nodeNameTemplate | default "" }}
             - name: X_CSI_IG_MODIFY_HOSTNAME
               value: {{ .Values.modifyHostName | default "false" | lower | quote }}
+            - name: X_CSI_POWERMAX_PORTGROUPS
+              value: {{ .Values.portGroups | toJson }}
             {{- if hasKey .Values.node "healthMonitor" }}
             {{- if eq .Values.node.healthMonitor.enabled true }}
             - name: X_CSI_HEALTH_MONITOR_ENABLED
@@ -279,8 +285,6 @@ spec:
               mountPath: /run/dbus/system_bus_socket
             - name: powermax-config-params
               mountPath: /powermax-config-params
-            - name: powermax-array-config
-              mountPath: /powermax-array-config
             {{- if hasKey .Values.node "topologyControl" }}
             {{- if eq .Values.node.topologyControl.enabled true }}
             - name: node-topology-config
@@ -476,9 +480,6 @@ spec:
         - name: powermax-config-params
           configMap:
             name: {{ .Release.Name }}-config-params
-        - name: powermax-array-config
-          configMap:
-            name: {{ .Release.Name }}-array-config
         - name: certs
           secret:
             secretName: {{ .Release.Name }}-certs
