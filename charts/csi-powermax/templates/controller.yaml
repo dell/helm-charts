@@ -414,6 +414,7 @@ spec:
               value: /var/run/csi/csi.sock
             - name: X_CSI_MODE
               value: controller
+              {{- if or (not (hasKey .Values.global "useSecret")) (empty .Values.global.useSecret) }}
             - name: X_CSI_POWERMAX_USER
               valueFrom:
                 secretKeyRef:
@@ -424,10 +425,18 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.global.defaultCredentialsSecret }}
                   key: password
+              {{- end }}
             - name: X_CSI_POWERMAX_CONFIG_PATH
               value: /powermax-config-params/driver-config-params.yaml
             - name: X_CSI_POWERMAX_ARRAY_CONFIG_PATH
               value: /powermax-array-config/powermax-array-config.yaml
+              {{- $useRevProxySecret := and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
+            - name: X_CSI_REVPROXY_USE_SECRET
+              value: {{ $useRevProxySecret | quote }}
+              {{- if $useRevProxySecret }}
+            - name: X_CSI_REVPROXY_SECRET_FILEPATH
+              value: "/etc/powermax/config"
+              {{- end }}
             - name: X_CSI_POWERMAX_DEBUG
               value: {{ .Values.powerMaxDebug | default "false" | lower | quote }}
             - name: X_CSI_POWERMAX_SKIP_CERTIFICATE_VALIDATION
@@ -509,6 +518,10 @@ spec:
               mountPath: /powermax-config-params
             - name: powermax-array-config
               mountPath: /powermax-array-config
+              {{- if and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
+            - name: powermax-reverseproxy-secret
+              mountPath: /etc/powermax
+              {{- end }}
             - name: tls-secret
               mountPath: /app/tls
         {{- if eq .Values.csireverseproxy.deployAsSidecar true }}
@@ -516,19 +529,36 @@ spec:
           image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
+              {{- $useRevProxySecret := and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
+            - name: X_CSI_REVPROXY_USE_SECRET
+              value: {{ $useRevProxySecret | quote }}
+              {{- if $useRevProxySecret }}
+            - name: X_CSI_REVPROXY_SECRET_FILEPATH
+              value: "/etc/powermax/config"
+            - name: X_CSI_POWERMAX_CONFIG_PATH
+              value: "/powermax-config-params/driver-config-params.yaml"
+              {{- else }}
             - name: X_CSI_REVPROXY_CONFIG_DIR
               value: /etc/config/configmap
             - name: X_CSI_REVPROXY_CONFIG_FILE_NAME
               value: config.yaml
-            - name: X_CSI_REVRPOXY_IN_CLUSTER
+              {{- end }}
+            - name: X_CSI_REVPROXY_IN_CLUSTER
               value: "true"
             - name: X_CSI_REVPROXY_TLS_CERT_DIR
               value: /app/tls
             - name: X_CSI_REVPROXY_WATCH_NAMESPACE
               value: {{ .Release.Namespace }}
           volumeMounts:
+              {{- if and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
+            - name: powermax-reverseproxy-secret
+              mountPath: /etc/powermax
+            - name: powermax-config-params
+              mountPath: /powermax-config-params
+              {{- else }}
             - name: configmap-volume
               mountPath: /etc/config/configmap
+              {{- end }}
             - name: tls-secret
               mountPath: /app/tls
             - name: cert-dir
@@ -541,10 +571,16 @@ spec:
           secret:
               secretName: {{ .Release.Name }}-certs
               optional: true
+          {{- if and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
+        - name: powermax-reverseproxy-secret
+          secret:
+            secretName: {{ required "Must provide defaultCredentialsSecret secret name." .Values.global.defaultCredentialsSecret }}
+          {{- else }}
         - name: configmap-volume
           configMap:
             name: {{ .Release.Name }}-reverseproxy-config
             optional: true
+          {{- end }}
         - name: tls-secret
           secret:
             secretName: {{ .Values.csireverseproxy.tlsSecret }}
