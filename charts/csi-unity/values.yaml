@@ -26,7 +26,7 @@ images:
 
   # CSM sidecars
   podmon:
-    image: quay.io/dell/container-storage-modules/podmon:v1.12.0
+    image: quay.io/dell/container-storage-modules/podmon:v1.13.0
 
 # LogLevel is used to set the logging level of the driver.
 # Allowed values: "error", "warn"/"warning", "info", "debug"
