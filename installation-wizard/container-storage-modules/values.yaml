@@ -440,7 +440,7 @@ csi-unity:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
     # CSM sidecars
     podmon:
-      image: quay.io/dell/container-storage-modules/podmon:v1.13.0
+      image: quay.io/dell/container-storage-modules/podmon:v1.12.0
   # certSecretCount: Represents number of certificate secrets, which user is going to create for
   # ssl authentication. (unity-cert-0..unity-cert-n)
   # Allowed values: n, where n > 0
