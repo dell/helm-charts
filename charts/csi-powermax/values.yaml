@@ -97,9 +97,9 @@ version: "v2.14.0"
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-powermax:nightly
+    image: quay.io/dell/container-storage-modules/csi-powermax:v2.14.0
   csireverseproxy:
-    image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:nightly
+    image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.13.0
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.8.0
@@ -115,16 +115,16 @@ images:
     image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
   # CSM sidecars
   replication:
-    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
+    image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.12.0
   authorization:
-    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
+    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
   migration:
-    image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.7.0
+    image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.8.0
   podmon:
-    image: quay.io/dell/container-storage-modules/podmon:v1.12.0
+    image: quay.io/dell/container-storage-modules/podmon:v1.13.0
   # Node rescan sidecar does a rescan on nodes for identifying new paths
   noderescan:
-    image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.6.0
+    image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.7.0
 ## K8S/DRIVER ATTRIBUTES
 ########################
 # customDriverName: If enabled, sets the driver name to the
