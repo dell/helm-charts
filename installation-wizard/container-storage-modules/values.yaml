@@ -41,13 +41,13 @@ csi-powerstore:
 
     # CSM sidecars
     replication:
-      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
+      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.12.0
     vgsnapshotter:
-      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
+      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.9.0
     podmon:
-      image: quay.io/dell/container-storage-modules/podmon:v1.12.0
+      image: quay.io/dell/container-storage-modules/podmon:v1.13.0
     metadataretriever:
-      image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.10.0
+      image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.11.0
   ## Controller ATTRIBUTES
   controller:
     controllerCount: 2
@@ -162,13 +162,13 @@ csi-powermax:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
     # CSM sidecars
     replication:
-      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
+      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.12.0
     authorization:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
     migration:
       image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.7.0
     podmon:
-      image: quay.io/dell/container-storage-modules/podmon:v1.12.0
+      image: quay.io/dell/container-storage-modules/podmon:v1.13.0
     # Node rescan sidecar does a rescan on nodes for identifying new paths
     noderescan:
       image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.6.0
@@ -230,13 +230,13 @@ csi-isilon:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
     # CSM sidecars
     replication:
-      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
+      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.12.0
     podmon:
-      image: quay.io/dell/container-storage-modules/podmon:v1.12.0
+      image: quay.io/dell/container-storage-modules/podmon:v1.13.0
     authorization:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
     metadataretriever:
-      image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.10.0
+      image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.11.0
   ## Controller ATTRIBUTES
   controller:
     controllerCount: 2
@@ -332,13 +332,13 @@ csi-vxflexos:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
     # CSM sidecars
     replication:
-      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.11.0
+      image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.12.0
     vgsnapshotter:
-      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
+      image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.9.0
     podmon:
-      image: quay.io/dell/container-storage-modules/podmon:v1.12.0
+      image: quay.io/dell/container-storage-modules/podmon:v1.13.0
     authorization:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.1.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
   certSecretCount: 0
   controller:
     replication:
@@ -440,7 +440,7 @@ csi-unity:
       image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
     # CSM sidecars
     podmon:
-      image: quay.io/dell/container-storage-modules/podmon:v1.12.0
+      image: quay.io/dell/container-storage-modules/podmon:v1.13.0
   # certSecretCount: Represents number of certificate secrets, which user is going to create for
   # ssl authentication. (unity-cert-0..unity-cert-n)
   # Allowed values: n, where n > 0
