@@ -17,6 +17,9 @@ on:
     types:
       - completed
 
+permissions:
+  actions: read
+
 jobs:
   # This job will perform a helm release of the installation wizard chart if it has been updated
   release-installation-wizard:
@@ -33,6 +36,29 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Get id from Release Helm Charts workflow
+        id: run-id
+        run: |
+          latest_run_id=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/charts-release-action.yml/runs | jq -r '.workflow_runs[0].id')
+          echo "run_id=$latest_run_id" >> $GITHUB_OUTPUT
+
+      - name: Download release branch name artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: branch_name
+          path: .
+          run-id: ${{ steps.run-id.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read release branch name
+        run: |
+          echo "branch_name=$(cat branch_name.txt)" >> $GITHUB_ENV
+
+      - name: Checkout release branch
+        run: |
+          git checkout ${{ env.branch_name }}
 
       # Run the helm chart release command
       - name: Run csm chart-releaser for container-storage-modules
