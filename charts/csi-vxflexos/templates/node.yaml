@@ -227,6 +227,8 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
+            - name: RELEASE_NAME
+              value: {{ .Release.Name }}
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com
