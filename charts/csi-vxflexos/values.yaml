@@ -3,7 +3,7 @@
 
 # "version" is used to verify the values file matches driver version
 # Not recommend to change
-version: v2.13.0
+version: v2.13.1
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
@@ -11,7 +11,7 @@ version: v2.13.0
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.13.0
+    image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.13.1
   # "powerflexSdc" defines the SDC image for init container.
   powerflexSdc:
     image: dellemc/sdc:4.5.2.1
