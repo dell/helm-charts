@@ -237,8 +237,12 @@ spec:
             - name: pods-path
               mountPath: {{ .Values.kubeletConfigDir }}/pods
               mountPropagation: "Bidirectional"
-            - name: noderoot
-              mountPath: /noderoot
+            - name: scaleio-path-bin
+              mountPath: /bin/emc/scaleio/
+              readOnly: true
+            - name: scaleio-path-opt
+              mountPath: /opt/emc/scaleio/sdc/bin/
+              readOnly: true
             - name: dev
               mountPath: /dev
             - name: vxflexos-config
@@ -361,14 +365,14 @@ spec:
           hostPath:
             path: {{ .Values.kubeletConfigDir }}/pods
             type: Directory
-        - name: noderoot
-          hostPath:
-            path: /
-            type: Directory
         - name: dev
           hostPath:
             path: /dev
             type: Directory
+        - name: scaleio-path-bin
+          hostPath:
+            path: /bin/emc/scaleio/
+            type: DirectoryOrCreate
         - name: scaleio-path-opt
           hostPath:
             path: /opt/emc/scaleio/sdc/bin
