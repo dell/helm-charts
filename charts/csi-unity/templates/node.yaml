@@ -4,6 +4,7 @@ metadata:
   name: {{ .Release.Name }}-node
   namespace: {{ .Release.Namespace }}
 ---
+# ClusterRole for Cluster-specific Permissions
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -13,12 +14,6 @@ rules:
     resources: [ "persistentvolumes" ]
     verbs: [ "create", "delete", "get", "list", "watch", "update" ]
   - apiGroups: [ "" ]
-    resources: [ "persistentvolumesclaims" ]
-    verbs: [ "get", "list", "watch", "update" ]
-  - apiGroups: [ "" ]
-    resources: [ "events" ]
-    verbs: [ "get", "list", "watch", "create", "update", "patch" ]
-  - apiGroups: [ "" ]
     resources: [ "nodes" ]
     verbs: [ "get", "list", "watch", "update", "patch" ]
   - apiGroups: [ "storage.k8s.io" ]
@@ -27,22 +22,12 @@ rules:
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "storageclasses" ]
     verbs: [ "get", "list", "watch" ]
-  - apiGroups: [ "storage.k8s.io" ]
-    resources: [ "volumeattachments" ]
-    verbs: [ "get", "list", "watch", "update" ]
   - apiGroups: [ "security.openshift.io" ]
     resourceNames: [ "privileged" ]
     resources: [ "securitycontextconstraints" ]
     verbs: [ "use" ]
-{{- if .Values.podmon.enabled }}
-  - apiGroups: [ "" ]
-    resources: [ "pods" ]
-    verbs: [ "get", "list", "watch", "update", "delete" ]
-  - apiGroups: [ "coordination.k8s.io" ]
-    resources: [ "leases" ]
-    verbs: [ "get", "watch", "list", "delete", "update", "create" ]
-{{- end }}
 ---
+# RoleBinding for Driver-specific Role
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -57,6 +42,7 @@ roleRef:
   name: {{ .Release.Name }}-node
   apiGroup: rbac.authorization.k8s.io
 ---
+# ClusterRoleBinding for Cluster-specific 
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -70,7 +56,27 @@ roleRef:
   name: {{ .Release.Name }}-node
   apiGroup: rbac.authorization.k8s.io
 ---
-
+# Role for Driver-specific Permissions in a Namespace
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}-node
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumeclaims" ]
+    verbs: [ "get", "list", "watch", "update" ]
+  - apiGroups: [ "" ]
+    resources: [ "events" ]
+    verbs: [ "get", "list", "watch", "create", "update", "patch" ]
+{{- if .Values.podmon.enabled }}
+  - apiGroups: [ "" ]
+get", "list", "watch", "update", "delete" ]
+  - apiGroups: [ "coordination.k8s.io" ]
+    resources: [ "leases" ]
+    verbs: [ "get", "watch", "list", "delete", "update", "create" ]
+{{- end }}
+---
 {{ $releaseName := .Release.Name }}
 kind: DaemonSet
 apiVersion: apps/v1
