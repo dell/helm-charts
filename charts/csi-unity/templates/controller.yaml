@@ -33,6 +33,9 @@ rules:
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "csinodes" ]
     verbs: [ "get", "list", "watch", "update" ]
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumeclaims" ]
+    verbs: [ "get", "list", "create", "watch", "update" ]
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments/status" ]
     verbs: [ "patch" ]
@@ -87,9 +90,6 @@ metadata:
   name: {{ .Release.Name }}-controller
   namespace: {{ .Release.Namespace }}
 rules:
-  - apiGroups: [ "" ]
-    resources: [ "persistentvolumeclaims" ]
-    verbs: [ "get", "list", "create", "watch", "update" ]
   - apiGroups: [ "" ]
     resources: [ "events" ]
     verbs: [ "get", "list", "watch", "create", "update", "patch" ]

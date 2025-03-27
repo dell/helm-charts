@@ -14,6 +14,9 @@ rules:
     resources: [ "persistentvolumes" ]
     verbs: [ "create", "delete", "get", "list", "watch", "update" ]
   - apiGroups: [ "" ]
+    resources: [ "persistentvolumeclaims" ]
+    verbs: [ "get", "list", "create", "watch", "update" ]
+  - apiGroups: [ "" ]
     resources: [ "nodes" ]
     verbs: [ "get", "list", "watch", "update", "patch" ]
   - apiGroups: [ "storage.k8s.io" ]
@@ -63,9 +66,6 @@ metadata:
   name: {{ .Release.Name }}-node
   namespace: {{ .Release.Namespace }}
 rules:
-  - apiGroups: [ "" ]
-    resources: [ "persistentvolumeclaims" ]
-    verbs: [ "get", "list", "watch", "update" ]
   - apiGroups: [ "" ]
     resources: [ "events" ]
     verbs: [ "get", "list", "watch", "create", "update", "patch" ]
