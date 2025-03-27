@@ -213,11 +213,11 @@ spec:
             - name: X_CSI_FC_PORTS_FILTER_FILE_PATH
               value: {{ .Values.nodeFCPortsFilterFile }}    
             - name: X_CSI_NFS_EXPORT_DIRECTORY
-              value: {{ .Values.node.nfsExportDirectory | default "/var/lib/dell/nfs" }}
+              value: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs" }}
             - name: X_CSI_NFS_CLIENT_PORT
-              value: "{{ .Values.node.nfsClientPort | default 2050 }}"
+              value: "{{ .Values.nfsClientPort | default 2050 }}"
             - name: X_CSI_NFS_SERVER_PORT
-              value: "{{ .Values.node.nfsServerPort | default 2049 }}"
+              value: "{{ .Values.nfsServerPort | default 2049 }}"
             {{- if eq .Values.connection.enableCHAP  true }}
             - name: X_CSI_POWERSTORE_ENABLE_CHAP
               value: "true"

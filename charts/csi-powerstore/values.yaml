@@ -30,8 +30,7 @@ version: v2.12.0
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    #image: quay.io/dell/container-storage-modules/csi-powerstore:v2.12.0
-    image: csm.artifactory.cec.lab.emc.com/csm-users/sreekb/csi-powerstore:sreekb-v1
+    image: quay.io/dell/container-storage-modules/csi-powerstore:v2.12.0
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
@@ -105,6 +104,24 @@ maxPowerstoreVolumesPerNode: 0
 # Optional: true
 # Default value: "0777"
 nfsAcls: "0777"
+
+# nfsExportDirectory: Define mount path for host based nfs volumes
+# Define this only during deployment time, DO NOT change afterwards
+# Allowed values:
+# Default value: /var/lib/dell/nfs
+nfsExportDirectory: /var/lib/dell/nfs
+
+# nfsServerPort: Define port for nfs server
+# By default nfs server port is 2049. This value should match what port the nfs-server is configured on. 
+# /etc/nfs.conf contains the port information. If none is specified in that file, then it is 2049.
+# Allowed values:  Any valid and free port.
+# Default value: 2049
+nfsServerPort: 2049
+
+# nfsClientPort: Define port for nfs client(used in hostbased nfs)
+# Allowed values:  Any valid and free port.
+# Default value: 2050
+nfsClientPort: 2050
 
 # podmonAPIPort: Defines the port to be used within the kubernetes cluster
 # Allowed values:
@@ -292,24 +309,7 @@ node:
   #  - key: "powerstore.podmon.storage.dell.com"
   #    operator: "Exists"
   #    effect: "NoSchedule"
-
-  # nfsExportDirectory: Define mount path for host based nfs volumes 
-  # Define this only during deployment time, DO NOT change afterwards
-  # Allowed values: 
-  # Default value: /var/lib/dell/nfs
-  nfsExportDirectory: /var/lib/dell/nfs
-
-  # nfsServerPort: Define port for nfs server (used for hostbased nfs volumes)
-  # Allowed values:  Any valid and free port.
-  # Default value: 2049
-  nfsServerPort: 2049
-
-  # nfsClientPort: Define port for nfs client
-  # Allowed values:  Any valid and free port.
-  # Default value: 2050
-  nfsclientPort: 2050
-
-
+  #
 ## PLATFORM ATTRIBUTES
 ######################
 
