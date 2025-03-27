@@ -11,6 +11,13 @@ metadata:
   name: {{ .Release.Name }}-controller
 rules:
   - apiGroups: [ "" ]
+    resources: [ "pods" ]
+{{- if .Values.podmon.enabled }}
+    verbs: [ "get", "list", "watch", "update", "delete" ]
+{{- else }}
+    verbs: [ "get", "list", "watch" ]
+{{- end }}
+  - apiGroups: [ "" ]
     resources: [ "nodes" ]
 {{- if .Values.podmon.enabled }}
     verbs: [ "get", "list", "watch", "patch" ]
@@ -20,6 +27,9 @@ rules:
   - apiGroups: [ "" ]
     resources: [ "persistentvolumes" ]
     verbs: [ "get", "list", "watch", "create", "delete", "update", "patch" ]
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumeclaims/status" ]
+    verbs: [ "update", "patch" ]
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "storageclasses" ]
     verbs: [ "get", "list", "watch" ]
@@ -33,7 +43,7 @@ rules:
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "csinodes" ]
     verbs: [ "get", "list", "watch", "update" ]
-  - apiGroups: [ "" ]
+    - apiGroups: [ "" ]
     resources: [ "persistentvolumeclaims" ]
     verbs: [ "get", "list", "create", "watch", "update" ]
   - apiGroups: [ "storage.k8s.io" ]
@@ -93,25 +103,12 @@ rules:
   - apiGroups: [ "" ]
     resources: [ "events" ]
     verbs: [ "get", "list", "watch", "create", "update", "patch" ]
-  - apiGroups: [ "" ]
-    resources: [ "pods" ]
-{{- if .Values.podmon.enabled }}
-    verbs: [ "get", "list", "watch", "update", "delete" ]
-{{- else }}
-    verbs: [ "get", "list", "watch" ]
-{{- end }}
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list"]
   - apiGroups: [ "coordination.k8s.io" ]
     resources: [ "leases" ]
     verbs: [ "get", "watch", "list", "delete", "update", "create" ]
-  - apiGroups: [ "snapshot.storage.k8s.io" ]
-    resources: [ "volumesnapshots" ]
-    verbs: [ "get", "list", "watch", "update" ]
-  - apiGroups: [ "snapshot.storage.k8s.io" ]
-    resources: [ "volumesnapshots/status" ]
-    verbs: [ "update" ]
-  - apiGroups: [ "" ]
-    resources: [ "persistentvolumeclaims/status" ]
-    verbs: [ "update", "patch" ]
   - apiGroups: [ "apps" ]
     resources: [ "replicasets" ]
     verbs: [ "get" ]
