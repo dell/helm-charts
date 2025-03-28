@@ -1,11 +1,5 @@
-{{- define "is_openshift" -}}
-{{- if .Capabilities.APIVersions.Has "security.openshift.io/v1/SecurityContextConstraints" -}}
-true
-{{- else -}}
-false
-{{- end -}}
-{{- end -}}
----
+{{- $is_openshift := .Capabilities.APIVersions.Has "security.openshift.io/v1/SecurityContextConstraints" -}}
+
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -245,7 +239,7 @@ spec:
             - name: pods-path
               mountPath: {{ .Values.kubeletConfigDir }}/pods
               mountPropagation: "Bidirectional"
-            {{- if not (include "is_openshift" .) }}
+            {{- if not $is_openshift }}
             - name: scaleio-path-bin
               mountPath: /bin/emc/scaleio/
               readOnly: true
@@ -379,7 +373,7 @@ spec:
           hostPath:
             path: /dev
             type: Directory
-        {{- if not (include "is_openshift" .) }}
+        {{- if not $is_openshift }}
         - name: scaleio-path-bin
           hostPath:
             path: /bin/emc/scaleio/
