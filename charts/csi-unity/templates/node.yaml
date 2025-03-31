@@ -11,6 +11,9 @@ metadata:
   name: {{ .Release.Name }}-node
 rules:
   - apiGroups: [ "" ]
+    resources: [ "pods" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "" ]
     resources: [ "persistentvolumes" ]
     verbs: [ "create", "delete", "get", "list", "watch" ]
   - apiGroups: [ "" ]
@@ -18,7 +21,7 @@ rules:
     verbs: [ "get", "list", "watch", "update" ]
   - apiGroups: [ "" ]
     resources: [ "nodes" ]
-    verbs: [ "get", "list", "watch", "update" ]
+    verbs: [ "get", "list", "watch", "update", "patch" ]
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments" ]
     verbs: [ "get", "list", "watch" ]
@@ -75,9 +78,6 @@ rules:
   - apiGroups: [ "" ]
     resources: [ "persistentvolumeclaims" ]
     verbs: [ "create" ]
-  - apiGroups: [ "" ]
-    resources: [ "nodes" ]
-    verbs: [ "patch" ]
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments" ]
     verbs: [ "update" ]
@@ -87,7 +87,7 @@ rules:
 {{- if .Values.podmon.enabled }}
   - apiGroups: [ "" ]
     resources: [ "pods" ]
-    verbs: [ "get", "list", "watch", "update", "delete" ]
+    verbs: [ "update", "delete" ]
   - apiGroups: [ "coordination.k8s.io" ]
     resources: [ "leases" ]
     verbs: [ "get", "watch", "list", "delete", "update", "create" ]

@@ -12,10 +12,18 @@ metadata:
 rules:
   - apiGroups: [ "" ]
     resources: [ "pods" ]
+{{- if .Values.podmon.enabled }}
+    verbs: [ "get", "list", "watch", "delete" ]
+{{- else }}
     verbs: [ "get", "list", "watch" ]
+{{- end }}
   - apiGroups: [ "" ]
     resources: [ "nodes" ]
-    verbs: [ "get", "list", "watch" ]
+{{- if .Values.podmon.enabled }}
+    verbs: [ "get", "list", "watch", "patch" ]
+{{- else }}
+    verbs: [ "get", "list", "watch"]
+{{- end }}
   - apiGroups: [ "" ]
     resources: [ "persistentvolumes" ]
     verbs: [ "get", "list", "watch", "create", "delete", "patch" ]
@@ -27,7 +35,11 @@ rules:
     verbs: [ "get", "list", "watch" ]
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments" ]
+{{- if .Values.podmon.enabled }}
+    verbs: [ "get", "list", "watch", "patch", "delete" ]
+{{- else }}
     verbs: [ "get", "list", "watch", "patch" ]
+{{- end}}
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments/status" ]
     verbs: [ "patch" ]
@@ -84,16 +96,7 @@ metadata:
 rules:
   - apiGroups: [ "" ]
     resources: [ "pods" ]
-{{- if .Values.podmon.enabled }}
-    verbs: [ "update", "patch", "delete" ]
-{{- else }}
     verbs: [ "update", "patch" ]
-{{- end }}
-{{- if .Values.podmon.enabled }}
-  - apiGroups: [ "" ]
-    resources: [ "nodes" ]
-    verbs: [ "patch" ]
-{{- end }}
   - apiGroups: [ "snapshot.storage.k8s.io" ]
     resources: [ "volumesnapshots" ]
     verbs: [ "watch", "update" ]
@@ -111,11 +114,7 @@ rules:
     verbs: [ "update" ]
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments" ]
-{{- if .Values.podmon.enabled }}
-    verbs: [ "update", "delete" ]
-{{- else }}
     verbs: [ "update"]
-{{- end}}
   - apiGroups: [ "" ]
     resources: [ "persistentvolumes" ]
     verbs: [ "update" ]
