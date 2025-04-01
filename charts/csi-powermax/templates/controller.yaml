@@ -431,6 +431,12 @@ spec:
             - name: X_CSI_POWERMAX_ARRAY_CONFIG_PATH
               value: /powermax-array-config/powermax-array-config.yaml
               {{- $useRevProxySecret := and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
+            - name: X_CSI_MANAGED_ARRAYS
+              value: {{ .Values.managedArrays }}
+            - name: X_CSI_POWERMAX_PORTGROUPS
+              value: {{ .Values.portGroups }}
+            - name: X_CSI_TRANSPORT_PROTOCOL
+              value: {{ .Values.transportProtocol }}
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
@@ -587,6 +593,7 @@ spec:
         - name: powermax-array-config
           configMap:
             name: {{ .Release.Name }}-array-config
+            optional: true
         - name: cert-dir
           emptyDir:
         - name: powermax-config-params
