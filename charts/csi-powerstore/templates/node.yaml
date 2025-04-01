@@ -301,7 +301,7 @@ spec:
               mountPath: /powerstore-config-params
             # for csi-nfs
             - name: nfs-powerstore
-              mountPath: {{ .Values.node.nfsExportDirectory | default "/var/lib/dell/nfs"}}
+              mountPath: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs"}}
               mountPropagation: "Bidirectional"
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
@@ -327,7 +327,7 @@ spec:
         # for csi-nfs
         - name: nfs-powerstore
           hostPath:
-            path: {{ .Values.node.nfsExportDirectory | default "/var/lib/dell/nfs"}}
+            path: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs"}}
             type: DirectoryOrCreate
         - name: registration-dir
           hostPath:
