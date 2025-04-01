@@ -447,6 +447,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+            - name: X_CSI_NFS_CLIENT_PORT
+              value: "{{ .Values.nfsClientPort | default 2050 }}"
+            - name: X_CSI_NFS_SERVER_PORT
+              value: "{{ .Values.nfsServerPort | default 2049 }}"
             {{- if hasKey .Values "podmon" }}
             - name: X_CSI_PODMON_ENABLED
               value: "{{ .Values.podmon.enabled }}"
