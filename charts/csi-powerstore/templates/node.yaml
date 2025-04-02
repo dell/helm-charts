@@ -96,7 +96,7 @@ rules:
     verbs: [ "update" ]    
   - apiGroups: [ "" ]
     resources: [ "events" ]
-    verbs: [ "get"]
+    verbs: [ "get", "patch"]
   {{- if hasKey .Values "podmon" }}
   {{- if eq .Values.podmon.enabled true }}
   - apiGroups: [""]
