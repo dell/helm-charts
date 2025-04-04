@@ -18,9 +18,6 @@ rules:
     resources: ["persistentvolumesclaims"]
     verbs: ["get", "list", "watch", "update"]
   - apiGroups: [""]
-    resources: ["events"]
-    verbs: ["list", "watch", "create", "update", "patch"]
-  - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["get", "list", "watch", "update", "patch"]
   - apiGroups: ["storage.k8s.io"]
@@ -37,7 +34,7 @@ rules:
 {{- if eq .Values.podmon.enabled true }}
   - apiGroups: [""]
     resources: ["pods"]
-    verbs: ["get", "list", "watch"]
+    verbs: ["get", "list", "watch", "update", "delete" ]
 {{ end }}
 {{ end }}
   - apiGroups: [""]
@@ -79,13 +76,7 @@ metadata:
   name: {{ .Release.Name }}-node
   namespace: {{ .Release.Namespace }}
 rules:
-  - apiGroups: [ "" ]
-    resources: [ "events" ]
-    verbs: [ "get" ]
 {{- if .Values.podmon.enabled }}
-  - apiGroups: [ "" ]
-    resources: [ "pods" ]
-    verbs: [ "update", "delete" ]
   - apiGroups: [ "coordination.k8s.io" ]
     resources: [ "leases" ]
     verbs: [ "get", "watch", "list", "delete", "update", "create" ]
