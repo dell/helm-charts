@@ -32,13 +32,13 @@ rules:
     verbs: [ "list", "watch", "create", "update", "patch" ]
   - apiGroups: [""]
     resources: ["nodes"]
-  {{- if hasKey .Values "podmon" }}
-  {{- if eq .Values.podmon.enabled true }}
+    {{- if hasKey .Values "podmon" }}
+    {{- if eq .Values.podmon.enabled true }}
     verbs: ["get", "list", "watch", "patch"]
-  {{- else }}
+    {{- else }}
     verbs: ["get", "list", "watch"]
-  {{- end }}
-  {{- end }}
+    {{- end }}
+    {{- end }}
   - apiGroups: [ "" ]
     resources: [ "persistentvolumes" ]
     verbs: [ "get", "list", "watch", "create", "delete", "patch" ]
@@ -50,20 +50,20 @@ rules:
     verbs: [ "get", "list", "watch" ]
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments" ]
- {{- if hasKey .Values "podmon" }}
- {{- if eq .Values.podmon.enabled true }}
+   {{- if hasKey .Values "podmon" }}
+   {{- if eq .Values.podmon.enabled true }}
     verbs: ["get", "list", "watch", "patch", "delete"]
- {{- else }}
+   {{- else }}
     verbs: ["get", "list", "watch", "patch"]
-  {{- end }}
-  {{- end }}
-  {{- if hasKey .Values.controller "vgsnapshot" }}
-  {{- if eq .Values.controller.vgsnapshot.enabled true }}
+   {{- end }}
+   {{- end }}
+   {{- if hasKey .Values.controller "vgsnapshot" }}
+   {{- if eq .Values.controller.vgsnapshot.enabled true }}
   - apiGroups: ["volumegroup.storage.dell.com"]
     resources: ["dellcsivolumegroupsnapshots","dellcsivolumegroupsnapshots/status"]
     verbs: ["create", "list", "watch", "delete", "update"]
-  {{- end }}
-  {{- end }}
+   {{- end }}
+   {{- end }}
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshotclasses"]
     verbs: ["get", "list", "watch"]
@@ -75,13 +75,13 @@ rules:
     verbs: ["patch", "update"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshots", "volumesnapshots/status"]
-  {{- if hasKey .Values.controller "vgsnapshot" }}
-  {{- if eq .Values.controller.vgsnapshot.enabled true }}
+   {{- if hasKey .Values.controller "vgsnapshot" }}
+   {{- if eq .Values.controller.vgsnapshot.enabled true }}
     verbs: ["get", "list", "watch", "update", "create", "delete"]
-  {{- else }}
+   {{- else }}
     verbs: ["get", "list"]
-  {{- end }}
-  {{- end }}
+   {{- end }}
+   {{- end }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments/status"]
     verbs: ["patch"]          
@@ -104,8 +104,8 @@ rules:
     resources: ["persistentvolumeclaims/status"]
     verbs: ["patch"]
   # below for dell-csi-replicator
-  {{- if hasKey .Values.controller "replication" }}
-  {{- if eq .Values.controller.replication.enabled true}}
+   {{- if hasKey .Values.controller "replication" }}
+   {{- if eq .Values.controller.replication.enabled true}}
   - apiGroups: ["replication.storage.dell.com"]
     resources: ["dellcsireplicationgroups"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
@@ -115,14 +115,14 @@ rules:
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
-  {{- end}}
-  {{- end}}
-  # Permissions for CSIStorageCapacity
-  {{- if eq (include "csi-powerstore.isStorageCapacitySupported" .) "true" }}
+   {{- end}}
+   {{- end}}
+   # Permissions for CSIStorageCapacity
+   {{- if eq (include "csi-powerstore.isStorageCapacitySupported" .) "true" }}
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "csistoragecapacities" ]
     verbs: [ "get", "list", "watch", "create", "update", "patch", "delete" ]
-  {{- end }}
+   {{- end }}
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["get"]
