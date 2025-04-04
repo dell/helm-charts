@@ -46,6 +46,16 @@ rules:
     resourceNames: ["privileged"]
     resources: ["securitycontextconstraints"]
     verbs: ["use"]
+{{- if hasKey .Values "podmon" }}
+{{- if eq .Values.podmon.enabled true }}
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch", "update", "delete"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
+{{ end }}
+{{ end }}    
 
 ---
 # RoleBinding for Driver-specific Role
@@ -84,20 +94,12 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ .Release.Name }}-node
   namespace: {{ .Release.Namespace }}
-rules:  
-  - apiGroups: [ "" ]
-    resources: [ "events" ]
-    verbs: [ "get"]
-  {{- if hasKey .Values "podmon" }}
-  {{- if eq .Values.podmon.enabled true }}
-  - apiGroups: [""]
-    resources: ["pods"]
-    verbs: ["update", "delete"]
+rules:
   - apiGroups: ["coordination.k8s.io"]
     resources: ["leases"]
     verbs: ["get", "watch", "list", "delete", "update", "create"]
-  {{ end }}
-  {{ end }}
+{{ end }}
+{{ end }}
 ---
 kind: DaemonSet
 apiVersion: apps/v1

@@ -87,6 +87,7 @@ rules:
     verbs: ["patch"]          
   - apiGroups: [ "" ]
     resources: [ "pods" ]
+{{- if hasKey .Values "podmon" }}    
 {{- if .Values.podmon.enabled }}
     verbs: [ "get", "list", "watch", "delete" ]
 {{- else }}
@@ -97,7 +98,8 @@ rules:
     verbs: ["create", "list", "watch", "delete"]
   - apiGroups: ["storage.k8s.io"]
     resources: ["csinodes"]
-    verbs: ["get", "list", "watch"]  
+    verbs: ["get", "list", "watch"]
+  # below for resizer
   - apiGroups: [""]
     resources: ["persistentvolumeclaims/status"]
     verbs: ["patch"]
@@ -124,7 +126,7 @@ rules:
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["get"]
-    
+
 ---
 
 kind: ClusterRoleBinding
