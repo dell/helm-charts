@@ -17,7 +17,7 @@ global:
   # detailed explanation of each configuration parameter
   # X_CSI_MANAGED_ARRAYS: Serial ID of the arrays that will be used for provisioning
   # Default value: None
-  # Examples: "000000000001", "000000000002"
+  # Examples: "000000000001,000000000002"
   managedArrays: "000000000001,000000000002"
 
   # defaultCredentialsSecret
@@ -36,8 +36,8 @@ global:
   useSecret: false
   # portGroups: Define the set of existing port groups that the driver will use.
   # It is a comma separated list of portgroup names.
-  # Required only in case of iSCSI port groups
-  # Allowed values: iSCSI Port Group names
+  # Required only in case of iSCSI and NVMETCP port groups
+  # Allowed values: iSCSI and NVMETCP Port Group names
   # Default value: None
   # Examples: "pg1, pg2, pg3", "pg1"
   portGroups:
