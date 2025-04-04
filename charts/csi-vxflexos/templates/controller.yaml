@@ -15,13 +15,13 @@ rules:
     verbs: ["list", "watch", "create", "update", "patch"]
   - apiGroups: [""]
     resources: ["nodes"]
-{{- if hasKey .Values "podmon" }}
-{{- if eq .Values.podmon.enabled true }}
+    {{- if hasKey .Values "podmon" }}
+    {{- if eq .Values.podmon.enabled true }}
     verbs: ["get", "list", "watch", "patch"]
-{{- else }}
+    {{- else }}
     verbs: ["get", "list", "watch"]
-{{- end }}
-{{- end }}
+    {{- end }}
+    {{- end }}
   - apiGroups: [ ""]
     resources: [ "persistentvolumes" ]
     verbs: [ "get", "list", "watch", "create", "delete", "patch" ]
@@ -36,13 +36,13 @@ rules:
     verbs: [ "get", "list", "watch" ]
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments" ]
-{{- if hasKey .Values "podmon" }}
-{{- if eq .Values.podmon.enabled true }}
+    {{- if hasKey .Values "podmon" }}
+    {{- if eq .Values.podmon.enabled true }}
     verbs: ["get", "list", "watch", "patch", "delete"]
-{{- else }}
+    {{- else }}
     verbs: ["get", "list", "watch", "patch"]
-{{- end }}
-{{- end }}
+    {{- end }}
+    {{- end }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["csinodes"]
     verbs: ["get", "list", "watch"]
@@ -51,13 +51,13 @@ rules:
     verbs: ["patch"]
   - apiGroups: [ "" ]
     resources: [ "pods" ]
-{{- if hasKey .Values "podmon" }}
-{{- if eq .Values.podmon.enabled true }}
+    {{- if hasKey .Values "podmon" }}
+    {{- if eq .Values.podmon.enabled true }}
     verbs: [ "get", "list", "watch", "update", "delete" ]
-{{- else }}
+    {{- else }}
     verbs: [ "get", "list", "watch" ]
-{{- end }}
-{{- end }}
+    {{- end }}
+    {{- end }}
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get", "update"]
@@ -76,13 +76,13 @@ rules:
     verbs: ["get", "list", "watch", "patch"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshots"]
-{{- if hasKey .Values "vgsnapshotter" }}
-{{- if eq .Values.vgsnapshotter.enabled true }}
+    {{- if hasKey .Values "vgsnapshotter" }}
+    {{- if eq .Values.vgsnapshotter.enabled true }}
     verbs: ["get", "list", "watch", "update", "create", "delete"]
-{{- else }}
+    {{- else }}
     verbs: ["get", "list"]
-{{- end }}
-{{- end }}
+    {{- end }}
+    {{- end }}
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshots/status","volumesnapshotcontents/status"]
     verbs: ["get", "list", "watch", "update", "patch"]
@@ -105,7 +105,7 @@ rules:
     verbs: ["create", "get", "list", "watch"]
 {{- end}}
 {{- end}}
-# Permissions for CSIStorageCapacity
+    # Permissions for CSIStorageCapacity
 {{- if eq (include "csi-vxflexos.isStorageCapacitySupported" .) "true" }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["csistoragecapacities"]
