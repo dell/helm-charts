@@ -22,20 +22,20 @@ rules:
     verbs: ["get", "list", "watch"]
 {{- end }}
 {{- end }}
-  - apiGroups: [""]
-    resources: ["persistentvolumes"]
-    verbs: ["get", "list", "watch", "create", "delete", "patch"]
-  - apiGroups: [""]
-    resources: ["persistentvolumeclaims"]
-    verbs: ["get", "list", "watch", "update"]
-  - apiGroups: [""]
-    resources: ["persistentvolumeclaims/status"]
-    verbs: ["patch"]
-  - apiGroups: ["storage.k8s.io"]
-    resources: ["storageclasses"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["storage.k8s.io"]
-    resources: ["volumeattachments"]
+  - apiGroups: [ ""]
+    resources: [ "persistentvolumes" ]
+    verbs: [ "get", "list", "watch", "create", "delete", "patch" ]
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumeclaims" ]
+    verbs: [ "get", "list", "watch", "update" ]
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumeclaims/status" ]
+    verbs: [ "patch" ]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "storageclasses" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "volumeattachments" ]
 {{- if hasKey .Values "podmon" }}
 {{- if eq .Values.podmon.enabled true }}
     verbs: ["get", "list", "watch", "patch", "delete"]
@@ -49,13 +49,13 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments/status"]
     verbs: ["patch"]
-  - apiGroups: [""]
-    resources: ["pods"]
+  - apiGroups: [ "" ]
+    resources: [ "pods" ]
 {{- if hasKey .Values "podmon" }}
 {{- if eq .Values.podmon.enabled true }}
-    verbs: ["get", "list", "watch", "update", "delete"]
+    verbs: [ "get", "list", "watch", "update", "delete" ]
 {{- else }}
-    verbs: ["get", "list", "watch"]
+    verbs: [ "get", "list", "watch" ]
 {{- end }}
 {{- end }}
   - apiGroups: [""]
