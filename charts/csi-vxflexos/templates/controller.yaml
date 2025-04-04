@@ -11,14 +11,8 @@ metadata:
   name: {{ .Release.Name }}-controller
 rules:
   - apiGroups: [""]
-    resources: ["pods"]
-{{- if hasKey .Values "podmon" }}
-{{- if eq .Values.podmon.enabled true }}
-    verbs: ["get", "list", "watch", "update", "delete"]
-{{- else }}
-    verbs: ["get", "list", "watch"]
-{{- end }}
-{{- end }}
+    resources: ["events"]
+    verbs: ["list", "watch", "create", "update", "patch"]
   - apiGroups: [""]
     resources: ["nodes"]
 {{- if hasKey .Values "podmon" }}
@@ -55,6 +49,15 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments/status"]
     verbs: ["patch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+{{- if hasKey .Values "podmon" }}
+{{- if eq .Values.podmon.enabled true }}
+    verbs: ["get", "list", "watch", "update", "delete"]
+{{- else }}
+    verbs: ["get", "list", "watch"]
+{{- end }}
+{{- end }}
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get", "update"]
@@ -100,9 +103,6 @@ rules:
   - apiGroups: [""]
     resources: ["namespaces"]
     verbs: ["create", "get", "list", "watch"]
-  - apiGroups: [""]
-    resources: ["events"]
-    verbs: ["list", "watch", "create", "update", "patch"]
 {{- end}}
 {{- end}}
 # Permissions for CSIStorageCapacity
