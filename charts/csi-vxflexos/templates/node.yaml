@@ -41,6 +41,21 @@ rules:
     resources: ["configmaps"]
     verbs: ["get", "update"]
 ---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}-node
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}-node
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ .Release.Name }}-node
+  apiGroup: rbac.authorization.k8s.io
+---
+{{- if hasKey .Values "podmon" }}
+{{- if eq .Values.podmon.enabled true }}
 # RoleBinding for Driver-specific Role
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -56,19 +71,6 @@ roleRef:
   name: {{ .Release.Name }}-node
   apiGroup: rbac.authorization.k8s.io
 ---
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: {{ .Release.Name }}-node
-subjects:
-  - kind: ServiceAccount
-    name: {{ .Release.Name }}-node
-    namespace: {{ .Release.Namespace }}
-roleRef:
-  kind: ClusterRole
-  name: {{ .Release.Name }}-node
-  apiGroup: rbac.authorization.k8s.io
----
 # Role for Driver-specific Permissions in a Namespace
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
@@ -76,11 +78,11 @@ metadata:
   name: {{ .Release.Name }}-node
   namespace: {{ .Release.Namespace }}
 rules:
-{{- if .Values.podmon.enabled }}
   - apiGroups: [ "coordination.k8s.io" ]
     resources: [ "leases" ]
     verbs: [ "get", "watch", "list", "delete", "update", "create" ]
-{{- end }}
+{{ end }}
+{{ end }}
 ---
 
 kind: DaemonSet
