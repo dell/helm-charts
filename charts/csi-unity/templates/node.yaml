@@ -74,18 +74,6 @@ metadata:
   name: {{ .Release.Name }}-node
   namespace: {{ .Release.Namespace }}
 rules:
-  - apiGroups: [ "" ]
-    resources: [ "persistentvolumes" ]
-    verbs: [ "update" ]
-  - apiGroups: [ "" ]
-    resources: [ "persistentvolumeclaims" ]
-    verbs: [ "create" ]
-  - apiGroups: [ "storage.k8s.io" ]
-    resources: [ "volumeattachments" ]
-    verbs: [ "update" ]
-  - apiGroups: [ "" ]
-    resources: [ "events" ]
-    verbs: [ "get" ]
 {{- if .Values.podmon.enabled }}
   - apiGroups: [ "" ]
     resources: [ "pods" ]
