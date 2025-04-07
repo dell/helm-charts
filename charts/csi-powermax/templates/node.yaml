@@ -177,6 +177,12 @@ spec:
                   apiVersion: v1
                   fieldPath: spec.nodeName
               {{- $useRevProxySecret := and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
+            - name: X_CSI_MANAGED_ARRAYS
+              value: {{ .Values.global.managedArrays | quote }}
+            - name: X_CSI_POWERMAX_PORTGROUPS
+              value: {{ .Values.global.portGroups | toJson }}
+            - name: X_CSI_TRANSPORT_PROTOCOL
+              value: {{ .Values.global.transportProtocol | default "" }}
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
@@ -489,6 +495,7 @@ spec:
         - name: powermax-array-config
           configMap:
             name: {{ .Release.Name }}-array-config
+            optional: true
           {{- if and (hasKey .Values.global "useSecret") (.Values.global.useSecret | default false) }}
         - name: powermax-reverseproxy-secret
           secret:
