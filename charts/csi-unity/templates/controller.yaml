@@ -42,9 +42,6 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments/status"]
     verbs: ["patch"]
-  - apiGroups: ["csi.storage.k8s.io"]
-    resources: ["csinodeinfos"]
-    verbs: ["get", "list", "watch"]
   - apiGroups: [""]
     resources: ["pods"]
 {{- if .Values.podmon.enabled }}
