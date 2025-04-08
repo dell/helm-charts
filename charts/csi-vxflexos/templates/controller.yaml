@@ -58,9 +58,6 @@ rules:
     verbs: [ "get", "list", "watch" ]
     {{- end }}
     {{- end }}
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    verbs: ["get", "update"]
 {{- if hasKey .Values "vgsnapshotter" }}
 {{- if eq .Values.vgsnapshotter.enabled true }}
   - apiGroups: ["volumegroup.storage.dell.com"]
