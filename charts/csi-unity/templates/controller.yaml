@@ -35,7 +35,7 @@ rules:
     verbs: ["get", "list", "watch", "patch", "delete"]
 {{- else }}
     verbs: ["get", "list", "watch", "patch"]
-{{- end}}
+{{- end }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["csinodes"]
     verbs: ["get", "list", "watch"]
