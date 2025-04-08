@@ -50,7 +50,7 @@ rules:
 {{- if eq .Values.podmon.enabled true }}
   - apiGroups: [""]
     resources: ["pods"]
-    verbs: ["get", "list", "watch", "update", "delete"]
+    verbs: ["get", "list", "watch"]
 {{ end }}
 {{ end }}    
 ---
@@ -96,6 +96,9 @@ rules:
   - apiGroups: ["coordination.k8s.io"]
     resources: ["leases"]
     verbs: ["get", "watch", "list", "delete", "update", "create"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["update", "delete"]  
 {{ end }}
 {{ end }}    
 ---
