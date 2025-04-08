@@ -46,13 +46,13 @@ rules:
     resourceNames: ["privileged"]
     resources: ["securitycontextconstraints"]
     verbs: ["use"]
-{{- if hasKey .Values "podmon" }}
-{{- if eq .Values.podmon.enabled true }}
+  {{- if hasKey .Values "podmon" }}
+  {{- if eq .Values.podmon.enabled true }}
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["get", "list", "watch"]
-{{ end }}
-{{ end }}    
+  {{ end }}
+  {{ end }}    
 ---
 # ClusterRoleBinding for Cluster-specific
 kind: ClusterRoleBinding
