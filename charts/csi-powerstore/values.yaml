@@ -112,7 +112,7 @@ nfsAcls: "0777"
 nfsExportDirectory: /var/lib/dell/nfs
 
 # nfsServerPort: Define port for nfs server
-# By default nfs server port is 2049. This value should match what port the nfs-server is configured on. 
+# By default nfs server port is 2049. This value should match what port the nfs-server is configured on.
 # /etc/nfs.conf contains the port information. If none is specified in that file, then it is 2049.
 # Allowed values:  Any valid and free port.
 # Default value: 2049
@@ -309,7 +309,7 @@ node:
   #  - key: "powerstore.podmon.storage.dell.com"
   #    operator: "Exists"
   #    effect: "NoSchedule"
-  #
+
 ## PLATFORM ATTRIBUTES
 ######################
 
