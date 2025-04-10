@@ -58,6 +58,9 @@ rules:
     verbs: [ "get", "list", "watch" ]
     {{- end }}
     {{- end }}
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "update"]
 {{- if hasKey .Values "vgsnapshotter" }}
 {{- if eq .Values.vgsnapshotter.enabled true }}
   - apiGroups: ["volumegroup.storage.dell.com"]
@@ -96,7 +99,7 @@ rules:
     verbs: ["get", "patch", "update"]
   - apiGroups: [""]
     resources: ["configmaps"]
-    verbs: ["create", "delete", "list", "watch", "patch"]
+    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
   - apiGroups: [""]
     resources: ["namespaces"]
     verbs: ["create", "get", "list", "watch"]
@@ -142,9 +145,6 @@ rules:
   - apiGroups: [ "apps" ]
     resources: [ "replicasets" ]
     verbs: [ "get" ]
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    verbs: ["get", "update"]
 ---
 # RoleBinding for Driver-specific Role
 kind: RoleBinding
