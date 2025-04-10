@@ -124,9 +124,6 @@ rules:
     resources: [ "csistoragecapacities" ]
     verbs: [ "get", "list", "watch", "create", "update", "patch", "delete" ]
   {{- end }}
-<<<<<<< HEAD
-
-=======
   # for csi-nfs
   - apiGroups: ["discovery.k8s.io"]
     resources: ["endpointslices"]
@@ -134,7 +131,6 @@ rules:
   - apiGroups: [""]
     resources: ["services"]
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
->>>>>>> 0ff8068 (csi-nfs changes)
 ---
 
 kind: ClusterRoleBinding
