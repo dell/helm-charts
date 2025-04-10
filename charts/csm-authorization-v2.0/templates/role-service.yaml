@@ -25,11 +25,6 @@ roleRef:
   kind: ClusterRole
   name: role-service
   apiGroup: rbac.authorization.k8s.io
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: role-service
-  namespace: {{ include "custom.namespace" . }}
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
