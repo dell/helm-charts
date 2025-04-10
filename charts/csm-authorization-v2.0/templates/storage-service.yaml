@@ -10,14 +10,11 @@ metadata:
   name: storage-service
 rules:
   - apiGroups: [""]
-    resources: ["secrets", "events"]
+    resources: ["events"]
     verbs: ["get", "patch", "post", "create"]
   - apiGroups: ["csm-authorization.storage.dell.com"]
     resources: ["storages", "csmtenants", "csmroles"]
     verbs: ["get", "list"]
-  - apiGroups: ["coordination.k8s.io"]
-    resources: ["leases"]
-    verbs: ["create", "update", "get", "list"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -29,6 +26,33 @@ subjects:
     namespace: {{ include "custom.namespace" . }}
 roleRef:
   kind: ClusterRole
+  name: storage-service
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "patch", "post", "create"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["create", "update", "get", "list"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+subjects:
+  - kind: ServiceAccount
+    name: storage-service
+    namespace: {{ include "custom.namespace" . }}
+roleRef:
+  kind: Role
   name: storage-service
   apiGroup: rbac.authorization.k8s.io
 ---
