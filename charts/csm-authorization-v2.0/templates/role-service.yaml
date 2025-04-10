@@ -4,10 +4,11 @@ metadata:
   name: role-service
   namespace: {{ include "custom.namespace" . }}
 ---
-kind: ClusterRole
+kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: role-service
+  namespace: {{ include "custom.namespace" . }}
 rules:
   - apiGroups: [""]
     resources: ["configmaps"]
@@ -16,16 +17,17 @@ rules:
     resources: ["secrets"]
     verbs: ["get"]
 ---
-kind: ClusterRoleBinding
+kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: role-service
+  namespace: {{ include "custom.namespace" . }}
 subjects:
   - kind: ServiceAccount
     name: role-service
     namespace: {{ include "custom.namespace" . }}
 roleRef:
-  kind: ClusterRole
+  kind: Role
   name: role-service
   apiGroup: rbac.authorization.k8s.io
 ---
