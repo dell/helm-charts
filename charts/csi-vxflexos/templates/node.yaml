@@ -55,6 +55,8 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ---
 # RoleBinding for Driver-specific Role
+{{- if hasKey .Values "podmon" }}
+{{- if eq .Values.podmon.enabled true }}
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -76,8 +78,6 @@ metadata:
   name: {{ .Release.Name }}-node
   namespace: {{ .Release.Namespace }}
 rules:
-{{- if hasKey .Values "podmon" }}
-{{- if eq .Values.podmon.enabled true }}
   - apiGroups: [ "coordination.k8s.io" ]
     resources: [ "leases" ]
     verbs: [ "get", "watch", "list", "delete", "update", "create" ]
