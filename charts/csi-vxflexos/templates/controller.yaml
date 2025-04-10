@@ -45,7 +45,7 @@ rules:
 {{- end }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["csinodes"]
-    verbs: ["get", "list", "watch"]
+    verbs: ["get", "list", "watch", "update"]
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments/status"]
     verbs: ["patch"]
@@ -96,7 +96,7 @@ rules:
     verbs: ["get", "patch", "update"]
   - apiGroups: [""]
     resources: ["configmaps"]
-    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
+    verbs: ["create", "delete", "list", "watch", "patch"]
   - apiGroups: [""]
     resources: ["namespaces"]
     verbs: ["create", "get", "list", "watch"]
@@ -142,9 +142,9 @@ rules:
   - apiGroups: [ "apps" ]
     resources: [ "replicasets" ]
     verbs: [ "get" ]
-  - apiGroups: [ "storage.k8s.io" ]
-    resources: [ "csinodes" ]
-    verbs: [ "update" ]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "update"]
 ---
 # RoleBinding for Driver-specific Role
 kind: RoleBinding
