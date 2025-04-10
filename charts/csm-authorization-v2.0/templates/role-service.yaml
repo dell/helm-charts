@@ -38,9 +38,6 @@ metadata:
   namespace: {{ include "custom.namespace" . }}
 rules:
   - apiGroups: [""]
-    resources: ["configmaps"]
-    verbs: ["get", "patch"]
-  - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get"]
 ---
