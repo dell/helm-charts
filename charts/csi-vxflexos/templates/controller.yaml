@@ -142,6 +142,9 @@ rules:
   - apiGroups: [ "apps" ]
     resources: [ "replicasets" ]
     verbs: [ "get" ]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "csinodes" ]
+    verbs: [ "update" ]
 ---
 # RoleBinding for Driver-specific Role
 kind: RoleBinding
