@@ -19,6 +19,9 @@ rules:
   - apiGroups: ["csm-authorization.storage.dell.com"]
     resources: ["csmroles/finalizers"]
     verbs: ["update"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]
   - apiGroups: ["csm-authorization.storage.dell.com"]
     resources: ["csmtenants"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
@@ -57,9 +60,6 @@ metadata:
   name: authorization-controller
   namespace: {{ include "custom.namespace" . }}
 rules:
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    verbs: ["get", "list", "watch"]
   - apiGroups: [""]
     resources: ["events"]
     verbs: ["create", "patch"]
