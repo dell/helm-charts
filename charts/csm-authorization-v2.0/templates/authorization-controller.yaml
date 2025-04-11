@@ -31,6 +31,9 @@ rules:
   - apiGroups: ["csm-authorization.storage.dell.com"]
     resources: ["csmtenants/finalizers"]
     verbs: ["update"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
   - apiGroups: ["csm-authorization.storage.dell.com"]
     resources: ["storages"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
@@ -60,9 +63,6 @@ metadata:
   name: authorization-controller
   namespace: {{ include "custom.namespace" . }}
 rules:
-  - apiGroups: [""]
-    resources: ["events"]
-    verbs: ["create", "patch"]
   - apiGroups: ["coordination.k8s.io"]
     resources: ["leases"]
     verbs: ["create", "update", "get", "list"]
