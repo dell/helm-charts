@@ -57,6 +57,30 @@ roleRef:
   name: authorization-controller
   apiGroup: rbac.authorization.k8s.io
 ---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: authorization-controller
+  namespace:  {{ include "custom.namespace" . }}
+rules:
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["create", "update", "get", "list"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: authorization-controller
+  namespace:  {{ include "custom.namespace" . }}
+subjects:
+  - kind: ServiceAccount
+    name: authorization-controller
+    namespace:  {{ include "custom.namespace" . }}
+roleRef:
+  kind: Role
+  name: authorization-controller
+  apiGroup: rbac.authorization.k8s.io
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
