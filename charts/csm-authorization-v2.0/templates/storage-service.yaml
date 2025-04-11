@@ -32,6 +32,9 @@ metadata:
   name: storage-service
   namespace: {{ include "custom.namespace" . }}
 rules:
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create"]
   - apiGroups: ["coordination.k8s.io"]
     resources: ["leases"]
     verbs: ["create", "update", "get", "list"]
