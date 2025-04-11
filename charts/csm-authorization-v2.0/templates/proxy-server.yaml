@@ -1,22 +1,20 @@
 # Grant OPA/kube-mgmt read-only access to resources. This lets kube-mgmt
 # list configmaps to be loaded into OPA as policies.
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name:  csm-auth-view
-  namespace: {{ include "custom.namespace" . }}
 rules:
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get", "list", "watch"]
 ---
-kind: RoleBinding
+kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: opa-viewer
-  namespace: {{ include "custom.namespace" . }}
 roleRef:
-  kind: Role
+  kind: ClusterRole
   name:  csm-auth-view
   apiGroup: rbac.authorization.k8s.io
 subjects:
