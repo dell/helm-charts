@@ -9,9 +9,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: storage-service
 rules:
-  - apiGroups: [""]
-    resources: ["events"]
-    verbs: ["get", "patch", "post", "create"]
   - apiGroups: ["csm-authorization.storage.dell.com"]
     resources: ["storages", "csmtenants", "csmroles"]
     verbs: ["get", "list"]
@@ -35,9 +32,6 @@ metadata:
   name: storage-service
   namespace: {{ include "custom.namespace" . }}
 rules:
-  - apiGroups: [""]
-    resources: ["secrets"]
-    verbs: ["get", "patch", "post", "create"]
   - apiGroups: ["coordination.k8s.io"]
     resources: ["leases"]
     verbs: ["create", "update", "get", "list"]
