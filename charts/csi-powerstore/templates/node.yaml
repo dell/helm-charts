@@ -52,6 +52,13 @@ rules:
     resourceNames: ["privileged"]
     resources: ["securitycontextconstraints"]
     verbs: ["use"]
+  # for csi-nfs
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
   {{- if hasKey .Values "podmon" }}
   {{- if eq .Values.podmon.enabled true }}
   - apiGroups: [""]
@@ -204,7 +211,13 @@ spec:
             - name: X_CSI_DRIVER_NAME
               value: {{ .Values.driverName }}
             - name: X_CSI_FC_PORTS_FILTER_FILE_PATH
-              value: {{ .Values.nodeFCPortsFilterFile }}
+              value: {{ .Values.nodeFCPortsFilterFile }}    
+            - name: X_CSI_NFS_EXPORT_DIRECTORY
+              value: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs" }}
+            - name: X_CSI_NFS_CLIENT_PORT
+              value: "{{ .Values.nfsClientPort | default 2050 }}"
+            - name: X_CSI_NFS_SERVER_PORT
+              value: "{{ .Values.nfsServerPort | default 2049 }}"
             {{- if eq .Values.connection.enableCHAP  true }}
             - name: X_CSI_POWERSTORE_ENABLE_CHAP
               value: "true"
@@ -238,6 +251,8 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
+          ports:
+            - containerPort: 2050
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/{{ .Values.driverName }}
@@ -265,6 +280,10 @@ spec:
               mountPath: /powerstore-config
             - name: powerstore-config-params
               mountPath: /powerstore-config-params
+            # for csi-nfs
+            - name: nfs-powerstore
+              mountPath: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs"}}
+              mountPropagation: "Bidirectional"
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -286,6 +305,11 @@ spec:
             - name: driver-path
               mountPath: /csi
       volumes:
+        # for csi-nfs
+        - name: nfs-powerstore
+          hostPath:
+            path: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs"}}
+            type: DirectoryOrCreate
         - name: registration-dir
           hostPath:
             path: {{ .Values.kubeletConfigDir }}/plugins_registry/

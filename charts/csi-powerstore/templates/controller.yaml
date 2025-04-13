@@ -136,6 +136,13 @@ rules:
     resources: ["replicasets"]
     verbs: ["get"]
   {{- end }}
+  # for csi-nfs
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
 ---
 
 kind: ClusterRoleBinding
@@ -407,6 +414,16 @@ spec:
               value: /powerstore-config/config
             - name: X_CSI_POWERSTORE_CONFIG_PARAMS_PATH
               value: /powerstore-config-params/driver-config-params.yaml
+            - name: X_CSI_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: X_CSI_NFS_EXPORT_DIRECTORY
+              value: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs" }}
+            - name: X_CSI_NFS_CLIENT_PORT
+              value: "{{ .Values.nfsClientPort | default 2050 }}"
+            - name: X_CSI_NFS_SERVER_PORT
+              value: "{{ .Values.nfsServerPort | default 2049 }}"
             {{- if hasKey .Values "podmon" }}
             - name: X_CSI_PODMON_ENABLED
               value: "{{ .Values.podmon.enabled }}"
