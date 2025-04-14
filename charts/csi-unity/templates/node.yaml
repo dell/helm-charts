@@ -4,7 +4,6 @@ metadata:
   name: {{ .Release.Name }}-node
   namespace: {{ .Release.Namespace }}
 ---
-# ClusterRole for Cluster-specific Permissions
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -12,19 +11,25 @@ metadata:
 rules:
   - apiGroups: [ "" ]
     resources: [ "persistentvolumes" ]
-    verbs: [ "create", "delete", "get", "list", "watch" ]
+    verbs: [ "create", "delete", "get", "list", "watch", "update" ]
   - apiGroups: [ "" ]
-    resources: [ "persistentvolumeclaims" ]
+    resources: [ "persistentvolumesclaims" ]
     verbs: [ "get", "list", "watch", "update" ]
+  - apiGroups: [ "" ]
+    resources: [ "events" ]
+    verbs: [ "get", "list", "watch", "create", "update", "patch" ]
   - apiGroups: [ "" ]
     resources: [ "nodes" ]
     verbs: [ "get", "list", "watch", "update", "patch" ]
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments" ]
-    verbs: [ "get", "list", "watch" ]
+    verbs: [ "get", "list", "watch", "update" ]
   - apiGroups: [ "storage.k8s.io" ]
     resources: [ "storageclasses" ]
     verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "volumeattachments" ]
+    verbs: [ "get", "list", "watch", "update" ]
   - apiGroups: [ "security.openshift.io" ]
     resourceNames: [ "privileged" ]
     resources: [ "securitycontextconstraints" ]
@@ -32,10 +37,12 @@ rules:
 {{- if .Values.podmon.enabled }}
   - apiGroups: [ "" ]
     resources: [ "pods" ]
-    verbs: [ "get", "list", "watch" ]
+    verbs: [ "get", "list", "watch", "update", "delete" ]
+  - apiGroups: [ "coordination.k8s.io" ]
+    resources: [ "leases" ]
+    verbs: [ "get", "watch", "list", "delete", "update", "create" ]
 {{- end }}
 ---
-# ClusterRoleBinding for Cluster-specific 
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -48,34 +55,6 @@ roleRef:
   kind: ClusterRole
   name: {{ .Release.Name }}-node
   apiGroup: rbac.authorization.k8s.io
-{{- if .Values.podmon.enabled }}
----
-# Role for Driver-specific Permissions in a Namespace
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: {{ .Release.Name }}-node
-  namespace: {{ .Release.Namespace }}
-rules:
-  - apiGroups: ["coordination.k8s.io"]
-    resources: ["leases"]
-    verbs: ["get", "watch", "list", "delete", "update", "create"]
----
-# RoleBinding for Driver-specific Role
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: {{ .Release.Name }}-node
-  namespace: {{ .Release.Namespace }}
-subjects:
-  - kind: ServiceAccount
-    name: {{ .Release.Name }}-node
-    namespace: {{ .Release.Namespace }}
-roleRef:
-  kind: Role
-  name: {{ .Release.Name }}-node
-  apiGroup: rbac.authorization.k8s.io
-{{- end }}
 ---
 {{ $releaseName := .Release.Name }}
 kind: DaemonSet
