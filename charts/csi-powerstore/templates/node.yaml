@@ -21,7 +21,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 
 ---
-
+# ClusterRole for Cluster-specific Permissions
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -29,49 +29,32 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
-    verbs: ["create", "delete", "get", "list", "watch", "update"]
-  - apiGroups: [""]
-    resources: ["persistentvolumesclaims"]
-    verbs: ["get", "list", "watch", "update"]
-  - apiGroups: [""]
-    resources: ["events"]
-    verbs: ["get", "list", "watch", "create", "update", "patch"]
+    verbs: ["create", "delete", "get", "list", "watch"]
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumeclaims" ]
+    verbs: [ "get", "list", "watch", "update" ]
   - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["get", "list", "watch", "update", "patch"]
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments"]
-    verbs: ["get", "list", "watch", "update"]
+    verbs: ["get", "list", "watch"]
   - apiGroups: ["storage.k8s.io"]
     resources: ["storageclasses"]
     verbs: ["get", "list", "watch"]
-  - apiGroups: ["storage.k8s.io"]
-    resources: ["volumeattachments"]
-    verbs: ["get", "list", "watch", "update"]
   - apiGroups: ["security.openshift.io"]
     resourceNames: ["privileged"]
     resources: ["securitycontextconstraints"]
     verbs: ["use"]
-  # for csi-nfs
-  - apiGroups: ["discovery.k8s.io"]
-    resources: ["endpointslices"]
-    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
-  - apiGroups: [""]
-    resources: ["services"]
-    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
   {{- if hasKey .Values "podmon" }}
   {{- if eq .Values.podmon.enabled true }}
   - apiGroups: [""]
     resources: ["pods"]
-    verbs: ["get", "list", "watch", "update", "delete"]
-  - apiGroups: ["coordination.k8s.io"]
-    resources: ["leases"]
-    verbs: ["get", "watch", "list", "delete", "update", "create"]
+    verbs: ["get", "list", "watch"]
   {{ end }}
-  {{ end }}
-
+  {{ end }}    
 ---
-
+# ClusterRoleBinding for Cluster-specific
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -86,7 +69,36 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 
 ---
-
+{{- if hasKey .Values "podmon" }}
+{{- if eq .Values.podmon.enabled true }}
+# RoleBinding for Driver-specific Role
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}-node
+  namespace: {{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}-node
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ .Release.Name }}-node
+  apiGroup: rbac.authorization.k8s.io
+---
+# Role for Driver-specific Permissions in a Namespace
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}-node
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "watch", "list", "delete", "update", "create"]  
+{{ end }}
+{{ end }}    
+---
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
@@ -211,13 +223,7 @@ spec:
             - name: X_CSI_DRIVER_NAME
               value: {{ .Values.driverName }}
             - name: X_CSI_FC_PORTS_FILTER_FILE_PATH
-              value: {{ .Values.nodeFCPortsFilterFile }}    
-            - name: X_CSI_NFS_EXPORT_DIRECTORY
-              value: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs" }}
-            - name: X_CSI_NFS_CLIENT_PORT
-              value: "{{ .Values.nfsClientPort | default 2050 }}"
-            - name: X_CSI_NFS_SERVER_PORT
-              value: "{{ .Values.nfsServerPort | default 2049 }}"
+              value: {{ .Values.nodeFCPortsFilterFile }}
             {{- if eq .Values.connection.enableCHAP  true }}
             - name: X_CSI_POWERSTORE_ENABLE_CHAP
               value: "true"
@@ -251,8 +257,6 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
-          ports:
-            - containerPort: 2050
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/{{ .Values.driverName }}
@@ -280,10 +284,6 @@ spec:
               mountPath: /powerstore-config
             - name: powerstore-config-params
               mountPath: /powerstore-config-params
-            # for csi-nfs
-            - name: nfs-powerstore
-              mountPath: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs"}}
-              mountPropagation: "Bidirectional"
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -305,11 +305,6 @@ spec:
             - name: driver-path
               mountPath: /csi
       volumes:
-        # for csi-nfs
-        - name: nfs-powerstore
-          hostPath:
-            path: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs"}}
-            type: DirectoryOrCreate
         - name: registration-dir
           hostPath:
             path: {{ .Values.kubeletConfigDir }}/plugins_registry/
