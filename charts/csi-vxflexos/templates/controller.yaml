@@ -24,7 +24,7 @@ rules:
 {{- end }}
   - apiGroups: [ ""]
     resources: [ "persistentvolumes" ]
-    verbs: [ "get", "list", "watch", "create", "delete", "patch", "update" ]
+    verbs: [ "get", "list", "watch", "create", "delete", "patch" ]
   - apiGroups: [ "" ]
     resources: [ "persistentvolumeclaims" ]
     verbs: [ "get", "list", "watch", "update" ]
