@@ -43,6 +43,9 @@ rules:
     verbs: [ "get", "list", "watch", "update", "patch" ]
   {{- end }}
   - apiGroups: ["storage.k8s.io"]
+    resources: ["csinodes"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments/status"]
     verbs: ["patch"]
   - apiGroups: ["csi.storage.k8s.io"]
