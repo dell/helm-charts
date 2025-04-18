@@ -74,6 +74,7 @@ rules:
     resources: ["customresourcedefinitions"]
     verbs: ["create", "list", "watch", "delete"]
  # below for resizer
+  - apiGroups: [""]
     resources: ["persistentvolumeclaims/status"]
     verbs: ["patch"]
   # below for dell-csi-replicator
