@@ -269,7 +269,7 @@ spec:
       serviceAccountName: dell-replication-controller-sa
       containers:
         - args:
-            - disable-pvc-remap=false
+            - disable-pvc-remap={{ .Values.disablePVCRemap }}
             - prefix=replication.storage.dell.com
         {{- if eq .Values.leaderElection "true" }}
             - enable-leader-election
