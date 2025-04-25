@@ -32,6 +32,13 @@ retryIntervalMax: 5m
 # Default value: "***REMOVED***"
 disablePVCRemap: "***REMOVED***"
 
+# allowPvcCreationOnTarget: It Creates PVC on target cluster using replicated PV.
+# Allowed values:
+#   true: It creates a PVC on target cluster against replicated PV
+#   ***REMOVED***: simply updates claimref on replicated PV on target cluster without actually creating a PVC
+# Default value: ***REMOVED***
+allowPvcCreationOnTarget: "***REMOVED***"
+
 # HostAliases: Optional features that allows <hostname:IP> entries injection into pod's /etc/hosts file
 # hostAliases:
 #  - ip: "10.10.10.10"
