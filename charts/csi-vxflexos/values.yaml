@@ -262,6 +262,14 @@ node:
   sdc:
     # enabled: Enable/Disable SDC
     enabled: true
+    # sdcRepo: Enable/Disable SFTP/private repository details
+    sdcRepo: 
+    enabled: true    
+    # sdcRepoIp specifies the address of the SFTP/private repository to look up for SDC kernel files
+    # Format: "protoctol://IP" 
+    sdcRepoIp: "sftp://10.255.255.255"
+    # sdcRepoSecret specifies the secret containing the username and private key of the sdcRepo
+    sdcRepoSecret: "sdcrepo-secret"
 
   # "renameSDC" defines the rename operation for SDC
   # Default value: None
