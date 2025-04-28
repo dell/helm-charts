@@ -371,9 +371,9 @@ spec:
             - name: sftp-keys
               mountPath: /config
               valueFrom:
-              secretKeyRef:
-                name: {{ .Values.node.sdcRepo.sdcRepoSecret }}
-              key: privatekey
+                secretKeyRef:
+                  name: {{ .Values.node.sdcRepo.sdcRepoSecret }}
+                  key: privatekey
           {{- end }}
       {{- end }}
       volumes:
