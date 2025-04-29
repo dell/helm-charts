@@ -330,6 +330,10 @@ spec:
           image: {{ required "Must provide the PowerFlex SDC container image." .Values.images.powerflexSdc.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
+            {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
+            - name: REPO_ADDRESS
+              value: "{{ .Values.node.sdc.sdcRepo.sdcRepoIp }}"
+            {{- end }}
             - name: MODULE_SIGCHECK
               value: "0"
             - name: NODENAME
