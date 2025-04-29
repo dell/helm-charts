@@ -372,7 +372,7 @@ spec:
               mountPath: /config
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
+                  name: sdcrepo-secret
                   key: privatekey
             {{- end }}
       {{- end }}
