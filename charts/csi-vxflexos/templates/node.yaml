@@ -367,6 +367,14 @@ spec:
               mountPath: /rules.d
             - name: scaleio-path-opt
               mountPath: /host_drv_cfg_path
+            {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
+            - name: sftp-keys
+              mountPath: /config
+              valueFrom:
+                secretKeyRef:
+                  name: sdcrepo-secret
+                  key: privatekey
+            {{- end }}
       {{- end }}
       volumes:
         - name: registration-dir
