@@ -409,7 +409,7 @@ spec:
             type: DirectoryOrCreate
         - name: sftp-keys
           secret:
-            secretName: "sdcrepo-secret"
+            secretName: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
         - name: sdc-storage
           hostPath:
             path: /var/emc-scaleio
