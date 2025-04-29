@@ -263,7 +263,7 @@ node:
     # enabled: Enable/Disable SDC
     enabled: true
       # sdcRepo: Enable/Disable SFTP/private repository details
-      sdcRepo:
+    sdcRepo:
       enabled: true
       # sdcRepoIp specifies the address of the SFTP/private repository to look up for SDC kernel files
       # Format: "protoctol://IP"
