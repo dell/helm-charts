@@ -330,7 +330,7 @@ spec:
           image: {{ required "Must provide the PowerFlex SDC container image." .Values.images.powerflexSdc.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
-          {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
+            {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
             - name: REPO_ADDRESS
               value: "{{ .Values.node.sdc.sdcRepo.sdcRepoIp }}"
             - name: REPO_USER
@@ -338,7 +338,7 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
                   key: username
-          {{- end }}
+            {{- end }}
             - name: MODULE_SIGCHECK
               value: "0"
             - name: NODENAME
@@ -367,14 +367,14 @@ spec:
               mountPath: /rules.d
             - name: scaleio-path-opt
               mountPath: /host_drv_cfg_path              
-          {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
+            {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
             - name: sftp-keys
               mountPath: /config
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
                   key: privatekey
-          {{- end }}
+            {{- end }}
       {{- end }}
       volumes:
         - name: registration-dir
