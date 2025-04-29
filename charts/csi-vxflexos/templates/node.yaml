@@ -336,7 +336,7 @@ spec:
             - name: REPO_USER
               valueFrom:
                 secretKeyRef:
-                  name: sdcrepo-secret
+                  name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
                   key: username
             {{- end }}
             - name: MODULE_SIGCHECK
@@ -372,7 +372,7 @@ spec:
               mountPath: /config
               valueFrom:
                 secretKeyRef:
-                  name: sdcrepo-secret
+                  name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
                   key: privatekey
             {{- end }}
       {{- end }}
