@@ -336,7 +336,7 @@ spec:
             - name: REPO_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
+                  name: sdcrepo-secret
                   key: username
             {{- end }}
             - name: MODULE_SIGCHECK
