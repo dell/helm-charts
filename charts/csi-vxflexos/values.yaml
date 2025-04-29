@@ -260,8 +260,8 @@ node:
   #   effect: "NoSchedule"
 
   sdc:
-      # enabled: Enable/Disable SDC
-      enabled: true
+    # enabled: Enable/Disable SDC
+    enabled: true
       # sdcRepo: Enable/Disable SFTP/private repository details
       sdcRepo:
       enabled: true
