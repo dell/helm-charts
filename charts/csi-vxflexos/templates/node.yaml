@@ -333,6 +333,11 @@ spec:
             {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
             - name: REPO_ADDRESS
               value: "{{ .Values.node.sdc.sdcRepo.sdcRepoIp }}"
+            - name: REPO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sdcrepo-secret
+                  key: username
             {{- end }}
             - name: MODULE_SIGCHECK
               value: "0"
