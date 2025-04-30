@@ -129,6 +129,58 @@ spec:
         {{- range $i, $array := .Values.global.storageArrays }}
           {{- $arraysStr = trim (cat $arraysStr $array.storageArrayId) }}
         {{- end }}
+        {{- if hasKey .Values "podmon" }}
+        {{- if eq .Values.podmon.enabled true }}
+        - name: podmon
+          securityContext:
+            privileged: true
+            capabilities:
+              add: [ "SYS_ADMIN" ]
+            allowPrivilegeEscalation: true
+          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args:
+            {{- toYaml .Values.podmon.node.args | nindent 12 }}
+          env:
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: X_CSI_PRIVATE_MOUNT_DIR
+              value: {{ .Values.kubeletConfigDir }}
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: kubelet-pods
+              mountPath: {{ .Values.kubeletConfigDir }}/pods
+              mountPropagation: "Bidirectional"
+            - name: driver-path
+              mountPath: {{ .Values.kubeletConfigDir }}/plugins/powermax.emc.dell.com
+              mountPropagation: "Bidirectional"
+            - name: csi-path
+              mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
+              mountPropagation: "Bidirectional"
+            - name: dev
+              mountPath: /dev
+            - name: usr-bin
+              mountPath: /usr-bin
+            - name: var-run
+              mountPath: /var/run
+            - name: powermax-config-params
+              mountPath: /powermax-config-params
+        {{- end }}
+        {{- end }}
         - name: driver
           securityContext:
             privileged: true
@@ -402,58 +454,6 @@ spec:
               mountPath: /etc/karavi-authorization
         {{ end }}
         {{ end }}
-        {{- if hasKey .Values "podmon" }}
-        {{- if eq .Values.podmon.enabled true }}
-        - name: podmon
-          securityContext:
-            privileged: true
-            capabilities:
-              add: [ "SYS_ADMIN" ]
-            allowPrivilegeEscalation: true
-          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
-          args:
-            {{- toYaml .Values.podmon.node.args | nindent 12 }}
-          env:
-            - name: KUBE_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: spec.nodeName
-            - name: X_CSI_PRIVATE_MOUNT_DIR
-              value: {{ .Values.kubeletConfigDir }}
-            - name: MY_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            - name: MY_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: MY_POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-          volumeMounts:
-            - name: kubelet-pods
-              mountPath: {{ .Values.kubeletConfigDir }}/pods
-              mountPropagation: "Bidirectional"
-            - name: driver-path
-              mountPath: {{ .Values.kubeletConfigDir }}/plugins/powermax.emc.dell.com
-              mountPropagation: "Bidirectional"
-            - name: csi-path
-              mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
-              mountPropagation: "Bidirectional"
-            - name: dev
-              mountPath: /dev
-            - name: usr-bin
-              mountPath: /usr-bin
-            - name: var-run
-              mountPath: /var/run
-            - name: powermax-config-params
-              mountPath: /powermax-config-params
-        {{- end }}
-        {{- end }}
       volumes:
         - name: registration-dir
           hostPath:
