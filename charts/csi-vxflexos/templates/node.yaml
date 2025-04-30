@@ -373,7 +373,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
-                  key: privatekey
+                  key: user_private_rsa_key
             {{- end }}
       {{- end }}
       volumes:
