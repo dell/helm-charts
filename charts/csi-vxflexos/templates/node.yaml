@@ -368,7 +368,7 @@ spec:
             - name: scaleio-path-opt
               mountPath: /host_drv_cfg_path
             {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
-            - name: sftp-keys
+            - name: user_private_rsa_key
               mountPath: /config
               valueFrom:
                 secretKeyRef:
