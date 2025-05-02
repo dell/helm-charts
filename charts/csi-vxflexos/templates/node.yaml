@@ -368,14 +368,16 @@ spec:
             - name: scaleio-path-opt
               mountPath: /host_drv_cfg_path
             {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
-            - name: user_private_rsa_key
-              mountPath: /config
+            - name: sftp-keys
+              mountPath: /config/user_private_rsa_key
+              subPath: user_private_rsa_key
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
                   key: user_private_rsa_key
-            - name: repo_public_rsa_key
-              mountPath: /config
+            - name: sftp-keys
+              mountPath: /config/repo_public_rsa_key
+              subPath: repo_public_rsa_key
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
@@ -414,7 +416,7 @@ spec:
             path: /opt/emc/scaleio/sdc/bin
             type: DirectoryOrCreate
         {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
-        - name: sftp_keys
+        - name: sftp-keys
           secret:
             secretName: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
         {{- end }}
