@@ -27,6 +27,18 @@ retryIntervalMin: 1s
 # Allowed values: time
 retryIntervalMax: 5m
 
+# disablePVCRemap: Disable PVC remapping for replication in single cluster configuration
+# Allowed values: "true", "false"
+# Default value: "false"
+disablePVCRemap: "false"
+
+# allowPvcCreationOnTarget: It Creates PVC on target cluster using replicated PV.
+# Allowed values:
+#   true: It creates a PVC on target cluster against replicated PV
+#   false: simply updates claimref on replicated PV on target cluster without actually creating a PVC
+# Default value: false
+allowPvcCreationOnTarget: "false"
+
 # HostAliases: Optional features that allows <hostname:IP> entries injection into pod's /etc/hosts file
 # hostAliases:
 #  - ip: "10.10.10.10"
