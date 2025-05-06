@@ -45,6 +45,7 @@ rules:
     resources:
       - persistentvolumeclaims
     verbs:
+      - get
       - list
       - update
       - watch
@@ -79,6 +80,9 @@ rules:
     resources:
       - dellcsireplicationgroups
     verbs:
+      - get
+      - create
+      - delete
       - list
       - update
       - watch
@@ -158,7 +162,6 @@ rules:
     verbs:
       - create
       - delete
-      - get
       - patch
   - apiGroups:
       - ""
@@ -185,9 +188,6 @@ rules:
     resources:
       - dellcsireplicationgroups
     verbs:
-      - create
-      - delete
-      - get
       - patch
   - apiGroups:
       - replication.storage.dell.com
