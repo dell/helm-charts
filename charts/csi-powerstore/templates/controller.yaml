@@ -431,7 +431,7 @@ spec:
             - name: X_CSI_MULTI_NAS_FAILURE_THRESHOLD
               value: "{{ .Values.multiNas.threshold | default 5 }}"
             - name: X_CSI_MULTI_NAS_COOLDOWN_PERIOD
-              value: "{{ .Values.multiNas.cooldownPeriod | default 5m }}"
+              value: {{ .Values.multiNas.cooldownPeriod | default "5m" }}
             {{- if hasKey .Values "podmon" }}
             - name: X_CSI_PODMON_ENABLED
               value: "{{ .Values.podmon.enabled }}"
