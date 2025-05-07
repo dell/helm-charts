@@ -136,7 +136,7 @@ rules:
     resources: ["replicasets"]
     verbs: ["get"]
   {{- end }}
-  # for csi-nfs
+  # for Shared NFS
   - apiGroups: ["discovery.k8s.io"]
     resources: ["endpointslices"]
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
