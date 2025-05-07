@@ -22,6 +22,14 @@ rules:
       - list
       - watch
   - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions/status
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
       - ""
     resources:
       - events
@@ -86,6 +94,15 @@ rules:
       - list
       - update
       - watch
+      - patch
+  - apiGroups:
+      - replication.storage.dell.com
+    resources:
+      - dellcsireplicationgroups/status
+    verbs:
+      - get
+      - patch
+      - update
   - apiGroups:
       - storage.k8s.io
     resources:
@@ -137,14 +154,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
 rules:
   - apiGroups:
-      - apiextensions.k8s.io
-    resources:
-      - customresourcedefinitions/status
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
       - coordination.k8s.io
     resources:
       - leases
@@ -183,20 +192,6 @@ rules:
       - secrets
     verbs:
       - get
-  - apiGroups:
-      - replication.storage.dell.com
-    resources:
-      - dellcsireplicationgroups
-    verbs:
-      - patch
-  - apiGroups:
-      - replication.storage.dell.com
-    resources:
-      - dellcsireplicationgroups/status
-    verbs:
-      - get
-      - patch
-      - update
   - apiGroups: [ "snapshot.storage.k8s.io" ]
     resources: [ "volumesnapshots" ]
     verbs: [ "get", "list", "watch", "update", "create", "delete" ]
