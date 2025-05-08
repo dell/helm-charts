@@ -376,12 +376,12 @@ spec:
                   name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
                   key: user_private_rsa_key
             - name: sftp-keys
-              mountPath: /config/repo_public_rsa_key
-              subPath: repo_public_rsa_key
+              mountPath: /config/user_public_rsa_key
+              subPath: user_public_rsa_key
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
-                  key: repo_public_rsa_key
+                  key: user_public_rsa_key
             {{- end }}
       {{- end }}
       volumes:
