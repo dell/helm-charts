@@ -72,7 +72,7 @@ authorization:
     annotations: {}
 
   # storage capacity poll interval
-  storageCapacityPollInterval: 5m
+  storageCapacityPollInterval: 30m
 
 redis:
   name: redis-csm

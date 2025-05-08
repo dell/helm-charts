@@ -46,7 +46,7 @@ rules:
     resourceNames: ["privileged"]
     resources: ["securitycontextconstraints"]
     verbs: ["use"]
-  # for csi-nfs
+  # for Shared NFS
   - apiGroups: ["discovery.k8s.io"]
     resources: ["endpointslices"]
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
@@ -303,7 +303,7 @@ spec:
               mountPath: /powerstore-config
             - name: powerstore-config-params
               mountPath: /powerstore-config-params
-            # for csi-nfs
+            # for Shared NFS
             - name: nfs-powerstore
               mountPath: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs"}}
               mountPropagation: "Bidirectional"
@@ -328,7 +328,7 @@ spec:
             - name: driver-path
               mountPath: /csi
       volumes:
-        # for csi-nfs
+        # for Shared NFS
         - name: nfs-powerstore
           hostPath:
             path: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs"}}

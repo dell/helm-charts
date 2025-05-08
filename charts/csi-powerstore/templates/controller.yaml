@@ -121,7 +121,7 @@ rules:
     resources: [ "csistoragecapacities" ]
     verbs: [ "get", "list", "watch", "create", "update", "patch", "delete" ]
   {{- end }}
-  # for csi-nfs
+  # for Shared NFS
   - apiGroups: ["discovery.k8s.io"]
     resources: ["endpointslices"]
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
