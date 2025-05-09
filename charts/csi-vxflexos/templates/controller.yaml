@@ -99,6 +99,9 @@ rules:
     resources: ["dellcsireplicationgroups/status"]
     verbs: ["get", "patch", "update"]
   - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
+  - apiGroups: [""]
     resources: ["namespaces"]
     verbs: ["create", "get", "list", "watch"]
 {{- end}}
@@ -143,14 +146,6 @@ rules:
   - apiGroups: [ "apps" ]
     resources: [ "replicasets" ]
     verbs: [ "get" ]
-# below for dell-csi-replicator
-{{- if hasKey .Values.controller "replication" }}
-{{- if eq .Values.controller.replication.enabled true}}
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
-{{- end}}
-{{- end}}
 ---
 # RoleBinding for Driver-specific Role
 kind: RoleBinding
