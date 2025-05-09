@@ -332,12 +332,9 @@ spec:
           env:
             {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
             - name: REPO_ADDRESS
-              value: "{{ .Values.node.sdc.sdcRepo.sdcRepoIp }}"
+              value: "{{ .Values.node.sdc.sdcRepo.sdcRepoAddress }}"
             - name: REPO_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
-                  key: username
+              value: "{{ .Values.node.sdc.sdcRepo.sdcRepoUser }}"
             {{- end }}
             - name: MODULE_SIGCHECK
               value: "0"
@@ -369,19 +366,7 @@ spec:
               mountPath: /host_drv_cfg_path
             {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
             - name: sftp-keys
-              mountPath: /config/user_private_rsa_key
-              subPath: user_private_rsa_key
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
-                  key: user_private_rsa_key
-            - name: sftp-keys
-              mountPath: /config/user_public_rsa_key
-              subPath: user_public_rsa_key
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
-                  key: user_public_rsa_key
+              mountPath: /config/
             {{- end }}
       {{- end }}
       volumes:
@@ -417,8 +402,13 @@ spec:
             type: DirectoryOrCreate
         {{- if eq .Values.node.sdc.sdcRepo.enabled true }}
         - name: sftp-keys
-          secret:
-            secretName: {{ .Values.node.sdc.sdcRepo.sdcRepoSecret }}
+          projected:
+            defaultMode: 384
+            sources:
+            - secret:
+                name: "sdcrepo-secret-private"
+            - secret:
+                name: "sdcrepo-secret-public"
         {{- end }}
         - name: sdc-storage
           hostPath:
