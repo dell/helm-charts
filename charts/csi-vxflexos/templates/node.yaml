@@ -406,9 +406,9 @@ spec:
             defaultMode: 384
             sources:
             - secret:
-                name: "sdcrepo-secret-private"
+                name: "{{ .Values.node.sdc.sdcRepo.sdcRepoPrivateSecret }}"
             - secret:
-                name: "sdcrepo-secret-public"
+                name: "{{ .Values.node.sdc.sdcRepo.sdcRepoPublicSecret }}"
         {{- end }}
         - name: sdc-storage
           hostPath:
