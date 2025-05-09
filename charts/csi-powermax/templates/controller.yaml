@@ -13,9 +13,6 @@ metadata:
   name: {{ .Release.Name }}-controller
   {{- end }}
 rules:
-  - apiGroups: ["coordination.k8s.io"]
-    resources: ["leases"]
-    verbs: ["get", "watch", "list", "delete", "update", "create"]
   - apiGroups: [""]
     resources: ["events"]
     verbs: ["list", "watch", "create", "update", "patch"]
@@ -31,7 +28,7 @@ rules:
     verbs: ["get", "list", "watch", "create", "delete", "update", "patch" ]
   - apiGroups: [""]
     resources: ["persistentvolumeclaims"]
-    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
+    verbs: ["get", "list", "watch", "update"]
   - apiGroups: ["storage.k8s.io"]
     resources: ["storageclasses"]
     verbs: ["get", "list", "watch"]
@@ -58,15 +55,12 @@ rules:
     resources: [ "pods" ]
   {{- if hasKey .Values "podmon" }}
   {{- if eq .Values.podmon.enabled true }}
-    verbs: [ "get", "list", "watch", "update", "delete" ]
+    verbs: [ "get", "list", "watch", "delete" ]
   {{- else }}
     verbs: [ "get", "list", "watch" ]
   {{- end }}
   {{- end }}
 # below for snapshotter
-  - apiGroups: [""]
-    resources: ["secrets"]
-    verbs: ["get", "list", "watch"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshotcontents"]
     verbs: ["get", "list", "watch", "update", "create", "delete", "patch"]
@@ -111,9 +105,6 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["csistoragecapacities"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-  - apiGroups: ["apps"]
-    resources: ["replicasets"]
-    verbs: ["get"]
   {{- end }}
 ---
 kind: ClusterRoleBinding
@@ -135,6 +126,41 @@ roleRef:
   {{- else }}
   name: {{ .Release.Name }}-controller
   {{- end }}
+  apiGroup: rbac.authorization.k8s.io
+---
+# Role for Driver-specific Permissions in a Namespace
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}-controller
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["update", "patch"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get"]
+---
+# RoleBinding for Driver-specific Role
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}-controller
+  namespace: {{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}-controller
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ .Release.Name }}-controller
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: apps/v1
