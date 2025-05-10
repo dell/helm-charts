@@ -265,10 +265,10 @@ node:
       # sdcRepo: Enable/Disable SFTP/private repository details
     sdcRepo:
       enabled: true
-      # sdcRepoIp specifies the address of the SFTP/private repository to look up for SDC kernel files
+      # sdcRepoAddress specifies the address of the SFTP/private repository to look up for SDC kernel files
       # Format: "protoctol://address"
       sdcRepoAddress: "sftp://0.0.0.0"
-      # sdcRepoSecret specifies the secret containing the private key of the sdcRepo
+      # sdcRepoUser specifies the username to authenticate to the SFTP repo
       sdcRepoUser: "sdcRepoUser"
       # sdcRepoSecret specifies the secret containing the private key of the sdcRepo
       sdcRepoPrivateSecret: "sdcrepo-private-secret"
