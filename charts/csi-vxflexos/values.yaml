@@ -266,7 +266,7 @@ node:
     sdcRepo:
       enabled: true
       # sdcRepoAddress specifies the address of the SFTP/private repository to look up for SDC kernel files
-      # Format: "protoctol://address"
+      # Format: "protocol://address"
       sdcRepoAddress: "sftp://0.0.0.0"
       # sdcRepoUser specifies the username to authenticate to the SFTP repo
       sdcRepoUser: "sdcRepoUser"
