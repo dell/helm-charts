@@ -272,7 +272,7 @@ node:
       sdcSFTPRepoUser: "sdcSFTPRepoUser"
       # sdcSFTPRepoSecret specifies the secret containing the private key of the sdcSFTPRepo
       sdcSFTPRepoPrivateSecret: "sdcsftprepo-private-secret"
-      # sdcSFTPRepoPublicSecret specifies the secret containing the public key of the host
+      # sdcSFTPRepoPublicSecret specifies the secret containing the public key of the sdcSFTPRepo
       sdcSFTPRepoPublicSecret: "sdcsftprepo-public-secret"
 
   # "renameSDC" defines the rename operation for SDC
