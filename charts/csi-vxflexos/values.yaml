@@ -14,7 +14,7 @@ images:
     image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.14.0
   # "powerflexSdc" defines the SDC image for init container.
   powerflexSdc:
-    image: quay.io/dell/storage/powerflex/sdc:4.5.3
+    image: quay.io/dell/storage/powerflex/sdc:4.5.4
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.8.1
@@ -262,6 +262,18 @@ node:
   sdc:
     # enabled: Enable/Disable SDC
     enabled: true
+      # sdcSFTPRepo: Enable/Disable SFTP/private repository details
+    sdcSFTPRepo:
+      enabled: true
+      # sdcSFTPRepoAddress specifies the address of the SFTP/private repository to look up for SDC kernel files
+      # Format: "protocol://address"
+      sdcSFTPRepoAddress: "sftp://0.0.0.0"
+      # sdcSFTPRepoUser specifies the username to authenticate to the SFTP repo
+      sdcSFTPRepoUser: "sdcSFTPRepoUser"
+      # sdcSFTPRepoSecret specifies the secret containing the private key of the sdcSFTPRepo
+      sdcSFTPRepoPrivateSecret: "sdcsftprepo-private-secret"
+      # sdcSFTPRepoPublicSecret specifies the secret containing the public key of the sdcSFTPRepo
+      sdcSFTPRepoPublicSecret: "sdcsftprepo-public-secret"
 
   # "renameSDC" defines the rename operation for SDC
   # Default value: None
