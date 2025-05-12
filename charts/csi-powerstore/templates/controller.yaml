@@ -1,6 +1,6 @@
 #
 #
-# Copyright © 2020-2023 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright © 2020-2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -452,6 +452,10 @@ spec:
               value: "{{ .Values.nfsClientPort | default 2050 }}"
             - name: X_CSI_NFS_SERVER_PORT
               value: "{{ .Values.nfsServerPort | default 2049 }}"
+            - name: X_CSI_MULTI_NAS_FAILURE_THRESHOLD
+              value: "{{ .Values.multiNas.threshold | default 5 }}"
+            - name: X_CSI_MULTI_NAS_COOLDOWN_PERIOD
+              value: {{ .Values.multiNas.cooldownPeriod | default "5m" }}
             {{- if hasKey .Values "podmon" }}
             - name: X_CSI_PODMON_ENABLED
               value: "{{ .Values.podmon.enabled }}"
