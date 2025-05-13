@@ -264,7 +264,7 @@ node:
     enabled: true
       # sdcSFTPRepo: Enable/Disable SFTP/private repository details
     sdcSFTPRepo:
-      enabled: true
+      enabled: false
       # sdcSFTPRepoAddress specifies the address of the SFTP/private repository to look up for SDC kernel files
       # Format: "protocol://address"
       sdcSFTPRepoAddress: "sftp://0.0.0.0"
