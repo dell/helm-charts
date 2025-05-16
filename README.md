@@ -18,11 +18,8 @@ The source for Dell Helm charts [Dell Helm Hub](https://github.com/dell/helm-cha
 For more information about installing and using Helm, see the
 [Helm Docs](https://helm.sh/docs/). For a quick introduction to Charts, see the [Chart Guide](https://helm.sh/docs/topics/charts/).
 
-## Where to Find Us
-
-For all your support needs or to follow the latest ongoing discussions and updates, join our Slack group. Click [Here](http://del.ly/Slack_request) to request your invite.
-
-You can also interact with us by creating a [GitHub issue](https://github.com/dell/helm-charts/issues).
+## Support
+For any issues, questions or feedback, please contact [Dell support](https://www.dell.com/support/incidents-online/en-us/contactus/product/container-storage-modules).
 
 ## How to Install
 
