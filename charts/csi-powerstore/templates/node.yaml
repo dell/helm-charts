@@ -210,6 +210,8 @@ spec:
             {{- end}}
             - name: CSI_ENDPOINT
               value: unix://{{ .Values.kubeletConfigDir }}/plugins/{{ .Values.driverName }}/csi_sock
+            - name: SSL_CERT_DIR
+              value: /certs
             - name: X_CSI_MODE
               value: node
             - name: X_CSI_POWERSTORE_KUBE_NODE_NAME
@@ -307,6 +309,9 @@ spec:
             - name: nfs-powerstore
               mountPath: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs"}}
               mountPropagation: "Bidirectional"
+            - name: certs
+              mountPath: /certs
+              readOnly: true
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
