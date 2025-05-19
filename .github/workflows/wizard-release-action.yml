@@ -19,6 +19,7 @@ on:
 
 permissions:
   actions: read
+  contents: write
 
 jobs:
   # This job will perform a helm release of the installation wizard chart if it has been updated
