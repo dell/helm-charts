@@ -55,7 +55,7 @@ images:
   metadataretriever:
     image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.11.0
 
-# Represents number of certificate secrets, which user is going to create for ssl authentication. (vxflexos-cert-0..vxflexos-cert-n)
+# Represents number of certificate secrets, which user is going to create for ssl authentication. (powerstore-cert-0..powerstore-cert-n)
 # If user does not use certificate, set to 0
 certSecretCount: 0
 
