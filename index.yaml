@@ -1,6 +1,6 @@
 apiVersion: v1
 entries:
-  container-storage-modules:  
+  container-storage-modules:
   - apiVersion: v2
     appVersion: 1.6.0
     created: "2025-01-16T21:53:03.202396546Z"
@@ -1158,7 +1158,28 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/csi-powermax-2.6.0/csi-powermax-2.6.0.tgz
     version: 2.6.0
-  csi-powerstore:   
+  csi-powerstore:
+  - apiVersion: v2
+    appVersion: 2.14.0
+    created: "2025-05-20T16:43:38.879694688Z"
+    description: 'PowerStore CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a PowerStore
+      StorageClass. '
+    digest: c18ab3ace994caf3a80a58ec1bcba76fb3c6f548881e639ea5eeaf19c325f7c7
+    home: https://github.com/dell/csi-powerstore
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.24.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-powerstore
+    sources:
+    - https://github.com/dell/csi-powerstore
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-powerstore-2.14.0/csi-powerstore-2.14.0.tgz
+    version: 2.14.0
   - apiVersion: v2
     appVersion: 2.13.0
     created: "2025-01-16T21:52:01.599813736Z"
@@ -2964,4 +2985,4 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/karavi-topology-0.1.0/karavi-topology-0.1.0.tgz
     version: 0.1.0
-generated: "2025-05-19T18:29:09.906018199Z"
+generated: "2025-05-20T16:43:38.879967874Z"
