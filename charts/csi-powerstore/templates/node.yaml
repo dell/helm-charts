@@ -403,3 +403,15 @@ spec:
             type: Directory
         {{ end }}
         {{ end }}
+{{- if ge (int .Values.certSecretCount) 1 }}
+        - name: certs
+          projected:
+            sources:
+{{- range $i, $e := until (int .Values.certSecretCount ) }}
+              - secret:
+                  name: {{ print $.Release.Name "-certs-" $e }}
+                  items:
+                    - key: cert-{{ $e }}
+                      path: cert-{{ $e }}
+{{- end }}
+{{- end }}

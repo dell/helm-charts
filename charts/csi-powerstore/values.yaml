@@ -55,6 +55,10 @@ images:
   metadataretriever:
     image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.11.0
 
+# Represents number of certificate secrets, which user is going to create for ssl authentication. (vxflexos-cert-0..vxflexos-cert-n)
+# If user does not use certificate, set to 0
+certSecretCount: 0
+
 # Specify kubelet config dir path.
 # Ensure that the config.yaml file is present at this path.
 # Default value: /var/lib/kubelet
