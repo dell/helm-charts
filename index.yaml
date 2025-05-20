@@ -1,50 +1,6 @@
 apiVersion: v1
 entries:
-  container-storage-modules:
-  - apiVersion: v2
-    appVersion: 1.7.0
-    created: "2025-05-19T18:29:09.905821559Z"
-    dependencies:
-    - condition: csi-powerstore.enabled
-      name: csi-powerstore
-      repository: https://dell.github.io/helm-charts
-      version: 2.14.0
-    - condition: csi-powermax.enabled
-      name: csi-powermax
-      repository: https://dell.github.io/helm-charts
-      version: 2.14.0
-    - condition: csi-isilon.enabled
-      name: csi-isilon
-      repository: https://dell.github.io/helm-charts
-      version: 2.14.0
-    - condition: csi-vxflexos.enabled
-      name: csi-vxflexos
-      repository: https://dell.github.io/helm-charts
-      version: 2.14.0
-    - condition: csi-unity.enabled
-      name: csi-unity
-      repository: https://dell.github.io/helm-charts
-      version: 2.14.0
-    - condition: csm-replication.enabled
-      name: csm-replication
-      repository: https://dell.github.io/helm-charts
-      version: 1.12.0
-    - condition: karavi-observability.enabled
-      name: karavi-observability
-      repository: https://dell.github.io/helm-charts
-      version: 1.12.0
-    - condition: cert-manager.enabled
-      name: cert-manager
-      repository: https://charts.jetstack.io
-      version: 1.11.0
-    description: Container Storage Modules(https://github.com/dell/csm) open source
-      suite of Kubernetes storage enablers for Dell Technologies storage products.
-    digest: bc5c369d59c912c3e648cb06886024d2b3006589318a4bcee179587bda1a958e
-    name: container-storage-modules
-    type: application
-    urls:
-    - https://github.com/dell/helm-charts/releases/download/container-storage-modules-1.7.0/container-storage-modules-1.7.0.tgz
-    version: 1.7.0
+  container-storage-modules:  
   - apiVersion: v2
     appVersion: 1.6.0
     created: "2025-01-16T21:53:03.202396546Z"
@@ -1202,28 +1158,7 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/csi-powermax-2.6.0/csi-powermax-2.6.0.tgz
     version: 2.6.0
-  csi-powerstore:
-  - apiVersion: v2
-    appVersion: 2.14.0
-    created: "2025-05-19T17:42:51.916336771Z"
-    description: 'PowerStore CSI (Container Storage Interface) driver Kubernetes integration.
-      This chart includes everything required to provision via CSI as well as a PowerStore
-      StorageClass. '
-    digest: 22cc91301af5b44fef4ed133b03eac34666b8af4b3b9ccb8076d24c498257c8e
-    home: https://github.com/dell/csi-powerstore
-    keywords:
-    - csi
-    - storage
-    kubeVersion: '>= 1.24.0'
-    maintainers:
-    - name: DellEMC
-    name: csi-powerstore
-    sources:
-    - https://github.com/dell/csi-powerstore
-    type: application
-    urls:
-    - https://github.com/dell/helm-charts/releases/download/csi-powerstore-2.14.0/csi-powerstore-2.14.0.tgz
-    version: 2.14.0
+  csi-powerstore:   
   - apiVersion: v2
     appVersion: 2.13.0
     created: "2025-01-16T21:52:01.599813736Z"
