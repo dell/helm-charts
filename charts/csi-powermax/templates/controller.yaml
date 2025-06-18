@@ -255,7 +255,7 @@ spec:
             - "--csi-address=$(ADDRESS)"
             - "--volume-name-prefix={{ required "Must provide a Volume Name Prefix." .Values.controller.volumeNamePrefix }}"
             - "--volume-name-uuid-length=10"
-            - "--timeout=180s"
+            - "--timeout=120s"
             - "--worker-threads=6"
             - "--v=5"
             - "--default-fstype={{ .Values.defaultFsType | default "ext4" }}"
