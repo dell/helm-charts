@@ -480,8 +480,6 @@ spec:
               value: /isilon-configs/config
             - name: X_CSI_MAX_PATH_LIMIT
               value: "{{ .Values.maxPathLen }}"
-            - name: X_CSI_VOL_PREFIX
-              value: "{{ .Values.controller.volumeNamePrefix }}"
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
