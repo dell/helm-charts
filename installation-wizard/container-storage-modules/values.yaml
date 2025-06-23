@@ -48,6 +48,8 @@ csi-powerstore:
       image: quay.io/dell/container-storage-modules/podmon:v1.13.0
     metadataretriever:
       image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.11.0
+    authorization:
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
   ## Controller ATTRIBUTES
   controller:
     controllerCount: 2
@@ -67,6 +69,9 @@ csi-powerstore:
     healthMonitor:
       enabled: false
     nodeSelector:
+  authorization:
+    enabled: false
+    proxyHost:
     # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled
     # tolerations:
     # - key: "offline.vxflexos.storage.dell.com"
