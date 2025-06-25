@@ -127,7 +127,7 @@ spec:
         - name: vault-client-certificate-{{ .identifier }}
           mountPath: /etc/vault/{{ .identifier }}
         {{- end }}
-        {{- if .Values.storageSystemCredentials.secrets }}
+        {{- if .Values.authorization.storageSystemCredentials.secrets }}
         - name: storage-system-secrets
           mountPath: /etc/creds
         {{- end }}
@@ -155,13 +155,15 @@ spec:
         {{- end }}
       {{- end }}
 
-      {{- if .Values.storageSystemCredentials.secrets }}
+      {{- if .Values.authorization.storageSystemCredentials.secrets }}
       - name: storage-system-secrets
         projected:
           sources:
-        {{- range $key, $val := range .Values.storageSystemCredentials.secrets }}
+        {{- range .Values.authorization.storageSystemCredentials.secrets }}
+        {{- range $key, $val := . }}
           - secret:
               name: {{ $val }}
+        {{- end }}
         {{- end }}
       {{- end }}
 
