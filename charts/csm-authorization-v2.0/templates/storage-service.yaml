@@ -125,9 +125,9 @@ spec:
           mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
           readOnly: true
         {{- end }}
-        {{- range .Values.storageSystemCredentials.secrets }}
-        - name: storage-system-secrets-{{ .systemId }}
-          mountPath: /etc/storage-system-secrets/{{ .systemId }}
+        {{- if .Values.storageSystemCredentials.secrets }}
+        - name: storage-system-secrets
+          mountPath: /etc/creds
         {{- end }}
       volumes:
       - name: config-volume
@@ -145,13 +145,14 @@ spec:
             secretProviderClass: "{{ $secretproviderclass }}"
       {{- end }}
 
-      {{- range .Values.storageSystemCredentials.secrets }}
-      - name: storage-system-secrets-{{ .systemId }}
+      {{- if .Values.storageSystemCredentials.secrets }}
+      - name: storage-system-secrets
         projected:
           sources:
-        {{- if .secret }}
+        {{- range $key, $val := range .Values.storageSystemCredentials.secrets }}
           - secret:
-              name: storage-system-secrets-{{ .systemId }}
+              name: {{ $val }}
+        {{- end }}
       {{- end }}
 
 ---
