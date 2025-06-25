@@ -37,12 +37,9 @@ authorization:
   # NOTE: storageSystemCredentials is optional if secret store CSI driver is used
   storageSystemCredentials:
     secrets:
-      - systemId: system-1
-        secret: secret-1
-      - systemId: system-2
-        secret: secret-2
-      # - systemId: system-3
-      #   secret: secret-3
+      - system1: secret-1
+      - system2: secret-2
+      # - system3: secret-3
 
   # proxy-server ingress will use this hostname
   # NOTE: additional hostnames can be configured in authorization.proxyServerIngress.hosts
