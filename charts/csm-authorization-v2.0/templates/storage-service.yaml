@@ -127,6 +127,10 @@ spec:
         - name: vault-client-certificate-{{ .identifier }}
           mountPath: /etc/vault/{{ .identifier }}
         {{- end }}
+        {{- range .Values.storageSystemCredentials.secrets }}
+        - name: storage-system-secrets-{{ .systemId }}
+          mountPath: /etc/storage-system-secrets/{{ .systemId }}
+        {{- end }}
       volumes:
       - name: config-volume
         secret:
@@ -150,6 +154,16 @@ spec:
               name: vault-certificate-authority-{{ .identifier }}
         {{- end }}
       {{- end }}
+
+      {{- range .Values.storageSystemCredentials.secrets }}
+      - name: storage-system-secrets-{{ .systemId }}
+        projected:
+          sources:
+        {{- if .secret }}
+          - secret:
+              name: storage-system-secrets-{{ .systemId }}
+      {{- end }}
+
 ---
 apiVersion: v1
 kind: Service
