@@ -39,9 +39,12 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
+                {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
+                name: {{ .Values.redis.useSecretProviderClass.secretProviderClass }}
+                {{- else }}
                 name: redis-csm-secret
+                {{- end }}
                 key: password
-
         command: [ "sh", "-c" ]
         args:
           - |
@@ -72,6 +75,10 @@ spec:
           mountPath: /csm-auth-redis-cm/
         - name: config
           mountPath: /etc/redis/
+        {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
+        - name: secrets-store-inline-redis
+          mountPath: "/mnt/secrets-store-redis"
+        {{- end }}
       containers:
       - name: {{ .Values.redis.name }}
         image: {{ .Values.redis.images.redis.image }}
@@ -95,6 +102,14 @@ spec:
       - name: configmap
         configMap:
           name: redis-csm-cm
+      {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
+      - name: secrets-store-inline-redis
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: {{ .Values.redis.useSecretProviderClass.secretProviderClassName }}
+      {{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -136,22 +151,38 @@ spec:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
+              {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
+              name: {{ .Values.redis.useSecretProviderClass.secretProviderClassName }}
+              {{- else }}
               name: redis-csm-secret
+              {{- end }}
               key: password
         - name: SENTINEL_PASSWORD
           valueFrom:
             secretKeyRef:
+              {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
+              name: {{ .Values.redis.useSecretProviderClass.secretProviderClassName }}
+              {{- else }}
               name: redis-csm-secret
+              {{- end }}
               key: password
         - name: HTTP_PASSWORD
           valueFrom:
             secretKeyRef:
+              {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
+              name: {{ .Values.redis.useSecretProviderClass.secretProviderClassName }}
+              {{- else }}
               name: redis-csm-secret
+              {{- end }}
               key: password
         - name: HTTP_USER
           valueFrom:
             secretKeyRef:
+              {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
+              name: {{ .Values.redis.useSecretProviderClass.secretProviderClassName }}
+              {{- else }}
               name: redis-csm-secret
+              {{- end }}
               key: commander_user
         ports:
         - name: {{ .Values.redis.rediscommander }}

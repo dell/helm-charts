@@ -16,6 +16,14 @@ cert-manager:
   enabled: true
 
 authorization:
+  # optional parameters
+  # This parameter is used for the TLS certificate
+  # the certificate can be provided on helm install or using a SecretProviderClass
+  useSecretProviderClass:
+    enabled: false
+    TSLSecretProviderClass: secretProviderClassName
+    JWTSecretProviderClass: secretProviderClassName
+
   # images to use in installation
   images:
     proxyService:
@@ -85,24 +93,14 @@ redis:
     commander:
       image: rediscommander/redis-commander:latest
 
-vault:
-  - identifier: vault0
-    address: https://10.0.0.1:8400
-    role: csm-authorization
-    skipCertificateValidation: true
-    # clientCertificate: base64-encoded certificate for cert/private-key pair -- add certificate here to use custom certificates
-    # for self-signed certs, leave empty string
-    clientCertificate:
-    # clientKey: base64-encoded private key for cert/private-key pair -- add private key here to use custom certificates
-    # for self-signed certs, leave empty string
-    clientKey:
-    # certificateAuthority: base64-encoded certificate authority for validating vault server certificate -- add certificate authority here to use custom certificates
-    #  for self-signed certs, leave empty string
-    certificateAuthority:
-  # - identifier: vault1
-  #   address: https://10.0.0.2:8400
-  #   role: csm-authorization
-  #   skipCertificateValidation: true
-  #   clientCertificate:
-  #   clientKey:
-  #   certificateAuthority:
+  # optional parameters
+  # the current k8s secret will be used if a SecretProviderClass is not provided
+  useSecretProviderClass:
+    enabled: false
+    secretProviderClass: secretProviderClassName
+
+storageSystemCredentials:
+  secretProviderClasses:
+    - system1: secretProviderClassName
+    # - system2: secretProviderClassName2
+    # - system3: secretProviderClassName3
