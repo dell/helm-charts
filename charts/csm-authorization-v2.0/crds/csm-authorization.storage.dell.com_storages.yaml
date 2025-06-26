@@ -66,6 +66,7 @@ spec:
                   Currently supports SecretProviderClasses and Kubernetes Secrets
                 properties:
                   secret:
+                    description: secret is a k8s secret storing storage system credentials
                     type: string
                   secretProviderClass:
                     properties:

@@ -120,6 +120,7 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
+<<<<<<< HEAD
         {{- range $secretproviderclass := .Values.storageSystemCredentials.secretProviderClasses }}
         - name: secrets-store-inline-{{ $secretproviderclass }}
           mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
@@ -127,7 +128,14 @@ spec:
         {{- end }}
         {{- if .Values.authorization.storageSystemCredentials.secrets }}
         - name: storage-system-secrets
-          mountPath: /etc/karavi-authorization
+          mountPath: /etc/karavi-authorization/creds
+=======
+        {{- range .Values.authorization.storageSystemCredentials.secrets }}
+        {{- range $system, $secret := . }}
+        - name: storage-system-secrets-{{ $system }}
+          mountPath: /etc/karavi-authorization/creds/{{ $secret }}
+        {{- end }}
+>>>>>>> 38f5e3f (Fixed secret mount path)
         {{- end }}
       volumes:
       - name: config-volume
@@ -156,7 +164,6 @@ spec:
         {{- end }}
         {{- end }}
       {{- end }}
-
 ---
 apiVersion: v1
 kind: Service
@@ -173,11 +180,12 @@ spec:
   - port: 2112
     targetPort: 2112
     name: promhttp
+{{- $namespace := . }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: storage-service-selfsigned-{{ .identifier }}
+  name: storage-service-selfsigned
   namespace: {{ include "custom.namespace" $namespace }}
 spec:
   selfSigned: {}
@@ -185,10 +193,10 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: storage-service-selfsigned-{{ .identifier }}
+  name: storage-service-selfsigned
   namespace: {{ include "custom.namespace" $namespace }}
 spec:
-  secretName: storage-service-selfsigned-tls-{{ .identifier }}
+  secretName: storage-service-selfsigned-tls
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
@@ -204,8 +212,6 @@ spec:
   dnsNames:
   - csm-authorization-storage-service
   issuerRef:
-    name: storage-service-selfsigned-{{ .identifier }}
+    name: storage-service-selfsigned
     kind: Issuer
     group: cert-manager.io
-{{- end }}
-{{- end }}
