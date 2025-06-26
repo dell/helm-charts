@@ -66,13 +66,15 @@ spec:
                   a k8s secret or a secret provider class
                 properties:
                   secret:
+                    description: secret is a k8s secret storing storage system credentials
                     type: string
                   secretProviderClass:
+                    description: secretProviderClass is a secret provider class storing storage system credentials
                     type: string
                 type: object
-              oneOf:
-                - required: [secret]
-                - required: [secretProviderClass]
+                oneOf:
+                  - required: [secret]
+                  - required: [secretProviderClass]
             required:
             - skipCertificateValidation
             type: object
