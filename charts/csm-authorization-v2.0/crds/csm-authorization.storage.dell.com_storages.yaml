@@ -60,18 +60,19 @@ spec:
               type:
                 description: Type is the storage array type
                 type: string
-              vault:
+              storageSystemCredentials:
                 description: |-
-                  Vault is the credential manager for storage arrays
-                  Currently support only Hashicorp Vault
+                  storageSystemCredentials can either be provided through
+                  a k8s secret or a secret provider class
                 properties:
-                  identifier:
+                  secret:
                     type: string
-                  kvEngine:
-                    type: string
-                  path:
+                  secretProviderClass:
                     type: string
                 type: object
+              oneOf:
+                - required: [secret]
+                - required: [secretProviderClass]
             required:
             - skipCertificateValidation
             type: object
