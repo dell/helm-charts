@@ -23,7 +23,11 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
+                {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
+                name: {{ .Values.redis.useSecretProviderClass.secretProviderClassName }}
+                {{- else }}
                 name: redis-csm-secret
+                {{- end }}
                 key: password
         args:
           - |
@@ -82,11 +86,23 @@ spec:
           mountPath: /etc/redis/
         - name: data
           mountPath: /data
+        {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
+        - name: secrets-store-inline-redis
+          mountPath: "/mnt/secrets-store-redis"
+        {{- end }}
       volumes:
       - name: redis-config
         emptyDir: {}
       - name: data
         emptyDir : {}
+      {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
+      - name: secrets-store-inline-redis
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: {{ .Values.redis.useSecretProviderClass.secretProviderClassName }}
+      {{- end }}
 ---
 apiVersion: v1
 kind: Service
