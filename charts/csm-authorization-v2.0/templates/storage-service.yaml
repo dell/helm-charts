@@ -120,12 +120,10 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        - name: vault-client-certificate
-          mountPath: /etc/vault
         {{- range $entry := .Values.storageSystemCredentials.secretProviderClasses }}
         {{- range $secretproviderclass := $entry }}
         - name: secrets-store-inline-{{ $secretproviderclass }}
-          mountPath: /etc/karavi-authorization/{{ $secretproviderclass }}
+          mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
           readOnly: true
         {{- end }}
         {{- end }}
@@ -136,11 +134,6 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      - name: vault-client-certificate
-        projected:
-          sources:
-          - secret:
-              name: storage-service-selfsigned-tls
       {{- range $entry := .Values.storageSystemCredentials.secretProviderClasses }}
       {{- range $secretproviderclass := $entry }}
       - name: secrets-store-inline-{{ $secretproviderclass }}
@@ -151,53 +144,3 @@ spec:
             secretProviderClass: "{{ $secretproviderclass }}"
       {{- end }}
       {{- end }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: storage-service
-  namespace: {{ include "custom.namespace" . }}
-spec:
-  selector:
-    app: storage-service
-  ports:
-  - port: 50051
-    targetPort: 50051
-    name: grpc
-  - port: 2112
-    targetPort: 2112
-    name: promhttp
----
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: storage-service-selfsigned
-  namespace: {{ include "custom.namespace" . }}
-spec:
-  selfSigned: {}
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: storage-service-selfsigned
-  namespace: {{ include "custom.namespace" . }}
-spec:
-  secretName: storage-service-selfsigned-tls
-  duration: 2160h # 90d
-  renewBefore: 360h # 15d
-  subject:
-    organizations:
-    - dellemc
-  isCA: false
-  privateKey:
-    algorithm: RSA
-    encoding: PKCS1
-    size: 2048
-  usages:
-    - client auth
-  dnsNames:
-  - csm-authorization-storage-service
-  issuerRef:
-    name: storage-service-selfsigned
-    kind: Issuer
-    group: cert-manager.io
