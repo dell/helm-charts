@@ -26,8 +26,6 @@ spec:
       {{- end}}
     {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
     secretName: user-provided-tls
-    {{- else if eq .Values.authorization.useSecretProviderClass.enabled true}}
-    secretName: {{ .Values.authorization.useSecretProviderClass.TSLSecretProviderClass }}
     {{- else }}
     secretName: karavi-selfsigned-tls
     {{- end }}

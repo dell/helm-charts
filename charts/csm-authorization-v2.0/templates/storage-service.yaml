@@ -103,11 +103,7 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
-                name: {{ .Values.redis.useSecretProviderClass.secretProviderClassName }}
-                {{- else }}
                 name: redis-csm-secret
-                {{- end }}
                 key: password
         args:
           - "--redis-sentinel={{ $str }}"
@@ -124,50 +120,34 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- range $entry := .Values.storage-system-credentials.secretProviderClasses }}
-        {{- range $system, $secretproviderclass := $entry }}
-        - name: secrets-store-inline-{{ $system }}
+        {{- range $entry := .Values.storageSystemCredentials.secretProviderClasses }}
+        {{- range $secretproviderclass := $entry }}
+        - name: secrets-store-inline-{{ $secretproviderclass }}
           mountPath: /etc/karavi-authorization/{{ $secretproviderclass }}
           readOnly: true
         {{- end }}
         {{- end }}
-        {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
-        - name: secrets-store-inline-redis
-          mountPath: "/mnt/secrets-store-redis"
-        {{- end }}
       volumes:
-      {{- if eq .Values.authorization.useSecretProviderClass.enabled true }}
-      - name: config-volume
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: {{ .Values.authorization.useSecretProviderClass.JWTSecretProviderClass }}
-      {{- else }}
       - name: config-volume
         secret:
         secretName: karavi-config-secret
-      {{- end }}
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- range $entry := .Values.storage-system-credentials.secretProviderClasses }}
-      {{- range $system, $secretproviderclass := $entry }}
-      - name: secrets-store-inline-{{ $system }}
+      - name: vault-client-certificate
+        projected:
+          sources:
+          - secret:
+              name: storage-service-selfsigned-tls
+      {{- range $entry := .Values.storageSystemCredentials.secretProviderClasses }}
+      {{- range $secretproviderclass := $entry }}
+      - name: secrets-store-inline-{{ $secretproviderclass }}
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
             secretProviderClass: "{{ $secretproviderclass }}"
       {{- end }}
-      {{- end }}
-      {{- if eq .Values.redis.useSecretProviderClass.enabled true }}
-      - name: secrets-store-inline-redis
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: {{ .Values.redis.useSecretProviderClass.secretProviderClassName }}
       {{- end }}
 ---
 apiVersion: v1
@@ -219,4 +199,3 @@ spec:
     name: storage-service-selfsigned
     kind: Issuer
     group: cert-manager.io
-{{- end }}

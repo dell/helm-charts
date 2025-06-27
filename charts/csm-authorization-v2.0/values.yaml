@@ -16,14 +16,6 @@ cert-manager:
   enabled: true
 
 authorization:
-  # optional parameters
-  # This parameter is used for the TLS certificate
-  # the certificate can be provided on helm install or using a SecretProviderClass
-  useSecretProviderClass:
-    enabled: false
-    TSLSecretProviderClass: secretProviderClassName
-    JWTSecretProviderClass: secretProviderClassName
-
   # images to use in installation
   images:
     proxyService:
@@ -92,12 +84,6 @@ redis:
       image: redis:7.4.2-alpine
     commander:
       image: rediscommander/redis-commander:latest
-
-  # optional parameters
-  # the current k8s secret will be used if a SecretProviderClass is not provided
-  useSecretProviderClass:
-    enabled: false
-    secretProviderClass: secretProviderClassName
 
 storageSystemCredentials:
   secretProviderClasses:
