@@ -120,6 +120,8 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
+        - name: vault-client-certificate
+          mountPath: /etc/vault
         {{- range $entry := .Values.storageSystemCredentials.secretProviderClasses }}
         {{- range $secretproviderclass := $entry }}
         - name: secrets-store-inline-{{ $secretproviderclass }}
@@ -130,7 +132,7 @@ spec:
       volumes:
       - name: config-volume
         secret:
-        secretName: karavi-config-secret
+          secretName: karavi-config-secret
       - name: csm-config-params
         configMap:
           name: csm-config-params
