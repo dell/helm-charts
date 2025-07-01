@@ -81,10 +81,14 @@ redis:
   replicas: 5
   images:
     redis:
-      image: redis:7.4.2-alpine
+      image: redis:7.4.3-alpine
     commander:
       image: rediscommander/redis-commander:latest
 
+# Storage system credentials can be provided in one of two ways:
+# 1. Using a SecretProviderClass (for dynamic secrets from external providers)
+# 2. Using a Kubernetes Secret (for static credentials)
+# Only one of the two should be specified at a time.
 storageSystemCredentials:
   secretProviderClasses:
     - system1: secretProviderClassName

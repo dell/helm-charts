@@ -79,9 +79,9 @@ spec:
                 type: object
                 x-kubernetes-validations:
                 - message: Only one of secretProviderClass or secret can be set.
-                  rule: '!(has(self.SecretProviderClass) && has(self.Secret))'
-                - message: Only one of secretProviderClass or secret can be set.
-                  rule: has(self.SecretProviderClass) || has(self.Secret)
+                  rule: '!(has(self.secretProviderClass) && has(self.secret))'
+                - message: One of secretProviderClass or secret must be set.
+                  rule: has(self.secretProviderClass) || has(self.secret)
               systemID:
                 description: |-
                   SystemID is the storage array unique identifier. It can vary from storage type to storage type.
