@@ -144,3 +144,19 @@ spec:
             secretProviderClass: "{{ $secretproviderclass }}"
       {{- end }}
       {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  selector:
+    app: storage-service
+  ports:
+  - port: 50051
+    targetPort: 50051
+    name: grpc
+  - port: 2112
+    targetPort: 2112
+    name: promhttp
