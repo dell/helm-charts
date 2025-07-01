@@ -40,23 +40,23 @@ spec:
             description: StorageSpec defines the desired state of Storage
             properties:
               endpoint:
-                  description: |-
-                    EndPoint is the storage array endpoint.
-                    Example:
-                    PowerFlex: https://[URL]
-                    PowerMax: https://[URL]:[PORT]
-                    PowerScale: https://[URL]:[PORT]
-                  type: string
+                description: |-
+                  EndPoint is the storage array endpoint.
+                  Example:
+                  PowerFlex: https://[URL]
+                  PowerMax: https://[URL]:[PORT]
+                  PowerScale: https://[URL]:[PORT]
+                type: string
               isiPath:
                 description: |-
                   IsiPath the base path for the volumes to be created on PowerScale cluster
                   Needed only for PowerScale
                 type: string
               pollInterval:
-                  description:
-                    PollInterval is the polling frequency to test the storage
-                    connectivity
-                  type: string
+                description:
+                  PollInterval is the polling frequency to test the storage
+                  connectivity
+                type: string
               skipCertificateValidation:
                 description: SkipCertificateValidation is the flag to skip certificate
                   validation
@@ -79,10 +79,10 @@ spec:
                     type: object
                 type: object
                 x-kubernetes-validations:
-                  - message: Only one of secretProviderClass or secret can be set.
-                    rule: "!(has(self.secretProviderClass) && has(self.secret))"
-                  - message: Only one of secretProviderClass or secret can be set.
-                    rule: has(self.secretProviderClass) || has(self.secret)
+                - message: Only one of secretProviderClass or secret can be set.
+                  rule: "!(has(self.secretProviderClass) && has(self.secret))"
+                - message: Only one of secretProviderClass or secret can be set.
+                  rule: has(self.secretProviderClass) || has(self.secret)
               systemID:
                 description: SystemID is the storage array system ID
                 type: string
