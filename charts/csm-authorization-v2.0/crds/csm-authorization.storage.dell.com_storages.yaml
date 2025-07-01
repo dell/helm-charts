@@ -53,8 +53,7 @@ spec:
                   Needed only for PowerScale
                 type: string
               pollInterval:
-                description:
-                  PollInterval is the polling frequency to test the storage
+                description: PollInterval is the polling frequency to test the storage
                   connectivity
                 type: string
               skipCertificateValidation:
@@ -63,8 +62,8 @@ spec:
                 type: boolean
               storageSystemCredentials:
                 description: |-
-                  StorageSystemCredentials stores the storage system credentials
-                  Currently support standard k8s secret and secret provider class
+                  StorageSystemCredentials is the storage arrays credenial secret
+                  Currently supports SecretProviderClasses and Kubernetes Secrets
                 properties:
                   secret:
                     type: string
@@ -80,14 +79,17 @@ spec:
                 type: object
                 x-kubernetes-validations:
                 - message: Only one of secretProviderClass or secret can be set.
-                  rule: "!(has(self.secretProviderClass) && has(self.secret))"
-                - message: Only one of secretProviderClass or secret can be set.
+                  rule: '!(has(self.secretProviderClass) && has(self.secret))'
+                - message: One of secretProviderClass or secret must be set.
                   rule: has(self.secretProviderClass) || has(self.secret)
               systemID:
-                description: SystemID is the storage array system ID
+                description: |-
+                  SystemID is the storage array unique identifier. It can vary from storage type to storage type.
+                  Please contact the storage administrator for more details on how to obtain it.
                 type: string
               type:
-                description: Type is the storage array type
+                description: 'Type is the storage array type, Example: powerflex,
+                  powermax, powerscale'
                 type: string
             required:
             - skipCertificateValidation
