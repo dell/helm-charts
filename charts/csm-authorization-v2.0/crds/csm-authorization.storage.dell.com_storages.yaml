@@ -76,6 +76,8 @@ spec:
                       usernameObjectName:
                         type: string
                     type: object
+                required:
+                - secretProviderClass
                 type: object
                 x-kubernetes-validations:
                 - message: Only one of secretProviderClass or secret can be set.
@@ -93,6 +95,7 @@ spec:
                 type: string
             required:
             - skipCertificateValidation
+            - storageSystemCredentials
             type: object
           status:
             description: StorageStatus defines the observed state of Storage
