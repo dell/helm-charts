@@ -91,6 +91,6 @@ redis:
 # Only one of the two should be specified at a time.
 storageSystemCredentials:
   secretProviderClasses:
-    - system1: secretProviderClassName
-    # - system2: secretProviderClassName2
-    # - system3: secretProviderClassName3
+    - secretProviderClassName
+    # - secretProviderClassName2
+    # - secretProviderClassName3
