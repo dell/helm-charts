@@ -121,10 +121,8 @@ spec:
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
         {{- range .Values.authorization.storageSystemCredentials.secrets }}
-        {{- range $system, $secret := . }}
-        - name: storage-system-secrets-{{ $system }}
-          mountPath: /etc/csm-authorization/creds/{{ $secret }}
-        {{- end }}
+        - name: storage-system-secrets-{{ . }}
+          mountPath: /etc/csm-authorization/creds/{{ . }}
         {{- end }}
       volumes:
       - name: config-volume
@@ -134,11 +132,9 @@ spec:
         configMap:
           name: csm-config-params
       {{- range .Values.authorization.storageSystemCredentials.secrets }}
-      {{- range $system, $secret := . }}
-      - name: storage-system-secrets-{{ $system }}
+      - name: storage-system-secrets-{{ . }}
         secret:
-          secretName: {{ $secret }}
-      {{- end }}
+          secretName: {{ . }}
       {{- end }}
 ---
 apiVersion: v1
