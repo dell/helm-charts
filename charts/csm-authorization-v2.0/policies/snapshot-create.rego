@@ -18,19 +18,19 @@ import data.karavi.common
 
 default allow := false
 
-allow {
+allow if {
 	count(permitted_roles) == count(input.request)
 	count(deny) == 0
 }
 
 # Deny if there are no roles found.
-deny[msg] {
+deny[msg] if {
 	common.roles == {}
 	msg := sprintf("no configured roles", [])
 }
 
 # Deny if claimed roles has no match for the request.
-deny[msg] {
+deny[msg] if {
 	count(permitted_roles) != count(input.request)
 
 	unpermitted_requests := [req |
@@ -55,17 +55,17 @@ deny[msg] {
 }
 
 # No OR in OPA, multiple rules are needed.
-size_is_valid(a, b) {
+size_is_valid(a, b) if {
 	to_number(a) >= to_number(b)
 }
 
 # No OR in OPA, multiple rules are needed.
-size_is_valid(a, _) {
+size_is_valid(a, _) if {
 	to_number(a) == 0
 }
 
 # Create a list of permitted roles.
-permitted_roles[snapshot] := roles {
+permitted_roles[snapshot] := roles if {
 	# Split the claimed roles by comma into an array.
 	claimed_roles := split(input.claims.roles, ",")
 
