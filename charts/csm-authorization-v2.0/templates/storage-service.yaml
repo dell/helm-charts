@@ -129,10 +129,8 @@ spec:
         - name: storage-system-secrets
           mountPath: /etc/karavi-authorization/creds
         {{- range .Values.authorization.storageSystemCredentials.secrets }}
-        {{- range $system, $secret := . }}
-        - name: storage-system-secrets-{{ $system }}
-          mountPath: /etc/csm-authorization/creds/{{ $secret }}
-        {{- end }}
+        - name: storage-system-secrets-{{ . }}
+          mountPath: /etc/csm-authorization/creds/{{ . }}
         {{- end }}
       volumes:
       - name: config-volume
