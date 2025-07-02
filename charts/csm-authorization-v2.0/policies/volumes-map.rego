@@ -24,19 +24,17 @@ response = {
     "status": {
         "reason": reason,
     },
-} {
+} if {
     reason = concat(", ", deny)
     reason != ""
 }
 
-deny[msg] {
+deny contains "no role data found" if {
   common.roles == {}
-  msg := sprintf("no role data found", [])
 }
 
 default claims = {}
 claims = input.claims
-deny[msg] {
+deny contains "missing claims" if {
   claims == {}
-  msg := sprintf("missing claims", [])
 }

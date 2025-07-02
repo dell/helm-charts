@@ -23,7 +23,7 @@ default allow = false
 # Allows the request if one of the claimed roles matches
 # a role configured to allow the storage request.
 #
-allow {
+allow if {
   count(permitted_roles) != 0
   count(deny) == 0
 }
@@ -31,7 +31,7 @@ allow {
 #
 # Deny if there are no roles found.
 #
-deny[msg] {
+deny[msg] if {
   common.roles == {}
   msg := sprintf("no configured roles", [])
 }
@@ -39,7 +39,7 @@ deny[msg] {
 #
 # Deny if claimed roles has no match for the request.
 #
-deny[msg] {
+deny[msg] if {
   count(permitted_roles) == 0
   msg := sprintf("no roles in [%s] allow the %v Kb request on %s/%s/%s",
            [input.claims.roles,
@@ -57,7 +57,7 @@ deny[msg] {
 #
 # Example: { "role-1": 800000 }
 #
-permitted_roles[v] = y {
+permitted_roles[v] = y if {
   # Split the claimed roles by comma into an array.
   claimed_roles := split(input.claims.roles, ",")
 
@@ -76,7 +76,7 @@ permitted_roles[v] = y {
 # These are the permitted roles that are configured
 # with zero quota, meaning infinite capacity.
 #
-permitted_roles[v] = y {
+permitted_roles[v] = y if {
   # Split the claimed roles by comma into an array.
   claimed_roles := split(input.claims.roles, ",")
 

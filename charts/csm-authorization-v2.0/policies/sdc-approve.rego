@@ -27,14 +27,13 @@ response = {
     "status": {
         "reason": reason,
     },
-} {
+} if {
     reason = concat(", ", deny)
     reason != ""
 }
 
 default claims = {}
 claims = input.claims
-deny[msg] {
+deny contains "missing claims" if {
   claims == {}
-  msg := sprintf("missing claims", [])
 }
