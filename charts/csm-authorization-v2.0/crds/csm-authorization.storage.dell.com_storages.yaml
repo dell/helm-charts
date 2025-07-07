@@ -53,8 +53,7 @@ spec:
                   Needed only for PowerScale
                 type: string
               pollInterval:
-                  description:
-                    PollInterval is the polling frequency to test the storage
+                  description: PollInterval is the polling frequency to test the storage
                     connectivity
                   type: string
               skipCertificateValidation:
