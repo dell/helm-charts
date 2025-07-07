@@ -78,8 +78,6 @@ spec:
                       usernameObjectName:
                         type: string
                     type: object
-                required:
-                - secretProviderClass
                 type: object
                 x-kubernetes-validations:
                 - message: Exactly one of secretProviderClass or secret must be set.
