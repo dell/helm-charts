@@ -125,9 +125,6 @@ spec:
           mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
           readOnly: true
         {{- end }}
-        {{- if .Values.authorization.storageSystemCredentials.secrets }}
-        - name: storage-system-secrets
-          mountPath: /etc/karavi-authorization/creds
         {{- range .Values.authorization.storageSystemCredentials.secrets }}
         - name: storage-system-secrets-{{ . }}
           mountPath: /etc/csm-authorization/{{ . }}
@@ -147,17 +144,10 @@ spec:
           volumeAttributes:
             secretProviderClass: "{{ $secretproviderclass }}"
       {{- end }}
-
-      {{- if .Values.authorization.storageSystemCredentials.secrets }}
-      - name: storage-system-secrets
-        projected:
-          sources:
-        {{- range .Values.authorization.storageSystemCredentials.secrets }}
-        {{- range $key, $val := . }}
-          - secret:
-              name: {{ $val }}
-        {{- end }}
-        {{- end }}
+      {{- range .Values.authorization.storageSystemCredentials.secrets }}
+      - name: storage-system-secrets-{{ . }}
+        secret:
+          secretName: {{ . }}
       {{- end }}
 ---
 apiVersion: v1

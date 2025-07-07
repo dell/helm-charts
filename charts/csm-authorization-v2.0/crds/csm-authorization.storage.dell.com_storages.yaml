@@ -63,7 +63,7 @@ spec:
                 type: boolean
               storageSystemCredentials:
                 description: |-
-                  StorageSystemCredentials is the storage arrays credenial secret
+                  StorageSystemCredentials is the storage arrays credential secret
                   Currently supports SecretProviderClasses and Kubernetes Secrets
                 properties:
                   secret:
