@@ -32,19 +32,6 @@ authorization:
       image: docker.io/openpolicyagent/opa:0.70.0
     opaKubeMgmt:
       image: openpolicyagent/kube-mgmt:8.5.12
-  # Storage system credentials can be provided in one of two ways:
-  # 1. Using a SecretProviderClass (for dynamic secrets from external providers)
-  # 2. Using a Kubernetes Secret (for static credentials)
-  # Only one of the two can be specified at a time.
-  storageSystemCredentials:
-    secretProviderClasses:
-      - secretProviderClassName
-      # - secretProviderClassName2
-      # - secretProviderClassName3
-    # secrets:
-    #   - system1: secret-1
-    #   - system2: secret-2
-    #   - system3: secret-3
 
   # proxy-server ingress will use this hostname
   # NOTE: additional hostnames can be configured in authorization.proxyServerIngress.hosts
@@ -97,3 +84,17 @@ redis:
       image: redis:7.4.3-alpine
     commander:
       image: rediscommander/redis-commander:latest
+
+# Storage system credentials can be provided in one of two ways:
+# 1. Using a SecretProviderClass (for dynamic secrets from external providers)
+# 2. Using a Kubernetes Secret (for static credentials)
+# Only one of the two can be specified at a time.
+storageSystemCredentials:
+  secretProviderClasses:
+    - secretProviderClassName
+    # - secretProviderClassName2
+    # - secretProviderClassName3
+  # secrets:
+  #   - system1: secret-1
+  #   - system2: secret-2
+  #   - system3: secret-3
