@@ -169,11 +169,11 @@ karaviMetricsPowermax:
     skipCertificateValidation: true
 
 otelCollector:
-  image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.128.0
+  image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.129.1
   service:
     type: ClusterIP
   nginxProxy:
-    image: nginxinc/nginx-unprivileged:1.27
+    image: nginxinc/nginx-unprivileged:1.29
 # Karavi-observability requires cert-manager. If cert-manager is already present in cluster, set enabled to false not to install it.
 cert-manager:
   enabled: true
