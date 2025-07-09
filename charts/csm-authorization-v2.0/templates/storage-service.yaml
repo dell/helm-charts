@@ -128,6 +128,7 @@ spec:
         {{- range .Values.storageSystemCredentials.secrets }}
         - name: storage-system-secrets-{{ . }}
           mountPath: /etc/csm-authorization/{{ . }}
+          readOnly: true
         {{- end }}
       volumes:
       - name: config-volume
