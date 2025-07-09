@@ -90,14 +90,14 @@ global:
 
 # Current version of the driver
 # Don't modify this value as this value will be used by the install script
-version: "v2.14.0"
+version: "v2.14.1"
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-powermax:v2.14.0
+    image: quay.io/dell/container-storage-modules/csi-powermax:v2.14.1
   csireverseproxy:
     image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.13.0
   # CSI sidecars
