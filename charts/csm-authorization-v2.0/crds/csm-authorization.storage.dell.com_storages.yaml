@@ -40,7 +40,12 @@ spec:
             description: StorageSpec defines the desired state of Storage
             properties:
               endpoint:
-                description: EndPoint is the storage array endpoint
+                description: |-
+                  EndPoint is the storage array endpoint.
+                  Example:
+                  PowerFlex: https://[URL]
+                  PowerMax: https://[URL]:[PORT]
+                  PowerScale: https://[URL]:[PORT]
                 type: string
               isiPath:
                 description: |-
@@ -48,32 +53,46 @@ spec:
                   Needed only for PowerScale
                 type: string
               pollInterval:
-                description: PollInterval is the interval to poll the storage array
-                type: string
+                  description: PollInterval is the polling frequency to test the storage
+                    connectivity
+                  type: string
               skipCertificateValidation:
                 description: SkipCertificateValidation is the flag to skip certificate
                   validation
                 type: boolean
+              storageSystemCredentials:
+                description: |-
+                  StorageSystemCredentials is the storage arrays credential secret
+                  Currently supports SecretProviderClasses and Kubernetes Secrets
+                properties:
+                  secret:
+                    description: secret is a k8s secret storing storage system credentials
+                    type: string
+                  secretProviderClass:
+                    properties:
+                      name:
+                        type: string
+                      passwordObjectName:
+                        type: string
+                      usernameObjectName:
+                        type: string
+                    type: object
+                type: object
+                x-kubernetes-validations:
+                - message: Exactly one of secretProviderClass or secret must be set.
+                  rule: has(self.secretProviderClass) != has(self.secret)
               systemID:
-                description: SystemID is the storage array system ID
+                description: |-
+                  SystemID is the storage array unique identifier. It can vary from storage type to storage type.
+                  Please contact the storage administrator for more details on how to obtain it.
                 type: string
               type:
-                description: Type is the storage array type
+                description: 'Type is the storage array type, Example: powerflex,
+                  powermax, powerscale'
                 type: string
-              vault:
-                description: |-
-                  Vault is the credential manager for storage arrays
-                  Currently support only Hashicorp Vault
-                properties:
-                  identifier:
-                    type: string
-                  kvEngine:
-                    type: string
-                  path:
-                    type: string
-                type: object
             required:
             - skipCertificateValidation
+            - storageSystemCredentials
             type: object
           status:
             description: StorageStatus defines the observed state of Storage
