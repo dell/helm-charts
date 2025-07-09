@@ -98,7 +98,6 @@ spec:
     spec:
       serviceAccount: proxy-server
       containers:
-
       - name: proxy-server
         image: {{ required "Must provide the proxy-server image." .Values.authorization.images.proxyService.image }}
         imagePullPolicy: Always
