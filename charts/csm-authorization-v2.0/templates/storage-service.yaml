@@ -73,6 +73,14 @@ metadata:
   namespace: {{ include "custom.namespace" . }}
   labels:
     app: storage-service
+    annotations:
+    {{ -if .Values.storageSystemCredentials.conjurSecretProviderClasses }}
+      conjur.org/secrets: |
+      {{- range $secretproviderclass := .Values.storageSystemCredentials.conjurSecretProviderClasses }}
+        - "{{ $secretproviderclass.name}}/username.txt": {{ $secretproviderclass.usernamePath }}
+        - "{{ $secretproviderclass.name}}/password.txt": {{ $secretproviderclass.passwordPath }}
+      {{- end }}
+    {{ - end }}
 spec:
   replicas: 1
   selector:
@@ -119,9 +127,14 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- range $secretproviderclass := .Values.storageSystemCredentials.secretProviderClasses }}
+        {{- range $secretproviderclass := .Values.storageSystemCredentials.vaultSecretProviderClasses }}
         - name: secrets-store-inline-{{ $secretproviderclass }}
           mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
+          readOnly: true
+        {{- end }}
+        {{- range $secretproviderclass := .Values.storageSystemCredentials.conjurSecretProviderClasses }}
+        - name: secrets-store-inline-{{ $secretproviderclass.name }}
+          mountPath: /etc/csm-authorization/{{ $secretproviderclass.name }}
           readOnly: true
         {{- end }}
         {{- range .Values.storageSystemCredentials.secrets }}
@@ -141,13 +154,21 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- range $secretproviderclass := .Values.storageSystemCredentials.secretProviderClasses }}
+      {{- range $secretproviderclass := .Values.storageSystemCredentials.vaultSecretProviderClasses }}
       - name: secrets-store-inline-{{ $secretproviderclass }}
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
             secretProviderClass: "{{ $secretproviderclass }}"
+      {{- end }}
+      {{- range $secretproviderclass := .Values.storageSystemCredentials.conjurSecretProviderClasses }}
+      - name: secrets-store-inline-{{ $secretproviderclass.name }}
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "{{ $secretproviderclass.name }}"
       {{- end }}
       {{- range .Values.storageSystemCredentials.secrets }}
       - name: storage-system-secrets-{{ . }}
