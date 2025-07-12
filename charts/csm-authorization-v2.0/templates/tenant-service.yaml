@@ -33,7 +33,11 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
+                {{- if .Values.redis-csm.redisSecretProviderClass }}
+                name: {{ .Values.redis-csm.redisSecretProviderClass }}
+                {{- else }}
                 name: redis-csm-secret
+                {{- end }}
                 key: password
         args:
           - "--redis-sentinel={{ $str }}"

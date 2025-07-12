@@ -74,8 +74,11 @@ authorization:
   # storage capacity poll interval
   storageCapacityPollInterval: 30m
 
-redis:
+redis-csm:
   name: redis-csm
+  # Redis secret configuration:
+  # Use a SecretProviderClass for Redis credentials; otherwise, a default Kubernetes secret is used.
+  redisSecretProviderClass: ""
   sentinel: sentinel
   rediscommander: rediscommander
   replicas: 5
