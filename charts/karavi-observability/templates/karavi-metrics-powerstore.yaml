@@ -11,9 +11,9 @@ metadata:
 spec:
   type: {{ .Values.karaviMetricsPowerstore.service.type }}
   ports:
-    - name: karavi-metrics-powerstore
-      port: 9090
-      targetPort: 9090
+  - name: karavi-metrics-powerstore
+    port: 9090
+    targetPort: 9090
   selector:
     app.kubernetes.io/name: karavi-metrics-powerstore
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -43,30 +43,30 @@ spec:
     spec:
       serviceAccount: {{ .Release.Name }}-metrics-powerstore-controller
       containers:
-        - name: karavi-metrics-powerstore
-          image: {{ .Values.karaviMetricsPowerstore.image }}
-          resources: {}
-          env:
-            - name: POWERSTORE_METRICS_ENDPOINT
-              value: "{{ .Values.karaviMetricsPowerstore.endpoint }}"
-            - name: POWERSTORE_METRICS_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: TLS_ENABLED
-              value: "true"
-          volumeMounts:
-            - name: karavi-metrics-powerstore-secret-volume
-              mountPath: "/certs"
-            - name: powerstore-config
-              mountPath: /powerstore-config
-            - name: tls-secret
-              mountPath: /etc/ssl/certs
-              readOnly: true
-            - name: karavi-metrics-powerstore-configmap
-              mountPath: /etc/config
-      {{- if hasKey .Values.karaviMetricsPowerstore "authorization" }}
-      {{- if eq .Values.karaviMetricsPowerstore.authorization.enabled true }}
+      - name: karavi-metrics-powerstore
+        image: {{ .Values.karaviMetricsPowerstore.image }}
+        resources: {}
+        env:
+        - name: POWERSTORE_METRICS_ENDPOINT
+          value: "{{ .Values.karaviMetricsPowerstore.endpoint }}"
+        - name: POWERSTORE_METRICS_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: TLS_ENABLED
+          value: "true"
+        volumeMounts:
+        - name: karavi-metrics-powerstore-secret-volume
+          mountPath: "/certs"
+        - name: powerstore-config
+          mountPath: /powerstore-config
+        - name: tls-secret
+          mountPath: /etc/ssl/certs
+          readOnly: true
+        - name: karavi-metrics-powerstore-configmap
+          mountPath: /etc/config
+      {{- if hasKey .Values.karaviMetricsPowerscale "authorization" }}
+      {{- if eq .Values.karaviMetricsPowerscale.authorization.enabled true }}
       - name: karavi-authorization-proxy
         imagePullPolicy: IfNotPresent
         image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowerstore.authorization.sidecarProxy.image }}
@@ -97,37 +97,26 @@ spec:
       {{ end }}
       {{ end }}
       volumes:
-        - name: karavi-metrics-powerstore-secret-volume
-          secret:
-            secretName: karavi-metrics-powerstore-tls
-            items:
-              - key: tls.crt
-                path: localhost.crt
-              - key: tls.key
-                path: localhost.key
-        - name: powerstore-config
-          secret:
-            secretName: powerstore-config
-        - name: tls-secret
-          secret:
-            secretName: otel-collector-tls
-            items:
-              - key: tls.crt
-                path: cert.crt
-        - name: karavi-metrics-powerstore-configmap
-          configMap:
-            name: karavi-metrics-powerstore-configmap
-        {{- if and (hasKey .Values.karaviMetricsPowerstore "authorization") (eq .Values.karaviMetricsPowerstore.authorization.enabled true) }}
-        - name: karavi-authorization-config
-          secret:
-            secretName: powerstore-karavi-authorization-config
-        - name: proxy-server-root-certificate
-          secret:
-            secretName: powerstore-proxy-server-root-certificate
-        - name: powerstore-config-params
-          configMap:
-            name: powerstore-config-params
-        {{- end }}
+      - name: karavi-metrics-powerstore-secret-volume
+        secret:
+          secretName: karavi-metrics-powerstore-tls
+          items:
+            - key: tls.crt
+              path: localhost.crt
+            - key: tls.key
+              path: localhost.key
+      - name: powerstore-config
+        secret:
+          secretName: powerstore-config
+      - name: tls-secret
+        secret:
+          secretName: otel-collector-tls
+          items:
+            - key: tls.crt
+              path: cert.crt
+      - name: karavi-metrics-powerstore-configmap
+        configMap:
+          name: karavi-metrics-powerstore-configmap
       restartPolicy: Always
 status: {}
 
