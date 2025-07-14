@@ -149,7 +149,7 @@ spec:
             - name: SKIP_CERTIFICATE_VALIDATION
               value: "{{ .Values.authorization.skipCertificateValidation }}"
             - name: PLUGIN_IDENTIFIER
-              value: powerscale
+              value: powerstore
             - name: ACCESS_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -165,7 +165,7 @@ spec:
               mountPath: /etc/karavi-authorization/config
             - name: proxy-server-root-certificate
               mountPath: /etc/karavi-authorization/root-certificates
-            - name: csi-isilon-config-params
+            - name: powerstore-config-params
               mountPath: /etc/karavi-authorization
         {{ end }}
         {{ end }}
