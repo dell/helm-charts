@@ -509,18 +509,18 @@ spec:
         - name: powerstore-config
           secret:
             secretName: {{ .Release.Name }}-config
-      {{- if hasKey .Values.karaviMetricsPowerstore "authorization" }}
-      {{- if eq .Values.authorization.enabled true }}
+      {{- if hasKey .Values "authorization" }}
+        {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
-          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
           env:
             - name: PROXY_HOST
               value: "{{ .Values.authorization.proxyHost }}"
             - name: SKIP_CERTIFICATE_VALIDATION
               value: "{{ .Values.authorization.skipCertificateValidation }}"
             - name: PLUGIN_IDENTIFIER
-              value: powerstore
+              value: powerscale
             - name: ACCESS_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -536,10 +536,10 @@ spec:
               mountPath: /etc/karavi-authorization/config
             - name: proxy-server-root-certificate
               mountPath: /etc/karavi-authorization/root-certificates
-            - name: powerstore-config-params
+            - name: csi-isilon-config-params
               mountPath: /etc/karavi-authorization
-      {{- end }}
-      {{- end }}
+        {{ end }}
+        {{ end }}
 {{- if ge (int .Values.certSecretCount) 1 }}
         - name: certs
           projected:
