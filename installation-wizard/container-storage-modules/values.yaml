@@ -49,7 +49,7 @@ csi-powerstore:
     metadataretriever:
       image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.12.0
     authorization:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
   ## Controller ATTRIBUTES
   controller:
     controllerCount: 2
