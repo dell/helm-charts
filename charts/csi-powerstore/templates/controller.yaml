@@ -512,7 +512,7 @@ spec:
       {{- if hasKey .Values.karaviMetricsPowerstore "authorization" }}
       {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
-          image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowerstore.authorization.sidecarProxy.image }}
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: PROXY_HOST
