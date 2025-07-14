@@ -424,6 +424,8 @@ spec:
             {{- end }}
             - name: CSI_ENDPOINT
               value: /var/run/csi/csi.sock
+            - name: SSL_CERT_DIR
+              value: /certs
             - name: CSI_RETRIEVER_ENDPOINT
               value: /var/run/csi/csi_retriever.sock
             - name: X_CSI_MODE
@@ -495,6 +497,9 @@ spec:
               mountPath: /powerstore-config
             - name: powerstore-config-params
               mountPath: /powerstore-config-params
+            - name: certs
+              mountPath: /certs
+              readOnly: true
       volumes:
         - name: socket-dir
           emptyDir:
@@ -504,9 +509,8 @@ spec:
         - name: powerstore-config
           secret:
             secretName: {{ .Release.Name }}-config
-
-        {{- if hasKey .Values.karaviMetricsPowerstore "authorization" }}
-        {{- if eq .Values.karaviMetricsPowerstore.authorization.enabled true }}
+      {{- if hasKey .Values.karaviMetricsPowerstore "authorization" }}
+      {{- if eq .Values.karaviMetricsPowerstore.authorization.enabled true }}
         - name: karavi-authorization-proxy
           imagePullPolicy: IfNotPresent
           image: {{ required "Must provide the authorization sidecar container image." .Values.karaviMetricsPowerstore.authorization.sidecarProxy.image }}
@@ -534,8 +538,8 @@ spec:
               mountPath: /etc/karavi-authorization/root-certificates
             - name: powerstore-config-params
               mountPath: /etc/karavi-authorization
-        {{- end }}
-        {{- end }}
+      {{- end }}
+      {{- end }}
 
       {{- if hasKey .Values.karaviMetricsPowerstore "authorization" }}
       {{- if eq .Values.karaviMetricsPowerstore.authorization.enabled true }}
@@ -550,3 +554,15 @@ spec:
           name: powerstore-config-params
       {{- end }}
       {{- end }}
+{{- if ge (int .Values.certSecretCount) 1 }}
+        - name: certs
+          projected:
+            sources:
+{{- range $i, $e := until (int .Values.certSecretCount ) }}
+              - secret:
+                  name: {{ print $.Release.Name "-certs-" $e }}
+                  items:
+                    - key: cert-{{ $e }}
+                      path: cert-{{ $e }}
+{{- end }}
+{{- end }}

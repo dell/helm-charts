@@ -41,7 +41,6 @@ spec:
               secretKeyRef:
                 name: redis-csm-secret
                 key: password
-
         command: [ "sh", "-c" ]
         args:
           - |
