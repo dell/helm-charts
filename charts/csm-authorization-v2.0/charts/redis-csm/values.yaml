@@ -1,5 +1,8 @@
 name: redis-csm
-redisSecretProviderClass: ""
+redisSecretProviderClass:
+  redisSecretName:
+  redisUsernameKey: username
+  redisPasswordKey: password
 sentinel: sentinel
 rediscommander: rediscommander
 replicas: 5

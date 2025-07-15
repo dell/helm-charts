@@ -103,12 +103,8 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                {{- if .Values.redis-csm.redisSecretProviderClass }}
-                name: {{ .Values.redis-csm.redisSecretProviderClass }}
-                {{- else }}
-                name: redis-csm-secret
-                {{- end }}
-                key: password
+                name: {{ .Values.redis.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
+                key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey }}
         args:
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
@@ -134,6 +130,11 @@ spec:
           mountPath: /etc/csm-authorization/{{ . }}
           readOnly: true
         {{- end }}
+        {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
+        - name: secrets-store-inline-redis
+          mountPath: /etc/csm-authorization/redis
+          readOnly: true
+        {{- end }}
       volumes:
       - name: config-volume
         secret:
@@ -153,6 +154,14 @@ spec:
       - name: storage-system-secrets-{{ . }}
         secret:
           secretName: {{ . }}
+      {{- end }}
+      {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
+      - name: secrets-store-inline-redis
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "{{ .Values.redis.redisSecretProviderClass.redisSecretName }}"
       {{- end }}
 ---
 apiVersion: v1
