@@ -3,7 +3,7 @@
 
 # "version" is used to verify the values file matches driver version
 # Not recommend to change
-version: v2.13.1
+version: v2.13.2
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
@@ -11,7 +11,7 @@ version: v2.13.1
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.13.1
+    image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.13.2
   # "powerflexSdc" defines the SDC image for init container.
   powerflexSdc:
     image: dellemc/sdc:4.5.2.1
@@ -123,6 +123,12 @@ fsGroupPolicy: File
 # Allowed values: n, where n >= 0
 # Default value: 0
 maxVxflexosVolumesPerNode: 0
+
+# probeTimeout: Specify the timeout limit for controller and node to communicate with the array.
+# Allowed values: 1s, 10s, etc.
+  # In the format of a duration.
+# Default value: 10s
+probeTimeout: "10s"
 
 # "controller" allows to configure controller specific parameters
 controller:

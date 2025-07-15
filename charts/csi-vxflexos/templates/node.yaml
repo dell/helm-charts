@@ -229,6 +229,8 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
+            - name: X_CSI_PROBE_TIMEOUT
+              value: {{ .Values.probeTimeout | default "10s"}}
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com
