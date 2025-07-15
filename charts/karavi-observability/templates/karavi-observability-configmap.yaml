@@ -60,6 +60,8 @@ data:
     POWERSTORE_SPACE_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerstore.spacePollFrequencySeconds }}"
     POWERSTORE_ARRAY_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerstore.arrayPollFrequencySeconds }}"
     POWERSTORE_FILE_SYSTEM_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerstore.filesystemPollFrequencySeconds }}"
+    POWERSTORE_TOPOLOGY_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerstore.topologyMetricsEnabled }}"
+    POWERSTORE_TOPOLOGY_METRICS_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerstore.topologyMetricsPollFrequencySeconds }}"    
     LOG_LEVEL: "{{ .Values.karaviMetricsPowerstore.logLevel }}"
     LOG_FORMAT: "{{ .Values.karaviMetricsPowerstore.logFormat }}"
     ZIPKIN_URI: "{{ .Values.karaviMetricsPowerstore.zipkin.uri }}"
