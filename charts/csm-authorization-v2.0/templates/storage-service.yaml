@@ -83,12 +83,14 @@ spec:
       labels:
         app: storage-service
       annotations:
-      {{- if .Values.storageSystemCredentials.conjurSecretProviderClasses }}
+      {{- if and .Values.storageSystemCredentials.secretProviderClasses (hasKey .Values.storageSystemCredentials.secretProviderClasses "conjur") }}
         conjur.org/secrets: |
-          {{- range $secretproviderclass := .Values.storageSystemCredentials.conjurSecretProviderClasses }}
-          - "{{ $secretproviderclass.name}}/username.txt": {{ $secretproviderclass.usernamePath | quote }}
-          - "{{ $secretproviderclass.name}}/password.txt": {{ $secretproviderclass.passwordPath | quote }}
-        {{- end }}
+          {{- range .Values.storageSystemCredentials.secretProviderClasses.conjur }}
+          {{- range .paths}}
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
+          {{- end }}
       {{- end }}
     spec:
       serviceAccountName: storage-service
@@ -127,16 +129,21 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- range $secretproviderclass := .Values.storageSystemCredentials.vaultSecretProviderClasses }}
+        {{- if and .Values.storageSystemCredentials.secretProviderClasses (hasKey .Values.storageSystemCredentials.secretProviderClasses "vault") }}
+        {{- range $secretproviderclass := .Values.storageSystemCredentials.secretProviderClasses.vault }}
         - name: secrets-store-inline-{{ $secretproviderclass }}
           mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
           readOnly: true
         {{- end }}
-        {{- range $secretproviderclass := .Values.storageSystemCredentials.conjurSecretProviderClasses }}
+        {{- end }}
+        {{- if and .Values.storageSystemCredentials.secretProviderClasses (hasKey .Values.storageSystemCredentials.secretProviderClasses "conjur") }}
+        {{- range $secretproviderclass := .Values.storageSystemCredentials.secretProviderClasses.conjur }}
         - name: secrets-store-inline-{{ $secretproviderclass.name }}
           mountPath: /etc/csm-authorization/{{ $secretproviderclass.name }}
           readOnly: true
         {{- end }}
+        {{- end }}
+        {{- if .Values.storageSystemCredentials.secrets }}
         {{- range .Values.storageSystemCredentials.secrets }}
         - name: storage-system-secrets-{{ . }}
           mountPath: /etc/csm-authorization/{{ . }}
@@ -154,7 +161,8 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- range $secretproviderclass := .Values.storageSystemCredentials.vaultSecretProviderClasses }}
+      {{- if and .Values.storageSystemCredentials.secretProviderClasses (hasKey .Values.storageSystemCredentials.secretProviderClasses "vault") }}
+      {{- range $secretproviderclass := .Values.storageSystemCredentials.secretProviderClasses.vault }}
       - name: secrets-store-inline-{{ $secretproviderclass }}
         csi:
           driver: secrets-store.csi.k8s.io
@@ -162,7 +170,9 @@ spec:
           volumeAttributes:
             secretProviderClass: "{{ $secretproviderclass }}"
       {{- end }}
-      {{- range $secretproviderclass := .Values.storageSystemCredentials.conjurSecretProviderClasses }}
+      {{- end }}
+      {{- if and .Values.storageSystemCredentials.secretProviderClasses (hasKey .Values.storageSystemCredentials.secretProviderClasses "conjur") }}
+      {{- range $secretproviderclass := .Values.storageSystemCredentials.secretProviderClasses.conjur }}
       - name: secrets-store-inline-{{ $secretproviderclass.name }}
         csi:
           driver: secrets-store.csi.k8s.io
@@ -170,6 +180,8 @@ spec:
           volumeAttributes:
             secretProviderClass: "{{ $secretproviderclass.name }}"
       {{- end }}
+      {{- end }}
+      {{- if .Values.storageSystemCredentials.secrets }}
       {{- range .Values.storageSystemCredentials.secrets }}
       - name: storage-system-secrets-{{ . }}
         secret:

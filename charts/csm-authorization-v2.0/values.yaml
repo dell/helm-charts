@@ -103,17 +103,23 @@ redis:
 # 2. Using a Kubernetes Secret (for static credentials)
 # Only one of the two can be specified at a time.
 storageSystemCredentials:
-  # vaultSecretProviderClasses:
-    # - secretProviderClassName1
-    # - secretProviderClassName2
-    # - secretProviderClassName3
-  conjurSecretProviderClasses:
-    - name: credentials-from-conjur
-      usernamePath: secrets/username
-      passwordPath: secrets/password
-    # - name: secretProviderClassName2
-    #   usernamePath: conjur/path/username2
-    #   passwordPath: conjur/path/password2
+  secretProviderClasses:
+    # vault:
+      # - secretProviderClassName1
+      # - secretProviderClassName2
+      # - secretProviderClassName3
+    conjur:
+      - name: secretProviderClassName1
+        paths:
+          - usernamePath: path
+            passwordPath: path
+          # - usernamePath: path
+          #   passwordPath: path
+      # - name: secretProviderClassName2
+      #   paths:
+      #     - usernamePath: path
+      #       passwordPath: path
+
   # secrets:
   #   - secret-1
   #   - secret-2
