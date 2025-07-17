@@ -364,6 +364,17 @@ spec:
             - name: driver-path
               mountPath: /csi
       volumes:
+        # for authorization
+        {{- if hasKey .Values "authorization" }}
+        {{- if eq .Values.authorization.enabled true }}
+        - name: karavi-authorization-config
+          secret:
+            secretName: karavi-authorization-config
+        - name: proxy-server-root-certificate
+          secret:
+            secretName: {{ .Release.Name }}-proxy-server-root-certificate
+        {{ end }}
+        {{ end }}
         # for Shared NFS
         - name: nfs-powerstore
           hostPath:
