@@ -111,6 +111,12 @@ apiVersion: apps/v1
 metadata:
   name: {{ .Release.Name }}-node
   namespace: {{ .Release.Namespace }}
+  {{- if hasKey .Values "authorization" }}
+  {{- if eq .Values.authorization.enabled true }}
+  annotations:
+    com.dell.karavi-authorization-proxy: "true"
+  {{ end }}
+  {{ end }}
 spec:
   selector:
     matchLabels:
@@ -193,6 +199,37 @@ spec:
         {{- if hasKey .Values "dev" }}
         {{ if .Values.dev.enableTracing }}{{- include "pstore.tracing" . | nindent 8 }}{{ end }}
         {{- end}}
+{{- if hasKey .Values "authorization" }}
+{{- if eq .Values.authorization.enabled true }}
+        - name: karavi-authorization-proxy
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: PROXY_HOST
+              value: "{{ .Values.authorization.proxyHost }}"
+            - name: SKIP_CERTIFICATE_VALIDATION
+              value: "{{ .Values.authorization.skipCertificateValidation }}"
+            - name: PLUGIN_IDENTIFIER
+              value: powerstore
+            - name: ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: proxy-authz-tokens
+                  key: access
+            - name: REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: proxy-authz-tokens
+                  key: refresh
+          volumeMounts:
+            - name: karavi-authorization-config
+              mountPath: /etc/karavi-authorization/config
+            - name: proxy-server-root-certificate
+              mountPath: /etc/karavi-authorization/root-certificates
+            - name: powerstore-config-params
+              mountPath: /etc/karavi-authorization
+{{ end }}
+{{ end }}
         - name: driver
           securityContext:
             privileged: true
@@ -387,6 +424,16 @@ spec:
         - name: powerstore-config
           secret:
             secretName: {{ .Release.Name }}-config
+{{- if hasKey .Values "authorization" }}
+{{- if eq .Values.authorization.enabled true }}
+        - name: karavi-authorization-config
+          secret:
+            secretName: karavi-authorization-config
+        - name: proxy-server-root-certificate
+          secret:
+            secretName: proxy-server-root-certificate
+{{ end }}
+{{ end }}
         {{- if hasKey .Values "podmon" }}
         {{- if eq .Values.podmon.enabled true }}
         - name: usr-bin
