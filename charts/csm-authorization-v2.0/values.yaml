@@ -110,11 +110,18 @@ storageSystemCredentials:
       - secretProviderClassName1
       # - secretProviderClassName2
       # - secretProviderClassName3
+
     # conjur:
-      # - name: credentials-from-conjur
-        # paths:
-          # - passwordPath: secrets/password
-            # usernamePath: secrets/username
+        # - name: secretProviderClassName1
+          # paths:
+            # - passwordPath: secrets/password1
+            #   usernamePath: secrets/username1
+            # - passwordPath: secrets/password2
+            #   usernamePath: secrets/username2
+        # - name: secretProviderClassName2
+          # paths:
+            # - passwordPath: secrets/password3
+            #   usernamePath: secrets/username3
 
   # secrets:
   #   - secret-1
