@@ -51,7 +51,7 @@ spec:
               systemType:
                 description: |-
                   SystemType is the type of the storage array
-                  Example powerflex, powermax, powerscale
+                  Example powerflex, powermax, powerscale, powerstore
                 type: string
             type: object
           status:
