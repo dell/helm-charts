@@ -8,7 +8,7 @@ openshift: false
 # if enabled, NGINX Ingress Controller will be deployed
 # if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
 nginx:
-  enabled: true
+  enabled: false
 
 # if enabled, cert-manager will be deployed
 # if cert-manager is already deployed, keep this false
@@ -19,15 +19,15 @@ authorization:
   # images to use in installation
   images:
     proxyService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-proxy:v2.3.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-proxy:nightly
     tenantService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-tenant:v2.3.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-tenant:nightly
     roleService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-role:v2.3.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-role:nightly
     storageService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-storage:v2.3.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-storage:nightly
     authorizationController:
-      image: quay.io/dell/container-storage-modules/csm-authorization-controller:v2.3.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-controller:nightly
     opa:
       image: docker.io/openpolicyagent/opa:0.70.0
     opaKubeMgmt:
@@ -69,8 +69,8 @@ authorization:
 
     # additional host rules for the proxy-server ingress
     hosts:
-      []
-      # - [application name]-ingress-nginx-controller.[namespace].svc.cluster.local
+      - authorization-ingress-nginx-controller.authorization.svc.cluster.local
+      - router-internal-default.openshift-ingress.svc.cluster.local
 
     # additional annotations for the proxy-server ingress
     annotations: {}
@@ -106,21 +106,15 @@ redis:
 # Comment and uncomment the appropriate sections below to use the desired method.
 storageSystemCredentials:
   secretProviderClasses:
-    # vault:
-      # - secretProviderClassName1
+    vault:
+      - secretProviderClassName1
       # - secretProviderClassName2
       # - secretProviderClassName3
-    conjur:
-      - name: secretProviderClassName1
-        paths:
-          - usernamePath: path
-            passwordPath: path
-          # - usernamePath: path
-          #   passwordPath: path
-      # - name: secretProviderClassName2
-      #   paths:
-      #     - usernamePath: path
-      #       passwordPath: path
+    # conjur:
+      # - name: credentials-from-conjur
+        # paths:
+          # - passwordPath: secrets/password
+            # usernamePath: secrets/username
 
   # secrets:
   #   - secret-1
