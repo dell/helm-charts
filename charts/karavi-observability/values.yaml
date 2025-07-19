@@ -68,6 +68,10 @@ karaviMetricsPowerstore:
   volumeMetricsEnabled: "true"
   # set the the default max concurrent queries to PowerStore
   concurrentPowerstoreQueries: 10
+  # set topologyMetricsEnabled to "false" to disable collection of topology metrics
+  topologyMetricsEnabled: "true"
+  # set polling frequency to get topology metrics
+  topologyMetricsPollFrequencySeconds: 30
   # set the default endpoint for PowerStore service
   endpoint: karavi-metrics-powerstore
   service:
@@ -89,12 +93,16 @@ karaviMetricsPowerscale:
   capacityMetricsEnabled: "true"
   # set performanceMetricsEnabled to "false" to disable collection of performance metrics
   performanceMetricsEnabled: "true"
+  # set topologyMetricsEnabled to "false" to disable collection of topology metrics
+  topologyMetricsEnabled: "true"
   # set polling frequency to get cluster capacity metrics data
   clusterCapacityPollFrequencySeconds: 30
   # set polling frequency to get cluster performance data
   clusterPerformancePollFrequencySeconds: 20
   # set polling frequency to get quota capacity metrics data
   quotaCapacityPollFrequencySeconds: 30
+  # set polling frequency to get topology metrics
+  topologyMetricsPollFrequencySeconds: 30
   # set the default max concurrent queries to PowerScale
   concurrentPowerscaleQueries: 10
   # set the default endpoint for PowerScale service
@@ -183,7 +191,7 @@ karaviMetricsPowermax:
     skipCertificateValidation: true
 
 otelCollector:
-  image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.129.1
+  image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.130.0
   service:
     type: ClusterIP
   nginxProxy:
