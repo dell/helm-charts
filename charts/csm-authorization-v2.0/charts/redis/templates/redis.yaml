@@ -8,7 +8,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: redis-tokenreview-binding
-  namespace: {{ include "custom.namespace" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -71,7 +70,7 @@ spec:
 
             echo "Finding master..."
             MASTER_FDQN=`hostname  -f | sed -e 's/{{ .Values.name }}-[0-9]\./{{ .Values.name }}-0./'`
-            echo "Master at " $MASTER_FQDN
+            echo "Master at " $MASTER_FDQN
             if [ "$(redis-cli -h sentinel -p 5000 ping)" != "PONG" ]; then
               echo "No sentinel found..."
               if [ "$(hostname)" = "{{ .Values.name }}-0" ]; then
@@ -207,14 +206,14 @@ spec:
           capabilities:
             drop:
               - ALL
-        volumeMounts:
         {{- if .Values.redisSecretProviderClass.redisSecretName }}
+        volumeMounts:
         - name: secrets-store-inline-redis
           mountPath: /etc/csm-authorization/redis
           readOnly: true
         {{- end }}
-      volumes:
       {{- if .Values.redisSecretProviderClass.redisSecretName }}
+      volumes:
       - name: secrets-store-inline-redis
         csi:
           driver: secrets-store.csi.k8s.io
