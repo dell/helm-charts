@@ -381,13 +381,18 @@ multiNas:
   # Default value: 5m
   cooldownPeriod: 5m
 
+# CSM module attributes
+# authorization: enable csm-authorization for RBAC
+# Deploy and configure authorization before installing driver
+# Allowed values:
+#   "true" - authorization is enabled
+#   "false" - authorization is disabled
+# Default value: "false"
 authorization:
   enabled: false
-
   # proxyHost: hostname of the csm-authorization server
   # Default value: None
   proxyHost:
-
   # skipCertificateValidation: certificate validation of the csm-authorization server
   # Allowed Values:
   #   "true" - TLS certificate verification will be skipped
