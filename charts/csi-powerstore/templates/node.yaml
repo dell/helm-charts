@@ -372,7 +372,7 @@ spec:
             secretName: karavi-authorization-config
         - name: proxy-server-root-certificate
           secret:
-            secretName: {{ .Release.Name }}-proxy-server-root-certificate
+            secretName: proxy-server-root-certificate
         {{ end }}
         {{ end }}
         # for Shared NFS
