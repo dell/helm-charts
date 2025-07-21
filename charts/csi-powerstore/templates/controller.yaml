@@ -497,9 +497,11 @@ spec:
               mountPath: /powerstore-config
             - name: powerstore-config-params
               mountPath: /powerstore-config-params
+            {{- if ge (int .Values.certSecretCount) 1 }}
             - name: certs
               mountPath: /certs
               readOnly: true
+            {{- end }}
       volumes:
         - name: socket-dir
           emptyDir:
