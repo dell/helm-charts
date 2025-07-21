@@ -500,17 +500,8 @@ spec:
             - name: certs
               mountPath: /certs
               readOnly: true
-      volumes:
-        - name: socket-dir
-          emptyDir:
-        - name: powerstore-config-params
-          configMap:
-            name: {{ .Release.Name }}-config-params
-        - name: powerstore-config
-          secret:
-            secretName: {{ .Release.Name }}-config
       {{- if hasKey .Values "authorization" }}
-        {{- if eq .Values.authorization.enabled true }}
+      {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
@@ -540,6 +531,26 @@ spec:
               mountPath: /etc/karavi-authorization
         {{ end }}
         {{ end }}
+      volumes:
+        # for authorization
+        {{- if hasKey .Values "authorization" }}
+        {{- if eq .Values.authorization.enabled true }}
+        - name: karavi-authorization-config
+          secret:
+            secretName: karavi-authorization-config
+        - name: proxy-server-root-certificate
+          secret:
+            secretName: {{ .Release.Name }}-proxy-server-root-certificate
+        {{ end }}
+        {{ end }}
+        - name: socket-dir
+          emptyDir:
+        - name: powerstore-config-params
+          configMap:
+            name: {{ .Release.Name }}-config-params
+        - name: powerstore-config
+          secret:
+            secretName: {{ .Release.Name }}-config
 {{- if ge (int .Values.certSecretCount) 1 }}
         - name: certs
           projected:
