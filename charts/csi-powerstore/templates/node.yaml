@@ -340,9 +340,11 @@ spec:
             - name: nfs-powerstore
               mountPath: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs"}}
               mountPropagation: "Bidirectional"
+            {{- if ge (int .Values.certSecretCount) 1 }}
             - name: certs
               mountPath: /certs
               readOnly: true
+            {{- end }}
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
