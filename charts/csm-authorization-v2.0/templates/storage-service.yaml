@@ -1,3 +1,5 @@
+{{- $secretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -82,6 +84,16 @@ spec:
     metadata:
       labels:
         app: storage-service
+      annotations:
+      {{- if and $secretProviderClasses (hasKey $secretProviderClasses "conjur") }}
+        conjur.org/secrets: |
+          {{- range $secretProviderClasses.conjur }}
+          {{- range .paths}}
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
+          {{- end }}
+      {{- end }}
     spec:
       serviceAccountName: storage-service
       containers:
@@ -119,15 +131,26 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- range $secretproviderclass := .Values.storageSystemCredentials.secretProviderClasses }}
+        {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") }}
+        {{- range $secretproviderclass := $secretProviderClasses.vault }}
         - name: secrets-store-inline-{{ $secretproviderclass }}
           mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
           readOnly: true
         {{- end }}
+        {{- end }}
+        {{- if and $secretProviderClasses (hasKey $secretProviderClasses "conjur") }}
+        {{- range $secretproviderclass := $secretProviderClasses.conjur }}
+        - name: secrets-store-inline-{{ $secretproviderclass.name }}
+          mountPath: /etc/csm-authorization/{{ $secretproviderclass.name }}
+          readOnly: true
+        {{- end }}
+        {{- end }}
+        {{- if .Values.storageSystemCredentials.secrets }}
         {{- range .Values.storageSystemCredentials.secrets }}
         - name: storage-system-secrets-{{ . }}
           mountPath: /etc/csm-authorization/{{ . }}
           readOnly: true
+        {{- end }}
         {{- end }}
         {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
         - name: secrets-store-inline-redis
@@ -141,7 +164,8 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- range $secretproviderclass := .Values.storageSystemCredentials.secretProviderClasses }}
+      {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") }}
+      {{- range $secretproviderclass := $secretProviderClasses.vault }}
       - name: secrets-store-inline-{{ $secretproviderclass }}
         csi:
           driver: secrets-store.csi.k8s.io
@@ -149,10 +173,23 @@ spec:
           volumeAttributes:
             secretProviderClass: "{{ $secretproviderclass }}"
       {{- end }}
+      {{- end }}
+      {{- if and $secretProviderClasses (hasKey $secretProviderClasses "conjur") }}
+      {{- range $secretproviderclass := $secretProviderClasses.conjur }}
+      - name: secrets-store-inline-{{ $secretproviderclass.name }}
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "{{ $secretproviderclass.name }}"
+      {{- end }}
+      {{- end }}
+      {{- if .Values.storageSystemCredentials.secrets }}
       {{- range .Values.storageSystemCredentials.secrets }}
       - name: storage-system-secrets-{{ . }}
         secret:
           secretName: {{ . }}
+      {{- end }}
       {{- end }}
       {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
       - name: secrets-store-inline-redis
