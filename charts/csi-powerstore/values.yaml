@@ -54,6 +54,8 @@ images:
     image: quay.io/dell/container-storage-modules/podmon:v1.14.0
   metadataretriever:
     image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.12.0
+  authorization:
+    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
 
 # Represents number of certificate secrets, which user is going to create for ssl authentication. (powerstore-cert-0..powerstore-cert-n)
 # If user does not use certificate, set to 0
@@ -378,3 +380,22 @@ multiNas:
   # Allowed values: Number followed by unit (s,m,h) e.g. 60s,1m,2m,3m,...,1h etc
   # Default value: 5m
   cooldownPeriod: 5m
+
+# CSM module attributes
+# authorization: enable csm-authorization for RBAC
+# Deploy and configure authorization before installing driver
+# Allowed values:
+#   "true" - authorization is enabled
+#   "false" - authorization is disabled
+# Default value: "false"
+authorization:
+  enabled: false
+  # proxyHost: hostname of the csm-authorization server
+  # Default value: None
+  proxyHost:
+  # skipCertificateValidation: certificate validation of the csm-authorization server
+  # Allowed Values:
+  #   "true" - TLS certificate verification will be skipped
+  #   "false" - TLS certificate will be verified
+  # Default value: "true"
+  skipCertificateValidation: true

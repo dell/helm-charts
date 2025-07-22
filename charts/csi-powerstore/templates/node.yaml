@@ -138,6 +138,37 @@ spec:
       hostNetwork: true
       hostIPC: true
       containers:
+        {{- if hasKey .Values "authorization" }}
+        {{- if eq .Values.authorization.enabled true }}
+        - name: karavi-authorization-proxy
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
+          env:
+            - name: PROXY_HOST
+              value: "{{ .Values.authorization.proxyHost }}"
+            - name: SKIP_CERTIFICATE_VALIDATION
+              value: "{{ .Values.authorization.skipCertificateValidation }}"
+            - name: PLUGIN_IDENTIFIER
+              value: powerstore
+            - name: ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: proxy-authz-tokens
+                  key: access
+            - name: REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: proxy-authz-tokens
+                  key: refresh
+          volumeMounts:
+            - name: karavi-authorization-config
+              mountPath: /etc/karavi-authorization/config
+            - name: proxy-server-root-certificate
+              mountPath: /etc/karavi-authorization/root-certificates
+            - name: powerstore-config-params
+              mountPath: /etc/karavi-authorization
+        {{ end }}
+        {{ end }}
       {{- if hasKey .Values "podmon" }}
       {{- if eq .Values.podmon.enabled true }}
         - name: podmon
@@ -335,6 +366,17 @@ spec:
             - name: driver-path
               mountPath: /csi
       volumes:
+        # for authorization
+        {{- if hasKey .Values "authorization" }}
+        {{- if eq .Values.authorization.enabled true }}
+        - name: karavi-authorization-config
+          secret:
+            secretName: karavi-authorization-config
+        - name: proxy-server-root-certificate
+          secret:
+            secretName: proxy-server-root-certificate
+        {{ end }}
+        {{ end }}
         # for Shared NFS
         - name: nfs-powerstore
           hostPath:
