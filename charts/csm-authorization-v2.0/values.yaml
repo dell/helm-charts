@@ -45,6 +45,10 @@ authorization:
   # currently only used with dellctl to list tenant volumes
   concurrentStorageRequests: "10"
 
+  # number, as a string, of concurrent requests for the storage-service to make to PowerStore
+  # currently only used with dellctl to list tenant volumes
+  concurrentPowerStoreRequests: "10"
+
   # tracing configuration
   # this can be updated on the fly via the csm-config-params configMap
   zipkin:
@@ -72,6 +76,16 @@ authorization:
 
 redis:
   name: redis-csm
+  # Redis secret configuration:
+  # If using a CSI driver, specify the SecretProviderClass.
+  # Otherwise, a default Kubernetes secret will be used for Redis credentials.
+  redisSecretProviderClass:
+    # Optional: Name of the Kubernetes secret (created by the CSI driver) that contains Redis credentials.
+    redisSecretName:
+    # Required: Key in the secret that stores the Redis username.
+    redisUsernameKey: username
+    # Required: Key in the secret that stores the Redis password.
+    redisPasswordKey: password
   sentinel: sentinel
   rediscommander: rediscommander
   replicas: 5
