@@ -99,11 +99,11 @@ redis:
     commander:
       image: rediscommander/redis-commander:latest
 
+# Comment and uncomment the appropriate sections below to use the desired method.
 # Storage system credentials can be provided in one of two ways:
 # 1. Using a SecretProviderClass (for dynamic secrets from external providers)
 # 2. Using a Kubernetes Secret (for static credentials)
 # Only one of the two can be specified at a time.
-# Comment and uncomment the appropriate sections below to use the desired method.
 storageSystemCredentials:
   secretProviderClasses:
     vault:
