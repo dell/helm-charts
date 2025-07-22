@@ -1,5 +1,5 @@
 karaviTopology:
-  image: quay.io/dell/container-storage-modules/csm-topology:v1.12.0
+  image: quay.io/dell/container-storage-modules/csm-topology:v1.13.0
   enabled: true
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
   provisionerNames: csi-vxflexos.dellemc.com,csi-powerstore.dellemc.com,csi-isilon.dellemc.com,csi-powermax.dellemc.com
@@ -13,7 +13,7 @@ karaviTopology:
     probability: 0.0
 
 karaviMetricsPowerflex:
-  image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.12.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.13.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
@@ -40,9 +40,9 @@ karaviMetricsPowerflex:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
     sidecarProxy:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -54,7 +54,7 @@ karaviMetricsPowerflex:
     skipCertificateValidation: true
 
 karaviMetricsPowerstore:
-  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.12.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.13.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powerstore.dellemc.com)
@@ -68,6 +68,10 @@ karaviMetricsPowerstore:
   volumeMetricsEnabled: "true"
   # set the the default max concurrent queries to PowerStore
   concurrentPowerstoreQueries: 10
+  # set topologyMetricsEnabled to "false" to disable collection of topology metrics
+  topologyMetricsEnabled: "true"
+  # set polling frequency to get topology metrics
+  topologyMetricsPollFrequencySeconds: 30
   # set the default endpoint for PowerStore service
   endpoint: karavi-metrics-powerstore
   service:
@@ -80,7 +84,7 @@ karaviMetricsPowerstore:
     probability: 0.0
 
 karaviMetricsPowerscale:
-  image: quay.io/dell/container-storage-modules/csm-metrics-powerscale:v1.9.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerscale:v1.10.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-isilon.dellemc.com)
@@ -89,12 +93,16 @@ karaviMetricsPowerscale:
   capacityMetricsEnabled: "true"
   # set performanceMetricsEnabled to "false" to disable collection of performance metrics
   performanceMetricsEnabled: "true"
+  # set topologyMetricsEnabled to "false" to disable collection of topology metrics
+  topologyMetricsEnabled: "true"
   # set polling frequency to get cluster capacity metrics data
   clusterCapacityPollFrequencySeconds: 30
   # set polling frequency to get cluster performance data
   clusterPerformancePollFrequencySeconds: 20
   # set polling frequency to get quota capacity metrics data
   quotaCapacityPollFrequencySeconds: 30
+  # set polling frequency to get topology metrics
+  topologyMetricsPollFrequencySeconds: 30
   # set the default max concurrent queries to PowerScale
   concurrentPowerscaleQueries: 10
   # set the default endpoint for PowerScale service
@@ -117,9 +125,9 @@ karaviMetricsPowerscale:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
     sidecarProxy:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -131,7 +139,7 @@ karaviMetricsPowerscale:
     skipCertificateValidation: true
 
 karaviMetricsPowermax:
-  image: quay.io/dell/container-storage-modules/csm-metrics-powermax:v1.7.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powermax:v1.8.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powermax.dellemc.com)
@@ -169,9 +177,9 @@ karaviMetricsPowermax:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
     sidecarProxy:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.2.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -183,11 +191,11 @@ karaviMetricsPowermax:
     skipCertificateValidation: true
 
 otelCollector:
-  image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.128.0
+  image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.130.0
   service:
     type: ClusterIP
   nginxProxy:
-    image: nginxinc/nginx-unprivileged:1.27
+    image: nginxinc/nginx-unprivileged:1.29
 # Karavi-observability requires cert-manager. If cert-manager is already present in cluster, set enabled to false not to install it.
 cert-manager:
   enabled: true

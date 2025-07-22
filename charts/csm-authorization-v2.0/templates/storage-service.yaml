@@ -57,7 +57,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: storage-service-tokenreview-binding
-  namespace: {{ include "custom.namespace" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -103,12 +102,9 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: redis-csm-secret
-                key: password
+                name: {{ .Values.redis.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
+                key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey }}
         args:
-          {{- range .Values.vault }}
-          - "--vault={{.identifier}},{{.address}},{{.role}},{{.skipCertificateValidation}}"
-          {{- end }}
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
           - "--leader-election=true"
@@ -123,9 +119,20 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- range .Values.vault }}
-        - name: vault-client-certificate-{{ .identifier }}
-          mountPath: /etc/vault/{{ .identifier }}
+        {{- range $secretproviderclass := .Values.storageSystemCredentials.secretProviderClasses }}
+        - name: secrets-store-inline-{{ $secretproviderclass }}
+          mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
+          readOnly: true
+        {{- end }}
+        {{- range .Values.storageSystemCredentials.secrets }}
+        - name: storage-system-secrets-{{ . }}
+          mountPath: /etc/csm-authorization/{{ . }}
+          readOnly: true
+        {{- end }}
+        {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
+        - name: secrets-store-inline-redis
+          mountPath: /etc/csm-authorization/redis
+          readOnly: true
         {{- end }}
       volumes:
       - name: config-volume
@@ -134,21 +141,26 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- range .Values.vault }}
-      - name: vault-client-certificate-{{ .identifier }}
-        projected:
-          sources:
-        {{- if and (.clientCertificate) (.clientKey) }}
-          - secret:
-              name: vault-client-certificate-{{ .identifier }}
-        {{- else }}
-          - secret:
-              name: storage-service-selfsigned-tls-{{ .identifier }}
-        {{- end }}
-        {{- if .certificateAuthority }}
-          - secret:
-              name: vault-certificate-authority-{{ .identifier }}
-        {{- end }}
+      {{- range $secretproviderclass := .Values.storageSystemCredentials.secretProviderClasses }}
+      - name: secrets-store-inline-{{ $secretproviderclass }}
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "{{ $secretproviderclass }}"
+      {{- end }}
+      {{- range .Values.storageSystemCredentials.secrets }}
+      - name: storage-system-secrets-{{ . }}
+        secret:
+          secretName: {{ . }}
+      {{- end }}
+      {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
+      - name: secrets-store-inline-redis
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "{{ .Values.redis.redisSecretProviderClass.redisSecretName }}"
       {{- end }}
 ---
 apiVersion: v1
@@ -166,64 +178,3 @@ spec:
   - port: 2112
     targetPort: 2112
     name: promhttp
----
-{{- $namespace := . }}
-{{- range .Values.vault }}
-{{- if .certificateAuthority }}
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: vault-certificate-authority-{{ .identifier }}
-  namespace: {{ include "custom.namespace" $namespace }}
-data:
-  ca.crt: {{ .certificateAuthority }}
-{{- end }}
----
-{{- if and (.clientCertificate) (.clientKey) }}
-apiVersion: v1
-data:
-  tls.crt: {{ .clientCertificate }}
-  tls.key: {{ .clientKey }}
-kind: Secret
-type: kubernetes.io/tls
-metadata:
-  name: vault-client-certificate-{{ .identifier }}
-  namespace: {{ include "custom.namespace" $namespace }}
----
-{{- else }}
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: storage-service-selfsigned-{{ .identifier }}
-  namespace: {{ include "custom.namespace" $namespace }}
-spec:
-  selfSigned: {}
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: storage-service-selfsigned-{{ .identifier }}
-  namespace: {{ include "custom.namespace" $namespace }}
-spec:
-  secretName: storage-service-selfsigned-tls-{{ .identifier }}
-  duration: 2160h # 90d
-  renewBefore: 360h # 15d
-  subject:
-    organizations:
-    - dellemc
-  isCA: false
-  privateKey:
-    algorithm: RSA
-    encoding: PKCS1
-    size: 2048
-  usages:
-    - client auth
-  dnsNames:
-  - csm-authorization-storage-service
-  issuerRef:
-    name: storage-service-selfsigned-{{ .identifier }}
-    kind: Issuer
-    group: cert-manager.io
-{{- end }}
-{{- end }}

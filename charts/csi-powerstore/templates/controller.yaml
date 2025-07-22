@@ -424,6 +424,8 @@ spec:
             {{- end }}
             - name: CSI_ENDPOINT
               value: /var/run/csi/csi.sock
+            - name: SSL_CERT_DIR
+              value: /certs
             - name: CSI_RETRIEVER_ENDPOINT
               value: /var/run/csi/csi_retriever.sock
             - name: X_CSI_MODE
@@ -495,7 +497,54 @@ spec:
               mountPath: /powerstore-config
             - name: powerstore-config-params
               mountPath: /powerstore-config-params
+            {{- if ge (int .Values.certSecretCount) 1 }}
+            - name: certs
+              mountPath: /certs
+              readOnly: true
+            {{- end }}
+      {{- if hasKey .Values "authorization" }}
+      {{- if eq .Values.authorization.enabled true }}
+        - name: karavi-authorization-proxy
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
+          env:
+            - name: PROXY_HOST
+              value: "{{ .Values.authorization.proxyHost }}"
+            - name: SKIP_CERTIFICATE_VALIDATION
+              value: "{{ .Values.authorization.skipCertificateValidation }}"
+            - name: PLUGIN_IDENTIFIER
+              value: powerstore
+            - name: ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: proxy-authz-tokens
+                  key: access
+            - name: REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: proxy-authz-tokens
+                  key: refresh
+          volumeMounts:
+            - name: karavi-authorization-config
+              mountPath: /etc/karavi-authorization/config
+            - name: proxy-server-root-certificate
+              mountPath: /etc/karavi-authorization/root-certificates
+            - name: powerstore-config-params
+              mountPath: /etc/karavi-authorization
+        {{ end }}
+        {{ end }}
       volumes:
+        # for authorization
+        {{- if hasKey .Values "authorization" }}
+        {{- if eq .Values.authorization.enabled true }}
+        - name: karavi-authorization-config
+          secret:
+            secretName: karavi-authorization-config
+        - name: proxy-server-root-certificate
+          secret:
+            secretName: proxy-server-root-certificate
+        {{ end }}
+        {{ end }}
         - name: socket-dir
           emptyDir:
         - name: powerstore-config-params
@@ -504,3 +553,15 @@ spec:
         - name: powerstore-config
           secret:
             secretName: {{ .Release.Name }}-config
+{{- if ge (int .Values.certSecretCount) 1 }}
+        - name: certs
+          projected:
+            sources:
+{{- range $i, $e := until (int .Values.certSecretCount ) }}
+              - secret:
+                  name: {{ print $.Release.Name "-certs-" $e }}
+                  items:
+                    - key: cert-{{ $e }}
+                      path: cert-{{ $e }}
+{{- end }}
+{{- end }}

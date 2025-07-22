@@ -19,15 +19,15 @@ authorization:
   # images to use in installation
   images:
     proxyService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-proxy:v2.2.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-proxy:v2.3.0
     tenantService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-tenant:v2.2.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-tenant:v2.3.0
     roleService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-role:v2.2.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-role:v2.3.0
     storageService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-storage:v2.2.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-storage:v2.3.0
     authorizationController:
-      image: quay.io/dell/container-storage-modules/csm-authorization-controller:v2.2.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-controller:v2.3.0
     opa:
       image: docker.io/openpolicyagent/opa:0.70.0
     opaKubeMgmt:
@@ -48,6 +48,10 @@ authorization:
   # number, as a string, of concurrent requests for the storage-service to make to PowerScale
   # currently only used with dellctl to list tenant volumes
   concurrentPowerScaleRequests: "10"
+
+  # number, as a string, of concurrent requests for the storage-service to make to PowerStore
+  # currently only used with dellctl to list tenant volumes
+  concurrentPowerStoreRequests: "10"
 
   # tracing configuration
   # this can be updated on the fly via the csm-config-params configMap
@@ -76,33 +80,35 @@ authorization:
 
 redis:
   name: redis-csm
+  # Redis secret configuration:
+  # If using a CSI driver, specify the SecretProviderClass.
+  # Otherwise, a default Kubernetes secret will be used for Redis credentials.
+  redisSecretProviderClass:
+    # Optional: Name of the Kubernetes secret (created by the CSI driver) that contains Redis credentials.
+    redisSecretName:
+    # Required: Key in the secret that stores the Redis username.
+    redisUsernameKey: username
+    # Required: Key in the secret that stores the Redis password.
+    redisPasswordKey: password
   sentinel: sentinel
   rediscommander: rediscommander
   replicas: 5
   images:
     redis:
-      image: redis:7.4.2-alpine
+      image: redis:7.4.3-alpine
     commander:
       image: rediscommander/redis-commander:latest
 
-vault:
-  - identifier: vault0
-    address: https://10.0.0.1:8400
-    role: csm-authorization
-    skipCertificateValidation: true
-    # clientCertificate: base64-encoded certificate for cert/private-key pair -- add certificate here to use custom certificates
-    # for self-signed certs, leave empty string
-    clientCertificate:
-    # clientKey: base64-encoded private key for cert/private-key pair -- add private key here to use custom certificates
-    # for self-signed certs, leave empty string
-    clientKey:
-    # certificateAuthority: base64-encoded certificate authority for validating vault server certificate -- add certificate authority here to use custom certificates
-    #  for self-signed certs, leave empty string
-    certificateAuthority:
-  # - identifier: vault1
-  #   address: https://10.0.0.2:8400
-  #   role: csm-authorization
-  #   skipCertificateValidation: true
-  #   clientCertificate:
-  #   clientKey:
-  #   certificateAuthority:
+# Storage system credentials can be provided in one of two ways:
+# 1. Using a SecretProviderClass (for dynamic secrets from external providers)
+# 2. Using a Kubernetes Secret (for static credentials)
+# Only one of the two can be specified at a time.
+storageSystemCredentials:
+  secretProviderClasses:
+    - secretProviderClassName
+    # - secretProviderClassName2
+    # - secretProviderClassName3
+  # secrets:
+  #   - secret-1
+  #   - secret-2
+  #   - secret-3

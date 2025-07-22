@@ -138,6 +138,37 @@ spec:
       hostNetwork: true
       hostIPC: true
       containers:
+        {{- if hasKey .Values "authorization" }}
+        {{- if eq .Values.authorization.enabled true }}
+        - name: karavi-authorization-proxy
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
+          env:
+            - name: PROXY_HOST
+              value: "{{ .Values.authorization.proxyHost }}"
+            - name: SKIP_CERTIFICATE_VALIDATION
+              value: "{{ .Values.authorization.skipCertificateValidation }}"
+            - name: PLUGIN_IDENTIFIER
+              value: powerstore
+            - name: ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: proxy-authz-tokens
+                  key: access
+            - name: REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: proxy-authz-tokens
+                  key: refresh
+          volumeMounts:
+            - name: karavi-authorization-config
+              mountPath: /etc/karavi-authorization/config
+            - name: proxy-server-root-certificate
+              mountPath: /etc/karavi-authorization/root-certificates
+            - name: powerstore-config-params
+              mountPath: /etc/karavi-authorization
+        {{ end }}
+        {{ end }}
       {{- if hasKey .Values "podmon" }}
       {{- if eq .Values.podmon.enabled true }}
         - name: podmon
@@ -210,6 +241,8 @@ spec:
             {{- end}}
             - name: CSI_ENDPOINT
               value: unix://{{ .Values.kubeletConfigDir }}/plugins/{{ .Values.driverName }}/csi_sock
+            - name: SSL_CERT_DIR
+              value: /certs
             - name: X_CSI_MODE
               value: node
             - name: X_CSI_POWERSTORE_KUBE_NODE_NAME
@@ -307,6 +340,11 @@ spec:
             - name: nfs-powerstore
               mountPath: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs"}}
               mountPropagation: "Bidirectional"
+            {{- if ge (int .Values.certSecretCount) 1 }}
+            - name: certs
+              mountPath: /certs
+              readOnly: true
+            {{- end }}
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -328,6 +366,17 @@ spec:
             - name: driver-path
               mountPath: /csi
       volumes:
+        # for authorization
+        {{- if hasKey .Values "authorization" }}
+        {{- if eq .Values.authorization.enabled true }}
+        - name: karavi-authorization-config
+          secret:
+            secretName: karavi-authorization-config
+        - name: proxy-server-root-certificate
+          secret:
+            secretName: proxy-server-root-certificate
+        {{ end }}
+        {{ end }}
         # for Shared NFS
         - name: nfs-powerstore
           hostPath:
@@ -398,3 +447,15 @@ spec:
             type: Directory
         {{ end }}
         {{ end }}
+{{- if ge (int .Values.certSecretCount) 1 }}
+        - name: certs
+          projected:
+            sources:
+{{- range $i, $e := until (int .Values.certSecretCount ) }}
+              - secret:
+                  name: {{ print $.Release.Name "-certs-" $e }}
+                  items:
+                    - key: cert-{{ $e }}
+                      path: cert-{{ $e }}
+{{- end }}
+{{- end }}

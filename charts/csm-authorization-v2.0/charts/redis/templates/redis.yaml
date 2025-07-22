@@ -1,47 +1,66 @@
 apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: redis
+  namespace: {{ include "custom.namespace" . }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: redis-tokenreview-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+  - kind: ServiceAccount
+    name: redis
+    namespace: {{ include "custom.namespace" . }}
+---
+apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.redis.name }}
+  name: {{ .Values.name }}
   namespace: {{ include "custom.namespace" . }}
 spec:
   type:
   clusterIP: None
   selector:
-    app: {{ .Values.redis.name }}
+    app: {{ .Values.name }}
   ports:
   - protocol: TCP
     port: 6379
     targetPort: 6379
-    name: {{ .Values.redis.name }}
+    name: {{ .Values.name }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.redis.name }}
+  name: {{ .Values.name }}
   namespace: {{ include "custom.namespace" . }}
 spec:
-  serviceName: {{ .Values.redis.name }}
-  replicas: {{ .Values.redis.replicas }}
+  serviceName: {{ .Values.name }}
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.redis.name }}
+      app: {{ .Values.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.redis.name }}
+        app: {{ .Values.name }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
     spec:
+      serviceAccountName: redis
       initContainers:
       - name: config
-        image: {{ .Values.redis.images.redis.image }}
+        image: {{ .Values.images.redis.image }}
         env:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: redis-csm-secret
-                key: password
-
+                name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
+                key: {{ .Values.redisSecretProviderClass.redisPasswordKey }}
         command: [ "sh", "-c" ]
         args:
           - |
@@ -50,11 +69,11 @@ spec:
             echo "requirepass $REDIS_PASSWORD" >> /etc/redis/redis.conf
 
             echo "Finding master..."
-            MASTER_FDQN=`hostname  -f | sed -e 's/{{ .Values.redis.name }}-[0-9]\./{{ .Values.redis.name }}-0./'`
-            echo "Master at " $MASTER_FQDN
+            MASTER_FDQN=`hostname  -f | sed -e 's/{{ .Values.name }}-[0-9]\./{{ .Values.name }}-0./'`
+            echo "Master at " $MASTER_FDQN
             if [ "$(redis-cli -h sentinel -p 5000 ping)" != "PONG" ]; then
               echo "No sentinel found..."
-              if [ "$(hostname)" = "{{ .Values.redis.name }}-0" ]; then
+              if [ "$(hostname)" = "{{ .Values.name }}-0" ]; then
                 echo "This is Redis master, not updating redis.conf..."
               else
                 echo "This is Redis replica, updating redis.conf..."
@@ -62,7 +81,7 @@ spec:
               fi
             else
               echo "Sentinel found, finding master..."
-              MASTER="$(redis-cli -h sentinel -p 5000 sentinel get-master-addr-by-name mymaster | grep -E '(^redis-csm-\d{1,})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})')"
+              MASTER="$(redis-cli -h sentinel -p 5000 sentinel get-master-addr-by-name mymaster | grep -E '(^redis-\d{1,})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})')"
               echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf
             fi
         volumeMounts:
@@ -73,13 +92,13 @@ spec:
         - name: config
           mountPath: /etc/redis/
       containers:
-      - name: {{ .Values.redis.name }}
-        image: {{ .Values.redis.images.redis.image }}
+      - name: {{ .Values.name }}
+        image: {{ .Values.images.redis.image }}
         command: ["redis-server"]
         args: ["/etc/redis/redis.conf"]
         ports:
         - containerPort: 6379
-          name: {{ .Values.redis.name }}
+          name: {{ .Values.name }}
         volumeMounts:
         - name: redis-primary-volume
           mountPath: /data
@@ -87,6 +106,11 @@ spec:
           mountPath: /csm-auth-redis-cm/
         - name: config
           mountPath: /etc/redis/
+        {{- if .Values.redisSecretProviderClass.redisSecretName }}
+        - name: secrets-store-inline-redis
+          mountPath: /etc/csm-authorization/redis
+          readOnly: true
+        {{- end }}
       volumes:
       - name: redis-primary-volume
         emptyDir: {}
@@ -94,35 +118,44 @@ spec:
         emptyDir: {}
       - name: configmap
         configMap:
-          name: redis-csm-cm
+          name: redis-cm
+      {{- if .Values.redisSecretProviderClass.redisSecretName }}
+      - name: secrets-store-inline-redis
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "{{ .Values.redisSecretProviderClass.redisSecretName }}"
+      {{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.redis.rediscommander }}
+  name: {{ .Values.rediscommander }}
   namespace: {{ include "custom.namespace" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.redis.rediscommander }}
+      app: {{ .Values.rediscommander }}
   template:
     metadata:
       labels:
-        app: {{ .Values.redis.rediscommander }}
+        app: {{ .Values.rediscommander }}
         tier: backend
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
     spec:
+      serviceAccountName: redis
       containers:
-      - name: {{ .Values.redis.rediscommander }}
-        image: {{ .Values.redis.images.commander.image }}
+      - name: {{ .Values.rediscommander }}
+        image: {{ .Values.images.commander.image }}
         imagePullPolicy: IfNotPresent
         env:
           {{- $str := "" -}}
           {{- $ns := include "custom.namespace" . -}}
-          {{- $replicas := .Values.redis.replicas | int }}
-          {{- $sentinel := .Values.redis.sentinel }}
+          {{- $replicas := .Values.replicas | int }}
+          {{- $sentinel := .Values.sentinel }}
           {{- range $i, $e := until $replicas }}
           {{- if $i }}
           {{- $str = print $str "," -}}
@@ -136,25 +169,25 @@ spec:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: redis-csm-secret
-              key: password
+              name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
+              key: {{ .Values.redisSecretProviderClass.redisPasswordKey }}
         - name: SENTINEL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: redis-csm-secret
-              key: password
+              name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
+              key: {{ .Values.redisSecretProviderClass.redisPasswordKey }}
         - name: HTTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: redis-csm-secret
-              key: password
+              name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
+              key: {{ .Values.redisSecretProviderClass.redisPasswordKey }}
         - name: HTTP_USER
           valueFrom:
             secretKeyRef:
-              name: redis-csm-secret
-              key: commander_user
+              name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
+              key: {{ .Values.redisSecretProviderClass.redisUsernameKey }}
         ports:
-        - name: {{ .Values.redis.rediscommander }}
+        - name: {{ .Values.rediscommander }}
           containerPort: 8081
         livenessProbe:
           httpGet:
@@ -173,15 +206,30 @@ spec:
           capabilities:
             drop:
               - ALL
+        {{- if .Values.redisSecretProviderClass.redisSecretName }}
+        volumeMounts:
+        - name: secrets-store-inline-redis
+          mountPath: /etc/csm-authorization/redis
+          readOnly: true
+        {{- end }}
+      {{- if .Values.redisSecretProviderClass.redisSecretName }}
+      volumes:
+      - name: secrets-store-inline-redis
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "{{ .Values.redisSecretProviderClass.redisSecretName }}"
+      {{- end }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.redis.rediscommander }}
+  name: {{ .Values.rediscommander }}
   namespace: {{ include "custom.namespace" . }}
 spec:
   selector:
-    app: {{ .Values.redis.rediscommander }}
+    app: {{ .Values.rediscommander }}
   ports:
   - protocol: TCP
     port: 8081
