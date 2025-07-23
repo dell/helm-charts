@@ -71,8 +71,14 @@ permitted_roles[v] = y {
 
 	# v will contain permitted roles that match the storage request.
 	v := claimed_roles[i]
-	common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid] >= to_number(input.request.volumeSizeInKb)
-	y := to_number(common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid])
+
+	# common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid] >= to_number(input.request.volumeSizeInKb)
+	
+	quota := common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[""]
+
+	print("Quata++++++++++", quota)
+	quota >= to_number(input.request.volumeSizeInKb)
+	y := to_number(common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[""])
 }
 
 # These are the permitted roles that are configured
@@ -90,6 +96,6 @@ permitted_roles[v] = y {
 
 	# v will contain permitted roles that match the storage request.
 	v := claimed_roles[i]
-	common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid] == 0
-	y := to_number(common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid])
+	common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[""] == 0
+	y := to_number(common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[""])
 }
