@@ -42,10 +42,10 @@ deny[msg] {
 deny[msg] {
 	count(permitted_roles) == 0
 	msg := sprintf(
-		"no roles in [%s] allow the %s Kb request on %s/%s/%s",
+		"no roles in [%s] allow the %s Kb request on %s/%s/",
 		[
 			input.claims.roles,
-			input.request.volumeSizeInKb,
+			input.request.size,
 			input.systemtype,
 			input.storagesystemid,
 		],
@@ -71,14 +71,18 @@ permitted_roles[v] = y {
 
 	# v will contain permitted roles that match the storage request.
 	v := claimed_roles[i]
-
-	# common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid] >= to_number(input.request.volumeSizeInKb)
+	# common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid] >= to_number(input.request.size)
 	
-	quota := common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[""]
+	quota := common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas["pool1"]
 
-	print("Quata++++++++++", quota)
-	quota >= to_number(input.request.volumeSizeInKb)
-	y := to_number(common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[""])
+	
+	print("Input roles:", input.claims.roles)
+	print("Requested size:", input.request.size)
+	print("Quota for role", v, ":", quota)
+
+	 quota >= to_number(input.request.size)
+
+	y := to_number(common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas["pool1"])
 }
 
 # These are the permitted roles that are configured
@@ -96,6 +100,6 @@ permitted_roles[v] = y {
 
 	# v will contain permitted roles that match the storage request.
 	v := claimed_roles[i]
-	common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[""] == 0
-	y := to_number(common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas[""])
+	common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas["pool1"] == 0
+	y := to_number(common.roles[v].system_types[input.systemtype].system_ids[input.storagesystemid].pool_quotas["pool1"])
 }
