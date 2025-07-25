@@ -907,6 +907,33 @@ entries:
     version: 2.7.0
   csi-powermax:
   - apiVersion: v2
+    appVersion: 2.14.1
+    created: "2025-07-25T19:38:40.21181301Z"
+    dependencies:
+    - condition: required
+      name: csireverseproxy
+      repository: ""
+      version: 2.13.1
+    description: 'PowerMax CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a PowerMax
+      StorageClass. '
+    digest: 8add2bb54a22758898ed3f5ab42dbb1a3c6b1312895c82f0988b80627cbb3e4b
+    home: https://github.com/dell/csi-powermax
+    icon: https://avatars1.githubusercontent.com/u/20958494?s=200&v=4
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.23.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-powermax
+    sources:
+    - https://github.com/dell/csi-powermax
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-powermax-2.14.1/csi-powermax-2.14.1.tgz
+    version: 2.14.1
+  - apiVersion: v2
     appVersion: 2.14.0
     created: "2025-05-19T17:42:51.7951871Z"
     dependencies:
@@ -1203,6 +1230,27 @@ entries:
     - https://github.com/dell/helm-charts/releases/download/csi-powermax-2.6.0/csi-powermax-2.6.0.tgz
     version: 2.6.0
   csi-powerstore:
+  - apiVersion: v2
+    appVersion: 2.14.1
+    created: "2025-07-25T19:38:40.376275464Z"
+    description: 'PowerStore CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a PowerStore
+      StorageClass. '
+    digest: 9fd2de3ee45531bc1cffa63a2c89ec047a5fc838e5760564fafa9dc16af15dd7
+    home: https://github.com/dell/csi-powerstore
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.24.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-powerstore
+    sources:
+    - https://github.com/dell/csi-powerstore
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-powerstore-2.14.1/csi-powerstore-2.14.1.tgz
+    version: 2.14.1
   - apiVersion: v2
     appVersion: 2.14.0
     created: "2025-05-20T16:43:38.879694688Z"
@@ -1676,6 +1724,25 @@ entries:
     - https://github.com/dell/helm-charts/releases/download/csi-unity-2.7.0/csi-unity-2.7.0.tgz
     version: 2.7.0
   csi-vxflexos:
+  - apiVersion: v2
+    appVersion: 2.14.1
+    created: "2025-07-25T19:38:40.67632896Z"
+    description: 'VxFlex OS CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a VxFlex
+      OS StorageClass. '
+    digest: 0fe2bfccaa79e4ca73caf125d13c8ed68433ef5560ed39653a7963276371dbc6
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.21.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-vxflexos
+    sources:
+    - https://github.com/dell/csi-vxflexos
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-vxflexos-2.14.1/csi-vxflexos-2.14.1.tgz
+    version: 2.14.1
   - apiVersion: v2
     appVersion: 2.14.0
     created: "2025-05-19T17:42:52.23642057Z"
@@ -3029,4 +3096,4 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/karavi-topology-0.1.0/karavi-topology-0.1.0.tgz
     version: 0.1.0
-generated: "2025-05-20T16:43:38.879967874Z"
+generated: "2025-07-25T19:38:40.677208204Z"
