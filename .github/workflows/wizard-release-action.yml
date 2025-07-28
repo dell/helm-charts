@@ -1,5 +1,13 @@
+# Copyright (c) 2025 Dell Inc., or its subsidiaries. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+
 # This Github action will create a Github release for the csm installation wizard
-name: installation-wizard-release-action
+name: Release CSM Installation Wizard
 
 # Triggers the action when a chart release has been created and deployed
 on:
@@ -8,6 +16,10 @@ on:
       - pages-build-deployment
     types:
       - completed
+
+permissions:
+  actions: read
+  contents: write
 
 jobs:
   # This job will perform a helm release of the installation wizard chart if it has been updated
@@ -26,9 +38,32 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Get id from Release Helm Charts workflow
+        id: run-id
+        run: |
+          latest_run_id=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/charts-release-action.yml/runs | jq -r '.workflow_runs[0].id')
+          echo "run_id=$latest_run_id" >> $GITHUB_OUTPUT
+
+      - name: Download release branch name artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: branch_name
+          path: .
+          run-id: ${{ steps.run-id.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read release branch name
+        run: |
+          echo "branch_name=$(cat branch_name.txt)" >> $GITHUB_ENV
+
+      - name: Checkout release branch
+        run: |
+          git checkout ${{ env.branch_name }}
+
       # Run the helm chart release command
       - name: Run csm chart-releaser for container-storage-modules
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: helm/chart-releaser-action@v1.7.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
