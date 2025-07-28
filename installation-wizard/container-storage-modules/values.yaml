@@ -309,11 +309,11 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
-  version: v2.13.1
+  version: v2.13.2
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
-      image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.13.1
+      image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.13.2
     # "powerflexSdc" defines the SDC image for init container.
     powerflexSdc:
       image: dellemc/sdc:4.5.2.1
