@@ -124,6 +124,12 @@ fsGroupPolicy: File
 # Default value: 0
 maxVxflexosVolumesPerNode: 0
 
+# probeTimeout: Specify the timeout limit for controller and node to communicate with the array.
+# Allowed values: 1s, 10s, etc.
+  # In the format of a duration.
+# Default value: 10s
+probeTimeout: "10s"
+
 # "controller" allows to configure controller specific parameters
 controller:
   # replication: allows to configure replication
