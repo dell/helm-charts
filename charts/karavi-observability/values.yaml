@@ -154,6 +154,10 @@ karaviMetricsPowermax:
   performancePollFrequencySeconds: 20
   # set the default max concurrent queries to PowerMax
   concurrentPowermaxQueries: 10
+  # set topologyMetricsEnabled to "false" to disable collection of topology metrics
+  topologyMetricsEnabled: "true"
+  # set polling frequency to get topology metrics
+  topologyMetricsPollFrequencySeconds: 30
   # set the default endpoint for PowerMax service
   endpoint: karavi-metrics-powermax
   # useSecret
