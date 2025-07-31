@@ -89,7 +89,7 @@ spec:
                 type: string
               type:
                 description: 'Type is the storage array type, Example: powerflex,
-                  powermax, powerscale'
+                  powermax, powerscale, powerstore'
                 type: string
             required:
             - skipCertificateValidation
