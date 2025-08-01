@@ -68,23 +68,30 @@ spec:
             echo "masterauth $REDIS_PASSWORD" >> /etc/redis/redis.conf
             echo "requirepass $REDIS_PASSWORD" >> /etc/redis/redis.conf
 
-            echo "Waiting for Sentinel to be ready..."
-            until redis-cli -h sentinel -p 5000 ping | grep -q PONG; do
-              echo "Sentinel not ready, sleeping..."
-              sleep 5
-            done
+            echo "Finding master..."
 
+            MASTER_FQDN=$(hostname  -f)
+            MASTER=$(hostname)
             MASTER_INFO=$(redis-cli -h sentinel -p 5000 sentinel get-master-addr-by-name mymaster)
-            MASTER_HOST=$(echo "$MASTER_INFO" | sed -n '1p')
             MASTER_PORT=$(echo "$MASTER_INFO" | sed -n '2p')
+            SENTINEL_FOUND=false
 
-            CURRENT_HOST=$(hostname -f)
-
-            if [ "$CURRENT_HOST" != "$MASTER_HOST" ]; then
-              echo "This is a replica. Setting replicaof $MASTER_HOST $MASTER_PORT"
-              echo "replicaof $MASTER_HOST $MASTER_PORT" >> /etc/redis/redis.conf
+            echo "Master at " $MASTER_FQDN
+            if redis-cli -h sentinel -p 5000 ping == "PONG"; then
+              if [ "$MASTER" = "{{ .Values.name }}-0" ]; then
+                echo "This is the master. No replicaof needed."
+              else
+                echo "This is a replica. Setting replicaof $MASTER_FQDN $MASTER_PORT"
+                echo "replicaof $MASTER_FQDN $MASTER_PORT" >> /etc/redis/redis.conf
+              fi
+              SENTINEL_FOUND=true
+              break
             else
-              echo "This is the master. No replicaof needed."
+              echo "Sentinel not ready, trying next..."
+            fi
+
+            if [ "$SENTINEL_FOUND" != "true" ]; then
+              echo "No Sentinel pod responded. Exiting..."
             fi
         volumeMounts:
         - name: redis-primary-volume
