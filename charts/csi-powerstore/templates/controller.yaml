@@ -442,6 +442,8 @@ spec:
               value: /powerstore-config/config
             - name: X_CSI_POWERSTORE_CONFIG_PARAMS_PATH
               value: /powerstore-config-params/driver-config-params.yaml
+            - name: X_CSI_POWERSTORE_API_TIMEOUT
+              value: "{{ .Values.apiTimeout }}"
             - name: X_CSI_NODE_NAME
               valueFrom:
                 fieldRef:
