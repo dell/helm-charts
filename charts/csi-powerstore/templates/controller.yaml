@@ -432,6 +432,8 @@ spec:
               value: controller
             - name: X_CSI_DRIVER_NAME
               value: {{ .Values.driverName }}
+            - name: X_CSI_VOL_PREFIX
+              value: "{{ .Values.controller.volumeNamePrefix }}"
             - name: X_CSI_POWERSTORE_EXTERNAL_ACCESS
               value: {{ .Values.externalAccess }}
             - name: X_CSI_NFS_ACLS
