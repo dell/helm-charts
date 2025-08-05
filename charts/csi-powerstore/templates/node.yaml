@@ -262,6 +262,8 @@ spec:
               value: "{{ .Values.maxPowerstoreVolumesPerNode }}"
             - name: X_CSI_POWERSTORE_NODE_CHROOT_PATH
               value: /noderoot
+            - name: X_CSI_VOL_PREFIX
+              value: "{{ .Values.controller.volumeNamePrefix }}"
             - name: X_CSI_POWERSTORE_TMP_DIR
               value: {{ .Values.kubeletConfigDir }}/plugins/{{ .Values.driverName }}/tmp
             - name: X_CSI_DRIVER_NAME
