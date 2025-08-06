@@ -46,7 +46,7 @@ spec:
                   PowerFlex: https://[URL]
                   PowerMax: https://[URL]:[PORT]
                   PowerScale: https://[URL]:[PORT]
-                  PowerStore: https://[URL]:[PORT]
+                  PowerStore: https://[URL]
                 type: string
               isiPath:
                 description: |-
@@ -89,7 +89,7 @@ spec:
                 type: string
               type:
                 description: 'Type is the storage array type, Example: powerflex,
-                  powermax, powerscale'
+                  powermax, powerscale, powerstore'
                 type: string
             required:
             - skipCertificateValidation
