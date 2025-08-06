@@ -108,6 +108,11 @@ podmonAPIPort: 8083
 # Examples: 192, 256
 maxPathLen: 192
 
+# networkLabelInterval: Interval to monitor and reconcile network interface labels on nodes.
+# Allowed values: Number followed by unit of time (s,m,h)
+# Default value: 1h
+networkLabelInterval: 1h
+
 # controller: configure controller pod specific parameters
 controller:
   # controllerCount: defines the number of csi-powerscale controller pods to deploy to
