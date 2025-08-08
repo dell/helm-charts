@@ -25,26 +25,6 @@ data:
 
 ---
 
-{{ if .Values.karaviTopology.enabled }}
-
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: karavi-topology-configmap
-  namespace: {{ include "custom.namespace" . }}
-data:
-  karavi-topology.yaml: |
-    PROVISIONER_NAMES: {{ .Values.karaviTopology.provisionerNames }}
-    LOG_LEVEL: "{{ .Values.karaviTopology.logLevel }}"
-    LOG_FORMAT: "{{ .Values.karaviTopology.logFormat }}"
-    ZIPKIN_URI: "{{ .Values.karaviTopology.zipkin.uri }}"
-    ZIPKIN_SERVICE_NAME: "{{ .Values.karaviTopology.zipkin.serviceName }}"
-    ZIPKIN_PROBABILITY: "{{ .Values.karaviTopology.zipkin.probability }}"
-
-{{ end }}
-
----
-
 {{ if .Values.karaviMetricsPowerstore.enabled }}
 
 apiVersion: v1
