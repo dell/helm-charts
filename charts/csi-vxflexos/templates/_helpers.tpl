@@ -8,3 +8,11 @@ Return true if storage capacity tracking is enabled and is supported based on k8
     {{- end -}}
   {{- end -}}
 {{- end -}}
+
+{{- define "vxflexos.validateVolumeNamePrefix" -}}
+{{- if and .Values.authorization.enabled .Values.controller.replication.enabled -}}
+  {{- if gt (len .Values.controller.volumeNamePrefix) 5 -}}
+    {{- fail (printf "The volumeNamePrefix '%s' should not exceed the 5-character limit when both authorization and replication are enabled." .Values.volumeNamePrefix) -}}
+  {{- end -}}
+{{- end -}}
+{{- end -}}
