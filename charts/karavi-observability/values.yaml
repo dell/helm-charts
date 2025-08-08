@@ -1,17 +1,3 @@
-karaviTopology:
-  image: quay.io/dell/container-storage-modules/csm-topology:v1.13.0
-  enabled: true
-  # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
-  provisionerNames: csi-vxflexos.dellemc.com,csi-powerstore.dellemc.com,csi-isilon.dellemc.com,csi-powermax.dellemc.com
-  service:
-    type: ClusterIP
-  logLevel: INFO
-  logFormat: text
-  zipkin:
-    uri: ""
-    serviceName: karavi-topology
-    probability: 0.0
-
 karaviMetricsPowerflex:
   image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.13.0
   enabled: true
