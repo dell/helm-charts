@@ -30,7 +30,7 @@ version: v2.15.0
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: csm.artifactory.cec.lab.emc.com/csm-users/sreekb/csi-powerstore:sreekb-v1
+    image: quay.io/dell/container-storage-modules/csi-powerstore:v2.15.0
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.9.0
@@ -51,9 +51,9 @@ images:
   vgsnapshotter:
     image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
   podmon:
-    image: quay.io/dell/container-storage-modules/podmon:v1.13.0
+    image: quay.io/dell/container-storage-modules/podmon:v1.14.0
   metadataretriever:
-    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.11.0
+    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.12.0
   authorization:
     image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
 
@@ -118,8 +118,7 @@ nfsAcls: "0777"
 podmonAPIPort: 8083
 
 # apiTimeout: Defines the timeout for PowerStore API calls in seconds
-# Allowed values:
-#   Any number
+# Allowed values: n, where n > 0
 # Default value: 5
 apiTimeout: 5
 
@@ -279,12 +278,30 @@ node:
 
   # Uncomment if CSM for Resiliency and CSI Driver pods monitor are enabled
   # tolerations:
-    - key: "offline.powerstore.storage.dell.com"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "powerstore.podmon.storage.dell.com"
-      operator: "Exists"
-      effect: "NoSchedule"
+  #  - key: "offline.vxflexos.storage.dell.com"
+  #    operator: "Exists"
+  #    effect: "NoSchedule"
+  #  - key: "vxflexos.podmon.storage.dell.com"
+  #    operator: "Exists"
+  #    effect: "NoSchedule"
+  #  - key: "offline.unity.storage.dell.com"
+  #    operator: "Exists"
+  #    effect: "NoSchedule"
+  #  - key: "unity.podmon.storage.dell.com"
+  #    operator: "Exists"
+  #    effect: "NoSchedule"
+  #  - key: "offline.isilon.storage.dell.com"
+  #    operator: "Exists"
+  #    effect: "NoSchedule"
+  #  - key: "isilon.podmon.storage.dell.com"
+  #    operator: "Exists"
+  #    effect: "NoSchedule"
+  #  - key: "offline.powerstore.storage.dell.com"
+  #    operator: "Exists"
+  #    effect: "NoSchedule"
+  #  - key: "powerstore.podmon.storage.dell.com"
+  #    operator: "Exists"
+  #    effect: "NoSchedule"
 
 ## PLATFORM ATTRIBUTES
 ######################
@@ -331,7 +348,7 @@ storageCapacity:
 
 # Enable this feature only after contact support for additional information
 podmon:
-  enabled: true
+  enabled: false
   controller:
     args:
       - "--csisock=unix:/var/run/csi/csi.sock"
