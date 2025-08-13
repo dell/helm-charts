@@ -163,6 +163,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ---
 
+{{ include "vxflexos.validateVolumeNamePrefix" . }}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
