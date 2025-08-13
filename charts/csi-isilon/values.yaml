@@ -2,12 +2,12 @@
 ########################
 # version: version of this values file
 # Note: Do not change this value
-version: "v2.14.0"
+version: "v2.14.1"
 
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-isilon:v2.14.0
+    image: quay.io/dell/container-storage-modules/csi-isilon:v2.14.1
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.8.1
@@ -107,6 +107,11 @@ podmonAPIPort: 8083
 # Default value: 192
 # Examples: 192, 256
 maxPathLen: 192
+
+# azReconcileInterval: Interval to monitor and reconcile network interface labels on nodes.
+# Allowed values: Number followed by unit of time (s,m,h)
+# Default value: 1h
+azReconcileInterval: 1h
 
 # controller: configure controller pod specific parameters
 controller:
