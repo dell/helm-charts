@@ -266,6 +266,8 @@ spec:
               value: "{{ .Values.controller.volumeNamePrefix }}"
             - name: X_CSI_POWERSTORE_TMP_DIR
               value: {{ .Values.kubeletConfigDir }}/plugins/{{ .Values.driverName }}/tmp
+            - name: X_CSI_POWERSTORE_API_TIMEOUT
+              value: "{{ .Values.apiTimeout }}"
             - name: X_CSI_DRIVER_NAME
               value: {{ .Values.driverName }}
             - name: X_CSI_FC_PORTS_FILTER_FILE_PATH
