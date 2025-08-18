@@ -117,6 +117,12 @@ nfsAcls: "0777"
 # Default value: 8083
 podmonAPIPort: 8083
 
+# apiTimeout: Defines the timeout for PowerStore API calls in seconds
+# Allowed values: Number followed by unit (s,m,h)
+# Examples: 60s, 5m, 1h
+# Default value: 120s
+apiTimeout: "120s"
+
 # controller: configure controller specific parameters
 controller:
   # controllerCount: defines the number of csi-powerstore controller pods to deploy to
@@ -367,6 +373,12 @@ podmon:
       - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
       - "--driverPodLabelValue=dell-storage"
       - "--ignoreVolumelessPods=false"
+
+  # arrayConnectivityTimeout: Defines the timeout (in seconds) for podmon array connectivity timeout check
+  # Allowed values: Number followed by unit (s,m,h)
+  # Examples: 10s, 1m, 1h
+  # Default value: 10s
+  arrayConnectivityTimeout: "10s"
 
 # Define multi NAS parameters
 multiNas:
