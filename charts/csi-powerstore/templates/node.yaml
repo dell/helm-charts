@@ -312,7 +312,7 @@ spec:
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
             - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_TIMEOUT
-              value: {{ .Values.podmon.arrayConnectivityTimeout | default 10s | quote }}
+              value: {{ .Values.podmon.arrayConnectivityTimeout | default "10s" | quote }}
           ports:
             - containerPort: 2050
           volumeMounts:
