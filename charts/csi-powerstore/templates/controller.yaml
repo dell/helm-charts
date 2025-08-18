@@ -442,6 +442,8 @@ spec:
               value: /powerstore-config/config
             - name: X_CSI_POWERSTORE_CONFIG_PARAMS_PATH
               value: /powerstore-config-params/driver-config-params.yaml
+            - name: X_CSI_POWERSTORE_API_TIMEOUT
+              value: {{ .Values.apiTimeout | default "120s" | quote }}
             - name: X_CSI_NODE_NAME
               valueFrom:
                 fieldRef:
@@ -474,6 +476,8 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
+            - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_TIMEOUT
+              value: {{ .Values.podmon.arrayConnectivityTimeout | default "10s" | quote}}
             {{- if hasKey .Values.controller "replication" }}
             {{- if eq .Values.controller.replication.enabled true}}
             - name: X_CSI_REPLICATION_CONTEXT_PREFIX
