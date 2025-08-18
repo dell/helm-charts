@@ -87,7 +87,7 @@ externalAccess:
 #  IfNotPresent: Only pull the image if it does not already exist on the node.
 #  Never: Never pull the image.
 # Default value: None
-imagePullPolicy: Always
+imagePullPolicy: IfNotPresent
 
 # maxPowerstoreVolumesPerNode: Specify default value for maximum number of volumes that controller can publish to the node.
 # If value is zero CO SHALL decide how many volumes of this type can be published by the controller to the node.
