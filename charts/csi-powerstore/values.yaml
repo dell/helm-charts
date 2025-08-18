@@ -87,7 +87,7 @@ externalAccess:
 #  IfNotPresent: Only pull the image if it does not already exist on the node.
 #  Never: Never pull the image.
 # Default value: None
-imagePullPolicy: IfNotPresent
+imagePullPolicy: Always
 
 # maxPowerstoreVolumesPerNode: Specify default value for maximum number of volumes that controller can publish to the node.
 # If value is zero CO SHALL decide how many volumes of this type can be published by the controller to the node.
@@ -118,9 +118,10 @@ nfsAcls: "0777"
 podmonAPIPort: 8083
 
 # apiTimeout: Defines the timeout for PowerStore API calls in seconds
-# Allowed values: n, where n > 0
-# Default value: 5
-apiTimeout: 5
+# Allowed values: Number followed by unit (s,m,h)
+# Examples: 60s, 5m, 1h
+# Default value: 120s
+apiTimeout: "120s"
 
 # controller: configure controller specific parameters
 controller:
@@ -372,6 +373,12 @@ podmon:
       - "--driver-config-params=/powerstore-config-params/driver-config-params.yaml"
       - "--driverPodLabelValue=dell-storage"
       - "--ignoreVolumelessPods=false"
+
+  # arrayConnectivityTimeout: Defines the timeout (in seconds) for podmon array connectivity timeout check
+  # Allowed values: Number followed by unit (s,m,h)
+  # Examples: 10s, 1m, 1h
+  # Default value: 10s
+  arrayConnectivityTimeout: "10s"
 
 # Define multi NAS parameters
 multiNas:

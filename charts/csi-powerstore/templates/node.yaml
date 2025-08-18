@@ -267,7 +267,7 @@ spec:
             - name: X_CSI_POWERSTORE_TMP_DIR
               value: {{ .Values.kubeletConfigDir }}/plugins/{{ .Values.driverName }}/tmp
             - name: X_CSI_POWERSTORE_API_TIMEOUT
-              value: "{{ .Values.apiTimeout }}"
+              value: {{ .Values.apiTimeout | default "120s" | quote }}
             - name: X_CSI_DRIVER_NAME
               value: {{ .Values.driverName }}
             - name: X_CSI_FC_PORTS_FILTER_FILE_PATH
@@ -311,6 +311,8 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
+            - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_TIMEOUT
+              value: {{ .Values.podmon.arrayConnectivityTimeout | default 10s | quote }}
           ports:
             - containerPort: 2050
           volumeMounts:
