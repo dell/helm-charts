@@ -48,31 +48,31 @@ spec:
         args:
           - |
             REPLICAS=$( expr {{ .Values.replicas | int }} - 1)
-            FOUNDMASTER="false"
+            MASTER_FOUND="false"
 
             for i in $(seq 0 $REPLICAS)
             do
               NODE=$( echo "{{ .Values.name }}-$i.{{ .Values.name }}" )
               NODES=$( echo "$NODES*$NODE" )
             done
-            LOOP=$(echo $NODES | sed -e "s/"*"/\n/g")
+            NODES=$(echo $NODES | sed -e "s/"*"/\n/g")
 
-            echo "Found nodes: $LOOP"
+            echo "Found nodes: $NODES"
             echo "Starting Redis master detection..."
-            while [ "$FOUNDMASTER" != "true" ]
+            while [ "$MASTER_FOUND" != "true" ]
             do
-              for i in $LOOP
+              for i in $NODES
               do
                 echo "Processing node: $i"
 
                 MASTER_HOST="$i.{{ include "custom.namespace" . }}.svc.cluster.local"
 
                 echo "Checking for master role at $i"
-                ROLE=$(redis-cli --no-auth-warning --raw -h $i -a $REDIS_PASSWORD info replication | grep role | awk -F: '{print $2}' | tr -d '\r' | xargs)
+                ROLE=$(redis-cli --no-auth-warning --raw -h "$i" -a "$REDIS_PASSWORD" info replication | grep role | awk -F: '{print $2}' | tr -d '\r' | xargs)
                 echo "Role of $i is $ROLE"
 
                 if [ "$ROLE" = "master" ]; then
-                  FOUNDMASTER="true"
+                  MASTER_FOUND="true"
                   MASTER=$MASTER_HOST
                   echo "Master found at $MASTER"
                   break

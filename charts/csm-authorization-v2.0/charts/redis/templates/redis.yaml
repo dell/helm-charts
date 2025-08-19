@@ -60,30 +60,65 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-                key: {{ .Values.redisSecretProviderClass.redisPasswordKey }}
+                key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "K@ravi123!" }}
         command: [ "sh", "-c" ]
         args:
           - |
+            echo "Initializing Redis configuration..."
             cp /csm-auth-redis-cm/redis.conf /etc/redis/redis.conf
             echo "masterauth $REDIS_PASSWORD" >> /etc/redis/redis.conf
             echo "requirepass $REDIS_PASSWORD" >> /etc/redis/redis.conf
 
-            echo "Finding master..."
-            MASTER_FDQN=`hostname  -f | sed -e 's/{{ .Values.name }}-[0-9]\./{{ .Values.name }}-0./'`
-            echo "Master at " $MASTER_FDQN
-            if [ "$(redis-cli -h sentinel -p 5000 ping)" != "PONG" ]; then
-              echo "No sentinel found..."
-              if [ "$(hostname)" = "{{ .Values.name }}-0" ]; then
-                echo "This is Redis master, not updating redis.conf..."
-              else
-                echo "This is Redis replica, updating redis.conf..."
-                echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf
+            REPLICAS=$( expr {{ .Values.replicas | int }} - 1)
+            MASTER_FOUND="false"
+            MAX_RETRIES=30
+
+            for i in $(seq 0 $REPLICAS)
+            do
+              SENTINEL=$( echo "{{ .Values.sentinel }}-$i.{{ .Values.sentinel }}" )
+              SENTINELS=$( echo "$SENTINELS*$SENTINEL" )
+            done
+            SENTINELS=$(echo $SENTINELS | sed -e "s/"*"/\n/g")
+
+            echo "Attempting to discover Redis master via Sentinel..."
+            for retry in $(seq 0 $MAX_RETRIES)
+            do
+              for sentinel in $SENTINELS
+              do
+                SENTINEL_FQDN="$sentinel.{{ include "custom.namespace" . }}.svc.cluster.local"
+                PING_SENTINEL=$(redis-cli -h "$SENTINEL_FQDN" -p 5000 ping)
+                echo "Pinging sentinel $SENTINEL_FQDN"
+
+                if [ "$PING_SENTINEL" == "PONG" ]; then
+                  echo "Sentinel found"
+
+                  MASTER_INFO=$(redis-cli -h "$SENTINEL_FQDN" -p 5000 {{ .Values.sentinel }} get-master-addr-by-name mymaster)
+                  MASTER_HOST=$(echo "$MASTER_INFO" | sed -n '1p')
+                  MASTER_PORT=$(echo "$MASTER_INFO" | sed -n '2p')
+                  if [ -n "$MASTER_HOST" ] && [ -n "$MASTER_PORT" ]; then
+                    echo "Sentinel reports master at $MASTER_HOST:$MASTER_PORT"
+                    echo "replicaof $MASTER_HOST $MASTER_PORT" >> /etc/redis/redis.conf
+                    MASTER_FOUND="true"
+                    break
+                  else
+                    echo "Sentinel not ready or master info missing, retrying... ($retry/$MAX_RETRIES)"
+                    sleep 5
+                  fi
+                fi
+              done
+
+              if [ "$MASTER_FOUND" = "true" ]; then
+                break
               fi
-            else
-              echo "Sentinel found, finding master..."
-              MASTER="$(redis-cli -h sentinel -p 5000 sentinel get-master-addr-by-name mymaster | grep -E '(^redis-\d{1,})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})')"
-              echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf
+            done
+
+            if [ "$MASTER_FOUND" != "true" ]; then
+              echo "No master info from Sentinel, starting as temporary master"
+              # No replicaof line added
             fi
+
+            echo "Redis configuration:"
+            cat /etc/redis/redis.conf
         volumeMounts:
         - name: redis-primary-volume
           mountPath: /data
@@ -118,7 +153,7 @@ spec:
         emptyDir: {}
       - name: configmap
         configMap:
-          name: redis-cm
+          name: redis-csm-cm
       {{- if .Values.redisSecretProviderClass.redisSecretName }}
       - name: secrets-store-inline-redis
         csi:
@@ -170,22 +205,22 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-              key: {{ .Values.redisSecretProviderClass.redisPasswordKey }}
+              key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "K@ravi123!" }}
         - name: SENTINEL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-              key: {{ .Values.redisSecretProviderClass.redisPasswordKey }}
+              key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "K@ravi123!" }}
         - name: HTTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-              key: {{ .Values.redisSecretProviderClass.redisPasswordKey }}
+              key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "K@ravi123!" }}
         - name: HTTP_USER
           valueFrom:
             secretKeyRef:
               name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-              key: {{ .Values.redisSecretProviderClass.redisUsernameKey }}
+              key: {{ .Values.redisSecretProviderClass.redisUsernameKey | default "dev" }}
         ports:
         - name: {{ .Values.rediscommander }}
           containerPort: 8081
