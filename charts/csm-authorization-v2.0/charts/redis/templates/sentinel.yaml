@@ -44,47 +44,59 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-                key: {{ .Values.redisSecretProviderClass.redisPasswordKey }}
+                key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "K@ravi123!" }}
         args:
           - |
-            replicas=$( expr {{ .Values.replicas | int }} - 1)
-            for i in $(seq 0 $replicas)
-            do
-                node=$( echo "{{ .Values.name }}-$i.{{ .Values.name }}" )
-                nodes=$( echo "$nodes*$node" )
-            done
-            loop=$(echo $nodes | sed -e "s/"*"/\n/g")
+            REPLICAS=$( expr {{ .Values.replicas | int }} - 1)
+            FOUNDMASTER="false"
 
-            foundMaster="false"
-            while [ "$foundMaster" != "true" ]
+            for i in $(seq 0 $REPLICAS)
             do
-                for i in $loop
-                do
-                    echo "Finding master at $i"
-                    MASTER=$(redis-cli --no-auth-warning --raw -h $i -a $REDIS_PASSWORD info replication | awk '{print $1}' | grep master_host: | cut -d ":" -f2)
-                    if [ "$MASTER" = "" ]; then
-                        echo "Master not found..."
-                        echo "Sleeping 5 seconds for pods to come up..."
-                        sleep 5
-                        MASTER=
-                    else
-                        echo "Master found at $MASTER..."
-                        foundMaster="true"
-                        break
-                    fi
-                done
+              NODE=$( echo "{{ .Values.name }}-$i.{{ .Values.name }}" )
+              NODES=$( echo "$NODES*$NODE" )
+            done
+            LOOP=$(echo $NODES | sed -e "s/"*"/\n/g")
+
+            echo "Found nodes: $LOOP"
+            echo "Starting Redis master detection..."
+            while [ "$FOUNDMASTER" != "true" ]
+            do
+              for i in $LOOP
+              do
+                echo "Processing node: $i"
+
+                MASTER_HOST="$i.{{ include "custom.namespace" . }}.svc.cluster.local"
+
+                echo "Checking for master role at $i"
+                ROLE=$(redis-cli --no-auth-warning --raw -h $i -a $REDIS_PASSWORD info replication | grep role | awk -F: '{print $2}' | tr -d '\r' | xargs)
+                echo "Role of $i is $ROLE"
+
+                if [ "$ROLE" = "master" ]; then
+                  FOUNDMASTER="true"
+                  MASTER=$MASTER_HOST
+                  echo "Master found at $MASTER"
+                  break
+                else
+                  echo "Master not found..."
+                  echo "Sleeping 5 seconds for pods to come up..."
+                  sleep 5
+                fi
+              done
             done
 
-            echo "sentinel monitor mymaster $MASTER 6379 2" >> /tmp/master
+            echo "Generating /etc/redis/sentinel.conf for master $MASTER"
             echo "port 5000
             sentinel resolve-hostnames yes
             sentinel announce-hostnames yes
-            $(cat /tmp/master)
+            sentinel monitor mymaster $MASTER 6379 2
             sentinel down-after-milliseconds mymaster 5000
             sentinel failover-timeout mymaster 60000
             sentinel parallel-syncs mymaster 2
             sentinel auth-pass mymaster $REDIS_PASSWORD
+            loglevel notice
             " > /etc/redis/sentinel.conf
+
+            echo "Sentinel configuration:"
             cat /etc/redis/sentinel.conf
         volumeMounts:
         - name: redis-config

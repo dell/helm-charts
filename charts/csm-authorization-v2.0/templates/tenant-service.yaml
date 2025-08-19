@@ -54,7 +54,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.redis.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-                key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey }}
+                key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey | default "K@ravi123!" }}
         args:
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"

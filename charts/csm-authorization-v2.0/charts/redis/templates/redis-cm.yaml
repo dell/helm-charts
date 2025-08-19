@@ -1,9 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: redis-cm
+  name: redis-csm-cm
   namespace: {{ include "custom.namespace" . }}
-
 data:
   redis.conf: |
     # Redis configuration file example.
