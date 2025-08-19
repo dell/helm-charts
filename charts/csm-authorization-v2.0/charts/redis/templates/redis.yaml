@@ -116,9 +116,6 @@ spec:
               echo "No master info from Sentinel, starting as temporary master"
               # No replicaof line added
             fi
-
-            echo "Redis configuration:"
-            cat /etc/redis/redis.conf
         volumeMounts:
         - name: redis-primary-volume
           mountPath: /data
