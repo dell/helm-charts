@@ -49,6 +49,7 @@ spec:
           - |
             REPLICAS=$( expr {{ .Values.replicas | int }} - 1)
             MASTER_FOUND="false"
+            MAX_RETRIES=5
 
             for i in $(seq 0 $REPLICAS)
             do
@@ -57,32 +58,38 @@ spec:
             done
             NODES=$(echo $NODES | sed -e "s/"*"/\n/g")
 
-            echo "Found nodes: $NODES"
+            echo "Discovered Redis nodes: $NODES"
             echo "Starting Redis master detection..."
-            while [ "$MASTER_FOUND" != "true" ]
+
+            for retry in $(seq 0 $MAX_RETRIES)
             do
               for i in $NODES
               do
-                echo "Processing node: $i"
+                HOST="$i.{{ include "custom.namespace" . }}.svc.cluster.local"
+                echo "Checking node $HOST for master role..."
 
-                MASTER_HOST="$i.{{ include "custom.namespace" . }}.svc.cluster.local"
-
-                echo "Checking for master role at $i"
                 ROLE=$(redis-cli --no-auth-warning --raw -h "$i" -a "$REDIS_PASSWORD" info replication | grep role | awk -F: '{print $2}' | tr -d '\r' | xargs)
-                echo "Role of $i is $ROLE"
 
                 if [ "$ROLE" = "master" ]; then
                   MASTER_FOUND="true"
-                  MASTER=$MASTER_HOST
+                  MASTER=$HOST
                   echo "Master found at $MASTER"
                   break
                 else
-                  echo "Master not found..."
-                  echo "Sleeping 5 seconds for pods to come up..."
+                  echo "Node $HOST is not master (role=$ROLE), retrying in 5 seconds... ($retry/$MAX_RETRIES)"
                   sleep 5
                 fi
               done
+
+              if [ "$MASTER_FOUND" = "true" ]; then
+                break
+              fi
             done
+
+            if [ "$MASTER_FOUND" != "true" ]; then
+              echo "No master found after $MAX_RETRIES retries. Defaulting to first node as temporary master."
+              MASTER="{{ .Values.name }}-0.{{ .Values.name }}.{{ include "custom.namespace" . }}.svc.cluster.local"
+            fi
 
             echo "Generating /etc/redis/sentinel.conf for master $MASTER"
             echo "port 5000
