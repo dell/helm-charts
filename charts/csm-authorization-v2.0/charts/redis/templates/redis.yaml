@@ -69,52 +69,46 @@ spec:
             echo "masterauth $REDIS_PASSWORD" >> /etc/redis/redis.conf
             echo "requirepass $REDIS_PASSWORD" >> /etc/redis/redis.conf
 
-            REPLICAS=$( expr {{ .Values.replicas | int }} - 1)
             MASTER_FOUND="false"
-            MAX_RETRIES=30
-
-            for i in $(seq 0 $REPLICAS)
-            do
-              SENTINEL=$( echo "{{ .Values.sentinel }}-$i.{{ .Values.sentinel }}" )
-              SENTINELS=$( echo "$SENTINELS*$SENTINEL" )
-            done
-            SENTINELS=$(echo $SENTINELS | sed -e "s/"*"/\n/g")
+            MAX_RETRIES=5
 
             echo "Attempting to discover Redis master via Sentinel..."
             for retry in $(seq 0 $MAX_RETRIES)
             do
-              for sentinel in $SENTINELS
-              do
-                SENTINEL_FQDN="$sentinel.{{ include "custom.namespace" . }}.svc.cluster.local"
-                PING_SENTINEL=$(redis-cli -h "$SENTINEL_FQDN" -p 5000 ping)
-                echo "Pinging sentinel $SENTINEL_FQDN"
+              PING_SENTINEL=$(redis-cli -h sentinel -p 5000 PING)
+              echo "Pinging sentinel"
 
-                if [ "$PING_SENTINEL" == "PONG" ]; then
-                  echo "Sentinel found"
+              if [ "$PING_SENTINEL" == "PONG" ]; then
+                echo "Sentinel found"
 
-                  MASTER_INFO=$(redis-cli -h "$SENTINEL_FQDN" -p 5000 {{ .Values.sentinel }} get-master-addr-by-name mymaster)
-                  MASTER_HOST=$(echo "$MASTER_INFO" | sed -n '1p')
-                  MASTER_PORT=$(echo "$MASTER_INFO" | sed -n '2p')
-                  if [ -n "$MASTER_HOST" ] && [ -n "$MASTER_PORT" ]; then
-                    echo "Sentinel reports master at $MASTER_HOST:$MASTER_PORT"
+                MASTER_INFO=$(redis-cli -h sentinel -p 5000 SENTINEL get-master-addr-by-name mymaster)
+                MASTER_HOST=$(echo "$MASTER_INFO" | sed -n '1p')
+                MASTER_PORT=$(echo "$MASTER_INFO" | sed -n '2p')
+                if [ -n "$MASTER_HOST" ] && [ -n "$MASTER_PORT" ]; then
+                  echo "Sentinel reports master at $MASTER_HOST:$MASTER_PORT"
+
+                  # configure replicaof directive for replica pods only
+                  if [ "$(hostname -f)" != "$MASTER_HOST" ]; then
                     echo "replicaof $MASTER_HOST $MASTER_PORT" >> /etc/redis/redis.conf
-                    MASTER_FOUND="true"
-                    break
-                  else
-                    echo "Sentinel not ready or master info missing, retrying... ($retry/$MAX_RETRIES)"
-                    sleep 5
                   fi
-                fi
-              done
 
-              if [ "$MASTER_FOUND" = "true" ]; then
-                break
+                  MASTER_FOUND="true"
+                  break
+                else
+                  echo "Sentinel not ready or master info missing, retrying... ($retry/$MAX_RETRIES)"
+                  sleep 5
+                fi
               fi
             done
 
+            # configure replicaof directive for replica pods only
             if [ "$MASTER_FOUND" != "true" ]; then
-              echo "No master info from Sentinel, starting as temporary master"
-              # No replicaof line added
+              echo "No master info from Sentinel, starting first node as master"
+
+              MASTER_FQDN="{{ .Values.name }}-0.{{ .Values.name }}.{{ include "custom.namespace" . }}.svc.cluster.local"
+              if [ "$(hostname)" != "{{ .Values.name }}-0" ]; then
+                echo "replicaof $MASTER_FQDN 6379" >> /etc/redis/redis.conf
+              fi
             fi
         volumeMounts:
         - name: redis-primary-volume

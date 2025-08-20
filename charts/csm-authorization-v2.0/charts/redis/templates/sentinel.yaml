@@ -47,48 +47,57 @@ spec:
                 key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "K@ravi123!" }}
         args:
           - |
-            REPLICAS=$( expr {{ .Values.replicas | int }} - 1)
             MASTER_FOUND="false"
             MAX_RETRIES=5
 
+            REPLICAS=$( expr {{ .Values.replicas | int }} - 1)
+            SENTINELS=""
             for i in $(seq 0 $REPLICAS)
             do
-              NODE=$( echo "{{ .Values.name }}-$i.{{ .Values.name }}" )
-              NODES=$( echo "$NODES*$NODE" )
+              SENTINEL="{{ .Values.sentinel }}-$i.{{ .Values.sentinel }}.{{ include "custom.namespace" . }}.svc.cluster.local"
+              SENTINELS="$SENTINELS $SENTINEL"
             done
-            NODES=$(echo $NODES | sed -e "s/"*"/\n/g")
 
-            echo "Discovered Redis nodes: $NODES"
-            echo "Starting Redis master detection..."
+            echo "Sentinel nodes: $SENTINELS"
 
             for retry in $(seq 0 $MAX_RETRIES)
             do
-              for i in $NODES
+              for sentinel in $SENTINELS
               do
-                HOST="$i.{{ include "custom.namespace" . }}.svc.cluster.local"
-                echo "Checking node $HOST for master role..."
+                echo "Querying Sentinel $SENTINEL for Redis master address..."
+                MASTER_INFO=$(redis-cli -h sentinel -p 5000 SENTINEL get-master-addr-by-name mymaster)
+                MASTER_HOST=$(echo "$MASTER_INFO" | sed -n '1p')
+                MASTER_PORT=$(echo "$MASTER_INFO" | sed -n '2p')
 
-                ROLE=$(redis-cli --no-auth-warning --raw -h "$i" -a "$REDIS_PASSWORD" info replication | grep role | awk -F: '{print $2}' | tr -d '\r' | xargs)
+                if [ -n "$MASTER_HOST" ] && [ -n "$MASTER_PORT" ]; then
+                  echo "Sentinel reports master at $MASTER_HOST:$MASTER_PORT"
+                  ROLE=$(redis-cli --no-auth-warning --raw -h "$MASTER_HOST" -p "$MASTER_PORT" -a "$REDIS_PASSWORD" ROLE | head -n 1)
 
-                if [ "$ROLE" = "master" ]; then
-                  MASTER_FOUND="true"
-                  MASTER=$HOST
-                  echo "Master found at $MASTER"
-                  break
+                  if [ "$ROLE" = "master" ]; then
+                    echo "Verified master role at $MASTER_HOST:$MASTER_PORT"
+                    MASTER=$MASTER_HOST
+                    MASTER_FOUND="true"
+                    break
+                  else
+                    echo "Role mismatch: expected master, got $ROLE"
+                  fi
                 else
-                  echo "Node $HOST is not master (role=$ROLE), retrying in 5 seconds... ($retry/$MAX_RETRIES)"
-                  sleep 5
+                  echo "No master info from $SENTINEL"
                 fi
               done
 
               if [ "$MASTER_FOUND" = "true" ]; then
                 break
               fi
+
+              echo "Retrying in 5 seconds... ($retry/$MAX_RETRIES)"
+              sleep 5
             done
 
             if [ "$MASTER_FOUND" != "true" ]; then
-              echo "No master found after $MAX_RETRIES retries. Defaulting to first node as temporary master."
+              echo "No master found after $MAX_RETRIES retries. Defaulting to first Redis pod."
               MASTER="{{ .Values.name }}-0.{{ .Values.name }}.{{ include "custom.namespace" . }}.svc.cluster.local"
+              redis-cli -a "$REDIS_PASSWORD" REPLICAOF NO ONE
             fi
 
             echo "Generating /etc/redis/sentinel.conf for master $MASTER"
@@ -100,7 +109,6 @@ spec:
             sentinel failover-timeout mymaster 60000
             sentinel parallel-syncs mymaster 2
             sentinel auth-pass mymaster $REDIS_PASSWORD
-            loglevel notice
             " > /etc/redis/sentinel.conf
 
             echo "Sentinel configuration:"
