@@ -97,7 +97,6 @@ spec:
             if [ "$MASTER_FOUND" != "true" ]; then
               echo "No master found after $MAX_RETRIES retries. Defaulting to first Redis pod."
               MASTER="{{ .Values.name }}-0.{{ .Values.name }}.{{ include "custom.namespace" . }}.svc.cluster.local"
-              redis-cli -a "$REDIS_PASSWORD" REPLICAOF NO ONE
             fi
 
             echo "Generating /etc/redis/sentinel.conf for master $MASTER"
