@@ -76,15 +76,15 @@ redis:
   # If using a CSI driver, specify the SecretProviderClass.
   # Otherwise, a default Kubernetes secret will be used for Redis credentials.
   redisSecretProviderClass:
-    # Optional: Name of the SecretProviderClass that contains a secret object with Redis credentials.
-    redisSecretProviderClassName:
+    # Optional: Name of the Kubernetes secret (created by the CSI driver) that contains Redis credentials.
+    redisSecretName:
     # Required: Key in the secret that stores the Redis username.
     redisUsernameKey: username
     # Required: Key in the secret that stores the Redis password.
     redisPasswordKey: password
 
     # Optional: Paths for Conjur secrets that store the Redis username and password.
-    # Required if redisSecretProviderClassName is set
+    # Required if redisSecretName is set when using Conjur and needs to match the paths in Redis values.yaml
     # conjur:
     #   - paths:
     #       - passwordPath: secrets/redis-username
