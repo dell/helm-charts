@@ -3,6 +3,12 @@ redisSecretProviderClass:
   redisSecretName:
   redisUsernameKey: username
   redisPasswordKey: password
+
+  # Optional: Paths for Conjur secrets that store the Redis username and password.
+  conjur:
+    - paths:
+        - passwordPath: secrets/redis-username
+          usernamePath: secrets/redis-password
 sentinel: sentinel
 rediscommander: rediscommander
 replicas: 5
