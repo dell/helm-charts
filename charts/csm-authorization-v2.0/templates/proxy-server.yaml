@@ -1,4 +1,3 @@
-{{- $storageSecretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
 {{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
 ---
 # Grant OPA/kube-mgmt read-only access to resources. This lets kube-mgmt

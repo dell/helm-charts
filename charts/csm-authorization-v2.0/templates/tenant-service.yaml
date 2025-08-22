@@ -1,4 +1,3 @@
-{{- $storageSecretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
 {{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
 ---
 apiVersion: v1
