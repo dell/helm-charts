@@ -62,7 +62,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-                key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "K@ravi123!" }}
+                key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "password" }}
         command: [ "sh", "-c" ]
         args:
           - |
@@ -202,22 +202,22 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-              key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "K@ravi123!" }}
+              key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "password" }}
         - name: SENTINEL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-              key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "K@ravi123!" }}
+              key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "password" }}
         - name: HTTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-              key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "K@ravi123!" }}
+              key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "password" }}
         - name: HTTP_USER
           valueFrom:
             secretKeyRef:
               name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-              key: {{ .Values.redisSecretProviderClass.redisUsernameKey | default "dev" }}
+              key: {{ .Values.redisSecretProviderClass.redisUsernameKey | default "commander_user" }}
         ports:
         - name: {{ .Values.rediscommander }}
           containerPort: 8081
