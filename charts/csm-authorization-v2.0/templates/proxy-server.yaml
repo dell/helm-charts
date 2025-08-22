@@ -111,7 +111,7 @@ spec:
       labels:
         app: proxy-server
       annotations:
-        {{- if and $redisSecretProviderClass (hasKey $redisSecretProviderClass "conjur") }}
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
         conjur.org/secrets: |
           {{- range $redisSecretProviderClass.conjur }}
           {{- range .paths }}

@@ -52,7 +52,7 @@ spec:
         app: {{ .Values.name }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
-        {{- if and $redisSecretProviderClass (hasKey $redisSecretProviderClass "conjur") }}
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
         conjur.org/secrets: |
           {{- range $redisSecretProviderClass.conjur }}
           {{- range .paths }}
@@ -156,7 +156,7 @@ spec:
         tier: backend
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
-        {{- if and $redisSecretProviderClass (hasKey $redisSecretProviderClass "conjur") }}
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
         conjur.org/secrets: |
           {{- range $redisSecretProviderClass.conjur }}
           {{- range .paths }}

@@ -35,7 +35,7 @@ spec:
         app: {{ .Values.sentinel }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
-        {{- if and $redisSecretProviderClass (hasKey $redisSecretProviderClass "conjur") }}
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
         conjur.org/secrets: |
           {{- range $redisSecretProviderClass.conjur }}
           {{- range .paths }}

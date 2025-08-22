@@ -36,7 +36,7 @@ spec:
       labels:
         app: tenant-service
       annotations:
-        {{- if and $redisSecretProviderClass (hasKey $redisSecretProviderClass "conjur") }}
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
         conjur.org/secrets: |
           {{- range $redisSecretProviderClass.conjur }}
           {{- range .paths }}
