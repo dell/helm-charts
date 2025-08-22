@@ -73,9 +73,11 @@ authorization:
 redis:
   name: redis-csm
   # Redis secret configuration:
-  # If using a CSI driver, specify the SecretProviderClass.
+  # Optional: If using a CSI driver, specify the SecretProviderClass that holds the Redis secretObject.
   # Otherwise, a default Kubernetes secret will be used for Redis credentials.
   redisSecretProviderClass:
+    # Optional: Name of the SecretProviderClass that holds the Redis secretObject.
+    secretProviderClassName:
     # Optional: Name of the Kubernetes secret (created by the CSI driver) that contains Redis credentials.
     redisSecretName:
     # Optional: Key in the secret that stores the Redis username.
@@ -96,27 +98,26 @@ redis:
 # 1. Using a SecretProviderClass (for dynamic secrets from external providers)
 # 2. Using a Kubernetes Secret (for static credentials)
 # Only one of the two can be specified at a time.
-global:
-  storageSystemCredentials:
-    secretProviderClasses:
-      vault:
-        - secretProviderClassName1
-        # - secretProviderClassName2
-        # - secretProviderClassName3
+storageSystemCredentials:
+  secretProviderClasses:
+    vault:
+      - secretProviderClassName1
+      # - secretProviderClassName2
+      # - secretProviderClassName3
 
-      # conjur:
-          # - name: secretProviderClassName1
-            # paths:
-              # - passwordPath: secrets/password1
-              #   usernamePath: secrets/username1
-              # - passwordPath: secrets/password2
-              #   usernamePath: secrets/username2
-          # - name: secretProviderClassName2
-            # paths:
-              # - passwordPath: secrets/password3
-              #   usernamePath: secrets/username3
+    # conjur:
+        # - name: secretProviderClassName1
+          # paths:
+            # - passwordPath: secrets/password1
+            #   usernamePath: secrets/username1
+            # - passwordPath: secrets/password2
+            #   usernamePath: secrets/username2
+        # - name: secretProviderClassName2
+          # paths:
+            # - passwordPath: secrets/password3
+            #   usernamePath: secrets/username3
 
-    # secrets:
-    #   - secret-1
-    #   - secret-2
-    #   - secret-3
+  # secrets:
+  #   - secret-1
+  #   - secret-2
+  #   - secret-3

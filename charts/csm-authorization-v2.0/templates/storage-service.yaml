@@ -1,4 +1,4 @@
-{{- $secretProviderClasses := .Values.global.storageSystemCredentials.secretProviderClasses | default dict }}
+{{- $secretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -145,8 +145,8 @@ spec:
           readOnly: true
         {{- end }}
         {{- end }}
-        {{- if .Values.global.storageSystemCredentials.secrets }}
-        {{- range .Values.global.storageSystemCredentials.secrets }}
+        {{- if .Values.storageSystemCredentials.secrets }}
+        {{- range .Values.storageSystemCredentials.secrets }}
         - name: storage-system-secrets-{{ . }}
           mountPath: /etc/csm-authorization/{{ . }}
           readOnly: true
@@ -179,8 +179,8 @@ spec:
             secretProviderClass: "{{ $secretproviderclass.name }}"
       {{- end }}
       {{- end }}
-      {{- if .Values.global.storageSystemCredentials.secrets }}
-      {{- range .Values.global.storageSystemCredentials.secrets }}
+      {{- if .Values.storageSystemCredentials.secrets }}
+      {{- range .Values.storageSystemCredentials.secrets }}
       - name: storage-system-secrets-{{ . }}
         secret:
           secretName: {{ . }}

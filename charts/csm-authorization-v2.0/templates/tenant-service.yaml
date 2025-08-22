@@ -1,4 +1,4 @@
-{{- $secretProviderClasses := .Values.global.storageSystemCredentials.secretProviderClasses | default dict }}
+{{- $redisSecretProviderClassName := .Values.redis.redisSecretProviderClass.secretProviderClassName }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -68,12 +68,10 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") (.Values.redis.redisSecretProviderClass.redisSecretName) }}
-        {{- range $secretproviderclass := $secretProviderClasses.vault }}
-        - name: secrets-store-inline-{{ $secretproviderclass }}
-          mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
+        {{- if and $redisSecretProviderClassName (.Values.redis.redisSecretProviderClass.redisSecretName) }}
+        - name: secrets-store-inline-$redisSecretProviderClassName
+          mountPath: /etc/csm-authorization/$redisSecretProviderClassName
           readOnly: true
-        {{- end }}
         {{- end }}
       volumes:
       - name: config-volume
@@ -82,15 +80,13 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") (.Values.redis.redisSecretProviderClass.redisSecretName) }}
-      {{- range $secretproviderclass := $secretProviderClasses.vault }}
-      - name: secrets-store-inline-{{ $secretproviderclass }}
+      {{- if and $redisSecretProviderClassName (.Values.redis.redisSecretProviderClass.redisSecretName) }}
+      - name: secrets-store-inline-$redisSecretProviderClassName
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "{{ $secretproviderclass }}"
-      {{- end }}
+            secretProviderClass: "$redisSecretProviderClassName"
       {{- end }}
 ---
 apiVersion: v1

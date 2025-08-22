@@ -1,4 +1,4 @@
-{{- $secretProviderClasses := .Values.global.storageSystemCredentials.secretProviderClasses | default dict }}
+{{- $redisSecretProviderClassName := .Values.redisSecretProviderClass.secretProviderClassName }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -134,12 +134,10 @@ spec:
           mountPath: /csm-auth-redis-cm/
         - name: config
           mountPath: /etc/redis/
-        {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") (.Values.redisSecretProviderClass.redisSecretName) }}
-        {{- range $secretproviderclass := $secretProviderClasses.vault }}
-        - name: secrets-store-inline-{{ $secretproviderclass }}
-          mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
+        {{- if and $redisSecretProviderClassName (.Values.redisSecretProviderClass.redisSecretName) }}
+        - name: secrets-store-inline-$redisSecretProviderClassName
+          mountPath: /etc/csm-authorization/$redisSecretProviderClassName
           readOnly: true
-        {{- end }}
         {{- end }}
       volumes:
       - name: redis-primary-volume
@@ -149,15 +147,13 @@ spec:
       - name: configmap
         configMap:
           name: redis-csm-cm
-      {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") (.Values.redisSecretProviderClass.redisSecretName) }}
-      {{- range $secretproviderclass := $secretProviderClasses.vault }}
-      - name: secrets-store-inline-{{ $secretproviderclass }}
+      {{- if and $redisSecretProviderClassName (.Values.secretProviderClass.redisSecretName) }}
+      - name: secrets-store-inline-$redisSecretProviderClassName
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "{{ $secretproviderclass }}"
-      {{- end }}
+            secretProviderClass: "$redisSecretProviderClassName"
       {{- end }}
 ---
 apiVersion: apps/v1
@@ -238,24 +234,20 @@ spec:
           capabilities:
             drop:
               - ALL
-        {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") (.Values.redisSecretProviderClass.redisSecretName) }}
-        {{- range $secretproviderclass := $secretProviderClasses.vault }}
+        {{- if and $redisSecretProviderClassName (.Values.redisSecretProviderClass.redisSecretName) }}
         volumeMounts:
-        - name: secrets-store-inline-{{ $secretproviderclass }}
-          mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
+        - name: secrets-store-inline-$redisSecretProviderClassName
+          mountPath: /etc/csm-authorization/$redisSecretProviderClassName
           readOnly: true
         {{- end }}
-        {{- end }}
-      {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") (.Values.redisSecretProviderClass.redisSecretName) }}
-      {{- range $secretproviderclass := $secretProviderClasses.vault }}
+      {{- if and $redisSecretProviderClassName (.Values.redisSecretProviderClass.redisSecretName) }}
       volumes:
-      - name: secrets-store-inline-{{ $secretproviderclass }}
+      - name: secrets-store-inline-$redisSecretProviderClassName
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "{{ $secretproviderclass }}"
-      {{- end }}
+            secretProviderClass: "$redisSecretProviderClassName"
       {{- end }}
 ---
 apiVersion: v1
