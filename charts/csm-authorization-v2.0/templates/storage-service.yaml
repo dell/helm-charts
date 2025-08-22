@@ -143,14 +143,14 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- if and $storageSecretProviderClasses (hasKey $storageSecretProviderClasses "vault") }}
+        {{- if hasKey $storageSecretProviderClasses "vault" }}
         {{- range $secretproviderclass := $storageSecretProviderClasses.vault }}
         - name: secrets-store-inline-{{ $secretproviderclass }}
           mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
           readOnly: true
         {{- end }}
         {{- end }}
-        {{- if and $storageSecretProviderClasses (hasKey $storageSecretProviderClasses "conjur") }}
+        {{- if hasKey $storageSecretProviderClasses "conjur" }}
         {{- range $secretproviderclass := $storageSecretProviderClasses.conjur }}
         - name: secrets-store-inline-{{ $secretproviderclass.name }}
           mountPath: /etc/csm-authorization/{{ $secretproviderclass.name }}
@@ -176,7 +176,7 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- if and $storageSecretProviderClasses (hasKey $storageSecretProviderClasses "vault") }}
+      {{- if hasKey $storageSecretProviderClasses "vault" }}
       {{- range $secretproviderclass := $storageSecretProviderClasses.vault }}
       - name: secrets-store-inline-{{ $secretproviderclass }}
         csi:
@@ -186,7 +186,7 @@ spec:
             secretProviderClass: "{{ $secretproviderclass }}"
       {{- end }}
       {{- end }}
-      {{- if and $storageSecretProviderClasses (hasKey $storageSecretProviderClasses "conjur") }}
+      {{- if hasKey $storageSecretProviderClasses "conjur" }}
       {{- range $secretproviderclass := $storageSecretProviderClasses.conjur }}
       - name: secrets-store-inline-{{ $secretproviderclass.name }}
         csi:

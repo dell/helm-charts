@@ -115,7 +115,9 @@ storageSystemCredentials:
     #   - name: secretProviderClassName1
     #     paths:
     #       - passwordPath: secrets/password1
-    #         usernamePath: secrets/password2
+    #         usernamePath: secrets/username1
+    #       - passwordPath: secrets/password2
+    #         usernamePath: secrets/username2
     #   - name: secretProviderClassName2
     #     paths:
     #       - passwordPath: secrets/password3
