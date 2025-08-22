@@ -76,12 +76,20 @@ redis:
   # If using a CSI driver, specify the SecretProviderClass.
   # Otherwise, a default Kubernetes secret will be used for Redis credentials.
   redisSecretProviderClass:
-    # Optional: Name of the Kubernetes secret (created by the CSI driver) that contains Redis credentials.
-    redisSecretName:
+    # Optional: Name of the SecretProviderClass that contains a secret object with Redis credentials.
+    redisSecretProviderClassName:
     # Required: Key in the secret that stores the Redis username.
     redisUsernameKey: username
     # Required: Key in the secret that stores the Redis password.
     redisPasswordKey: password
+
+    # Optional: Paths for Conjur secrets that store the Redis username and password.
+    # Required if redisSecretProviderClassName is set
+    # conjur:
+    #   - paths:
+    #       - passwordPath: secrets/redis-username
+    #         usernamePath: secrets/redis-password
+
   sentinel: sentinel
   rediscommander: rediscommander
   replicas: 5
@@ -100,20 +108,18 @@ storageSystemCredentials:
   secretProviderClasses:
     vault:
       - secretProviderClassName1
-      # - secretProviderClassName2
-      # - secretProviderClassName3
+    #   # - secretProviderClassName2
+    #   # - secretProviderClassName3
 
     # conjur:
-        # - name: secretProviderClassName1
-          # paths:
-            # - passwordPath: secrets/password1
-            #   usernamePath: secrets/username1
-            # - passwordPath: secrets/password2
-            #   usernamePath: secrets/username2
-        # - name: secretProviderClassName2
-          # paths:
-            # - passwordPath: secrets/password3
-            #   usernamePath: secrets/username3
+    #   - name: secretProviderClassName1
+    #     paths:
+    #       - passwordPath: secrets/password1
+    #         usernamePath: secrets/password2
+    #   - name: secretProviderClassName2
+    #     paths:
+    #       - passwordPath: secrets/password3
+    #         usernamePath: secrets/username3
 
   # secrets:
   #   - secret-1
