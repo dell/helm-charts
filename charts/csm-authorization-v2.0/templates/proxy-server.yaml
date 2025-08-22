@@ -1,3 +1,5 @@
+{{- $secretProviderClasses := .Values.global.storageSystemCredentials.secretProviderClasses | default dict }}
+---
 # Grant OPA/kube-mgmt read-only access to resources. This lets kube-mgmt
 # list configmaps to be loaded into OPA as policies.
 apiVersion: rbac.authorization.k8s.io/v1
@@ -143,10 +145,12 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-        - name: secrets-store-inline-redis
-          mountPath: /etc/csm-authorization/redis
+        {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") (.Values.redis.redisSecretProviderClass.redisSecretName) }}
+        {{- range $secretproviderclass := $secretProviderClasses.vault }}
+        - name: secrets-store-inline-{{ $secretproviderclass }}
+          mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
           readOnly: true
+        {{- end }}
         {{- end }}
       - name: opa
         image: {{ required "Must provide the openpolicyagent image." .Values.authorization.images.opa.image }}
@@ -172,13 +176,15 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-      - name: secrets-store-inline-redis
+      {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") (.Values.redis.redisSecretProviderClass.redisSecretName) }}
+      {{- range $secretproviderclass := $secretProviderClasses.vault }}
+      - name: secrets-store-inline-{{ $secretproviderclass }}
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "{{ .Values.redis.redisSecretProviderClass.redisSecretName }}"
+            secretProviderClass: "{{ $secretproviderclass }}"
+      {{- end }}
       {{- end }}
 ---
 apiVersion: v1

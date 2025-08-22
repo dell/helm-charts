@@ -96,26 +96,27 @@ redis:
 # 1. Using a SecretProviderClass (for dynamic secrets from external providers)
 # 2. Using a Kubernetes Secret (for static credentials)
 # Only one of the two can be specified at a time.
-storageSystemCredentials:
-  secretProviderClasses:
-    vault:
-      - secretProviderClassName1
-      # - secretProviderClassName2
-      # - secretProviderClassName3
+global:
+  storageSystemCredentials:
+    secretProviderClasses:
+      vault:
+        - secretProviderClassName1
+        # - secretProviderClassName2
+        # - secretProviderClassName3
 
-    # conjur:
-        # - name: secretProviderClassName1
-          # paths:
-            # - passwordPath: secrets/password1
-            #   usernamePath: secrets/username1
-            # - passwordPath: secrets/password2
-            #   usernamePath: secrets/username2
-        # - name: secretProviderClassName2
-          # paths:
-            # - passwordPath: secrets/password3
-            #   usernamePath: secrets/username3
+      # conjur:
+          # - name: secretProviderClassName1
+            # paths:
+              # - passwordPath: secrets/password1
+              #   usernamePath: secrets/username1
+              # - passwordPath: secrets/password2
+              #   usernamePath: secrets/username2
+          # - name: secretProviderClassName2
+            # paths:
+              # - passwordPath: secrets/password3
+              #   usernamePath: secrets/username3
 
-  # secrets:
-  #   - secret-1
-  #   - secret-2
-  #   - secret-3
+    # secrets:
+    #   - secret-1
+    #   - secret-2
+    #   - secret-3

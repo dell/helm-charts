@@ -1,4 +1,4 @@
-{{- $secretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
+{{- $secretProviderClasses := .Values.global.storageSystemCredentials.secretProviderClasses | default dict }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -145,17 +145,12 @@ spec:
           readOnly: true
         {{- end }}
         {{- end }}
-        {{- if .Values.storageSystemCredentials.secrets }}
-        {{- range .Values.storageSystemCredentials.secrets }}
+        {{- if .Values.global.storageSystemCredentials.secrets }}
+        {{- range .Values.global.storageSystemCredentials.secrets }}
         - name: storage-system-secrets-{{ . }}
           mountPath: /etc/csm-authorization/{{ . }}
           readOnly: true
         {{- end }}
-        {{- end }}
-        {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-        - name: secrets-store-inline-redis
-          mountPath: /etc/csm-authorization/redis
-          readOnly: true
         {{- end }}
       volumes:
       - name: config-volume
@@ -184,20 +179,12 @@ spec:
             secretProviderClass: "{{ $secretproviderclass.name }}"
       {{- end }}
       {{- end }}
-      {{- if .Values.storageSystemCredentials.secrets }}
-      {{- range .Values.storageSystemCredentials.secrets }}
+      {{- if .Values.global.storageSystemCredentials.secrets }}
+      {{- range .Values.global.storageSystemCredentials.secrets }}
       - name: storage-system-secrets-{{ . }}
         secret:
           secretName: {{ . }}
       {{- end }}
-      {{- end }}
-      {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-      - name: secrets-store-inline-redis
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: "{{ .Values.redis.redisSecretProviderClass.redisSecretName }}"
       {{- end }}
 ---
 apiVersion: v1
