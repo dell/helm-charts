@@ -108,8 +108,8 @@ storageSystemCredentials:
   secretProviderClasses:
     vault:
       - secretProviderClassName1
-    #   # - secretProviderClassName2
-    #   # - secretProviderClassName3
+      # - secretProviderClassName2
+      # - secretProviderClassName3
 
     # conjur:
     #   - name: secretProviderClassName1
