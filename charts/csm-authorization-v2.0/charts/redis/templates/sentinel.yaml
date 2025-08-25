@@ -1,4 +1,5 @@
 {{- $redisSecretProviderClassName := .Values.redisSecretProviderClass.secretProviderClassName }}
+{{- $redisSecretName := .Values.redisSecretProviderClass.redisSecretName }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -45,7 +46,7 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
+                name: {{ $redisSecretName | default "redis-csm-secret" }}
                 key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "password" }}
         args:
           - |
@@ -130,9 +131,9 @@ spec:
           mountPath: /etc/redis/
         - name: data
           mountPath: /data
-        {{- if and $redisSecretProviderClassName (.Values.redisSecretProviderClass.redisSecretName) }}
-        - name: secrets-store-inline-$redisSecretProviderClassName
-          mountPath: /etc/csm-authorization/$redisSecretProviderClassName
+        {{- if and $redisSecretProviderClassName $redisSecretName }}
+        - name: secrets-store-inline-{{ $redisSecretProviderClassName }}
+          mountPath: /etc/csm-authorization/{{ $redisSecretProviderClassName }}
           readOnly: true
         {{- end }}
       volumes:
@@ -140,13 +141,13 @@ spec:
         emptyDir: {}
       - name: data
         emptyDir : {}
-      {{- if and $redisSecretProviderClassName (.Values.redisSecretProviderClass.redisSecretName) }}
-      - name: secrets-store-inline-$redisSecretProviderClassName
+      {{- if and $redisSecretProviderClassName $redisSecretName }}
+      - name: secrets-store-inline-{{ $redisSecretProviderClassName }}
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "$redisSecretProviderClassName"
+            secretProviderClass: "{{ $redisSecretProviderClassName }}"
       {{- end }}
 ---
 apiVersion: v1

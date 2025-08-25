@@ -72,8 +72,9 @@ authorization:
 
 redis:
   name: redis-csm
+  # Optional:
   # Redis secret configuration:
-  # Optional: If using a CSI driver, specify the SecretProviderClass that holds the Redis secretObject.
+  # If using a CSI driver, specify the SecretProviderClass that holds the Redis secretObject.
   # Otherwise, a default Kubernetes secret will be used for Redis credentials.
   redisSecretProviderClass:
     # Optional: Name of the SecretProviderClass that holds the Redis secretObject.

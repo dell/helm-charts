@@ -1,4 +1,5 @@
 {{- $redisSecretProviderClassName := .Values.redis.redisSecretProviderClass.secretProviderClassName }}
+{{- $redisSecretName := .Values.redis.redisSecretProviderClass.redisSecretName }}
 ---
 # Grant OPA/kube-mgmt read-only access to resources. This lets kube-mgmt
 # list configmaps to be loaded into OPA as policies.
@@ -130,7 +131,7 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.redis.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
+                name: {{ $redisSecretName | default "redis-csm-secret" }}
                 key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey | default "password" }}
         args:
           - "--redis-sentinel={{ $str }}"
@@ -145,9 +146,9 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- if and $redisSecretProviderClassName (.Values.redis.redisSecretProviderClass.redisSecretName) }}
-        - name: secrets-store-inline-$redisSecretProviderClassName
-          mountPath: /etc/csm-authorization/$redisSecretProviderClassName
+        {{- if and $redisSecretProviderClassName $redisSecretName }}
+        - name: secrets-store-inline-{{ $redisSecretProviderClassName }}
+          mountPath: /etc/csm-authorization/{{ $redisSecretProviderClassName }}
           readOnly: true
         {{- end }}
       - name: opa
@@ -174,13 +175,13 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- if and $redisSecretProviderClassName (.Values.redis.secretProviderClass.redisSecretName) }}
-      - name: secrets-store-inline-$redisSecretProviderClassName
+      {{- if and $redisSecretProviderClassName $redisSecretName }}
+      - name: secrets-store-inline-{{ $redisSecretProviderClassName }}
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "$redisSecretProviderClassName"
+            secretProviderClass: "{{ $redisSecretProviderClassName }}"
       {{- end }}
 ---
 apiVersion: v1
