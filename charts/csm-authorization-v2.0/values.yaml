@@ -78,7 +78,7 @@ redis:
   # Otherwise, a default Kubernetes secret will be used for Redis credentials.
   redisSecretProviderClass:
     # Name of the SecretProviderClass that holds the Redis secretObject.
-    secretProviderClassName: array-creds
+    secretProviderClassName:
     # Name of the Kubernetes secret (created by the Secret Store CSI driver) that contains Redis credentials.
     redisSecretName:
     # Key in the secret that stores the Redis username.
