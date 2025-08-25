@@ -1,7 +1,7 @@
 {{- $secretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
 {{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
-{{- $redisSecretProviderClassName := .Values.redis.redisSecretProviderClass.secretProviderClassName }}
-{{- $redisSecretName := .Values.redis.redisSecretProviderClass.redisSecretName }}
+{{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
+{{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
 
 # Get Vault SPC names directly from its SPC list
 {{- $vaultSPCNames := $secretProviderClasses.vault | default list }}
@@ -145,7 +145,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ $redisSecretName | default "redis-csm-secret" }}
-                key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey | default "password" }}
+                key: {{ $redisSecretProviderClass.redisPasswordKey | default "password" }}
         args:
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"

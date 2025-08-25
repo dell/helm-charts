@@ -1,7 +1,7 @@
 {{- $redisSecretProviderClass := .Values.redisSecretProviderClass | default dict }}
-{{- $redisSecretProviderClassName := .Values.redisSecretProviderClass.secretProviderClassName }}
-{{- $redisSecretName := .Values.redisSecretProviderClass.redisSecretName }}
-{{- $redisPasswordKey := .Values.redisSecretProviderClass.redisPasswordKey }}
+{{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
+{{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
+{{- $redisPasswordKey := $redisSecretProviderClass.redisPasswordKey }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -230,7 +230,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ $redisSecretName | default "redis-csm-secret" }}
-              key: {{ .Values.redisSecretProviderClass.redisUsernameKey | default "commander_user" }}
+              key: {{ $redisSecretProviderClass.redisUsernameKey | default "commander_user" }}
         ports:
         - name: {{ .Values.rediscommander }}
           containerPort: 8081

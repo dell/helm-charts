@@ -1,6 +1,6 @@
 {{- $redisSecretProviderClass := .Values.redisSecretProviderClass | default dict }}
-{{- $redisSecretProviderClassName := .Values.redisSecretProviderClass.secretProviderClassName }}
-{{- $redisSecretName := .Values.redisSecretProviderClass.redisSecretName }}
+{{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
+{{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -55,7 +55,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ $redisSecretName | default "redis-csm-secret" }}
-                key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "password" }}
+                key: {{ $redisSecretProviderClass.redisPasswordKey | default "password" }}
         args:
           - |
             MASTER_FOUND="false"
