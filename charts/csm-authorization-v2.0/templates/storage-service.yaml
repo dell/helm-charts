@@ -1,4 +1,15 @@
 {{- $secretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
+{{- $vaultSPCs := $secretProviderClasses.vault | default list }}
+
+{{- $redisSecretProviderClassName := .Values.redis.redisSecretProviderClass.secretProviderClassName }}
+{{- $redisSecretName := .Values.redis.redisSecretProviderClass.redisSecretName }}
+
+# Add Redis secret provider class in the vault list if not already present
+{{- if not (has $redisSecretProviderClassName $vaultSPCs) }}
+  {{- $vaultSPCs = append $vaultSPCs $redisSecretProviderClassName }}
+{{- end }}
+
+{{- $_ := set $secretProviderClasses "vault" $vaultSPCs }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -114,8 +125,8 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.redis.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-                key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey }}
+                name: {{ $redisSecretName | default "redis-csm-secret" }}
+                key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey | default "password" }}
         args:
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
@@ -131,6 +142,7 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
+        # secret provider class mounts
         {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") }}
         {{- range $secretproviderclass := $secretProviderClasses.vault }}
         - name: secrets-store-inline-{{ $secretproviderclass }}
@@ -145,17 +157,13 @@ spec:
           readOnly: true
         {{- end }}
         {{- end }}
+        # kubernetes secret mount
         {{- if .Values.storageSystemCredentials.secrets }}
         {{- range .Values.storageSystemCredentials.secrets }}
         - name: storage-system-secrets-{{ . }}
           mountPath: /etc/csm-authorization/{{ . }}
           readOnly: true
         {{- end }}
-        {{- end }}
-        {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-        - name: secrets-store-inline-redis
-          mountPath: /etc/csm-authorization/redis
-          readOnly: true
         {{- end }}
       volumes:
       - name: config-volume
@@ -164,6 +172,7 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
+      # secret provider classes
       {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") }}
       {{- range $secretproviderclass := $secretProviderClasses.vault }}
       - name: secrets-store-inline-{{ $secretproviderclass }}
@@ -184,20 +193,13 @@ spec:
             secretProviderClass: "{{ $secretproviderclass.name }}"
       {{- end }}
       {{- end }}
+      # kubernetes secret
       {{- if .Values.storageSystemCredentials.secrets }}
       {{- range .Values.storageSystemCredentials.secrets }}
       - name: storage-system-secrets-{{ . }}
         secret:
           secretName: {{ . }}
       {{- end }}
-      {{- end }}
-      {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-      - name: secrets-store-inline-redis
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: "{{ .Values.redis.redisSecretProviderClass.redisSecretName }}"
       {{- end }}
 ---
 apiVersion: v1

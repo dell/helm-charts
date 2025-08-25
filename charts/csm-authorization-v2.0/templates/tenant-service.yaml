@@ -1,3 +1,6 @@
+{{- $redisSecretProviderClassName := .Values.redis.redisSecretProviderClass.secretProviderClassName }}
+{{- $redisSecretName := .Values.redis.redisSecretProviderClass.redisSecretName }}
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -53,8 +56,8 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.redis.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-                key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey }}
+                name: {{ $redisSecretName | default "redis-csm-secret" }}
+                key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey | default "password" }}
         args:
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
@@ -66,9 +69,9 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-        - name: secrets-store-inline-redis
-          mountPath: /etc/csm-authorization/redis
+        {{- if and $redisSecretProviderClassName $redisSecretName }}
+        - name: secrets-store-inline-{{ $redisSecretProviderClassName }}
+          mountPath: /etc/csm-authorization/{{ $redisSecretProviderClassName }}
           readOnly: true
         {{- end }}
       volumes:
@@ -78,13 +81,13 @@ spec:
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-      - name: secrets-store-inline-redis
+      {{- if and $redisSecretProviderClassName $redisSecretName }}
+      - name: secrets-store-inline-{{ $redisSecretProviderClassName }}
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "{{ .Values.redis.redisSecretProviderClass.redisSecretName }}"
+            secretProviderClass: "{{ $redisSecretProviderClassName }}"
       {{- end }}
 ---
 apiVersion: v1
