@@ -1,3 +1,4 @@
+{{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
 {{- $redisSecretProviderClassName := .Values.redis.redisSecretProviderClass.secretProviderClassName }}
 {{- $redisSecretName := .Values.redis.redisSecretProviderClass.redisSecretName }}
 ---
@@ -36,6 +37,16 @@ spec:
     metadata:
       labels:
         app: tenant-service
+      annotations:
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
+        conjur.org/secrets: |
+          {{- range $redisSecretProviderClass.conjur }}
+          {{- range .paths }}
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
+          {{- end }}
+        {{- end }}
     spec:
       serviceAccountName: tenant-service
       containers:

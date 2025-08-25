@@ -1,3 +1,4 @@
+{{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
 {{- $redisSecretProviderClassName := .Values.redisSecretProviderClass.secretProviderClassName }}
 {{- $redisSecretName := .Values.redisSecretProviderClass.redisSecretName }}
 {{- $redisPasswordKey := .Values.redisSecretProviderClass.redisPasswordKey }}
@@ -54,6 +55,15 @@ spec:
         app: {{ .Values.name }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
+        conjur.org/secrets: |
+          {{- range $redisSecretProviderClass.conjur }}
+          {{- range .paths }}
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
+          {{- end }}
+        {{- end }}
     spec:
       serviceAccountName: redis
       initContainers:
@@ -175,6 +185,15 @@ spec:
         tier: backend
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
+        conjur.org/secrets: |
+          {{- range $redisSecretProviderClass.conjur }}
+          {{- range .paths }}
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
+          {{- end }}
+        {{- end }}
     spec:
       serviceAccountName: redis
       containers:

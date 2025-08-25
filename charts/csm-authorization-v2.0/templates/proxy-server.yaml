@@ -1,3 +1,4 @@
+{{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
 {{- $redisSecretProviderClassName := .Values.redis.redisSecretProviderClass.secretProviderClassName }}
 {{- $redisSecretName := .Values.redis.redisSecretProviderClass.redisSecretName }}
 ---
@@ -111,6 +112,16 @@ spec:
     metadata:
       labels:
         app: proxy-server
+      annotations:
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
+        conjur.org/secrets: |
+          {{- range $redisSecretProviderClass.conjur }}
+          {{- range .paths }}
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
+          {{- end }}
+        {{- end }}
     spec:
       serviceAccount: proxy-server
       containers:
