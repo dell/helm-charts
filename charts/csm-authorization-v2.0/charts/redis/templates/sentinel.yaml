@@ -1,4 +1,4 @@
-{{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
+{{- $redisSecretProviderClass := .Values.redisSecretProviderClass | default dict }}
 {{- $redisSecretProviderClassName := .Values.redisSecretProviderClass.secretProviderClassName }}
 {{- $redisSecretName := .Values.redisSecretProviderClass.redisSecretName }}
 ---
@@ -38,13 +38,11 @@ spec:
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
         {{- if hasKey $redisSecretProviderClass "conjur" }}
+        {{- with $redisSecretProviderClass.conjur }}
         conjur.org/secrets: |
-          {{- range $redisSecretProviderClass.conjur }}
-          {{- range .paths }}
           - {{ .usernamePath }}: {{ .usernamePath | quote }}
           - {{ .passwordPath }}: {{ .passwordPath | quote }}
-          {{- end }}
-          {{- end }}
+        {{- end }}
         {{- end }}
     spec:
       serviceAccountName: sentinel

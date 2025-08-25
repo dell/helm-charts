@@ -5,8 +5,8 @@ redisSecretProviderClass:
   redisUsernameKey:
   redisPasswordKey:
   conjur:
-    passwordPath: secrets/redis-password
-    usernamePath: secrets/redis-username
+    passwordPath:
+    usernamePath:
 sentinel: sentinel
 rediscommander: rediscommander
 replicas: 5

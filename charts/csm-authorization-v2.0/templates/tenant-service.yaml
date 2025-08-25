@@ -39,13 +39,11 @@ spec:
         app: tenant-service
       annotations:
         {{- if hasKey $redisSecretProviderClass "conjur" }}
+        {{- with $redisSecretProviderClass.conjur }}
         conjur.org/secrets: |
-          {{- range $redisSecretProviderClass.conjur }}
-          {{- range .paths }}
           - {{ .usernamePath }}: {{ .usernamePath | quote }}
           - {{ .passwordPath }}: {{ .passwordPath | quote }}
-          {{- end }}
-          {{- end }}
+        {{- end }}
         {{- end }}
     spec:
       serviceAccountName: tenant-service

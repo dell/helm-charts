@@ -114,13 +114,11 @@ spec:
         app: proxy-server
       annotations:
         {{- if hasKey $redisSecretProviderClass "conjur" }}
+        {{- with $redisSecretProviderClass.conjur }}
         conjur.org/secrets: |
-          {{- range $redisSecretProviderClass.conjur }}
-          {{- range .paths }}
           - {{ .usernamePath }}: {{ .usernamePath | quote }}
           - {{ .passwordPath }}: {{ .passwordPath | quote }}
-          {{- end }}
-          {{- end }}
+        {{- end }}
         {{- end }}
     spec:
       serviceAccount: proxy-server
