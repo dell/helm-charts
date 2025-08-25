@@ -87,9 +87,9 @@ redis:
     redisPasswordKey:
 
     # Paths for Conjur secrets that store the Redis username and password.
-    conjur:
-      passwordPath: secrets/redis-password
-      usernamePath: secrets/redis-username
+    # conjur:
+    #   passwordPath: secrets/redis-password
+    #   usernamePath: secrets/redis-username
 
   sentinel: sentinel
   rediscommander: rediscommander
