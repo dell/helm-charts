@@ -1,6 +1,15 @@
 {{- $secretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
+{{- $vaultSPCs := $secretProviderClasses.vault | default list }}
+
 {{- $redisSecretProviderClassName := .Values.redis.redisSecretProviderClass.secretProviderClassName }}
 {{- $redisSecretName := .Values.redis.redisSecretProviderClass.redisSecretName }}
+
+# Add Redis secret provider class in the vault list if not already present
+{{- if not (has $redisSecretProviderClassName $vaultSPCs) }}
+  {{- $vaultSPCs = append $vaultSPCs $redisSecretProviderClassName }}
+{{- end }}
+
+{{- $_ := set $secretProviderClasses "vault" $vaultSPCs }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -148,13 +157,6 @@ spec:
           readOnly: true
         {{- end }}
         {{- end }}
-        # If Redis credentials are stored in the SPC with storage system credentials, this mount is unnecessary.
-        # If Redis credentials are stored in a separate SPC, this mount is required.
-        {{- if and $redisSecretProviderClassName $redisSecretName }}
-        - name: secrets-store-inline-redis-{{ $redisSecretProviderClassName }}
-          mountPath: /etc/csm-authorization/redis/{{ $redisSecretProviderClassName }}
-          readOnly: true
-        {{- end }}
         # kubernetes secret mount
         {{- if .Values.storageSystemCredentials.secrets }}
         {{- range .Values.storageSystemCredentials.secrets }}
@@ -190,16 +192,6 @@ spec:
           volumeAttributes:
             secretProviderClass: "{{ $secretproviderclass.name }}"
       {{- end }}
-      {{- end }}
-      # If Redis credentials are stored in the SPC with storage system credentials, this volume is unnecessary.
-      # If Redis credentials are stored in a separate SPC, this volume is required.
-      {{- if and $redisSecretProviderClassName $redisSecretName }}
-      - name: secrets-store-inline-redis-{{ $redisSecretProviderClassName }}
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: "{{ $redisSecretProviderClassName }}"
       {{- end }}
       # kubernetes secret
       {{- if .Values.storageSystemCredentials.secrets }}
