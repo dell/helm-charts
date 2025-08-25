@@ -148,7 +148,7 @@ spec:
           readOnly: true
         {{- end }}
         {{- end }}
-        # If Redis credentials are stored in the SPC with secret credentials, this mount is unnecessary.
+        # If Redis credentials are stored in the SPC with storage system credentials, this mount is unnecessary.
         # If Redis credentials are stored in a separate SPC, this mount is required.
         {{- if and $redisSecretProviderClassName $redisSecretName }}
         - name: secrets-store-inline-redis-{{ $redisSecretProviderClassName }}
@@ -191,7 +191,7 @@ spec:
             secretProviderClass: "{{ $secretproviderclass.name }}"
       {{- end }}
       {{- end }}
-      # If Redis credentials are stored in the SPC with secret credentials, this volume is unnecessary.
+      # If Redis credentials are stored in the SPC with storage system credentials, this volume is unnecessary.
       # If Redis credentials are stored in a separate SPC, this volume is required.
       {{- if and $redisSecretProviderClassName $redisSecretName }}
       - name: secrets-store-inline-redis-{{ $redisSecretProviderClassName }}
