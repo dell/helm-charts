@@ -100,6 +100,23 @@ redis:
     commander:
       image: rediscommander/redis-commander:latest
 
+jwt:
+  # Optional:
+  # JWT secret configuration:
+  # If using a Secret Store CSI driver, specify the SecretProviderClass details that holds the JWT secretObject.
+  # Otherwise, you must create a Kubernetes secret called "karavi-config-secret".
+  jwtSecretProviderClass:
+    # Name of the SecretProviderClass that holds the JWT secretObject.
+    secretProviderClassName:
+    # Name of the Kubernetes secret (created by the Secret Store CSI driver) that contains the JWT secret.
+    jwtSecretName:
+    # Key in the secret that stores the JWT secret.
+    signingSecretKey:
+
+    # Paths for Conjur secret that stores the JWT secret.
+    # conjur:
+    #   signingSecretPath:
+
 # Comment and uncomment the appropriate sections below to use the desired method.
 # Storage system credentials can be provided in one of two ways:
 # 1. Using a SecretProviderClass (for dynamic secrets from external providers)
@@ -128,20 +145,3 @@ storageSystemCredentials:
   #   - secret-1
   #   - secret-2
   #   - secret-3
-
-jwt:
-# Optional:
-# JWT secret configuration:
-# If using a Secret Store CSI driver, specify the SecretProviderClass details that holds the JWT secretObject.
-# Otherwise, you must create a Kubernetes secret called "karavi-config-secret".
-jwtSecretProviderClass:
-  # Name of the SecretProviderClass that holds the JWT secretObject.
-  secretProviderClassName:
-  # Name of the Kubernetes secret (created by the Secret Store CSI driver) that contains the JWT secret.
-  jwtsecretName:
-  # Key in the secret that stores the JWT secret.
-  signingSecretKey:
-
-  # Paths for Conjur secret that stores the JWT secret.
-  conjur:
-    signingSecretPath: 

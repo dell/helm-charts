@@ -184,7 +184,7 @@ spec:
       volumes:
       - name: config-volume
         secret:
-          secretName: {{ $jwtSecretProviderClass.jwtsecretName | default "karavi-config-secret" }}
+          secretName: {{ $jwtSecretProviderClass.jwtSecretName | default "karavi-config-secret" }}
       - name: csm-config-params
         configMap:
           name: csm-config-params
