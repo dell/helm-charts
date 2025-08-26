@@ -1,6 +1,7 @@
-{{- $redisSecretProviderClassName := .Values.redisSecretProviderClass.secretProviderClassName }}
-{{- $redisSecretName := .Values.redisSecretProviderClass.redisSecretName }}
-{{- $redisPasswordKey := .Values.redisSecretProviderClass.redisPasswordKey }}
+{{- $redisSecretProviderClass := .Values.redisSecretProviderClass | default dict }}
+{{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
+{{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
+{{- $redisPasswordKey := $redisSecretProviderClass.redisPasswordKey }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -54,6 +55,13 @@ spec:
         app: {{ .Values.name }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
+        {{- with $redisSecretProviderClass.conjur }}
+        conjur.org/secrets: |
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+        {{- end }}
+        {{- end }}
     spec:
       serviceAccountName: redis
       initContainers:
@@ -175,6 +183,13 @@ spec:
         tier: backend
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
+        {{- with $redisSecretProviderClass.conjur }}
+        conjur.org/secrets: |
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+        {{- end }}
+        {{- end }}
     spec:
       serviceAccountName: redis
       containers:
@@ -215,7 +230,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ $redisSecretName | default "redis-csm-secret" }}
-              key: {{ .Values.redisSecretProviderClass.redisUsernameKey | default "commander_user" }}
+              key: {{ $redisSecretProviderClass.redisUsernameKey | default "commander_user" }}
         ports:
         - name: {{ .Values.rediscommander }}
           containerPort: 8081
