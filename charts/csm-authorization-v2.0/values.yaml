@@ -85,6 +85,12 @@ redis:
     redisUsernameKey:
     # Key in the secret that stores the Redis password.
     redisPasswordKey:
+
+    # Paths for Conjur secrets that store the Redis username and password.
+    # conjur:
+    #   passwordPath: secrets/redis-password
+    #   usernamePath: secrets/redis-username
+
   sentinel: sentinel
   rediscommander: rediscommander
   replicas: 5
@@ -107,16 +113,16 @@ storageSystemCredentials:
       # - secretProviderClassName3
 
     # conjur:
-        # - name: secretProviderClassName1
-          # paths:
-            # - passwordPath: secrets/password1
-            #   usernamePath: secrets/username1
-            # - passwordPath: secrets/password2
-            #   usernamePath: secrets/username2
-        # - name: secretProviderClassName2
-          # paths:
-            # - passwordPath: secrets/password3
-            #   usernamePath: secrets/username3
+    #   - name: secretProviderClassName1
+    #     paths:
+    #       - passwordPath: secrets/password1
+    #         usernamePath: secrets/username1
+    #       - passwordPath: secrets/password2
+    #         usernamePath: secrets/username2
+    #   - name: secretProviderClassName2
+    #     paths:
+    #       - passwordPath: secrets/password3
+    #         usernamePath: secrets/username3
 
   # secrets:
   #   - secret-1
