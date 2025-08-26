@@ -1,6 +1,14 @@
 {{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
 {{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
 {{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
+
+{{- $jwtSecretProviderClass := .Values.jwt.jwtSecretProviderClass | default dict }}
+{{- $jwtSecretProviderClassName := $jwtSecretProviderClass.secretProviderClassName }}
+
+# Combine SPC names from different providers
+{{- $allSPCNames := (list $redisSecretProviderClassName $jwtSecretProviderClassName) }}
+{{- $allSPCNames = without $allSPCNames "" }}
+{{- $allSPCNames = uniq $allSPCNames }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -38,12 +46,19 @@ spec:
       labels:
         app: tenant-service
       annotations:
-        {{- if hasKey $redisSecretProviderClass "conjur" }}
-        {{- with $redisSecretProviderClass.conjur }}
+        {{- if or (hasKey $redisSecretProviderClass "conjur") (hasKey $jwtSecretProviderClass "conjur") }}
         conjur.org/secrets: |
+          {{- if hasKey $redisSecretProviderClass "conjur" }}
+          {{- with $redisSecretProviderClass.conjur }}
           - {{ .usernamePath }}: {{ .usernamePath | quote }}
           - {{ .passwordPath }}: {{ .passwordPath | quote }}
-        {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if hasKey $jwtSecretProviderClass "conjur" }}
+          {{- with $jwtSecretProviderClass.conjur }}
+          - {{ .signingSecretPath }}: {{ .signingSecretPath | quote }}
+          {{- end }}
+          {{- end }}
         {{- end }}
     spec:
       serviceAccountName: tenant-service
@@ -78,25 +93,27 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- if and $redisSecretProviderClassName $redisSecretName }}
-        - name: secrets-store-inline-{{ $redisSecretProviderClassName }}
-          mountPath: /etc/csm-authorization/{{ $redisSecretProviderClassName }}
+        # secret provider class mounts
+        {{- range $name := $allSPCNames }}
+        - name: secrets-store-inline-{{ $name }}
+          mountPath: /etc/csm-authorization/{{ $name }}
           readOnly: true
         {{- end }}
       volumes:
       - name: config-volume
         secret:
-          secretName: karavi-config-secret
+          secretName: {{ $jwtSecretProviderClass.jwtsecretName | default "karavi-config-secret" }}
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- if and $redisSecretProviderClassName $redisSecretName }}
-      - name: secrets-store-inline-{{ $redisSecretProviderClassName }}
+      # secret provider classes
+      {{- range $name := $allSPCNames }}
+      - name: secrets-store-inline-{{ $name }}
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "{{ $redisSecretProviderClassName }}"
+            secretProviderClass: "{{ $name }}"
       {{- end }}
 ---
 apiVersion: v1

@@ -110,22 +110,22 @@ spec:
         {{- if or (hasKey $storageSecretProviderClasses "conjur") (hasKey $redisSecretProviderClass "conjur") (hasKey $jwtSecretProviderClass "conjur") }}
         conjur.org/secrets: |
           {{- if hasKey $storageSecretProviderClasses "conjur" }}
-            {{- range $storageSecretProviderClasses.conjur }}
-            {{- range .paths }}
-            - {{ .usernamePath }}: {{ .usernamePath | quote }}
-            - {{ .passwordPath }}: {{ .passwordPath | quote }}
-            {{- end }}
-            {{- end }}
+          {{- range $storageSecretProviderClasses.conjur }}
+          {{- range .paths }}
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
+          {{- end }}
           {{- end }}
           {{- if hasKey $redisSecretProviderClass "conjur" }}
           {{- with $redisSecretProviderClass.conjur }}
-            - {{ .usernamePath }}: {{ .usernamePath | quote }}
-            - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
           {{- end }}
           {{- end }}
           {{- if hasKey $jwtSecretProviderClass "conjur" }}
           {{- with $jwtSecretProviderClass.conjur }}
-            - {{ .signingSecretPath }}: {{ .signingSecretPath | quote }}
+          - {{ .signingSecretPath }}: {{ .signingSecretPath | quote }}
           {{- end }}
           {{- end }}
         {{- end }}
@@ -168,12 +168,10 @@ spec:
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
         # secret provider class mounts
-        {{- if $allSPCNames }}
         {{- range $name := $allSPCNames }}
         - name: secrets-store-inline-{{ $name }}
           mountPath: /etc/csm-authorization/{{ $name }}
           readOnly: true
-        {{- end }}
         {{- end }}
         # kubernetes secret mount
         {{- if .Values.storageSystemCredentials.secrets }}
@@ -191,7 +189,6 @@ spec:
         configMap:
           name: csm-config-params
       # secret provider classes
-      {{- if $allSPCNames }}
       {{- range $name := $allSPCNames }}
       - name: secrets-store-inline-{{ $name }}
         csi:
@@ -199,7 +196,6 @@ spec:
           readOnly: true
           volumeAttributes:
             secretProviderClass: "{{ $name }}"
-      {{- end }}
       {{- end }}
       # kubernetes secret
       {{- if .Values.storageSystemCredentials.secrets }}
