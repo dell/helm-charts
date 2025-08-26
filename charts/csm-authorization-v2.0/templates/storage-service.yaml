@@ -1,25 +1,26 @@
-{{- $secretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
+{{- $storageSecretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
+
 {{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
 {{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
 {{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
 
-# Get Vault SPC names directly from its SPC list
-{{- $vaultSPCNames := $secretProviderClasses.vault | default list }}
+{{- $jwtSecretProviderClass := .Values.jwt.jwtSecretProviderClass | default dict }}
+{{- $jwtSecretProviderClassName := $jwtSecretProviderClass.secretProviderClassName }}
 
-# Get Conjur SPC names from each SPC
-{{- $conjurSPCs := $secretProviderClasses.conjur | default list }}
+# Get Vault SPC names directly from the storageSystemCredentials SPC list
+{{- $vaultSPCNames := $storageSecretProviderClasses.vault | default list }}
+
+# Get Conjur SPC names from each storageSystemCredentials SPC
+{{- $conjurSPCs := $storageSecretProviderClasses.conjur | default list }}
 {{- $conjurSPCNames := list }}
 {{- range $conjurSPC := $conjurSPCs }}
   {{- $conjurSPCNames = append $conjurSPCNames $conjurSPC.name }}
 {{- end }}
 
 # Combine SPC names from different providers
-{{- $allSPCNames := concat $vaultSPCNames $conjurSPCNames }}
-
-# Add Redis secret provider class in the SPC names list if not already present
-{{- if not (has $redisSecretProviderClassName $allSPCNames) }}
-  {{- $allSPCNames = append $allSPCNames $redisSecretProviderClassName }}
-{{- end }}
+{{- $allSPCNames := concat $vaultSPCNames $conjurSPCNames (list $redisSecretProviderClassName $jwtSecretProviderClassName) }}
+{{- $allSPCNames = without $allSPCNames "" }}
+{{- $allSPCNames = uniq $allSPCNames }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -106,10 +107,10 @@ spec:
       labels:
         app: storage-service
       annotations:
-        {{- if or (hasKey $secretProviderClasses "conjur") (hasKey $redisSecretProviderClass "conjur") }}
+        {{- if or (hasKey $storageSecretProviderClasses "conjur") (hasKey $redisSecretProviderClass "conjur") (hasKey $jwtSecretProviderClass "conjur") }}
         conjur.org/secrets: |
-          {{- if hasKey $secretProviderClasses "conjur" }}
-            {{- range $secretProviderClasses.conjur }}
+          {{- if hasKey $storageSecretProviderClasses "conjur" }}
+            {{- range $storageSecretProviderClasses.conjur }}
             {{- range .paths }}
             - {{ .usernamePath }}: {{ .usernamePath | quote }}
             - {{ .passwordPath }}: {{ .passwordPath | quote }}
@@ -120,6 +121,11 @@ spec:
           {{- with $redisSecretProviderClass.conjur }}
             - {{ .usernamePath }}: {{ .usernamePath | quote }}
             - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
+          {{- end }}
+          {{- if hasKey $jwtSecretProviderClass "conjur" }}
+          {{- with $jwtSecretProviderClass.conjur }}
+            - {{ .signingSecretPath }}: {{ .signingSecretPath | quote }}
           {{- end }}
           {{- end }}
         {{- end }}
@@ -180,7 +186,7 @@ spec:
       volumes:
       - name: config-volume
         secret:
-          secretName: karavi-config-secret
+          secretName: {{ $jwtSecretProviderClass.jwtsecretName | default "karavi-config-secret" }}
       - name: csm-config-params
         configMap:
           name: csm-config-params
