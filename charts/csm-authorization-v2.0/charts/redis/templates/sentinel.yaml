@@ -1,5 +1,6 @@
-{{- $redisSecretProviderClassName := .Values.redisSecretProviderClass.secretProviderClassName }}
-{{- $redisSecretName := .Values.redisSecretProviderClass.redisSecretName }}
+{{- $redisSecretProviderClass := .Values.redisSecretProviderClass | default dict }}
+{{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
+{{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -36,6 +37,13 @@ spec:
         app: {{ .Values.sentinel }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
+        {{- if hasKey $redisSecretProviderClass "conjur" }}
+        {{- with $redisSecretProviderClass.conjur }}
+        conjur.org/secrets: |
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+        {{- end }}
+        {{- end }}
     spec:
       serviceAccountName: sentinel
       initContainers:
@@ -47,7 +55,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ $redisSecretName | default "redis-csm-secret" }}
-                key: {{ .Values.redisSecretProviderClass.redisPasswordKey | default "password" }}
+                key: {{ $redisSecretProviderClass.redisPasswordKey | default "password" }}
         args:
           - |
             MASTER_FOUND="false"
