@@ -110,8 +110,6 @@ jwt:
     secretProviderClassName:
     # Name of the Kubernetes secret (created by the Secret Store CSI driver) that contains the JWT secret.
     jwtSecretName:
-    # Key in the secret that stores the JWT secret.
-    signingSecretKey:
 
     # Paths for Conjur secret that stores the JWT secret.
     # conjur:
