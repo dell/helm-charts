@@ -19,7 +19,7 @@
 
 # Combine SPC names from different providers
 {{- $allSPCNames := concat $vaultSPCNames $conjurSPCNames (list $redisSecretProviderClassName $jwtSecretProviderClassName) }}
-{{- $allSPCNames = without $allSPCNames "" }}
+{{- $allSPCNames = compact $allSPCNames }}
 {{- $allSPCNames = uniq $allSPCNames }}
 ---
 apiVersion: v1
@@ -106,8 +106,8 @@ spec:
     metadata:
       labels:
         app: storage-service
+      {{- if or (hasKey $storageSecretProviderClasses "conjur") (hasKey $redisSecretProviderClass "conjur") (hasKey $jwtSecretProviderClass "conjur") }}
       annotations:
-        {{- if or (hasKey $storageSecretProviderClasses "conjur") (hasKey $redisSecretProviderClass "conjur") (hasKey $jwtSecretProviderClass "conjur") }}
         conjur.org/secrets: |
           {{- if hasKey $storageSecretProviderClasses "conjur" }}
           {{- range $storageSecretProviderClasses.conjur }}
@@ -128,8 +128,7 @@ spec:
           - {{ .signingSecretPath }}: {{ .signingSecretPath | quote }}
           {{- end }}
           {{- end }}
-        {{- end }}
-
+      {{- end }}
     spec:
       serviceAccountName: storage-service
       containers:

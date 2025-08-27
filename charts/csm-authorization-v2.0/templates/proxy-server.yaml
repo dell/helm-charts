@@ -7,7 +7,7 @@
 
 # Combine SPC names from different providers
 {{- $allSPCNames := (list $redisSecretProviderClassName $jwtSecretProviderClassName) }}
-{{- $allSPCNames = without $allSPCNames "" }}
+{{- $allSPCNames = compact $allSPCNames }}
 {{- $allSPCNames = uniq $allSPCNames }}
 ---
 # Grant OPA/kube-mgmt read-only access to resources. This lets kube-mgmt
@@ -120,8 +120,8 @@ spec:
     metadata:
       labels:
         app: proxy-server
+      {{- if or (hasKey $redisSecretProviderClass "conjur") (hasKey $jwtSecretProviderClass "conjur") }}
       annotations:
-        {{- if or (hasKey $redisSecretProviderClass "conjur") (hasKey $jwtSecretProviderClass "conjur") }}
         conjur.org/secrets: |
           {{- if hasKey $redisSecretProviderClass "conjur" }}
           {{- with $redisSecretProviderClass.conjur }}
@@ -134,7 +134,7 @@ spec:
           - {{ .signingSecretPath }}: {{ .signingSecretPath | quote }}
           {{- end }}
           {{- end }}
-        {{- end }}
+      {{- end }}
     spec:
       serviceAccount: proxy-server
       containers:

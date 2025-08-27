@@ -7,7 +7,7 @@
 
 # Combine SPC names from different providers
 {{- $allSPCNames := (list $redisSecretProviderClassName $jwtSecretProviderClassName) }}
-{{- $allSPCNames = without $allSPCNames "" }}
+{{- $allSPCNames = compact $allSPCNames }}
 {{- $allSPCNames = uniq $allSPCNames }}
 ---
 apiVersion: v1
@@ -45,8 +45,8 @@ spec:
     metadata:
       labels:
         app: tenant-service
+      {{- if or (hasKey $redisSecretProviderClass "conjur") (hasKey $jwtSecretProviderClass "conjur") }}
       annotations:
-        {{- if or (hasKey $redisSecretProviderClass "conjur") (hasKey $jwtSecretProviderClass "conjur") }}
         conjur.org/secrets: |
           {{- if hasKey $redisSecretProviderClass "conjur" }}
           {{- with $redisSecretProviderClass.conjur }}
@@ -59,7 +59,7 @@ spec:
           - {{ .signingSecretPath }}: {{ .signingSecretPath | quote }}
           {{- end }}
           {{- end }}
-        {{- end }}
+      {{- end }}
     spec:
       serviceAccountName: tenant-service
       containers:
