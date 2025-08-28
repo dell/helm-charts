@@ -4,8 +4,8 @@
 {{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
 {{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
 
-{{- $jwtSecretProviderClass := .Values.jwt.jwtSecretProviderClass | default dict }}
-{{- $jwtSecretProviderClassName := $jwtSecretProviderClass.secretProviderClassName }}
+{{- $configSecretProviderClass := .Values.config.configSecretProviderClass | default dict }}
+{{- $configSecretProviderClassName := $configSecretProviderClass.secretProviderClassName }}
 
 # Get Vault SPC names directly from the storageSystemCredentials SPC list
 {{- $vaultSPCNames := $storageSecretProviderClasses.vault | default list }}
@@ -18,7 +18,7 @@
 {{- end }}
 
 # Combine SPC names from different providers
-{{- $allSPCNames := concat $vaultSPCNames $conjurSPCNames (list $redisSecretProviderClassName $jwtSecretProviderClassName) }}
+{{- $allSPCNames := concat $vaultSPCNames $conjurSPCNames (list $redisSecretProviderClassName $configSecretProviderClassName) }}
 {{- $allSPCNames = compact $allSPCNames }}
 {{- $allSPCNames = uniq $allSPCNames }}
 ---
@@ -106,7 +106,7 @@ spec:
     metadata:
       labels:
         app: storage-service
-      {{- if or (hasKey $storageSecretProviderClasses "conjur") (hasKey $redisSecretProviderClass "conjur") (hasKey $jwtSecretProviderClass "conjur") }}
+      {{- if or (hasKey $storageSecretProviderClasses "conjur") (hasKey $redisSecretProviderClass "conjur") (hasKey $configSecretProviderClass "conjur") }}
       annotations:
         conjur.org/secrets: |
           {{- if hasKey $storageSecretProviderClasses "conjur" }}
@@ -123,9 +123,9 @@ spec:
           - {{ .passwordPath }}: {{ .passwordPath | quote }}
           {{- end }}
           {{- end }}
-          {{- if hasKey $jwtSecretProviderClass "conjur" }}
-          {{- with $jwtSecretProviderClass.conjur }}
-          - {{ .signingSecretPath }}: {{ .signingSecretPath | quote }}
+          {{- if hasKey $configSecretProviderClass "conjur" }}
+          {{- with $configSecretProviderClass.conjur }}
+          - {{ .configSecretPath }}: {{ .configSecretPath | quote }}
           {{- end }}
           {{- end }}
       {{- end }}
@@ -183,7 +183,7 @@ spec:
       volumes:
       - name: config-volume
         secret:
-          secretName: {{ $jwtSecretProviderClass.jwtSecretName | default "karavi-config-secret" }}
+          secretName: {{ $configSecretProviderClass.configSecretName | default "karavi-config-secret" }}
       - name: csm-config-params
         configMap:
           name: csm-config-params
