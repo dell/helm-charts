@@ -125,7 +125,7 @@ spec:
           {{- end }}
           {{- if hasKey $configSecretProviderClass "conjur" }}
           {{- with $configSecretProviderClass.conjur }}
-          - {{ .configSecretPath }}: {{ .configSecretPath | quote }}
+          - {{ .secretPath }}: {{ .secretPath | quote }}
           {{- end }}
           {{- end }}
       {{- end }}
