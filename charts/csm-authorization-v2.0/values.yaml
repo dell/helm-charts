@@ -100,6 +100,22 @@ redis:
     commander:
       image: rediscommander/redis-commander:latest
 
+# Optional:
+# Config secret configuration:
+# If using a Secret Store CSI driver, specify the SecretProviderClass details that holds the config secretObject.
+# Otherwise leave the fields blank and create the "karavi-config-secret" Kubernetes secret.
+config:
+  configSecretProviderClass:
+    # Name of the SecretProviderClass that holds the config secretObject.
+    secretProviderClassName:
+    # Name of the Kubernetes secret (created by the Secret Store CSI driver) that contains the config secret.
+    configSecretName:
+
+    # Uncomment this section if using Conjur to store the config secret, otherwise leave commented out.
+    # Path for Conjur secret that stores the config secret.
+    # conjur:
+    #   secretPath: secrets/config-object
+
 # Comment and uncomment the appropriate sections below to use the desired method.
 # Storage system credentials can be provided in one of two ways:
 # 1. Using a SecretProviderClass (for dynamic secrets from external providers)
