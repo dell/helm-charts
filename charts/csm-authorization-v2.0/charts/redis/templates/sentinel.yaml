@@ -68,7 +68,6 @@ spec:
               SENTINEL="{{ .Values.sentinel }}-$i.{{ .Values.sentinel }}.{{ include "custom.namespace" . }}.svc.cluster.local"
               SENTINELS="$SENTINELS $SENTINEL"
             done
-            loop=$(echo $nodes | sed -e "s/"*"/\n/g")
 
             echo "Sentinel nodes: $SENTINELS"
 
@@ -115,7 +114,7 @@ spec:
             echo "port 5000
             sentinel resolve-hostnames yes
             sentinel announce-hostnames yes
-            $(cat /tmp/master)
+            sentinel monitor mymaster $MASTER 6379 2
             sentinel down-after-milliseconds mymaster 5000
             sentinel failover-timeout mymaster 60000
             sentinel parallel-syncs mymaster 2
