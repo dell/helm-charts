@@ -2,6 +2,50 @@ apiVersion: v1
 entries:
   container-storage-modules:
   - apiVersion: v2
+    appVersion: 1.8.0
+    created: "2025-09-17T21:39:12.672700671Z"
+    dependencies:
+    - condition: csi-powerstore.enabled
+      name: csi-powerstore
+      repository: https://dell.github.io/helm-charts
+      version: 2.15.0
+    - condition: csi-powermax.enabled
+      name: csi-powermax
+      repository: https://dell.github.io/helm-charts
+      version: 2.15.0
+    - condition: csi-isilon.enabled
+      name: csi-isilon
+      repository: https://dell.github.io/helm-charts
+      version: 2.15.0
+    - condition: csi-vxflexos.enabled
+      name: csi-vxflexos
+      repository: https://dell.github.io/helm-charts
+      version: 2.15.0
+    - condition: csi-unity.enabled
+      name: csi-unity
+      repository: https://dell.github.io/helm-charts
+      version: 2.15.0
+    - condition: csm-replication.enabled
+      name: csm-replication
+      repository: https://dell.github.io/helm-charts
+      version: 1.13.0
+    - condition: karavi-observability.enabled
+      name: karavi-observability
+      repository: https://dell.github.io/helm-charts
+      version: 1.13.0
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.11.0
+    description: Container Storage Modules(https://github.com/dell/csm) open source
+      suite of Kubernetes storage enablers for Dell Technologies storage products.
+    digest: 711c2d310cca2bea1daab58cf3967c475ab9e700e0a2f6e2f8de89ae01a5be86
+    name: container-storage-modules
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/container-storage-modules-1.8.0/container-storage-modules-1.8.0.tgz
+    version: 1.8.0
+  - apiVersion: v2
     appVersion: 1.7.2
     created: "2025-08-22T16:33:50.620461387Z"
     dependencies:
@@ -3428,4 +3472,4 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/karavi-topology-0.1.0/karavi-topology-0.1.0.tgz
     version: 0.1.0
-generated: "2025-09-17T21:38:13.062934387Z"
+generated: "2025-09-17T21:39:12.672972897Z"
