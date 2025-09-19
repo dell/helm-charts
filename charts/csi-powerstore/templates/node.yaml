@@ -14,6 +14,8 @@
 #
 #
 
+{{- $authorizationConfigSecret := lookup "v1" "Secret" .Release.Namespace "karavi-authorization-config" }}
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -59,7 +61,7 @@ rules:
     resources: ["pods"]
     verbs: ["get", "list", "watch"]
   {{ end }}
-  {{ end }}    
+  {{ end }}
 ---
 # ClusterRoleBinding for Cluster-specific
 kind: ClusterRoleBinding
@@ -102,9 +104,9 @@ metadata:
 rules:
   - apiGroups: ["coordination.k8s.io"]
     resources: ["leases"]
-    verbs: ["get", "watch", "list", "delete", "update", "create"]  
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
 {{ end }}
-{{ end }}    
+{{ end }}
 ---
 kind: DaemonSet
 apiVersion: apps/v1
@@ -161,8 +163,13 @@ spec:
                   name: proxy-authz-tokens
                   key: refresh
           volumeMounts:
+            {{- if $authorizationConfigSecret }}
             - name: karavi-authorization-config
               mountPath: /etc/karavi-authorization/config
+            {{- else }}
+            - name: powerstore-config
+              mountPath: /powerstore-config
+            {{- end }}
             - name: proxy-server-root-certificate
               mountPath: /etc/karavi-authorization/root-certificates
             - name: powerstore-config-params
@@ -271,7 +278,7 @@ spec:
             - name: X_CSI_DRIVER_NAME
               value: {{ .Values.driverName }}
             - name: X_CSI_FC_PORTS_FILTER_FILE_PATH
-              value: {{ .Values.nodeFCPortsFilterFile }}    
+              value: {{ .Values.nodeFCPortsFilterFile }}
             - name: X_CSI_NFS_EXPORT_DIRECTORY
               value: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs" }}
             - name: X_CSI_NFS_CLIENT_PORT
@@ -375,9 +382,11 @@ spec:
         # for authorization
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
+        {{- if $authorizationConfigSecret }}
         - name: karavi-authorization-config
           secret:
             secretName: karavi-authorization-config
+        {{- end }}
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
