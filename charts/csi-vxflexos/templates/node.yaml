@@ -1,5 +1,6 @@
 {{- $is_openshift := .Capabilities.APIVersions.Has "security.openshift.io/v1/SecurityContextConstraints" -}}
-
+{{- $authorizationConfigSecret := lookup "v1" "Secret" .Release.Namespace "karavi-authorization-config" }}
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -203,8 +204,13 @@ spec:
                   name: proxy-authz-tokens
                   key: refresh
           volumeMounts:
+            {{- if $authorizationConfigSecret }}
+            - name: karavi-authorization-config
+              mountPath: /etc/karavi-authorization/config
+            {{- else }}
             - name: vxflexos-config
               mountPath: /vxflexos-config
+            {{- end }}
             - name: proxy-server-root-certificate
               mountPath: /etc/karavi-authorization/root-certificates
             - name: vxflexos-config-params
@@ -473,6 +479,11 @@ spec:
 {{- end }}
 {{- if hasKey .Values "authorization" }}
 {{- if eq .Values.authorization.enabled true }}
+        {{- if $authorizationConfigSecret }}
+        - name: karavi-authorization-config
+          secret:
+            secretName: karavi-authorization-config
+        {{- end }}
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
