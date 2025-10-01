@@ -63,8 +63,8 @@ spec:
         - name: TLS_ENABLED
           value: "true"
         volumeMounts:
-        - name: isilon-creds
-          mountPath: /isilon-creds
+        - name: isilon-configs
+          mountPath: /isilon-configs
         - name: tls-secret
           mountPath: /etc/ssl/certs
           readOnly: true
