@@ -64,7 +64,7 @@ spec:
           value: "true"
         volumeMounts:
         - name: isilon-configs
-          mountPath: /isilon-configs
+          mountPath: /isilon-creds
         - name: tls-secret
           mountPath: /etc/ssl/certs
           readOnly: true
