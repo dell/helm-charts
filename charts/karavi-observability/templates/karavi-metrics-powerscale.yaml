@@ -1,4 +1,5 @@
 {{ if .Values.karaviMetricsPowerscale.enabled }}
+{{- $authorizationConfigSecret := lookup "v1" "Secret" .Release.Namespace "karavi-authorization-config" }}
 
 apiVersion: v1
 kind: Service
@@ -92,8 +93,13 @@ spec:
                 name: isilon-proxy-authz-tokens
                 key: refresh
         volumeMounts:
+          {{- if $authorizationConfigSecret }}
           - name: karavi-authorization-config
             mountPath: /etc/karavi-authorization/config
+          {{- else }}
+          - name: isilon-configs
+            mountPath: /isilon-configs
+          {{- end }}
           - name: proxy-server-root-certificate
             mountPath: /etc/karavi-authorization/root-certificates
           - name: isilon-config-params
@@ -101,7 +107,7 @@ spec:
       {{ end }}
       {{ end }}
       volumes:
-      - name: isilon-creds
+      - name: isilon-configs
         secret:
           secretName: isilon-creds
       - name: tls-secret
@@ -113,11 +119,13 @@ spec:
       - name: karavi-metrics-powerscale-configmap
         configMap:
           name: karavi-metrics-powerscale-configmap
-     {{- if hasKey .Values.karaviMetricsPowerscale "authorization" }}
-     {{- if eq .Values.karaviMetricsPowerscale.authorization.enabled true }}
+      {{- if hasKey .Values.karaviMetricsPowerscale "authorization" }}
+      {{- if eq .Values.karaviMetricsPowerscale.authorization.enabled true }}
+      {{- if $authorizationConfigSecret }}
       - name: karavi-authorization-config
         secret:
           secretName: isilon-karavi-authorization-config
+      {{- end }}
       - name: proxy-server-root-certificate
         secret:
           secretName: isilon-proxy-server-root-certificate
