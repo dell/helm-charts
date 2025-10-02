@@ -111,8 +111,8 @@ spec:
           - name: karavi-authorization-config
             mountPath: /etc/karavi-authorization/config
           {{- else }}
-          - name: isilon-creds
-            mountPath: /isilon-configs
+          - name: powermax-creds
+            mountPath: /powermax-configs
           {{- end }}
           - name: proxy-server-root-certificate
             mountPath: /etc/karavi-authorization/root-certificates
