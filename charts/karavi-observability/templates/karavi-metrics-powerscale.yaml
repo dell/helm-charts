@@ -63,7 +63,7 @@ spec:
         - name: TLS_ENABLED
           value: "true"
         volumeMounts:
-        - name: isilon-configs
+        - name: isilon-creds
           mountPath: /isilon-creds
         - name: tls-secret
           mountPath: /etc/ssl/certs
@@ -97,7 +97,7 @@ spec:
           - name: karavi-authorization-config
             mountPath: /etc/karavi-authorization/config
           {{- else }}
-          - name: isilon-configs
+          - name: isilon-creds
             mountPath: /isilon-configs
           {{- end }}
           - name: proxy-server-root-certificate
@@ -107,7 +107,7 @@ spec:
       {{ end }}
       {{ end }}
       volumes:
-      - name: isilon-configs
+      - name: isilon-creds
         secret:
           secretName: isilon-creds
       - name: tls-secret
