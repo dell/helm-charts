@@ -111,8 +111,8 @@ spec:
           - name: karavi-authorization-config
             mountPath: /etc/karavi-authorization/config
           {{- else }}
-          - name: powermax-creds
-            mountPath: /powermax-configs
+          - name: powermax-reverseproxy-secret
+            mountPath: /powermax-reverseproxy-secret
           {{- end }}
           - name: proxy-server-root-certificate
             mountPath: /etc/karavi-authorization/root-certificates
