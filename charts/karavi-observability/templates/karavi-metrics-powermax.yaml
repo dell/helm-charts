@@ -1,4 +1,5 @@
 {{ if .Values.karaviMetricsPowermax.enabled }}
+{{- $authorizationConfigSecret := lookup "v1" "Secret" .Release.Namespace "karavi-authorization-config" }}
 
 apiVersion: v1
 kind: Service
@@ -106,8 +107,13 @@ spec:
                 name: powermax-proxy-authz-tokens
                 key: refresh
         volumeMounts:
+          {{- if $authorizationConfigSecret }}
           - name: karavi-authorization-config
             mountPath: /etc/karavi-authorization/config
+          {{- else }}
+          - name: powermax-reverseproxy-secret
+            mountPath: /powermax-reverseproxy-secret
+          {{- end }}
           - name: proxy-server-root-certificate
             mountPath: /etc/karavi-authorization/root-certificates
           - name: powermax-config-params
@@ -137,9 +143,11 @@ spec:
           name: karavi-metrics-powermax-configmap
      {{- if hasKey .Values.karaviMetricsPowermax "authorization" }}
      {{- if eq .Values.karaviMetricsPowermax.authorization.enabled true }}
+      {{- if $authorizationConfigSecret }}
       - name: karavi-authorization-config
         secret:
           secretName: powermax-karavi-authorization-config
+      {{- end }}
       - name: proxy-server-root-certificate
         secret:
           secretName: powermax-proxy-server-root-certificate
