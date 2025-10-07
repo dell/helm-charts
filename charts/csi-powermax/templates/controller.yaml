@@ -634,9 +634,11 @@ spec:
             name: {{ .Release.Name }}-config-params
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
+        {{- if $authorizationConfigSecret }}
         - name: karavi-authorization-config
           secret:
             secretName: karavi-authorization-config
+        {{- end }}
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
