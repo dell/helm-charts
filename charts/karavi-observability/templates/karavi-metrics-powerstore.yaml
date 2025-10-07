@@ -1,4 +1,5 @@
 {{ if .Values.karaviMetricsPowerstore.enabled }}
+{{- $authorizationConfigSecret := lookup "v1" "Secret" .Release.Namespace "karavi-authorization-config" }}
 
 apiVersion: v1
 kind: Service
@@ -88,8 +89,13 @@ spec:
                 name: powerstore-proxy-authz-tokens
                 key: refresh
         volumeMounts:
+          {{- if $authorizationConfigSecret }}
           - name: karavi-authorization-config
             mountPath: /etc/karavi-authorization/config
+          {{- else }}
+          - name: powerstore-config
+            mountPath: /powerstore-config
+          {{- end }}
           - name: proxy-server-root-certificate
             mountPath: /etc/karavi-authorization/root-certificates
           - name: powerstore-config-params
