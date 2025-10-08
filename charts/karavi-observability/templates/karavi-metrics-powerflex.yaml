@@ -1,4 +1,5 @@
 {{ if .Values.karaviMetricsPowerflex.enabled }}
+{{- $authorizationConfigSecret := lookup "v1" "Secret" .Release.Namespace "karavi-authorization-config" }}
 
 apiVersion: v1
 kind: Service
@@ -92,8 +93,13 @@ spec:
                 name: proxy-authz-tokens
                 key: refresh
         volumeMounts:
+          {{- if $authorizationConfigSecret }}
           - name: karavi-authorization-config
             mountPath: /etc/karavi-authorization/config
+          {{- else }}
+          - name: vxflexos-config
+            mountPath: /vxflexos-config
+          {{- end }}
           - name: proxy-server-root-certificate
             mountPath: /etc/karavi-authorization/root-certificates
           - name: vxflexos-config-params
@@ -115,9 +121,11 @@ spec:
           name: karavi-metrics-powerflex-configmap
      {{- if hasKey .Values.karaviMetricsPowerflex "authorization" }}
      {{- if eq .Values.karaviMetricsPowerflex.authorization.enabled true }}
+      {{- if $authorizationConfigSecret }}
       - name: karavi-authorization-config
         secret:
           secretName: karavi-authorization-config
+      {{- end }}
       - name: proxy-server-root-certificate
         secret:
           secretName: proxy-server-root-certificate
