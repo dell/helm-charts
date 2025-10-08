@@ -123,6 +123,12 @@ spec:
       - name: karavi-metrics-powerstore-configmap
         configMap:
           name: karavi-metrics-powerstore-configmap
+      - name: proxy-server-root-certificate
+        secret:
+          secretName: powerstore-proxy-server-root-certificate
+      - name: powerstore-config-params
+        configMap:
+          name: powerstore-config-params
       restartPolicy: Always
 status: {}
 
