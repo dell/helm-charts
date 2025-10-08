@@ -123,9 +123,6 @@ spec:
       - name: karavi-metrics-powerstore-configmap
         configMap:
           name: karavi-metrics-powerstore-configmap
-      - name: proxy-server-root-certificate
-        secret:
-          secretName: powerstore-proxy-server-root-certificate
       {{- if hasKey .Values.karaviMetricsPowerstore "authorization" }}
       {{- if eq .Values.karaviMetricsPowerstore.authorization.enabled true }}
       {{- if $authorizationConfigSecret }}
