@@ -129,7 +129,7 @@ controller:
   # the Kubernetes release.
   # Allowed values: n, where n > 0
   # Default value: None
-  controllerCount: 2
+  controllerCount: 1
 
   # volumeNamePrefix: defines a string prepended to each volume created by the CSI driver.
   # Allowed values: string
@@ -162,6 +162,14 @@ controller:
     # Default value: csi-snap
     # Examples: "snap", "snapshot"
     snapNamePrefix: csi-snap
+  # provisioner: allows to provision volumes of CSI drivers
+  # csi-provisioner is installed as a sidecar for CSI drivers 
+  provisioner:
+    ## timeout: Defines the timeout for csi-provisoner sidecar in seconds
+    # Allowed values: Number followed by unit (s)
+    # Examples: 60s
+    # Default value: 10s
+    timeout: 120s
   # resizer: allows to enable/disable resizer feature
   resizer:
     # enabled: Enable/Disable volume expansion feature
