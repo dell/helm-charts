@@ -1,13 +1,17 @@
 name: redis-csm
 redisSecretProviderClass:
+  secretProviderClassName:
   redisSecretName:
-  redisUsernameKey: username
-  redisPasswordKey: password
+  redisUsernameKey:
+  redisPasswordKey:
+  conjur:
+    passwordPath:
+    usernamePath:
 sentinel: sentinel
 rediscommander: rediscommander
 replicas: 5
 images:
   redis:
-    image: redis:7.4.3-alpine
+    image: redis:8.2.0-alpine
   commander:
     image: rediscommander/redis-commander:latest

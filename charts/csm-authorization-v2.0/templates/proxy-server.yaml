@@ -1,3 +1,15 @@
+{{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
+{{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
+{{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
+
+{{- $configSecretProviderClass := .Values.config.configSecretProviderClass | default dict }}
+{{- $configSecretProviderClassName := $configSecretProviderClass.secretProviderClassName }}
+
+# Combine SPC names from different providers
+{{- $allSPCNames := (list $redisSecretProviderClassName $configSecretProviderClassName) }}
+{{- $allSPCNames = compact $allSPCNames }}
+{{- $allSPCNames = uniq $allSPCNames }}
+---
 # Grant OPA/kube-mgmt read-only access to resources. This lets kube-mgmt
 # list configmaps to be loaded into OPA as policies.
 apiVersion: rbac.authorization.k8s.io/v1
@@ -108,6 +120,21 @@ spec:
     metadata:
       labels:
         app: proxy-server
+      {{- if or (hasKey $redisSecretProviderClass "conjur") (hasKey $configSecretProviderClass "conjur") }}
+      annotations:
+        conjur.org/secrets: |
+          {{- if hasKey $redisSecretProviderClass "conjur" }}
+          {{- with $redisSecretProviderClass.conjur }}
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
+          {{- end }}
+          {{- if hasKey $configSecretProviderClass "conjur" }}
+          {{- with $configSecretProviderClass.conjur }}
+          - {{ .secretPath }}: {{ .secretPath | quote }}
+          {{- end }}
+          {{- end }}
+      {{- end }}
     spec:
       serviceAccount: proxy-server
       containers:
@@ -128,8 +155,8 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.redis.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-                key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey }}
+                name: {{ $redisSecretName | default "redis-csm-secret" }}
+                key: {{ $redisSecretProviderClass.redisPasswordKey | default "password" }}
         args:
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
@@ -143,9 +170,10 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-        - name: secrets-store-inline-redis
-          mountPath: /etc/csm-authorization/redis
+        # secret provider class mounts
+        {{- range $name := $allSPCNames }}
+        - name: secrets-store-inline-{{ $name }}
+          mountPath: /etc/csm-authorization/{{ $name }}
           readOnly: true
         {{- end }}
       - name: opa
@@ -168,17 +196,18 @@ spec:
       volumes:
       - name: config-volume
         secret:
-          secretName: karavi-config-secret
+          secretName: {{ $configSecretProviderClass.configSecretName | default "karavi-config-secret" }}
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-      - name: secrets-store-inline-redis
+      # secret provider classes
+      {{- range $name := $allSPCNames }}
+      - name: secrets-store-inline-{{ $name }}
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "{{ .Values.redis.redisSecretProviderClass.redisSecretName }}"
+            secretProviderClass: "{{ $name }}"
       {{- end }}
 ---
 apiVersion: v1

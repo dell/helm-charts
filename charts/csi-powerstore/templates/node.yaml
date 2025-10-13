@@ -14,6 +14,8 @@
 #
 #
 
+{{- $authorizationConfigSecret := lookup "v1" "Secret" .Release.Namespace "karavi-authorization-config" }}
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -59,7 +61,7 @@ rules:
     resources: ["pods"]
     verbs: ["get", "list", "watch"]
   {{ end }}
-  {{ end }}    
+  {{ end }}
 ---
 # ClusterRoleBinding for Cluster-specific
 kind: ClusterRoleBinding
@@ -102,9 +104,9 @@ metadata:
 rules:
   - apiGroups: ["coordination.k8s.io"]
     resources: ["leases"]
-    verbs: ["get", "watch", "list", "delete", "update", "create"]  
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
 {{ end }}
-{{ end }}    
+{{ end }}
 ---
 kind: DaemonSet
 apiVersion: apps/v1
@@ -161,8 +163,13 @@ spec:
                   name: proxy-authz-tokens
                   key: refresh
           volumeMounts:
+            {{- if $authorizationConfigSecret }}
             - name: karavi-authorization-config
               mountPath: /etc/karavi-authorization/config
+            {{- else }}
+            - name: powerstore-config
+              mountPath: /powerstore-config
+            {{- end }}
             - name: proxy-server-root-certificate
               mountPath: /etc/karavi-authorization/root-certificates
             - name: powerstore-config-params
@@ -262,14 +269,16 @@ spec:
               value: "{{ .Values.maxPowerstoreVolumesPerNode }}"
             - name: X_CSI_POWERSTORE_NODE_CHROOT_PATH
               value: /noderoot
-            - name: X_CSI_VOL_PREFIX
-              value: "{{ .Values.controller.volumeNamePrefix }}"
+            - name: X_CSM_AUTH_ENABLED
+              value: "{{ .Values.authorization.enabled | default false }}"
             - name: X_CSI_POWERSTORE_TMP_DIR
               value: {{ .Values.kubeletConfigDir }}/plugins/{{ .Values.driverName }}/tmp
+            - name: X_CSI_POWERSTORE_API_TIMEOUT
+              value: {{ .Values.apiTimeout | default "120s" | quote }}
             - name: X_CSI_DRIVER_NAME
               value: {{ .Values.driverName }}
             - name: X_CSI_FC_PORTS_FILTER_FILE_PATH
-              value: {{ .Values.nodeFCPortsFilterFile }}    
+              value: {{ .Values.nodeFCPortsFilterFile }}
             - name: X_CSI_NFS_EXPORT_DIRECTORY
               value: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs" }}
             - name: X_CSI_NFS_CLIENT_PORT
@@ -309,6 +318,8 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
+            - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_TIMEOUT
+              value: {{ .Values.podmon.arrayConnectivityTimeout | default "10s" | quote }}
           ports:
             - containerPort: 2050
           volumeMounts:
@@ -371,9 +382,11 @@ spec:
         # for authorization
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
+        {{- if $authorizationConfigSecret }}
         - name: karavi-authorization-config
           secret:
             secretName: karavi-authorization-config
+        {{- end }}
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate

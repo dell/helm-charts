@@ -1,4 +1,26 @@
-{{- $secretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
+{{- $storageSecretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
+
+{{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
+{{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
+{{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
+
+{{- $configSecretProviderClass := .Values.config.configSecretProviderClass | default dict }}
+{{- $configSecretProviderClassName := $configSecretProviderClass.secretProviderClassName }}
+
+# Get Vault SPC names directly from the storageSystemCredentials SPC list
+{{- $vaultSPCNames := $storageSecretProviderClasses.vault | default list }}
+
+# Get Conjur SPC names from each storageSystemCredentials SPC
+{{- $conjurSPCs := $storageSecretProviderClasses.conjur | default list }}
+{{- $conjurSPCNames := list }}
+{{- range $conjurSPC := $conjurSPCs }}
+  {{- $conjurSPCNames = append $conjurSPCNames $conjurSPC.name }}
+{{- end }}
+
+# Combine SPC names from different providers
+{{- $allSPCNames := concat $vaultSPCNames $conjurSPCNames (list $redisSecretProviderClassName $configSecretProviderClassName) }}
+{{- $allSPCNames = compact $allSPCNames }}
+{{- $allSPCNames = uniq $allSPCNames }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -84,13 +106,26 @@ spec:
     metadata:
       labels:
         app: storage-service
+      {{- if or (hasKey $storageSecretProviderClasses "conjur") (hasKey $redisSecretProviderClass "conjur") (hasKey $configSecretProviderClass "conjur") }}
       annotations:
-      {{- if and $secretProviderClasses (hasKey $secretProviderClasses "conjur") }}
         conjur.org/secrets: |
-          {{- range $secretProviderClasses.conjur }}
-          {{- range .paths}}
+          {{- if hasKey $storageSecretProviderClasses "conjur" }}
+          {{- range $storageSecretProviderClasses.conjur }}
+          {{- range .paths }}
           - {{ .usernamePath }}: {{ .usernamePath | quote }}
           - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if hasKey $redisSecretProviderClass "conjur" }}
+          {{- with $redisSecretProviderClass.conjur }}
+          - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
+          {{- end }}
+          {{- if hasKey $configSecretProviderClass "conjur" }}
+          {{- with $configSecretProviderClass.conjur }}
+          - {{ .secretPath }}: {{ .secretPath | quote }}
           {{- end }}
           {{- end }}
       {{- end }}
@@ -114,8 +149,8 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.redis.redisSecretProviderClass.redisSecretName | default "redis-csm-secret" }}
-                key: {{ .Values.redis.redisSecretProviderClass.redisPasswordKey }}
+                name: {{ $redisSecretName | default "redis-csm-secret" }}
+                key: {{ $redisSecretProviderClass.redisPasswordKey | default "password" }}
         args:
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
@@ -131,20 +166,13 @@ spec:
           mountPath: /etc/karavi-authorization/config
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
-        {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") }}
-        {{- range $secretproviderclass := $secretProviderClasses.vault }}
-        - name: secrets-store-inline-{{ $secretproviderclass }}
-          mountPath: /etc/csm-authorization/{{ $secretproviderclass }}
+        # secret provider class mounts
+        {{- range $name := $allSPCNames }}
+        - name: secrets-store-inline-{{ $name }}
+          mountPath: /etc/csm-authorization/{{ $name }}
           readOnly: true
         {{- end }}
-        {{- end }}
-        {{- if and $secretProviderClasses (hasKey $secretProviderClasses "conjur") }}
-        {{- range $secretproviderclass := $secretProviderClasses.conjur }}
-        - name: secrets-store-inline-{{ $secretproviderclass.name }}
-          mountPath: /etc/csm-authorization/{{ $secretproviderclass.name }}
-          readOnly: true
-        {{- end }}
-        {{- end }}
+        # kubernetes secret mount
         {{- if .Values.storageSystemCredentials.secrets }}
         {{- range .Values.storageSystemCredentials.secrets }}
         - name: storage-system-secrets-{{ . }}
@@ -152,52 +180,29 @@ spec:
           readOnly: true
         {{- end }}
         {{- end }}
-        {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-        - name: secrets-store-inline-redis
-          mountPath: /etc/csm-authorization/redis
-          readOnly: true
-        {{- end }}
       volumes:
       - name: config-volume
         secret:
-          secretName: karavi-config-secret
+          secretName: {{ $configSecretProviderClass.configSecretName | default "karavi-config-secret" }}
       - name: csm-config-params
         configMap:
           name: csm-config-params
-      {{- if and $secretProviderClasses (hasKey $secretProviderClasses "vault") }}
-      {{- range $secretproviderclass := $secretProviderClasses.vault }}
-      - name: secrets-store-inline-{{ $secretproviderclass }}
+      # secret provider classes
+      {{- range $name := $allSPCNames }}
+      - name: secrets-store-inline-{{ $name }}
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "{{ $secretproviderclass }}"
+            secretProviderClass: "{{ $name }}"
       {{- end }}
-      {{- end }}
-      {{- if and $secretProviderClasses (hasKey $secretProviderClasses "conjur") }}
-      {{- range $secretproviderclass := $secretProviderClasses.conjur }}
-      - name: secrets-store-inline-{{ $secretproviderclass.name }}
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: "{{ $secretproviderclass.name }}"
-      {{- end }}
-      {{- end }}
+      # kubernetes secret
       {{- if .Values.storageSystemCredentials.secrets }}
       {{- range .Values.storageSystemCredentials.secrets }}
       - name: storage-system-secrets-{{ . }}
         secret:
           secretName: {{ . }}
       {{- end }}
-      {{- end }}
-      {{- if .Values.redis.redisSecretProviderClass.redisSecretName }}
-      - name: secrets-store-inline-redis
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: "{{ .Values.redis.redisSecretProviderClass.redisSecretName }}"
       {{- end }}
 ---
 apiVersion: v1

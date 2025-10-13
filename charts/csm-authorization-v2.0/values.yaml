@@ -72,24 +72,49 @@ authorization:
 
 redis:
   name: redis-csm
+  # Optional:
   # Redis secret configuration:
-  # If using a CSI driver, specify the SecretProviderClass.
+  # If using a Secret Store CSI driver, specify the SecretProviderClass details that holds the Redis secretObject.
   # Otherwise, a default Kubernetes secret will be used for Redis credentials.
   redisSecretProviderClass:
-    # Optional: Name of the Kubernetes secret (created by the CSI driver) that contains Redis credentials.
+    # Name of the SecretProviderClass that holds the Redis secretObject.
+    secretProviderClassName:
+    # Name of the Kubernetes secret (created by the Secret Store CSI driver) that contains Redis credentials.
     redisSecretName:
-    # Required: Key in the secret that stores the Redis username.
-    redisUsernameKey: username
-    # Required: Key in the secret that stores the Redis password.
-    redisPasswordKey: password
+    # Key in the secret that stores the Redis username.
+    redisUsernameKey:
+    # Key in the secret that stores the Redis password.
+    redisPasswordKey:
+
+    # Paths for Conjur secrets that store the Redis username and password.
+    # conjur:
+    #   passwordPath: secrets/redis-password
+    #   usernamePath: secrets/redis-username
+
   sentinel: sentinel
   rediscommander: rediscommander
   replicas: 5
   images:
     redis:
-      image: redis:7.4.3-alpine
+      image: redis:8.2.0-alpine
     commander:
       image: rediscommander/redis-commander:latest
+
+# Optional:
+# Config secret configuration:
+# If using a Secret Store CSI driver, specify the SecretProviderClass details that holds the config secretObject.
+# Otherwise leave the fields blank and create the "karavi-config-secret" Kubernetes secret.
+config:
+  configSecretProviderClass:
+    # Name of the SecretProviderClass that holds the config secretObject.
+    secretProviderClassName:
+    # Name of the Kubernetes secret (created by the Secret Store CSI driver) that contains the config secret.
+    configSecretName:
+
+    # Uncomment this section if using Conjur to store the config secret, otherwise leave commented out.
+    # Path for Conjur secret that stores the config secret.
+    # conjur:
+    #   secretPath: secrets/config-object
 
 # Comment and uncomment the appropriate sections below to use the desired method.
 # Storage system credentials can be provided in one of two ways:
@@ -104,16 +129,16 @@ storageSystemCredentials:
       # - secretProviderClassName3
 
     # conjur:
-        # - name: secretProviderClassName1
-          # paths:
-            # - passwordPath: secrets/password1
-            #   usernamePath: secrets/username1
-            # - passwordPath: secrets/password2
-            #   usernamePath: secrets/username2
-        # - name: secretProviderClassName2
-          # paths:
-            # - passwordPath: secrets/password3
-            #   usernamePath: secrets/username3
+    #   - name: secretProviderClassName1
+    #     paths:
+    #       - passwordPath: secrets/password1
+    #         usernamePath: secrets/username1
+    #       - passwordPath: secrets/password2
+    #         usernamePath: secrets/username2
+    #   - name: secretProviderClassName2
+    #     paths:
+    #       - passwordPath: secrets/password3
+    #         usernamePath: secrets/username3
 
   # secrets:
   #   - secret-1
