@@ -163,7 +163,7 @@ controller:
     # Examples: "snap", "snapshot"
     snapNamePrefix: csi-snap
   # provisioner: allows to provision volumes of CSI drivers
-  # csi-provisioner is installed as a sidecar for CSI drivers 
+  # csi-provisioner is installed as a sidecar for CSI drivers
   provisioner:
     ## timeout: Defines the timeout for csi-provisoner sidecar in seconds
     # Allowed values: Number followed by unit (s)
