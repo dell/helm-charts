@@ -120,33 +120,6 @@ updates:
         patterns:
           - "*"
 
-    # csm-authorization v1 packages
-  - package-ecosystem: docker
-    target-branch: "main"
-    directories:
-      - /charts/csm-authorization
-    labels:
-      - dependencies
-    schedule:
-      # check daily
-      interval: daily
-      # at 6pm UTC
-      time: "18:00"
-    groups:
-      csm-authorization:
-        patterns:
-          - "*"
-    ignore:
-      # Ignore versions of authorization images that are equal to or greater than 2.0.0
-      - dependency-name: "*/csm-authorization-proxy*"
-        versions: [ ">=2.0.0" ]
-      - dependency-name: "*/csm-authorization-tenant*"
-        versions: [ ">=2.0.0" ]
-      - dependency-name: "*/csm-authorization-role*"
-        versions: [ ">=2.0.0" ]
-      - dependency-name: "*/csm-authorization-storage*"
-        versions: [ ">=2.0.0" ]
-
   # karavi-observability packages
   - package-ecosystem: docker
     target-branch: "main"
