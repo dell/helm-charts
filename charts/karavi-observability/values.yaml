@@ -72,6 +72,21 @@ karaviMetricsPowerstore:
     uri: ""
     serviceName: metrics-powerstore
     probability: 0.0
+  authorization:
+    enabled: true
+    # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
+    sidecarProxy:
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
+    # proxyHost: hostname of the csm-authorization server
+    # Default value: None
+    proxyHost:
+    # skipCertificateValidation: certificate validation of the csm-authorization server
+    # Allowed Values:
+    #   "true" - TLS certificate verification will be skipped
+    #   "false" - TLS certificate will be verified
+    # Default value: "true"
+    skipCertificateValidation: true
 
 karaviMetricsPowerscale:
   image: quay.io/dell/container-storage-modules/csm-metrics-powerscale:v1.10.0
