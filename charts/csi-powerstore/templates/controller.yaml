@@ -296,6 +296,7 @@ spec:
             - "--volume-name-prefix={{ required "Must provide a value to prefix to driver created volume names" .Values.controller.volumeNamePrefix }}"
             - "--volume-name-uuid-length=10"
             - "--v=5"
+            - "--timeout={{ .Values.controller.provisioner.timeout}}"
             - "--leader-election"
             - "--default-fstype={{ .Values.defaultFsType | default "ext4" }}"
             - "--extra-create-metadata"
