@@ -73,7 +73,7 @@ karaviMetricsPowerstore:
     serviceName: metrics-powerstore
     probability: 0.0
   authorization:
-    enabled: true
+    enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
     # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
     sidecarProxy:
