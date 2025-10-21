@@ -251,6 +251,24 @@ node:
   # Default value: None
   nodeIDPath: /etc/machine-id
 
+  # volumeDisconnectMaxRetries: Maximum number of retries for volume disconnect
+  # Allowed values: Integer
+  # Example: 5
+  # Default value: 5
+  volumeDisconnectMaxRetries: "5"
+
+  # volumeDisconnectRetryInterval: Interval between retries for volume disconnect
+  # Allowed values: Duration with unit (s, m, h)
+  # Example: 5s, 1m
+  # Default value: 5s
+  volumeDisconnectRetryInterval: "5s"
+
+  # volumeDisconnectTimeoutSeconds: Total timeout for volume disconnect operation
+  # Allowed values: Duration with unit (s, m, h)
+  # Example: 120s, 2m
+  # Default value: 120s
+  volumeDisconnectTimeoutSeconds: "120s"
+
   healthMonitor:
     # enabled: Enable/Disable health monitor of CSI volumes- volume usage, volume condition
     # Allowed values:
