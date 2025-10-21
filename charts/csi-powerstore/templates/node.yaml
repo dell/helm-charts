@@ -265,6 +265,12 @@ spec:
               value: {{ .Values.node.nodeNamePrefix }}
             - name: X_CSI_POWERSTORE_NODE_ID_PATH
               value: /node-id
+            - name: X_CSI_VOLUME_DISCONNECT_MAX_RETRIES
+              value: {{ .Values.node.volumeDisconnectMaxRetries | default "5" | quote }}
+            - name: X_CSI_VOLUME_DISCONNECT_RETRY_INTERVAL
+              value: {{ .Values.node.volumeDisconnectRetryInterval | default "5s" | quote }}
+            - name: X_CSI_VOLUME_DISCONNECT_TIMEOUT_SECONDS
+              value: {{ .Values.node.volumeDisconnectTimeoutSeconds | default "120s" | quote }}
             - name: X_CSI_POWERSTORE_MAX_VOLUMES_PER_NODE
               value: "{{ .Values.maxPowerstoreVolumesPerNode }}"
             - name: X_CSI_POWERSTORE_NODE_CHROOT_PATH
