@@ -14,10 +14,10 @@ images:
     image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.15.0
   # "powerflexSdc" defines the SDC image for init container.
   powerflexSdc:
-    image: quay.io/dell/storage/powerflex/sdc:4.5.4
+    image: quay.io/dell/storage/powerflex/sdc:5.0
   # CSI sidecars
   attacher:
-    image: registry.k8s.io/sig-storage/csi-attacher:v4.9.0
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
   provisioner:
     image: registry.k8s.io/sig-storage/csi-provisioner:v5.3.0
   snapshotter:
@@ -25,9 +25,9 @@ images:
   resizer:
     image: registry.k8s.io/sig-storage/csi-resizer:v1.14.0
   registrar:
-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.14.0
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.15.0
   healthmonitor:
-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.15.0
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.16.0
   # CSM sidecars
   replication:
     image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.13.0
