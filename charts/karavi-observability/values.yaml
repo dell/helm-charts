@@ -1,5 +1,5 @@
 karaviMetricsPowerflex:
-  image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.13.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.13.1
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
