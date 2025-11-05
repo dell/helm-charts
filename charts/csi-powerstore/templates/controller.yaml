@@ -41,6 +41,9 @@ rules:
     verbs: ["get", "list", "watch"]
   {{- end }}
   {{- end }}
+  - apiGroups: [ "dr.storage.dell.com" ]
+    resources: [ "volumejournals" ]
+    verbs: [ "get", "list", "watch", "create", "delete", "patch", "update" ]
   - apiGroups: [ "" ]
     resources: [ "persistentvolumes" ]
     verbs: [ "get", "list", "watch", "create", "delete", "patch", "update" ]
@@ -500,6 +503,8 @@ spec:
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
+            - name: node-socket-dir
+              mountPath: /var/lib/kubelet/plugins/csi-powerstore.dellemc.com
             - name: powerstore-config
               mountPath: /powerstore-config
             - name: powerstore-config-params
@@ -561,6 +566,10 @@ spec:
         {{ end }}
         - name: socket-dir
           emptyDir:
+        - name: node-socket-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/csi-powerstore.dellemc.com
+            type: Directory
         - name: powerstore-config-params
           configMap:
             name: {{ .Release.Name }}-config-params
