@@ -203,6 +203,10 @@ spec:
   {{- else }}
   replicas: {{ required "Must provide the number of controller instances to create." .Values.controller.controllerCount }}
   {{- end }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
   template:
     metadata:
       labels:
