@@ -3,7 +3,7 @@ entries:
   container-storage-modules:
   - apiVersion: v2
     appVersion: 1.8.1
-    created: "2025-11-11 02:14:38.638820944"
+    created: "2025-10-27T21:39:12.672700671Z"
     dependencies:
     - condition: csi-powerstore.enabled
       name: csi-powerstore
