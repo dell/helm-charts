@@ -1,5 +1,6 @@
 {{- $is_openshift := .Capabilities.APIVersions.Has "security.openshift.io/v1/SecurityContextConstraints" -}}
 {{- $authorizationConfigSecret := lookup "v1" "Secret" .Release.Namespace "karavi-authorization-config" }}
+{{- $is_harvester := contains (join "," .Capabilities.APIVersions) "harvesterhci.io/" -}}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -277,7 +278,7 @@ spec:
             - name: pods-path
               mountPath: {{ .Values.kubeletConfigDir }}/pods
               mountPropagation: "Bidirectional"
-            {{- if not $is_openshift }}
+            {{- if and (not $is_openshift) (not $is_harvester) }}
             - name: scaleio-path-bin
               mountPath: /bin/emc/scaleio/
               readOnly: true
@@ -423,7 +424,7 @@ spec:
           hostPath:
             path: /dev
             type: Directory
-        {{- if not $is_openshift }}
+        {{- if and (not $is_openshift) (not $is_harvester) }}
         - name: scaleio-path-bin
           hostPath:
             path: /bin/emc/scaleio/
