@@ -54,6 +54,11 @@ karaviMetricsPowerstore:
   spacePollFrequencySeconds: 300
   arrayPollFrequencySeconds: 300
   filesystemPollFrequencySeconds: 20
+  # apiTimeout: Defines the timeout for PowerStore API calls in seconds
+  # Allowed values: Number followed by unit (s,m,h)
+  # Examples: 60s, 5m, 1h
+  # Default value: 120s
+  apiTimeout: "120s"
   # set volumeMetricsEnabled to "false" to disable collection of Volume metrics
   volumeMetricsEnabled: "true"
   # set the the default max concurrent queries to PowerStore
