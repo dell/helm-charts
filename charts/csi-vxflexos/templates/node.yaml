@@ -1,6 +1,11 @@
 {{- $is_openshift := .Capabilities.APIVersions.Has "security.openshift.io/v1/SecurityContextConstraints" -}}
 {{- $authorizationConfigSecret := lookup "v1" "Secret" .Release.Namespace "karavi-authorization-config" }}
-{{- $is_harvester := contains (join "," .Capabilities.APIVersions) "harvesterhci.io/" -}}
+{{- $is_harvester := false -}}
+{{- range .Capabilities.APIVersions }}
+  {{- if contains "harvesterhci.io" . }}
+    {{- $is_harvester = true -}}
+  {{- end }}
+{{- end }}
 ---
 apiVersion: v1
 kind: ServiceAccount
