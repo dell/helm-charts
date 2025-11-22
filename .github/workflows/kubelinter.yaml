@@ -26,7 +26,7 @@ jobs:
           git config --global url."https://csmbot:$TOKEN@github.com".insteadOf "https://github.com"
           echo "machine github.com login csmbot password $TOKEN" >> ~/.netrc
       - name: Checkout the code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Scan repo with kube-linter
         uses: stackrox/kube-linter-action@v1.0.7
         with:
