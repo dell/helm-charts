@@ -438,7 +438,7 @@ spec:
             - name: X_CSI_POWERSTORE_EXTERNAL_ACCESS
               value: {{ .Values.externalAccess }}
             - name: X_CSI_POWERSTORE_EXCLUSIVE_ACCESS
-              value: {{ .Values.exclusiveAccess }}
+              value: "{{ .Values.exclusiveAccess }}"
             - name: X_CSI_NFS_ACLS
               value: "{{ .Values.nfsAcls }}"
             - name: X_CSI_POWERSTORE_CONFIG_PATH
