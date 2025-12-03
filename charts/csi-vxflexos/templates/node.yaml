@@ -277,11 +277,11 @@ spec:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com
               mountPropagation: "Bidirectional"
-            - name: volumedevices-path
-              mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi/volumeDevices
-              mountPropagation: "Bidirectional"
             - name: pods-path
               mountPath: {{ .Values.kubeletConfigDir }}/pods
+              mountPropagation: "Bidirectional"
+            - name: csi-path
+              mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
               mountPropagation: "Bidirectional"
             {{- if and (not $is_openshift) (not $is_harvester) }}
             - name: scaleio-path-bin
@@ -297,6 +297,18 @@ spec:
               mountPath: /vxflexos-config
             - name: vxflexos-config-params
               mountPath: /vxflexos-config-params
+            - name: usrsbin
+              mountPath: /usr/sbin
+              readOnly: true
+            - name: lib
+              mountPath: /lib
+              readOnly: true
+            - name: lib64
+              mountPath: /lib64
+              readOnly: true
+            - name: hostnqn
+              mountPath: /etc/nvme
+              readOnly: true
 {{- if ge (int .Values.certSecretCount) 1 }}
             - name: certs
               mountPath: /certs
@@ -425,9 +437,25 @@ spec:
           hostPath:
             path: {{ .Values.kubeletConfigDir }}/pods
             type: Directory
+        - name: csi-path
+          hostPath:
+            path: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
         - name: dev
           hostPath:
             path: /dev
+            type: Directory
+        - name: usrsbin
+          hostPath:
+            path: /usr/sbin
+        - name: lib
+          hostPath:
+            path: /lib
+        - name: lib64
+          hostPath:
+            path: /lib64
+        - name: hostnqn
+          hostPath:
+            path: /etc/nvme
             type: Directory
         {{- if and (not $is_openshift) (not $is_harvester) }}
         - name: scaleio-path-bin
