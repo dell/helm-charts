@@ -1,0 +1,8 @@
+apiVersion: v2
+name: csm-disaster-recovery
+type: application
+description: |
+  CSM for Disaster Recovery is part of the [Container Storage Modules](https://github.com/dell/csm) open source suite of Kubernetes storage enablers for Dell EMC storage products.
+  CSM for Disaster Recovery sets the Container Resource Definitions for Disaster Recovery.
+version: 1.0.0
+appVersion: "1.0.0"
