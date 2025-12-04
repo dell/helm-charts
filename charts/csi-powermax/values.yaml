@@ -179,6 +179,21 @@ fsGroupPolicy: ReadWriteOnceWithFSType
 # Default value: 0
 maxPowerMaxVolumesPerNode: 0
 
+# X_CSI_DYNAMIC_SG_ENABLED: Enable/Disable dynamic Storage Group support for the driver
+# When enabled, the driver supports multiple Storage Groups under a single StorageClass
+# When disabled (default), the driver maintains backward compatibility and uses a single Storage Group
+# Allowed values:
+#   "true"  - Enable dynamic Storage Group support
+#   "false" - Disable dynamic Storage Group support (backward compatible)
+# Default value: "false"
+dynamicSGEnabled: "false"
+
+# X_CSI_POLLING_INTERVAL: Define the polling interval for array connectivity and status checks
+# This value is used to determine how frequently the driver polls the storage array
+# Allowed values: Any positive integer representing seconds
+# Default value: "60"
+pollingInterval: "60"
+
 # controller: configure controller specific parameters
 controller:
   # controllerCount: Define the number of PowerMax controller nodes
