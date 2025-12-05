@@ -18,3 +18,8 @@ sources:
   - https://github.com/dell/csi-powerstore
 maintainers:
   - name: DellEMC
+dependencies:
+  - name: csm-disaster-recovery
+    version: 1.0.0
+    repository: file://../csm-disaster-recovery
+    condition: required
