@@ -130,6 +130,12 @@ maxVxflexosVolumesPerNode: 0
 # Default value: 10s
 probeTimeout: "10s"
 
+# podmonAPIPort: Defines the port to be used within the kubernetes cluster
+# Allowed values:
+#   Any valid and free port.
+# Default value: 8083
+podmonAPIPort: 8083
+
 # "controller" allows to configure controller specific parameters
 controller:
   # replication: allows to configure replication
