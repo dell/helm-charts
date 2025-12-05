@@ -4,6 +4,6 @@ description: A Helm chart for CSI PowerMax ReverseProxy
 
 type: application
 
-version: 2.14.1
+version: 2.15.0
 
-appVersion: 2.14.1
+appVersion: 2.15.0
