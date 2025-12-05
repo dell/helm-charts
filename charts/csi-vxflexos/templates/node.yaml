@@ -456,7 +456,7 @@ spec:
         - name: hostnqn
           hostPath:
             path: /etc/nvme
-            type: Directory
+            type: DirectoryOrCreate
         {{- if and (not $is_openshift) (not $is_harvester) }}
         - name: scaleio-path-bin
           hostPath:
