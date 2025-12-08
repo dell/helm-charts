@@ -248,6 +248,8 @@ spec:
               value: "{{ .Values.maxVxflexosVolumesPerNode }}"
             - name: SSL_CERT_DIR
               value: /certs
+            - name: X_CSI_POWERFLEX_NODE_CHROOT_PATH
+              value: /noderoot
             {{- if hasKey .Values.node "healthMonitor" }}
             - name: X_CSI_HEALTH_MONITOR_ENABLED
               value: "{{ .Values.node.healthMonitor.enabled }}"
@@ -293,22 +295,28 @@ spec:
               readOnly: true
             - name: dev
               mountPath: /dev
+            - name: sys
+              mountPath: /sys
+            - name: run
+              mountPath: /run
+            - name: noderoot
+              mountPath: /noderoot
             - name: vxflexos-config
               mountPath: /vxflexos-config
             - name: vxflexos-config-params
               mountPath: /vxflexos-config-params
-            - name: usrsbin
-              mountPath: /usr/sbin
-              readOnly: true
-            - name: lib
-              mountPath: /lib
-              readOnly: true
-            - name: lib64
-              mountPath: /lib64
-              readOnly: true
-            - name: hostnqn
-              mountPath: /etc/nvme
-              readOnly: true
+#            - name: usrsbin
+#              mountPath: /noderoot/usr/sbin
+#              readOnly: true
+#            - name: lib64
+#              mountPath: /noderoot/lib64
+#              readOnly: true
+#            - name: usrlib64
+#              mountPath: /noderoot/usr/lib64
+#              readOnly: true
+#            - name: hostnqn
+#              mountPath: /etc/nvme
+#              readOnly: true
 {{- if ge (int .Values.certSecretCount) 1 }}
             - name: certs
               mountPath: /certs
@@ -444,15 +452,27 @@ spec:
           hostPath:
             path: /dev
             type: Directory
+        - name: sys
+          hostPath:
+            path: /sys
+            type: Directory
+        - name: run
+          hostPath:
+            path: /run
+            type: Directory
+        - name: noderoot
+          hostPath:
+            path: /
+            type: Directory
         - name: usrsbin
           hostPath:
             path: /usr/sbin
-        - name: lib
-          hostPath:
-            path: /lib
         - name: lib64
           hostPath:
             path: /lib64
+        - name: usrlib64
+          hostPath:
+            path: /usr/lib64
         - name: hostnqn
           hostPath:
             path: /etc/nvme
