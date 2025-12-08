@@ -188,11 +188,11 @@ maxPowerMaxVolumesPerNode: 0
 # Default value: "false"
 dynamicSGEnabled: "false"
 
-# X_CSI_POLLING_INTERVAL: Define the polling interval for array connectivity and status checks
-# This value is used to determine how frequently the driver polls the storage array
+# X_CSI_SG_SYNC_INTERVAL: Specifies the time interval(in seconds) for syncing Storage Group details from the arrays
+# This value is used to determine how frequently the driver syncs the Storage Group details with the array
 # Allowed values: Any positive integer representing seconds
 # Default value: "60"
-pollingInterval: "60"
+sgSyncInterval: "60"
 
 # controller: configure controller specific parameters
 controller:

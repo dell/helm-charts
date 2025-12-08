@@ -549,8 +549,8 @@ spec:
               value: /app/tls
             - name: X_CSI_DYNAMIC_SG_ENABLED
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
-            - name: X_CSI_POLLING_INTERVAL
-              value: {{ .Values.pollingInterval | default "60s" | quote }}
+            - name: X_CSI_SG_SYNC_INTERVAL
+              value: {{ .Values.sgSyncInterval | default "60s" | quote }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
