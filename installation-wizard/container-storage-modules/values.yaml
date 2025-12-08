@@ -147,13 +147,13 @@ csi-powermax:
       - endpoint: https://backup-1.unisphe.re:8443
   #    - endpoint: https://primary-2.unisphe.re:8443
   #    - endpoint: https://backup-2.unisphe.re:8443
-  version: "v2.15.1"
+  version: "v2.16.0"
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
-      image: quay.io/dell/container-storage-modules/csi-powermax:v2.15.1
+      image: quay.io/dell/container-storage-modules/csi-powermax:v2.16.0
     csireverseproxy:
-      image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.14.1
+      image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.15.0
     # CSI sidecars
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
@@ -212,6 +212,8 @@ csi-powermax:
   storageCapacity:
     enabled: true
   maxPowerMaxVolumesPerNode: 0
+  dynamicSGEnabled: false
+  sgSyncInterval: 60s
 
 ## CSI PowerScale
 ########################
