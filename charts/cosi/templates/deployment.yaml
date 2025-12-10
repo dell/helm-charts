@@ -1,72 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "cosi.fullname" . }}
-  labels:
-    {{- include "cosi.labels" . | trim | nindent 4 }}
-  {{- with .Values.rbac.role.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "cosi.selectorLabels" . | trim | nindent 6 }}
+      name: {{ .Release.Name }}
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        {{- include "cosi.labels" . | trim | nindent 8 }}
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        name: {{ .Release.Name }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "cosi.serviceAccountName" . }}
-      {{- with .Values.podSecurityContext }}
+      serviceAccountName: {{ .Release.Name }}
       securityContext:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        runAsNonRoot: true
+        runAsUser: 1000
       containers:
-        - name: {{ include "cosi.provisionerContainerName" . }}
-          {{- with .Values.securityContext }}
+        - name: objectstorage-provisioner
           securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          image: {{ include "cosi.provisionerImageName" . }}
-          imagePullPolicy: {{ .Values.provisioner.image.pullPolicy }}
+            readOnlyRootFilesystem: true
+          image: {{ .Values.images.provisioner.image }}
+          imagePullPolicy: {{ .Values.pullPolicy }}
           args:
-            - "--log-level={{ include "cosi.logLevel" . }}"
-            - "--log-format={{ include "cosi.logFormat" . }}"
-            - "--otel-endpoint={{ include "cosi.otelEndpoint" . }}"
-          {{- with .Values.resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            - "--log-level={{ .Values.logLevel }}"
+            - "--log-format={{ .Values.logFormat }}"
+            - "--otel-endpoint={{ .Values.otelEndpoint }}"
           volumeMounts:
-          - name: {{ include "cosi.secretVolumeName" . }}
+          - name: cosi-config
             mountPath: /cosi
           - name: cosi-socket-dir
             mountPath: /var/lib/cosi
-        - name: {{ include "cosi.provisionerSidecarContainerName" . }}
-          image: {{ include "cosi.provisionerSidecarImageName" . }}
-          imagePullPolicy: {{ .Values.sidecar.image.pullPolicy }}
+        - name: objectstorage-provisioner-sidecar
+          image: {{ .Values.images.sidecar.image }}
+          imagePullPolicy: {{ .Values.pullPolicy }}
           args:
-            - "-v={{ include "cosi.provisionerSidecarVerbosity" . }}"
-          {{- with .Values.securityContext }}
+            - "-v={{ .Values.logLevel }}"
           securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            readOnlyRootFilesystem: true
           volumeMounts:
           - name: cosi-socket-dir
             mountPath: /var/lib/cosi
@@ -74,17 +46,23 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "name"
+                    operator: In
+                    values:
+                      - {{ .Release.Name }}
+              topologyKey: "kubernetes.io/hostname"
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-      - name: {{ include "cosi.secretVolumeName" . }}
+      - name: cosi-config
         secret:
-          secretName: {{ include "cosi.secretName" . }}
+          secretName: cosi-config
       - name: cosi-socket-dir
         emptyDir: {}
