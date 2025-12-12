@@ -1,20 +1,12 @@
-{{- if .Values.rbac.create -}}
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ include "cosi.roleBindingName" . }}
-  labels:
-    {{- include "cosi.labels" . | trim | nindent 4 }}
-  {{- with .Values.rbac.roleBinding.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+  name: {{ .Release.Name }}
 subjects:
   - kind: ServiceAccount
-    name: {{ include "cosi.serviceAccountName" . }}
+    name: {{ .Release.Name }}
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ include "cosi.roleName" . }}
+  name: {{ .Release.Name }}
   apiGroup: rbac.authorization.k8s.io
-{{- end }}
