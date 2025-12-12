@@ -63,6 +63,6 @@ spec:
       volumes:
       - name: cosi-config
         secret:
-          secretName: cosi-config
+          secretName: {{ .Release.Name }}-config
       - name: cosi-socket-dir
         emptyDir: {}
