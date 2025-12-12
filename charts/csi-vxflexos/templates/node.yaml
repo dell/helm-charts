@@ -295,28 +295,37 @@ spec:
               readOnly: true
             - name: dev
               mountPath: /dev
-            - name: sys
-              mountPath: /sys
-            - name: run
-              mountPath: /run
-            - name: noderoot
-              mountPath: /noderoot
             - name: vxflexos-config
               mountPath: /vxflexos-config
             - name: vxflexos-config-params
               mountPath: /vxflexos-config-params
-#            - name: usrsbin
-#              mountPath: /noderoot/usr/sbin
-#              readOnly: true
-#            - name: lib64
-#              mountPath: /noderoot/lib64
-#              readOnly: true
-#            - name: usrlib64
-#              mountPath: /noderoot/usr/lib64
-#              readOnly: true
-#            - name: hostnqn
-#              mountPath: /etc/nvme
-#              readOnly: true
+            # sbin trees (mount whole sbin so other admin tools are available)
+            - name: sbin
+              mountPath: /noderoot/sbin
+              readOnly: true
+            - name: usrsbin
+              mountPath: /noderoot/usr/sbin
+              readOnly: true
+            # host glibc + libs (so chroot uses host loader + libraries)
+            - name: lib64
+              mountPath: /noderoot/lib64
+              readOnly: true
+            - name: usrlib64
+              mountPath: /noderoot/usr/lib64
+              readOnly: true
+            # kernel interfaces and device nodes
+            - name: dev
+              mountPath: /noderoot/dev
+            - name: sys
+              mountPath: /noderoot/sys
+            - name: proc
+              mountPath: /noderoot/proc
+            - name: run-udev
+              mountPath: /noderoot/run/udev
+            # nvme nqn
+            - name: hostnqn
+              mountPath: /noderoot/etc/nvme
+              readOnly: true
 {{- if ge (int .Values.certSecretCount) 1 }}
             - name: certs
               mountPath: /certs
@@ -456,23 +465,30 @@ spec:
           hostPath:
             path: /sys
             type: Directory
-        - name: run
+        - name: proc
           hostPath:
-            path: /run
+            path: /proc
             type: Directory
-        - name: noderoot
+        - name: run-udev
           hostPath:
-            path: /
+            path: /run/udev
+            type: DirectoryOrCreate
+        - name: sbin
+          hostPath:
+            path: /sbin
             type: Directory
         - name: usrsbin
           hostPath:
             path: /usr/sbin
+            type: Directory
         - name: lib64
           hostPath:
             path: /lib64
+            type: Directory
         - name: usrlib64
           hostPath:
             path: /usr/lib64
+            type: Directory
         - name: hostnqn
           hostPath:
             path: /etc/nvme
