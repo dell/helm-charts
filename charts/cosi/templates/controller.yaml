@@ -1,3 +1,67 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}
+rules:
+- apiGroups:
+    - objectstorage.k8s.io # COSI resources are grouped here
+  resources: # we do not add bucketclasses here, as those are managed by COSI Controller
+    - buckets
+    - bucketclaims
+    - bucketaccesses
+    - bucketaccessclasses
+    - buckets/status
+    - bucketaccesses/status
+    - bucketclaims/status
+    - bucketaccessclasses/status
+  verbs: # CRUD + list/watch
+    - create
+    - get
+    - update
+    - delete
+    - list
+    - watch
+- apiGroups:
+    - coordination.k8s.io
+  resources:
+    - leases # lease is created during leader election process by COSI Provisioner Sidecar
+  verbs: # CRUD + list/watch
+    - create
+    - get
+    - update
+    - delete
+    - list
+    - watch
+- apiGroups:
+    - "" # empty for default API group
+  resources:
+    - events # events are emmited from COSI Provisioner Sidecar
+    - secrets # secrets are created by COSI Provisioner Sidecar as a part of access granting
+  verbs: # CRUD
+    - create
+    - get
+    - update
+    - delete
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ .Release.Name }}
+  apiGroup: rbac.authorization.k8s.io
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,7 +86,7 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
           image: {{ .Values.images.provisioner.image }}
-          imagePullPolicy: {{ .Values.pullPolicy }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--log-level={{ .Values.logLevel }}"
             - "--log-format={{ .Values.logFormat }}"
@@ -34,7 +98,7 @@ spec:
             mountPath: /var/lib/cosi
         - name: objectstorage-provisioner-sidecar
           image: {{ .Values.images.sidecar.image }}
-          imagePullPolicy: {{ .Values.pullPolicy }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "-v={{ .Values.logLevel }}"
           securityContext:
