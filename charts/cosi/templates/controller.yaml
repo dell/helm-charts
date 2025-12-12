@@ -106,6 +106,8 @@ spec:
           volumeMounts:
           - name: cosi-socket-dir
             mountPath: /var/lib/cosi
+          - name: cosi-config-params
+              mountPath: /cosi-config-params
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -128,5 +130,8 @@ spec:
       - name: cosi-config
         secret:
           secretName: {{ .Release.Name }}-config
+      - name: cosi-config-params
+          configMap:
+            name: {{ .Release.Name }}-config-params
       - name: cosi-socket-dir
         emptyDir: {}
