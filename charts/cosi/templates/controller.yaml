@@ -88,26 +88,23 @@ spec:
           image: {{ .Values.images.provisioner.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
-            - "--log-level={{ .Values.logLevel }}"
-            - "--log-format={{ .Values.logFormat }}"
+            - "--driver-config-params=/cosi-config-params/driver-config-params.yaml"
             - "--otel-endpoint={{ .Values.otelEndpoint }}"
           volumeMounts:
           - name: cosi-config
             mountPath: /cosi
           - name: cosi-socket-dir
             mountPath: /var/lib/cosi
+          - name: cosi-config-params
+            mountPath: /cosi-config-params
         - name: objectstorage-provisioner-sidecar
           image: {{ .Values.images.sidecar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          args:
-            - "-v={{ .Values.logLevel }}"
           securityContext:
             readOnlyRootFilesystem: true
           volumeMounts:
           - name: cosi-socket-dir
             mountPath: /var/lib/cosi
-          - name: cosi-config-params
-              mountPath: /cosi-config-params
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -131,7 +128,7 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-config
       - name: cosi-config-params
-          configMap:
-            name: {{ .Release.Name }}-config-params
+        configMap:
+          name: {{ .Release.Name }}-config-params
       - name: cosi-socket-dir
         emptyDir: {}

@@ -3,7 +3,7 @@
 # Not recommend to change
 version: v1.0.0
 
-# "images" defines every container images used for the driver and its sidecars.
+# "images" defines every container images used for the driver and its sidecar.
 #  To use your own images, or a private registry, change the values here.
 images:
   provisioner:
