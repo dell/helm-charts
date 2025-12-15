@@ -81,6 +81,13 @@ nodeFCPortsFilterFile: /etc/fc-ports-filter
 # Default Value: None
 externalAccess:
 
+# exclusiveAccess: controls whether only externalAccess entries are added to the NFS export.
+# If set to true → only IP/CIDR specified in externalAccess will be included (node IP excluded).
+# If set to false (default) → both node IP and externalAccess entry will be added to the export.
+# Allowed Values: true or false
+# Default Value: false
+exclusiveAccess: false
+
 # imagePullPolicy: Policy to determine if the image should be pulled prior to starting the container.
 # Allowed values:
 #  Always: Always pull the image.
