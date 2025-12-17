@@ -126,7 +126,9 @@ rules:
     resources: [ "csistoragecapacities" ]
     verbs: [ "get", "list", "watch", "create", "update", "patch", "delete" ]
   {{- end }}
-  # for Shared NFS
+  - apiGroups: ["dr.storage.dell.com"]
+    resources: ["volumejournals"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
   - apiGroups: ["discovery.k8s.io"]
     resources: ["endpointslices"]
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
