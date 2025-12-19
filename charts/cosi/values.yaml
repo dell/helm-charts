@@ -1,47 +1,52 @@
-# Copyright © 2024 - 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#      http://www.apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License
-
-# Default values for cosi.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
+---
 # "version" is used to verify the values file matches driver version
 # Not recommend to change
 version: v1.0.0
 
-# images specifies the images for the COSI driver and sidecar
+# "images" defines every container images used for the driver and its sidecar.
+#  To use your own images, or a private registry, change the values here.
 images:
   provisioner:
-    image: "quay.io/dell/container-storage-modules/cosi:v1.0.0"
+    image: quay.io/dell/container-storage-modules/cosi:v1.0.0
   sidecar:
-    image: "gcr.io/k8s-staging-sig-storage/objectstorage-sidecar:release-0.2"
+    image: gcr.io/k8s-staging-sig-storage/objectstorage-sidecar:release-0.2
 
-# logLevel is the log level verbosityfor the COSI driver and sidecar
-logLevel: 4
+# COSI driver log level
+# Allowed values: "error", "warn"/"warning", "info", "debug"
+# Default value: "info"
+logLevel: "info"
 
-# logFormat is the output format for the COSI driver and sidecar logs
-logFormat: "json"
+# COSI driver log format
+# Allowed values: "TEXT" or "JSON"
+# Default value: "TEXT"
+logFormat: "TEXT"
 
-# pullPolicy is the image pull policy for the COSI driver and sidecar (Always, IfNotPresent, Never)
-pullPolicy: "IfNotPresent"
+# imagePullPolicy: Policy to determine if the image should be pulled prior to starting the container.
+# Allowed values:
+#  Always: Always pull the image.
+#  IfNotPresent: Only pull the image if it does not already exist on the node.
+#  Never: Never pull the image.
+# Default value: None
+imagePullPolicy: IfNotPresent
 
-# otelEndpoint is the OpenTelemetry collector endpoint for the COSI driver and sidecar
+# OpenTelemetry collector endpoint for the COSI driver and sidecar
+# Default value: ""
 otelEndpoint: ""
 
 # replicaCount specifies the number of replicas of the COSI driver.
+# Allowed values: n, where n > 0
+# Default value: 1
 replicaCount: 1
 
-# nodeSelector specifies the node selector for the COSI driver pod.
+# Node selector for scheduling the COSI driver pod
+# Leave as blank to use all nodes
+# Allowed values: map of key-value pairs
+# Default value: None
+# Examples:
+#  node-role.kubernetes.io/control-plane: ""
 nodeSelector: {}
 
-# tolerations specifies the list of tolerations for the COSI driver pod.
+# Tolerations for scheduling the COSI driver pod
+# Leave as blank to install the driver on worker nodes
+# Default value: None
 tolerations: []
