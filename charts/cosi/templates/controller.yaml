@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}
+rules:
+- apiGroups:
+    - objectstorage.k8s.io # COSI resources are grouped here
+  resources: # we do not add bucketclasses here, as those are managed by COSI Controller
+    - buckets
+    - bucketclaims
+    - bucketaccesses
+    - bucketaccessclasses
+    - buckets/status
+    - bucketaccesses/status
+    - bucketclaims/status
+    - bucketaccessclasses/status
+  verbs: # CRUD + list/watch
+    - create
+    - get
+    - update
+    - delete
+    - list
+    - watch
+- apiGroups:
+    - coordination.k8s.io
+  resources:
+    - leases # lease is created during leader election process by COSI Provisioner Sidecar
+  verbs: # CRUD + list/watch
+    - create
+    - get
+    - update
+    - delete
+    - list
+    - watch
+- apiGroups:
+    - "" # empty for default API group
+  resources:
+    - events # events are emmited from COSI Provisioner Sidecar
+    - secrets # secrets are created by COSI Provisioner Sidecar as a part of access granting
+  verbs: # CRUD
+    - create
+    - get
+    - update
+    - delete
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Release.Name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ .Release.Name }}
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: {{ .Release.Name }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        name: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ .Release.Name }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: objectstorage-provisioner
+          securityContext:
+            readOnlyRootFilesystem: true
+          image: {{ .Values.images.provisioner.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args:
+            - "--driver-config-params=/cosi-config-params/driver-config-params.yaml"
+            - "--otel-endpoint={{ .Values.otelEndpoint }}"
+          volumeMounts:
+          - name: cosi-config
+            mountPath: /cosi
+          - name: cosi-socket-dir
+            mountPath: /var/lib/cosi
+          - name: cosi-config-params
+            mountPath: /cosi-config-params
+        - name: objectstorage-provisioner-sidecar
+          image: {{ .Values.images.sidecar.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
+          - name: cosi-socket-dir
+            mountPath: /var/lib/cosi
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "name"
+                    operator: In
+                    values:
+                      - {{ .Release.Name }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: cosi-config
+        secret:
+          secretName: {{ .Release.Name }}-config
+      - name: cosi-config-params
+        configMap:
+          name: {{ .Release.Name }}-config-params
+      - name: cosi-socket-dir
+        emptyDir: {}
