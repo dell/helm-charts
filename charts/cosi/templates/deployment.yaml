@@ -14,13 +14,14 @@ spec:
         name: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ .Release.Name }}
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
       containers:
         - name: objectstorage-provisioner
           securityContext:
             readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
           image: {{ .Values.images.provisioner.image }}
           imagePullPolicy: {{ .Values.pullPolicy }}
           args:
@@ -39,6 +40,10 @@ spec:
             - "-v={{ .Values.logLevel }}"
           securityContext:
             readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
           volumeMounts:
           - name: cosi-socket-dir
             mountPath: /var/lib/cosi
