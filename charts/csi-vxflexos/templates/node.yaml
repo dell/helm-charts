@@ -275,6 +275,8 @@ spec:
               value: {{ .Release.Name }}
             - name: X_CSI_PROBE_TIMEOUT
               value: {{ .Values.probeTimeout | default "10s"}}
+            - name: X_CSI_AUTH_TYPE
+              value: {{.Values.authType | default ""}}
             {{- if hasKey .Values "podmon" }}
             - name: X_CSI_PODMON_ENABLED
               value: "{{ .Values.podmon.enabled }}"

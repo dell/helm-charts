@@ -130,6 +130,11 @@ maxVxflexosVolumesPerNode: 0
 # Default value: 10s
 probeTimeout: "10s"
 
+# "authType" defines the type of authentication that is used.
+# Allowed values: "OIDC", None
+# Default value: "None"
+authType: ""
+
 # podmonAPIPort: Defines the port to be used within the kubernetes cluster
 # Allowed values:
 #   Any valid and free port.
