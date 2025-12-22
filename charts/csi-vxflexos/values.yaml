@@ -131,7 +131,7 @@ maxVxflexosVolumesPerNode: 0
 probeTimeout: "10s"
 
 # "authType" defines the type of authentication that is used.
-# Allowed values: 
+# Allowed values:
 #  "OIDC" - use OIDC authentication
 #  "" - by default use Basic authentication
 # Default value: "" <empty>
