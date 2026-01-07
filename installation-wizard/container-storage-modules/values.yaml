@@ -213,7 +213,7 @@ csi-powermax:
     enabled: true
   maxPowerMaxVolumesPerNode: 0
   dynamicSGEnabled: false
-  
+
 ## CSI PowerScale
 ########################
 csi-isilon:
