@@ -213,7 +213,6 @@ csi-powermax:
     enabled: true
   maxPowerMaxVolumesPerNode: 0
   dynamicSGEnabled: ***REMOVED***
-  sgSyncInterval: 60s
 
 ## CSI PowerScale
 ########################
