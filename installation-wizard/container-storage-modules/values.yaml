@@ -29,7 +29,7 @@ csi-powerstore:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.0.0
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
     snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
     resizer:
@@ -158,7 +158,7 @@ csi-powermax:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.0.0
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
     snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
     resizer:
@@ -228,7 +228,7 @@ csi-isilon:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.0.0
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
     snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
     resizer:
@@ -330,7 +330,7 @@ csi-vxflexos:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.0.0
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
     snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
     resizer:
@@ -447,7 +447,7 @@ csi-unity:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.0.0
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
     snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
     resizer:
