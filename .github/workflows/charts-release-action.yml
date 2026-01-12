@@ -38,7 +38,7 @@ jobs:
           echo "release-v${{ inputs.version }}" >> branch_name.txt
 
       - name: Upload release branch name artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: branch_name
           path: branch_name.txt
