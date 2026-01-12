@@ -443,6 +443,13 @@ spec:
               value: "{{ .Values.exclusiveAccess }}"
             - name: X_CSI_NFS_ACLS
               value: "{{ .Values.nfsAcls }}"
+            {{- if hasKey .Values "disasterRecovery" }}   
+            - name: X_CSM_DR_ENABLED
+              value: "{{ .Values.disasterRecovery.enabled}}"
+            {{- else }}
+            - name: X_CSM_DR_ENABLED
+              value: "true"
+            {{- end }}
             - name: X_CSI_POWERSTORE_CONFIG_PATH
               value: /powerstore-config/config
             - name: X_CSI_POWERSTORE_CONFIG_PARAMS_PATH
