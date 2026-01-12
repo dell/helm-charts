@@ -46,7 +46,7 @@ jobs:
           echo "run_id=$latest_run_id" >> $GITHUB_OUTPUT
 
       - name: Download release branch name artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: branch_name
           path: .
