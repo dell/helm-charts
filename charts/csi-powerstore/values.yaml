@@ -444,3 +444,12 @@ authorization:
   #   "false" - TLS certificate will be verified
   # Default value: "true"
   skipCertificateValidation: true
+
+# Enable installation of Custom Resource Definitions (CRDs) required for Disaster Recovery.
+# This is necessary when using the PowerStore Metro feature.
+# Set `enabled` to `true` to install the Disaster Recovery CRDs.
+disasterRecovery:
+  enabled: true
+  # Possible values:
+  #   true  - Installs the Disaster Recovery CRDs.
+  #   false - Does not install the Disaster Recovery CRDs.
