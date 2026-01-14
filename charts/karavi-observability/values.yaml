@@ -1,5 +1,5 @@
 karaviMetricsPowerflex:
-  image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.13.1
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.14.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
@@ -30,9 +30,9 @@ karaviMetricsPowerflex:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
     sidecarProxy:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -44,7 +44,7 @@ karaviMetricsPowerflex:
     skipCertificateValidation: true
 
 karaviMetricsPowerstore:
-  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.13.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.14.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powerstore.dellemc.com)
@@ -80,9 +80,9 @@ karaviMetricsPowerstore:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
     sidecarProxy:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -94,7 +94,7 @@ karaviMetricsPowerstore:
     skipCertificateValidation: true
 
 karaviMetricsPowerscale:
-  image: quay.io/dell/container-storage-modules/csm-metrics-powerscale:v1.10.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerscale:v1.11.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-isilon.dellemc.com)
@@ -135,9 +135,9 @@ karaviMetricsPowerscale:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
     sidecarProxy:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -149,7 +149,7 @@ karaviMetricsPowerscale:
     skipCertificateValidation: true
 
 karaviMetricsPowermax:
-  image: quay.io/dell/container-storage-modules/csm-metrics-powermax:v1.8.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powermax:v1.9.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powermax.dellemc.com)
@@ -191,9 +191,9 @@ karaviMetricsPowermax:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
     sidecarProxy:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.3.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:

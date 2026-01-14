@@ -1,7 +1,7 @@
 apiVersion: v2
-appVersion: 2.15.0
+appVersion: 2.16.0
 name: csi-unity
-version: 2.15.0
+version: 2.16.0
 description: |
   Unity XT CSI (Container Storage Interface) driver Kubernetes
   integration. This chart includes everything required to provision via CSI as
@@ -9,7 +9,7 @@ description: |
 type: application
 kubeVersion: ">= 1.24.0"
 # If you are using a complex K8s version like "v1.24.3-mirantis-1", use this kubeVersion check instead
-# kubeVersion: ">= 1.23.0-0"
+# kubeVersion: ">= 1.24.0-0"
 keywords:
   - csi
   - storage

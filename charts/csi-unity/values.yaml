@@ -3,13 +3,13 @@
 
 # version: version of this values file
 # Note: Do not change this value
-# Examples : "v2.9.0" , "nightly"
-version: "v2.15.0"
+# Examples : "v2.16.0" , "nightly"
+version: "v2.16.0"
 
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-unity:v2.15.0
+    image: quay.io/dell/container-storage-modules/csi-unity:v2.16.0
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
@@ -26,7 +26,7 @@ images:
 
   # CSM sidecars
   podmon:
-    image: quay.io/dell/container-storage-modules/podmon:v1.14.0
+    image: quay.io/dell/container-storage-modules/podmon:v1.15.0
 
 # LogLevel is used to set the logging level of the driver.
 # Allowed values: "error", "warn"/"warning", "info", "debug"

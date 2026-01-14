@@ -1,4 +1,4 @@
-image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.14.1
+image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.15.0
 port: 2222
 
 # TLS secret which is used for setting up the proxy HTTPS server
