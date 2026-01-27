@@ -173,12 +173,12 @@ csi-powermax:
     authorization:
       image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
     migration:
-      image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.9.0
+      image: quay.io/dell/container-storage-modules/dell-csi-migrator:v1.10.0
     podmon:
       image: quay.io/dell/container-storage-modules/podmon:v1.15.0
     # Node rescan sidecar does a rescan on nodes for identifying new paths
     noderescan:
-      image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.8.0
+      image: quay.io/dell/container-storage-modules/dell-csi-node-rescanner:v1.9.0
   clusterPrefix: ABC
   portGroups: PortGroup1, PortGroup2, PortGroup3
   controller:
