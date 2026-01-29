@@ -59,13 +59,6 @@ rules:
     verbs: ["get", "list", "watch", "patch"]
   {{- end }}
   {{- end }}
-  {{- if hasKey .Values.controller "vgsnapshot" }}
-  {{- if eq .Values.controller.vgsnapshot.enabled true }}
-  - apiGroups: ["volumegroup.storage.dell.com"]
-    resources: ["dellcsivolumegroupsnapshots", "dellcsivolumegroupsnapshots/status"]
-    verbs: ["create", "list", "watch", "delete", "update"]
-  {{- end }}
-  {{- end }}
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshotclasses"]
     verbs: ["get", "list", "watch"]
@@ -77,11 +70,29 @@ rules:
     verbs: ["update", "patch"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshots", "volumesnapshots/status"]
+  # Unsure why we need to check vgsnapshot here for volumesnapshot rbac
   {{- if hasKey .Values.controller "vgsnapshot" }}
-  {{- if eq .Values.controller.vgsnapshot.enabled true }}
+  {{- if eq .Values.controller.vgsnapshot true }}
     verbs: ["get", "list", "watch", "update", "create", "delete"]
   {{- else }}
     verbs: ["get", "list"]
+  {{- end }}
+  {{- end }}
+  # Permissions for volume group snapshot
+  {{- if hasKey .Values.controller "vgsnapshot" }}
+  {{- if eq .Values.controller.vgsnapshot true }}
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotcontents"]
+    verbs: ["get", "list", "watch", "patch"]
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotcontents/status"]
+    verbs: ["update", "patch"]
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshots", "volumegroupsnapshots/status"]
+    verbs: ["get", "list", "watch", "update", "create", "delete"]
   {{- end }}
   {{- end }}
   - apiGroups: ["storage.k8s.io"]
@@ -332,6 +343,7 @@ spec:
             - "--v=5"
             - "--leader-election"
             - "--snapshot-name-prefix={{ required "Must privided a Snapshot Name Prefix" .Values.controller.snapshot.snapNamePrefix }}"
+            - "--feature-gates=CSIVolumeGroupSnapshot={{ .Values.vgsnapshot | default "true" }}"
           env:
             - name: ADDRESS
               value: /var/run/csi/csi.sock
@@ -340,21 +352,6 @@ spec:
               mountPath: /var/run/csi
         {{end}}
         {{end}}
-        {{- if hasKey .Values.controller "vgsnapshot" }}
-        {{- if eq .Values.controller.vgsnapshot.enabled true }}
-        - name: vg-snapshotter
-          image: {{ required "Must provide the vgsnapshotter container image." .Values.images.vgsnapshotter.image }}
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
-          env:
-            - name: ADDRESS
-              value: /var/run/csi/csi.sock
-          volumeMounts:
-            - name: socket-dir
-              mountPath: /var/run/csi
-        {{- end }}
-        {{- end }}
-        {{- if hasKey .Values.controller "replication" }}
-        {{- if eq .Values.controller.replication.enabled true}}
         - name: dell-csi-replicator
           image: {{ required "Must provide the Dell CSI Replicator image." .Values.images.replication.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -378,9 +375,7 @@ spec:
             - name: socket-dir
               mountPath: /var/run/csi
             - name: powerstore-config-params
-              mountPath: /powerstore-config-params
-        {{- end }}
-        {{- end }}
+              mountPath: /powerstore-config-params      
         {{- if hasKey .Values.controller "healthMonitor" }}
         {{- if eq .Values.controller.healthMonitor.enabled true}}
         - name: csi-external-health-monitor-controller
