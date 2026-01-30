@@ -259,6 +259,39 @@ spec:
         {{- if hasKey .Values "dev" }}
         {{ if .Values.dev.enableTracing }}{{- include "pstore.tracing" . | nindent 8 }}{{ end }}
         {{- end }}
+        - name: csi-addons
+          image: quay.io/csiaddons/k8s-sidecar:v0.14.0
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args:
+            - "--node-id=$(NODE_ID)"
+            - "--v=5"
+            - "--csi-addons-address=/var/run/csi/csi.sock"
+            - "--controller-port=9070"
+            - "--pod=$(POD_NAME)"
+            - "--namespace=$(POD_NAMESPACE)"
+            - "--pod-uid=$(POD_UID)"
+          env:
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/run/csi
+          ports:
+            - containerPort: 9070
         - name: attacher
           image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -443,6 +476,8 @@ spec:
               value: "{{ .Values.exclusiveAccess }}"
             - name: X_CSI_NFS_ACLS
               value: "{{ .Values.nfsAcls }}"
+            - name: X_CSI_ADDONS_REPLICATION_ENABLED
+              value: "true"
             {{- if hasKey .Values "disasterRecovery" }}   
             - name: X_CSM_DR_ENABLED
               value: "{{ .Values.disasterRecovery.enabled}}"
