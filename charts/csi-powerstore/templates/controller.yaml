@@ -99,6 +99,21 @@ rules:
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]
     verbs: ["create", "list", "watch", "delete"]
+  # CSI-Addons: allow sidecar token review
+  - apiGroups: ["authentication.k8s.io"]
+    resources: ["tokenreviews"]
+    verbs: ["create"]
+  # CSI-Addons: allow sidecar to create/update CSIAddonsNode CRs
+  - apiGroups: ["csiaddons.openshift.io"]
+    resources: ["csiaddonsnodes"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  # CSI-Addons: VolumeReplication resources
+  - apiGroups: ["replication.storage.openshift.io"]
+    resources: ["volumereplicationclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["replication.storage.openshift.io"]
+    resources: ["volumereplications"]
+    verbs: ["get", "list", "watch", "update", "patch"]
   - apiGroups: ["storage.k8s.io"]
     resources: ["csinodes"]
     verbs: ["get", "list", "watch"]
