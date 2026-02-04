@@ -1,6 +1,6 @@
 #
 #
-# Copyright © 2020-2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright © 2020-2026 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -342,8 +342,8 @@ spec:
             - "--csi-address=$(ADDRESS)"
             - "--v=5"
             - "--leader-election"
-            - "--snapshot-name-prefix={{ required "Must privided a Snapshot Name Prefix" .Values.controller.snapshot.snapNamePrefix }}"
-            - "--feature-gates=CSIVolumeGroupSnapshot={{ .Values.vgsnapshot | default "true" }}"
+            - "--snapshot-name-prefix={{ required "Must provide a Snapshot Name Prefix" .Values.controller.snapshot.snapNamePrefix }}"
+            - "--feature-gates=CSIVolumeGroupSnapshot={{ .Values.controller.vgsnapshot | default "true" }}"
           env:
             - name: ADDRESS
               value: /var/run/csi/csi.sock
