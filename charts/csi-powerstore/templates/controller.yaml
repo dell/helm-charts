@@ -378,8 +378,8 @@ spec:
               mountPath: /var/run/csi
             - name: powerstore-config-params
               mountPath: /powerstore-config-params 
-          {{- end}}
-          {{- end}}
+        {{- end}}
+        {{- end}}
         {{- if hasKey .Values.controller "healthMonitor" }}
         {{- if eq .Values.controller.healthMonitor.enabled true}}
         - name: csi-external-health-monitor-controller
