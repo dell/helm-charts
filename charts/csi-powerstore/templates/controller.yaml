@@ -352,6 +352,8 @@ spec:
               mountPath: /var/run/csi
         {{end}}
         {{end}}
+        {{- if hasKey .Values.controller "replication" }}
+        {{- if eq .Values.controller.replication.enabled true }}
         - name: dell-csi-replicator
           image: {{ required "Must provide the Dell CSI Replicator image." .Values.images.replication.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -375,7 +377,9 @@ spec:
             - name: socket-dir
               mountPath: /var/run/csi
             - name: powerstore-config-params
-              mountPath: /powerstore-config-params      
+              mountPath: /powerstore-config-params 
+          {{end}}
+          {{end}}
         {{- if hasKey .Values.controller "healthMonitor" }}
         {{- if eq .Values.controller.healthMonitor.enabled true}}
         - name: csi-external-health-monitor-controller
