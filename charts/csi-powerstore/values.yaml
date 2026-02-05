@@ -142,7 +142,7 @@ controller:
   # Examples: "k8s", "app1"
   volumeNamePrefix: csivol
 
-  # vgsnapshot: allows to configure volumegroup snapshots 
+  # vgsnapshot: allows to configure volumegroup snapshots
   # volumegroupsnapshot CRDs must be installed before installing driver
   # enabled: Enable/Disable native container orchestrator volume group snapshot capabilities
   # Allowed values:
@@ -150,7 +150,7 @@ controller:
   # false: Disable volumegroup snapshot feature-gate on snapshotter sidecar
   # Default value: true
   vgsnapshot: true
-   
+  
   # snapshot: allows to enable/disable snapshot feature
   # snapshot CRDs needs to be installed before enabling this feature
   snapshot:
