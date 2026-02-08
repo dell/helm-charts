@@ -319,6 +319,23 @@ node:
     # Default value: false
     enabled: false
 
+  # "fsck" defines filesystem check and repair operations before mounting volumes
+  # Default value: None
+  fsck:
+    # enabled: Enable/Disable fsck/xfs_repair before mounting volumes
+    # Allowed values:
+    #   true: enable fsck for ext4 volumes and xfs_repair for xfs volumes
+    #   false: disable filesystem checks
+    # Default value: false
+    # Note: Can be disabled per-PVC using label "csi.dell.com/disable_fsck: true"
+    enabled: false
+    
+    # timeout: Timeout in seconds for fsck/xfs_repair operations
+    # Allowed values: positive integers (e.g., 60, 120, 300)
+    # Default value: 300
+    # Note: Set appropriate timeout based on volume size and expected repair time
+    timeout: 300
+
 # Storage Capacity Tracking
 # Note: Capacity tracking is supported in kubernetes v1.24 and above, this feature will be automatically disabled in older versions.
 storageCapacity:
