@@ -72,7 +72,7 @@ rules:
     resources: ["volumesnapshots", "volumesnapshots/status"]
   # Unsure why we need to check vgsnapshot here for volumesnapshot rbac
   {{- if hasKey .Values.controller "vgsnapshot" }}
-  {{- if eq .Values.controller.vgsnapshot true }}
+  {{- if eq .Values.controller.vgsnapshot.enabled true }}
     verbs: ["get", "list", "watch", "update", "create", "delete"]
   {{- else }}
     verbs: ["get", "list"]
@@ -80,7 +80,7 @@ rules:
   {{- end }}
   # Permissions for volume group snapshot
   {{- if hasKey .Values.controller "vgsnapshot" }}
-  {{- if eq .Values.controller.vgsnapshot true }}
+  {{- if eq .Values.controller.vgsnapshot.enabled true }}
   - apiGroups: ["groupsnapshot.storage.k8s.io"]
     resources: ["volumegroupsnapshotclasses"]
     verbs: ["get", "list", "watch"]
@@ -343,7 +343,7 @@ spec:
             - "--v=5"
             - "--leader-election"
             - "--snapshot-name-prefix={{ required "Must provide a Snapshot Name Prefix" .Values.controller.snapshot.snapNamePrefix }}"
-            - "--feature-gates=CSIVolumeGroupSnapshot={{ .Values.controller.vgsnapshot | default "true" }}"
+            - "--feature-gates=CSIVolumeGroupSnapshot={{ .Values.controller.vgsnapshot.enabled | default "true" }}"
           env:
             - name: ADDRESS
               value: /var/run/csi/csi.sock
