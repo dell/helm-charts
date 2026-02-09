@@ -144,7 +144,7 @@ controller:
 
   # vgsnapshot: allows to configure volumegroup snapshots
   # volumegroupsnapshot CRDs must be installed before installing driver
-  vgsnapshot:  
+  vgsnapshot:
     # enabled: Enable/Disable native container orchestrator volume group snapshot capabilities
     # Allowed values:
     #   true: Enable volumegroup snapshot feature-gate on snapshotter sidecar
