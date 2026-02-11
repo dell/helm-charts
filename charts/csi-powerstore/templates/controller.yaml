@@ -70,31 +70,19 @@ rules:
     verbs: ["update", "patch"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshots", "volumesnapshots/status"]
-  # Unsure why we need to check vgsnapshot here for volumesnapshot rbac
-  {{- if hasKey .Values.controller "vgsnapshot" }}
-  {{- if eq .Values.controller.vgsnapshot.enabled true }}
-    verbs: ["get", "list", "watch", "update", "create", "delete"]
-  {{- else }}
     verbs: ["get", "list"]
-  {{- end }}
-  {{- end }}
   # Permissions for volume group snapshot
-  {{- if hasKey .Values.controller "vgsnapshot" }}
-  {{- if eq .Values.controller.vgsnapshot.enabled true }}
+  {{- if .Values.controller.vgsnapshot.enabled | default "true" }}
   - apiGroups: ["groupsnapshot.storage.k8s.io"]
     resources: ["volumegroupsnapshotclasses"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["groupsnapshot.storage.k8s.io"]
     resources: ["volumegroupsnapshotcontents"]
-    verbs: ["get", "list", "watch", "patch"]
+    verbs: ["get", "list", "watch", "update", "patch"]
   - apiGroups: ["groupsnapshot.storage.k8s.io"]
     resources: ["volumegroupsnapshotcontents/status"]
     verbs: ["update", "patch"]
-  - apiGroups: ["groupsnapshot.storage.k8s.io"]
-    resources: ["volumegroupsnapshots", "volumegroupsnapshots/status"]
-    verbs: ["get", "list", "watch", "update", "create", "delete"]
-  {{- end }}
-  {{- end }}
+  {{- end }} 
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments/status"]
     verbs: ["patch"]
