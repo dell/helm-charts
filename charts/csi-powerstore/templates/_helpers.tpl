@@ -8,3 +8,14 @@ Return true if storage capacity tracking is enabled and is supported based on k8
   {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return true if vgsnapshot is enabled and properly configured
+*/}}
+{{- define "csi-powerstore.isVgsnapshotEnabled" -}}
+{{- if and (hasKey .Values.controller "vgsnapshot") (kindOf .Values.controller.vgsnapshot | eq "map") (hasKey .Values.controller.vgsnapshot "enabled") }}
+  {{- if .Values.controller.vgsnapshot.enabled }}
+    {{- true -}}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

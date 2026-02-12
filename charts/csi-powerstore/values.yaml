@@ -1,6 +1,6 @@
 #
 #
-# Copyright © 2020-2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright © 2020-2026 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,8 +48,6 @@ images:
   # CSM sidecars
   replication:
     image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.14.0
-  vgsnapshotter:
-    image: quay.io/dell/container-storage-modules/csi-volumegroup-snapshotter:v1.8.1
   podmon:
     image: quay.io/dell/container-storage-modules/podmon:v1.15.0
   metadataretriever:
@@ -144,15 +142,15 @@ controller:
   # Examples: "k8s", "app1"
   volumeNamePrefix: csivol
 
-  # vgsnapshot: allows to configure volume-group-snapshot
-  # volume-group-snapshot CRDs must be installed before installing driver
+  # vgsnapshot: allows to configure volumegroup snapshots
+  # volumegroupsnapshot CRDs must be installed before installing driver
   vgsnapshot:
-    # enabled: Enable/Disable volume-group-snapshot feature
+    # enabled: Enable/Disable native container orchestrator volume group snapshot capabilities
     # Allowed values:
-    #   true: enable volume-group-snapshot feature(install vg-snapshotter sidecar)
-    #   false: disable volume-group-snapshot feature(do not install vg-snapshotter sidecar)
-    # Default value: false
-    enabled: false
+    #   true: Enable volumegroup snapshot feature-gate on snapshotter sidecar
+    #   false: Disable volumegroup snapshot feature-gate on snapshotter sidecar
+    # Default value: true
+    enabled: true
 
   # snapshot: allows to enable/disable snapshot feature
   # snapshot CRDs needs to be installed before enabling this feature
