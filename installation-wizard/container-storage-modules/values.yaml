@@ -29,11 +29,11 @@ csi-powerstore:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
     snapshotter:
-      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
+      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
     resizer:
-      image: registry.k8s.io/sig-storage/csi-resizer:v2.0.0
+      image: registry.k8s.io/sig-storage/csi-resizer:v2.1.0
     registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.15.0
     healthmonitor:
@@ -158,11 +158,11 @@ csi-powermax:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
     snapshotter:
-      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
+      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
     resizer:
-      image: registry.k8s.io/sig-storage/csi-resizer:v2.0.0
+      image: registry.k8s.io/sig-storage/csi-resizer:v2.1.0
     registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.15.0
     healthmonitor:
@@ -227,11 +227,11 @@ csi-isilon:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
     snapshotter:
-      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
+      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
     resizer:
-      image: registry.k8s.io/sig-storage/csi-resizer:v2.0.0
+      image: registry.k8s.io/sig-storage/csi-resizer:v2.1.0
     registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.15.0
     healthmonitor:
@@ -329,11 +329,11 @@ csi-vxflexos:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
     snapshotter:
-      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
+      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
     resizer:
-      image: registry.k8s.io/sig-storage/csi-resizer:v2.0.0
+      image: registry.k8s.io/sig-storage/csi-resizer:v2.1.0
     registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.15.0
     healthmonitor:
@@ -446,11 +446,11 @@ csi-unity:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.0
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
     snapshotter:
-      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.4.0
+      image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
     resizer:
-      image: registry.k8s.io/sig-storage/csi-resizer:v2.0.0
+      image: registry.k8s.io/sig-storage/csi-resizer:v2.1.0
     registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.15.0
     healthmonitor:
