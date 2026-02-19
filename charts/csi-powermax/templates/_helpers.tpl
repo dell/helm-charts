@@ -6,3 +6,11 @@
   {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "csi-powermax.isVgsnapshotEnabled" -}}
+{{- if and (hasKey .Values.controller "vgsnapshot") (kindOf .Values.controller.vgsnapshot | eq "map") (hasKey .Values.controller.vgsnapshot "enabled") -}}
+  {{- if .Values.controller.vgsnapshot.enabled -}}
+    {{- true -}}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

@@ -196,6 +196,16 @@ controller:
   # Default value: None
   controllerCount: 2
 
+  # vgsnapshot: allows to configure volume group snapshots
+  # volumegroupsnapshot CRDs must be installed before enabling this feature
+  vgsnapshot:
+    # enabled: Enable/Disable native volume group snapshot capabilities
+    # Allowed values:
+    #   true: Enable volumegroup snapshot feature-gate on snapshotter sidecar and related RBAC
+    #   false: Disable volumegroup snapshot feature-gate and related RBAC
+    # Default value: false
+    enabled: false
+
   # volumeNamePrefix: Define a prefix that is prepended to volumes.
   # THIS MUST BE ALL LOWER CASE.
   # Default value: csivol
