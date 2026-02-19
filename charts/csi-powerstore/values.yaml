@@ -198,6 +198,11 @@ controller:
     # Default value: 60s
     interval: 60s
 
+    # bindPort: Defines the port for the Health Monitor service
+    # Allowed values: Any valid and free port
+    # Default value: 8080
+    bindPort: 8080
+
   # replication: allows to configure replication
   # Replication CRDs must be installed before installing driver
   replication:
@@ -447,7 +452,11 @@ authorization:
 # This is necessary when using the PowerStore Metro feature.
 # Set `enabled` to `true` to install the Disaster Recovery CRDs.
 disasterRecovery:
-  enabled: true
   # Possible values:
   #   true  - Installs the Disaster Recovery CRDs.
   #   false - Does not install the Disaster Recovery CRDs.
+  enabled: true
+  # bindPort: Defines the port for the Disaster Recovery service
+  # Allowed values: Any valid and free port
+  # Default value: 8082
+  bindPort: 8082

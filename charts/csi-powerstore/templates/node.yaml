@@ -270,9 +270,13 @@ spec:
             {{- if hasKey .Values "disasterRecovery"}}   
             - name: X_CSM_DR_ENABLED
               value: "{{ .Values.disasterRecovery.enabled}}"
+            - name: X_CSM_DR_BIND_PORT
+              value: "{{ .Values.disasterRecovery.bindPort | default "8082" }}"
             {{- else }}
             - name: X_CSM_DR_ENABLED
               value: "true"
+            - name: X_CSM_DR_BIND_PORT
+              value: "8082"
             {{- end }}
             - name: X_CSI_VOLUME_DISCONNECT_MAX_RETRIES
               value: {{ .Values.node.volumeDisconnectMaxRetries | default "5" | quote }}
