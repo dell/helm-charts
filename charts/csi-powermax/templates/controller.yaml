@@ -1,4 +1,5 @@
 {{- $authorizationConfigSecret := lookup "v1" "Secret" .Release.Namespace "karavi-authorization-config" }}
+{{- $vgsnapshotEnabled := include "csi-powermax.isVgsnapshotEnabled" . | eq "true" }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -75,6 +76,17 @@ rules:
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshots", "volumesnapshots/status"]
     verbs: ["get", "list", "watch", "update"]
+  {{- if $vgsnapshotEnabled }}
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotcontents"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotcontents/status"]
+    verbs: ["update", "patch"]
+  {{- end }}
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]
     verbs: ["create", "list", "watch", "delete"]
@@ -293,6 +305,7 @@ spec:
             - "--snapshot-name-uuid-length=10"
             - "--timeout=180s"
             - "--leader-election"
+            - "--feature-gates=CSIVolumeGroupSnapshot={{ $vgsnapshotEnabled }}"
           env:
             - name: ADDRESS
               value: /var/run/csi/csi.sock
