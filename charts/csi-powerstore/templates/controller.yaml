@@ -378,7 +378,7 @@ spec:
             - "--v=5"
             - "--csi-address=$(ADDRESS)"
             - "--leader-election"
-            - "--http-endpoint=:8080"
+            - "--http-endpoint=:{{ .Values.controller.healthMonitor.bindPort | default "8080" }}"
             - "--enable-node-watcher=true"
             - "--monitor-interval={{ .Values.controller.healthMonitor.interval | default "60s" }}"
             - "--timeout=180s"
@@ -434,9 +434,13 @@ spec:
             {{- if hasKey .Values "disasterRecovery" }}   
             - name: X_CSM_DR_ENABLED
               value: "{{ .Values.disasterRecovery.enabled}}"
+            - name: X_CSM_DR_BIND_PORT
+              value: "{{ .Values.disasterRecovery.bindPort | default "8082" }}"
             {{- else }}
             - name: X_CSM_DR_ENABLED
               value: "true"
+            - name: X_CSM_DR_BIND_PORT
+              value: "8082"
             {{- end }}
             - name: X_CSI_POWERSTORE_CONFIG_PATH
               value: /powerstore-config/config
