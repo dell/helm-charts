@@ -215,6 +215,16 @@ controller:
     # Examples: "snap", "snapshot"
     snapNamePrefix: csi-snap
 
+    # volumeGroupSnapshot: allows to configure volume group snapshot support
+    # volumeGroupSnapshot CRDs (v1beta2) must be installed before enabling this feature
+    volumeGroupSnapshot:
+      # enabled: Enable/Disable native volume group snapshot capabilities
+      # Allowed values:
+      #   true: enable volume group snapshot feature
+      #   false: disable volume group snapshot feature
+      # Default value: false
+      enabled: false
+
   resizer:
     # enabled: Enable/Disable volume expansion feature
     # Allowed values:

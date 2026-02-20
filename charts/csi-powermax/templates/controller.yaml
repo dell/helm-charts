@@ -103,6 +103,18 @@ rules:
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
   {{- end}}
   # Permissions for Storage Capacity
+  {{- $vgsnapshotEnabled := include "csi-powermax.isVgsnapshotEnabled" . | eq "true" }}
+  {{- if $vgsnapshotEnabled }}
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotcontents"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+  - apiGroups: ["groupsnapshot.storage.k8s.io"]
+    resources: ["volumegroupsnapshotcontents/status"]
+    verbs: ["update", "patch"]
+  {{- end }}
   {{- if eq (include "csi-powermax.isStorageCapacitySupported" .) "true" }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["csistoragecapacities"]
@@ -283,6 +295,7 @@ spec:
               mountPath: /var/run/csi
         {{- if hasKey .Values.controller "snapshot" }}
         {{- if eq .Values.controller.snapshot.enabled true }}
+        {{- $vgsnapshotEnabled := include "csi-powermax.isVgsnapshotEnabled" . | eq "true" }}
         - name: snapshotter
           image: {{ required "Must provide the CSI snapshotter container image." .Values.images.snapshotter.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -293,6 +306,7 @@ spec:
             - "--snapshot-name-uuid-length=10"
             - "--timeout=180s"
             - "--leader-election"
+            - "--feature-gates=CSIVolumeGroupSnapshot={{ $vgsnapshotEnabled }}"
           env:
             - name: ADDRESS
               value: /var/run/csi/csi.sock
