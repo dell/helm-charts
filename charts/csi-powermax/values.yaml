@@ -97,9 +97,9 @@ version: "v2.16.1"
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-powermax:2.16.1
+    image: quay.io/dell/container-storage-modules/csi-powermax:v2.16.1
   csireverseproxy:
-    image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:2.15.1
+    image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.15.1
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.10.0
