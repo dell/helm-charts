@@ -1261,6 +1261,33 @@ entries:
     version: 2.7.0
   csi-powermax:
   - apiVersion: v2
+    appVersion: 2.16.1
+    created: "2026-02-20T09:33:40.986031353Z"
+    dependencies:
+    - condition: required
+      name: csireverseproxy
+      repository: ""
+      version: 2.15.1
+    description: 'PowerMax CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a PowerMax
+      StorageClass. '
+    digest: 6ac8e0a1f9b1c3e51d216ec545b3e41761e6f1a915df9fe0c23d80fb5fc33471
+    home: https://github.com/dell/csi-powermax
+    icon: https://avatars1.githubusercontent.com/u/20958494?s=200&v=4
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.24.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-powermax
+    sources:
+    - https://github.com/dell/csi-powermax
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-powermax-2.16.1/csi-powermax-2.16.1.tgz
+    version: 2.16.1
+  - apiVersion: v2
     appVersion: 2.16.0
     created: "2026-01-27T18:01:01.15228233Z"
     dependencies:
@@ -3855,4 +3882,4 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/karavi-topology-0.1.0/karavi-topology-0.1.0.tgz
     version: 0.1.0
-generated: "2026-01-27T18:02:00.84718967Z"
+generated: "2026-02-20T09:33:40.986377855Z"
