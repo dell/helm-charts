@@ -254,10 +254,6 @@ spec:
             - name: X_CSI_HEALTH_MONITOR_ENABLED
               value: "{{ .Values.node.healthMonitor.enabled }}"
             {{- end }}
-            {{- if hasKey .Values.node "fsckEnabled" }}
-            - name: X_CSI_FSCK_ENABLED
-              value: "{{ .Values.node.fsckEnabled.enabled }}"
-            {{- end }}
             {{- if hasKey .Values.node "approveSDC" }}
             - name: X_CSI_APPROVE_SDC_ENABLED
               value: "{{ .Values.node.approveSDC.enabled }}"
@@ -281,6 +277,10 @@ spec:
               value: {{ .Values.probeTimeout | default "10s"}}
             - name: X_CSI_AUTH_TYPE
               value: {{.Values.authType | default ""}}
+            - name: X_CSI_FS_CHECK_ENABLED
+              value: {{.Values.fscheckEnabled | default "false"}}
+            - name: X_CSI_FS_CHECK_MODE
+              value: {{.Values.fscheckMode | default "checkOnly"}}
             {{- if hasKey .Values "podmon" }}
             - name: X_CSI_PODMON_ENABLED
               value: "{{ .Values.podmon.enabled }}"
