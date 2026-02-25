@@ -43,6 +43,9 @@ rules:
     resourceNames: ["privileged"]
     resources: ["securitycontextconstraints"]
     verbs: ["use"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "update", "patch"]
 {{- if hasKey .Values "podmon" }}
 {{- if eq .Values.podmon.enabled true }}
   - apiGroups: [""]
