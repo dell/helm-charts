@@ -277,10 +277,14 @@ spec:
               value: {{ .Values.probeTimeout | default "10s"}}
             - name: X_CSI_AUTH_TYPE
               value: {{.Values.authType | default ""}}
+            - name: CSI_RETRIEVER_ENDPOINT
+              value: /var/run/csi/csi_retriever.sock
+            {{- if hasKey .Values.node "fsCheck" }}
             - name: X_CSI_FS_CHECK_ENABLED
-              value: {{.Values.fscheckEnabled | default "false"}}
+              value: "{{ .Values.node.fsCheck.enabled }}"
             - name: X_CSI_FS_CHECK_MODE
-              value: {{.Values.fscheckMode | default "checkOnly"}}
+              value: "{{ .Values.node.fsCheck.mode | default "checkOnly" }}"
+            {{- end }}
             {{- if hasKey .Values "podmon" }}
             - name: X_CSI_PODMON_ENABLED
               value: "{{ .Values.podmon.enabled }}"
@@ -355,6 +359,15 @@ spec:
               mountPath: /certs
               readOnly: true
 {{- end}}
+        - name: csi-metadata-retriever
+          image: {{ required "Must provide the CSI metadata retriever container image." .Values.images.metadataretriever.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: CSI_RETRIEVER_ENDPOINT
+              value: /var/run/csi/csi_retriever.sock
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/run/csi
         - name: registrar
           image: {{ required "Must provide the CSI registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -599,3 +612,5 @@ spec:
             type: Directory
 {{- end }}
 {{- end }}
+        - name: socket-dir
+          emptyDir: {}
