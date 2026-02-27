@@ -67,13 +67,6 @@ spec:
   parentRefs:
   - name: proxy-server
     namespace: {{ include "custom.namespace" . }}
-  hostnames:
-  - {{ .Values.authorization.hostname | quote }}
-  {{- if .Values.authorization.gateway.hosts }}
-  {{- range .Values.authorization.gateway.hosts }}
-  - {{ tpl . $ | quote }}
-  {{- end }}
-  {{- end }}
   rules:
   - matches:
     - path:

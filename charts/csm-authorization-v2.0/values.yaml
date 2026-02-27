@@ -1,7 +1,6 @@
 ---
 # set to true if installing on an OpenShift Container Platform
-# if enabled, the OpenShift Ingress Operator will be used
-# if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
+# if enabled, an OpenShift Route will be created instead of a Gateway
 openshift: false
 
 # if enabled, NGINX Gateway Fabric controller will be deployed
@@ -31,9 +30,8 @@ authorization:
     opaKubeMgmt:
       image: openpolicyagent/kube-mgmt:9.3.0
 
-  # proxy-server ingress will use this hostname
+  # hostname used for TLS certificate SANs and OpenShift Route
   # NOTE: additional hostnames can be configured in authorization.gateway.hosts
-  # NOTE: proxy-server ingress is configured to accept IP address connections so hostnames are not required
   hostname: csm-authorization.com
 
   # log level for csm-authorization
@@ -57,7 +55,7 @@ authorization:
   gateway:
     gatewayClassName: nginx
 
-    # additional hostnames for routing
+    # additional hostnames for TLS certificate SANs
     hosts:
       []
       # - extra-hostname.example.com
