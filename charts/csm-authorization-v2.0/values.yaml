@@ -4,10 +4,8 @@
 # if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
 openshift: false
 
-# set to true if installing on a Kubernetes Container Platform
-# if enabled, NGINX Ingress Controller will be deployed
-# if you have your own ingress controller, keep this false and set the appropriate annotations for the ingresses in the authorization section
-nginx:
+# if enabled, NGINX Gateway Fabric controller will be deployed
+nginx-gateway-fabric:
   enabled: true
 
 # if enabled, cert-manager will be deployed
@@ -34,7 +32,7 @@ authorization:
       image: openpolicyagent/kube-mgmt:9.3.0
 
   # proxy-server ingress will use this hostname
-  # NOTE: additional hostnames can be configured in authorization.proxyServerIngress.hosts
+  # NOTE: additional hostnames can be configured in authorization.gateway.hosts
   # NOTE: proxy-server ingress is configured to accept IP address connections so hostnames are not required
   hostname: csm-authorization.com
 
@@ -55,16 +53,19 @@ authorization:
   # openTelemetryCollectorAddress: the OTLP receiving endpoint using gRPC
   openTelemetryCollectorAddress: ""
 
-  # proxy-server ingress configuration
-  proxyServerIngress:
-    ingressClassName: nginx
+  # gateway configuration for proxy-server
+  gateway:
+    gatewayClassName: nginx
 
-    # additional host rules for the proxy-server ingress
+    # additional hostnames for routing
     hosts:
       []
-      # - [application name]-ingress-nginx-controller.[namespace].svc.cluster.local
+      # - extra-hostname.example.com
 
-    # additional annotations for the proxy-server ingress
+    # listener port (default 443)
+    port: 443
+
+    # additional annotations for the Gateway resource
     annotations: {}
 
   # storage capacity poll interval
