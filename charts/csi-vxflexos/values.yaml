@@ -37,8 +37,6 @@ images:
     image: quay.io/dell/container-storage-modules/podmon:v1.15.0
   authorization:
     image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
-  metadataretriever:
-    image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.13.0
 
 # Represents number of certificate secrets, which user is going to create for ssl authentication. (vxflexos-cert-0..vxflexos-cert-n)
 # If user does not use certificate, set to 0
@@ -139,6 +137,20 @@ probeTimeout: "10s"
 # Default value: "" <empty>
 authType: ""
 
+# fsCheck: configure automatic file system check before mount
+fsCheck:
+  # enabled: Enable/Disable automatic file system check before mount
+  # Allowed values:
+  #   true: enable file system check
+  #   false: disable file system check
+  # Default value: false
+  enabled: false
+
+  # mode: Controls the file system check mode
+  # Allowed values: "checkOnly", "checkAndRepair"
+  # Default value: "checkOnly"
+  mode: "checkOnly"
+
 # podmonAPIPort: Defines the port to be used within the kubernetes cluster
 # Allowed values:
 #   Any valid and free port.
@@ -238,20 +250,6 @@ node:
     #   false: disable checking of health condition of CSI volumes
     # Default value: None
     enabled: false
-
-  # fsCheck: configure automatic file system check before mount
-  fsCheck:
-    # enabled: Enable/Disable automatic file system check before mount
-    # Allowed values:
-    #   true: enable file system check
-    #   false: disable file system check
-    # Default value: false
-    enabled: false
-
-    # mode: Controls the file system check mode
-    # Allowed values: "checkOnly", "checkAndRepair"
-    # Default value: "checkOnly"
-    mode: "checkOnly"
 
   # "node.nodeSelector" defines what nodes would be selected for pods of node daemonset
   # Leave as blank to use all nodes
