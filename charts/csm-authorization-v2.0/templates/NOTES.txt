@@ -5,13 +5,9 @@ Execute the following commands in your shell to print the URL of the CSM Authori
 export GATEWAY_IP=$(kubectl get gateway proxy-server --namespace {{ include "custom.namespace" . }} -o jsonpath="{.status.addresses[0].value}")
 echo https://$GATEWAY_IP
 
-Host rules for proxy-server HTTPRoute:
-- {{ .Values.authorization.hostname }}
-{{- if .Values.authorization.gateway.hosts }}
-{{- range .Values.authorization.gateway.hosts }}
-- {{ tpl . $ }}
-{{- end }}
-{{- end }}
+The NGINX Gateway Fabric data-plane service is:
+  proxy-server-nginx.{{ include "custom.namespace" . }}.svc.cluster.local
 
-authorization.proxyHost value for a CSI Driver examples:
-- proxy-server.{{ include "custom.namespace" . }}.svc.cluster.local:8080 (CSI Driver in the same cluster as CSM Authorization)
+authorization.proxyHost value for a CSI Driver:
+- proxy-server-nginx.{{ include "custom.namespace" . }}.svc.cluster.local:443 (through the Gateway, with TLS)
+- proxy-server.{{ include "custom.namespace" . }}.svc.cluster.local:8080 (direct, without TLS)
