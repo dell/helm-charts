@@ -201,6 +201,13 @@ spec:
   {{- fail "value for .Values.controller.controllerCount should be atleast 1" }}
   {{- else }}
   replicas: {{ required "Must provide the number of controller instances to create." .Values.controller.controllerCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      {{- /* calculate maxSurge and maxUnavailable to allow at least one controller to be available during upgrade */ -}}
+      {{- $updateAllowance := max 1 (int (ceil (mulf .Values.controller.controllerCount 0.25))) }}
+      maxSurge: {{ min 10 $updateAllowance }}
+      maxUnavailable: {{ min 5 $updateAllowance }}
   {{- end }}
   template:
     metadata:
@@ -431,7 +438,7 @@ spec:
               value: "{{ .Values.exclusiveAccess }}"
             - name: X_CSI_NFS_ACLS
               value: "{{ .Values.nfsAcls }}"
-            {{- if hasKey .Values "disasterRecovery" }}   
+            {{- if hasKey .Values "disasterRecovery" }}
             - name: X_CSM_DR_ENABLED
               value: "{{ .Values.disasterRecovery.enabled}}"
             - name: X_CSM_DR_BIND_PORT
