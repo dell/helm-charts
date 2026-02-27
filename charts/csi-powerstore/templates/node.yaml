@@ -267,7 +267,7 @@ spec:
               value: {{ .Values.node.nodeNamePrefix }}
             - name: X_CSI_POWERSTORE_NODE_ID_PATH
               value: /node-id
-            {{- if hasKey .Values "disasterRecovery"}}   
+            {{- if hasKey .Values "disasterRecovery"}}
             - name: X_CSM_DR_ENABLED
               value: "{{ .Values.disasterRecovery.enabled}}"
             - name: X_CSM_DR_BIND_PORT
@@ -320,7 +320,7 @@ spec:
             {{- if hasKey .Values.node "healthMonitor" }}
             {{- if eq .Values.node.healthMonitor.enabled true}}
             - name: X_CSI_HEALTH_MONITOR_ENABLED
-              value: "{{ .Values.controller.healthMonitor.enabled }}"
+              value: "{{ .Values.node.healthMonitor.enabled }}"
             {{- end }}
             {{- end }}
             {{- if hasKey .Values "podmon" }}
