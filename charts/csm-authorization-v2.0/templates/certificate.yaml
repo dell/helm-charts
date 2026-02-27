@@ -52,8 +52,8 @@ spec:
   - karavi-auth
   - karavi-auth.{{ include "custom.namespace" . }}.svc.kubernetes.local
   - {{ .Values.authorization.hostname }}
-  {{- if .Values.authorization.proxyServerIngress.hosts  }}
-  {{- range .Values.authorization.proxyServerIngress.hosts }}
+  {{- if .Values.authorization.gateway.hosts }}
+  {{- range .Values.authorization.gateway.hosts }}
   - {{ tpl . $}}
   {{- end }}
   {{- end}}

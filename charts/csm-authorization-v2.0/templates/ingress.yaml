@@ -1,65 +1,85 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+{{- if eq .Values.openshift true }}
+apiVersion: route.openshift.io/v1
+kind: Route
 metadata:
   name: proxy-server
   namespace: {{ include "custom.namespace" . }}
+  {{- if .Values.authorization.gateway.annotations }}
   annotations:
-    {{- if eq .Values.openshift true }}
-    route.openshift.io/termination: "edge"
-    {{- end }}
-    {{- if .Values.authorization.proxyServerIngress.annotations }}
-    {{- range $key, $value := .Values.authorization.proxyServerIngress.annotations }}
+    {{- range $key, $value := .Values.authorization.gateway.annotations }}
     {{ $key }}: {{ tpl $value $ | quote }}
     {{- end }}
   {{- end }}
 spec:
-  {{- if eq .Values.nginx.enabled true }}
-  ingressClassName: {{ .Values.authorization.proxyServerIngress.ingressClassName }}
-  {{- end }}
+  host: {{ .Values.authorization.hostname }}
+  port:
+    targetPort: 8080
   tls:
-  - hosts:
-      - {{ .Values.authorization.hostname }}
-      {{- if .Values.authorization.proxyServerIngress.hosts  }}
-      {{- range .Values.authorization.proxyServerIngress.hosts }}
-      - {{ tpl . $}}
-      {{- end }}
-      {{- end}}
+    termination: edge
     {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
-    secretName: user-provided-tls
-    {{- else }}
-    secretName: karavi-selfsigned-tls
+    certificate: |
+      {{ .Values.authorization.certificate | nindent 6 }}
+    key: |
+      {{ .Values.authorization.privateKey | nindent 6 }}
     {{- end }}
+  to:
+    kind: Service
+    name: proxy-server
+    weight: 100
+  wildcardPolicy: None
+{{- else }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: proxy-server
+  namespace: {{ include "custom.namespace" . }}
+  {{- if .Values.authorization.gateway.annotations }}
+  annotations:
+    {{- range $key, $value := .Values.authorization.gateway.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  gatewayClassName: {{ .Values.authorization.gateway.gatewayClassName }}
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: {{ .Values.authorization.gateway.port | default 443 }}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+        name: user-provided-tls
+        {{- else }}
+        name: karavi-selfsigned-tls
+        {{- end }}
+    allowedRoutes:
+      namespaces:
+        from: Same
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: proxy-server
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  parentRefs:
+  - name: proxy-server
+    namespace: {{ include "custom.namespace" . }}
+  hostnames:
+  - {{ .Values.authorization.hostname | quote }}
+  {{- if .Values.authorization.gateway.hosts }}
+  {{- range .Values.authorization.gateway.hosts }}
+  - {{ tpl . $ | quote }}
+  {{- end }}
+  {{- end }}
   rules:
-  - host: {{ .Values.authorization.hostname }}
-    http:
-      paths:
-        - backend:
-            service:
-              name: proxy-server
-              port:
-                number: 8080
-          path: /
-          pathType: Prefix
-  {{- if .Values.authorization.proxyServerIngress.hosts  }}
-  {{- range .Values.authorization.proxyServerIngress.hosts }}
-  - host: {{ tpl . $}}
-    http:
-      paths:
-        - backend:
-            service:
-              name: proxy-server
-              port:
-                number: 8080
-          path: /
-          pathType: Prefix
-  {{- end }}
-  {{- end }}
-  - http:
-      paths:
-      - backend:
-          service:
-            name: proxy-server
-            port:
-              number: 8080
-        path: /
-        pathType: Prefix
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: proxy-server
+      port: 8080
+{{- end }}
