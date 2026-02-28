@@ -277,6 +277,12 @@ spec:
               value: {{ .Values.probeTimeout | default "10s"}}
             - name: X_CSI_AUTH_TYPE
               value: {{.Values.authType | default ""}}
+            {{- if hasKey .Values "fsCheck" }}
+            - name: X_CSI_FS_CHECK_ENABLED
+              value: "{{ .Values.fsCheck.enabled }}"
+            - name: X_CSI_FS_CHECK_MODE
+              value: "{{ .Values.fsCheck.mode | default "checkOnly" }}"
+            {{- end }}
             {{- if hasKey .Values "podmon" }}
             - name: X_CSI_PODMON_ENABLED
               value: "{{ .Values.podmon.enabled }}"

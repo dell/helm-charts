@@ -3,7 +3,7 @@
 
 # "version" is used to verify the values file matches driver version
 # Not recommend to change
-version: v2.16.0
+version: v2.17.0
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
@@ -136,6 +136,20 @@ probeTimeout: "10s"
 #  "" - by default use Basic authentication
 # Default value: "" <empty>
 authType: ""
+
+# fsCheck: configure automatic file system check before mount
+fsCheck:
+  # enabled: Enable/Disable automatic file system check before mount
+  # Allowed values:
+  #   true: enable file system check
+  #   false: disable file system check
+  # Default value: false
+  enabled: false
+
+  # mode: Controls the file system check mode
+  # Allowed values: "checkOnly", "checkAndRepair"
+  # Default value: "checkOnly"
+  mode: "checkOnly"
 
 # podmonAPIPort: Defines the port to be used within the kubernetes cluster
 # Allowed values:
