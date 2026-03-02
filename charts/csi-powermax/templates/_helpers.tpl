@@ -8,7 +8,7 @@
 {{- end -}}
 
 {{- define "csi-powermax.isVgsnapshotEnabled" -}}
-{{- if and (hasKey .Values.controller "snapshot") -}}
+{{- if hasKey .Values.controller "snapshot" -}}
   {{- if and (hasKey .Values.controller.snapshot "volumeGroupSnapshot") (eq .Values.controller.snapshot.volumeGroupSnapshot.enabled true) -}}
       {{- true -}}
   {{- end -}}
