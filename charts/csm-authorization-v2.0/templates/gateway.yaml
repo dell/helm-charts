@@ -76,3 +76,201 @@ spec:
     - name: proxy-server
       port: 8080
 {{- end }}
+---
+# NGINX Gateway Fabric Deployment with proper Helm ownership
+# This ensures the deployment is properly tracked by Helm for cleanup
+{{- if not .Values.openshift }}
+{{- if .Values.authorization.gateway.gatewayClassName }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authorization-gateway-nginx
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    # Standard Helm labels for proper garbage collection
+    app.kubernetes.io/name: authorization-gateway-nginx
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    # Gateway API specific labels
+    gateway.networking.k8s.io/gateway-name: authorization-gateway
+  annotations:
+    # Helm release annotations for tracking
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: authorization-gateway-nginx
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: authorization-gateway-nginx
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: Helm
+        gateway.networking.k8s.io/gateway-name: authorization-gateway
+      annotations:
+        meta.helm.sh/release-name: {{ .Release.Name }}
+        meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    spec:
+      serviceAccountName: authorization-gateway-nginx
+      containers:
+      - name: nginx
+        image: ghcr.io/nginx/nginx-gateway-fabric/nginx:2.4.2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 443
+          name: port-443
+          protocol: TCP
+        - containerPort: 9113
+          name: metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /readyz
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1001
+          runAsUser: 101
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /etc/nginx-agent
+          name: nginx-agent
+        - mountPath: /var/run/secrets/ngf
+          name: nginx-agent-tls
+        - mountPath: /var/run/secrets/ngf/serviceaccount
+          name: token
+        - mountPath: /var/log/nginx-agent
+          name: nginx-agent-log
+        - mountPath: /var/lib/nginx-agent
+          name: nginx-agent-lib
+        - mountPath: /etc/nginx/conf.d
+          name: nginx-conf
+        - mountPath: /etc/nginx/stream-conf.d
+          name: nginx-stream-conf
+        - mountPath: /etc/nginx/main-includes
+          name: nginx-main-includes
+        - mountPath: /etc/nginx/events-includes
+          name: nginx-events-includes
+        - mountPath: /etc/nginx/secrets
+          name: nginx-secrets
+        - mountPath: /var/run/nginx
+          name: nginx-run
+        - mountPath: /var/cache/nginx
+          name: nginx-cache
+        - mountPath: /etc/nginx/includes
+          name: nginx-includes
+      initContainers:
+      - command:
+        - /usr/bin/gateway
+        - initialize
+        - --source
+        - /agent/nginx-agent.conf
+        - --destination
+        - /etc/nginx-agent
+        - --source
+        - /includes/main.conf
+        - --destination
+        - /etc/nginx/main-includes
+        - --source
+        - /includes/events.conf
+        - --destination
+        - /etc/nginx/events-includes
+        env:
+        - name: POD_UID
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.uid
+        - name: CLUSTER_UID
+          value: db136a8e-ccfc-42e3-9990-3d6505752d2b
+        image: ghcr.io/nginx/nginx-gateway-fabric:2.4.2
+        imagePullPolicy: IfNotPresent
+        name: init
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1001
+          runAsUser: 101
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /agent
+          name: nginx-agent-config
+        - mountPath: /etc/nginx-agent
+          name: nginx-agent
+        - mountPath: /includes
+          name: nginx-includes-bootstrap
+        - mountPath: /etc/nginx/main-includes
+          name: nginx-main-includes
+        - mountPath: /etc/nginx/events-includes
+          name: nginx-events-includes
+      securityContext:
+        fsGroup: 1001
+        runAsNonRoot: true
+        sysctls:
+        - name: net.ipv4.ip_unprivileged_port_start
+          value: "0"
+      volumes:
+      - name: token
+        projected:
+          defaultMode: 420
+          sources:
+          - serviceAccountToken:
+              audience: authorization-nginx-gateway-fabric.authorization.svc
+              expirationSeconds: 3600
+              path: token
+      - emptyDir: {}
+        name: nginx-agent
+      - configMap:
+          defaultMode: 420
+          name: authorization-gateway-nginx-agent-config
+        name: nginx-agent-config
+      - name: nginx-agent-tls
+        secret:
+          defaultMode: 420
+          secretName: authorization-gateway-nginx-agent-tls
+      - emptyDir: {}
+        name: nginx-agent-log
+      - emptyDir: {}
+        name: nginx-agent-lib
+      - emptyDir: {}
+        name: nginx-conf
+      - emptyDir: {}
+        name: nginx-stream-conf
+      - emptyDir: {}
+        name: nginx-main-includes
+      - emptyDir: {}
+        name: nginx-events-includes
+      - emptyDir: {}
+        name: nginx-secrets
+      - emptyDir: {}
+        name: nginx-run
+      - emptyDir: {}
+        name: nginx-cache
+      - emptyDir: {}
+        name: nginx-includes
+      - configMap:
+          defaultMode: 420
+          name: authorization-gateway-nginx-includes-bootstrap
+        name: nginx-includes-bootstrap
+{{- end }}
+{{- end }}
