@@ -23,7 +23,7 @@
 driverName: "csi-powerstore.dellemc.com"
 # "version" is used to verify the values file matches driver version
 # Not recommend to change
-version: v2.16.0
+version: v2.17.0
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
