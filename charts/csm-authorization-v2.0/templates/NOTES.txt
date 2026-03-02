@@ -2,12 +2,12 @@ The CSM Authorization deployment has been successfully installed.
 
 Execute the following commands in your shell to print the URL of the CSM Authorization Gateway:
 
-export GATEWAY_IP=$(kubectl get gateway proxy-server --namespace {{ include "custom.namespace" . }} -o jsonpath="{.status.addresses[0].value}")
+export GATEWAY_IP=$(kubectl get gateway authorization-gateway --namespace {{ include "custom.namespace" . }} -o jsonpath="{.status.addresses[0].value}")
 echo https://$GATEWAY_IP
 
 The NGINX Gateway Fabric data-plane service is:
-  proxy-server-nginx.{{ include "custom.namespace" . }}.svc.cluster.local
+  authorization-gateway-nginx.{{ include "custom.namespace" . }}.svc.cluster.local
 
 authorization.proxyHost value for a CSI Driver:
-- proxy-server-nginx.{{ include "custom.namespace" . }}.svc.cluster.local:443 (through the Gateway, with TLS)
+- authorization-gateway-nginx.{{ include "custom.namespace" . }}.svc.cluster.local:443 (through the Gateway, with TLS)
 - proxy-server.{{ include "custom.namespace" . }}.svc.cluster.local:8080 (direct, without TLS)
