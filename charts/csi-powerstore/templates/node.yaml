@@ -384,15 +384,6 @@ spec:
               mountPath: /certs
               readOnly: true
             {{- end }}
-        - name: csi-metadata-retriever
-          image: {{ required "Must provide the CSI metadata retriever container image." .Values.images.metadataretriever.image }}
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
-          env:
-            - name: CSI_RETRIEVER_ENDPOINT
-              value: /var/run/csi/csi_retriever.sock
-          volumeMounts:
-            - name: socket-dir
-              mountPath: /var/run/csi
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -497,8 +488,6 @@ spec:
             type: Directory
         {{ end }}
         {{ end }}
-        - name: socket-dir
-          emptyDir: {}
 {{- if ge (int .Values.certSecretCount) 1 }}
         - name: certs
           projected:
