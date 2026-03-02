@@ -281,7 +281,7 @@ spec:
             - name: X_CSI_FS_CHECK_ENABLED
               value: "{{ .Values.fsCheck.enabled }}"
             - name: X_CSI_FS_CHECK_MODE
-              value: "{{ .Values.fsCheck.mode | default "checkOnly" }}"
+              value: "{{ .Values.fsCheck.mode }}"
             {{- end }}
             {{- if hasKey .Values "podmon" }}
             - name: X_CSI_PODMON_ENABLED
