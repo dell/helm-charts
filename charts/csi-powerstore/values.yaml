@@ -128,6 +128,20 @@ podmonAPIPort: 8083
 # Default value: 120s
 apiTimeout: "120s"
 
+# fsCheck: configure automatic file system check before mount
+fsCheck:
+  # enabled: Enable/Disable automatic file system check before mount
+  # Allowed values:
+  #   true: enable file system check
+  #   false: disable file system check
+  # Default value: false
+  enabled: false
+
+  # mode: Controls the file system check mode
+  # Allowed values: "checkOnly", "checkAndRepair"
+  # Default value: "checkOnly"
+  mode: "checkOnly"
+
 # controller: configure controller specific parameters
 controller:
   # controllerCount: defines the number of csi-powerstore controller pods to deploy to
@@ -286,20 +300,6 @@ node:
     #   false: disable checking of health condition of CSI volumes
     # Default value: None
     enabled: false
-
-  # fsCheck: configure automatic file system check before mount
-  fsCheck:
-    # enabled: Enable/Disable automatic file system check before mount
-    # Allowed values:
-    #   true: enable file system check
-    #   false: disable file system check
-    # Default value: false
-    enabled: false
-
-    # mode: Controls the file system check mode
-    # Allowed values: "checkOnly", "checkAndRepair"
-    # Default value: "checkOnly"
-    mode: "checkOnly"
 
   # nodeSelector: Define node selection constraints for node pods.
   # For the pod to be eligible to run on a node, the node must have each
