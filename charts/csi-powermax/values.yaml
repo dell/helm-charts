@@ -222,7 +222,7 @@ controller:
       # Allowed values:
       #   true: enable volume group snapshot feature
       #   false: disable volume group snapshot feature
-      # Default value: false
+      # Default value: true
       enabled: true
 
   resizer:
