@@ -2,7 +2,7 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: proxy-server
+  name: authorization-gateway
   namespace: {{ include "custom.namespace" . }}
   {{- if .Values.authorization.gateway.annotations }}
   annotations:
@@ -31,7 +31,7 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: proxy-server
+  name: authorization-gateway
   namespace: {{ include "custom.namespace" . }}
   {{- if .Values.authorization.gateway.annotations }}
   annotations:
@@ -61,19 +61,12 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: proxy-server
+  name: authorization-gateway
   namespace: {{ include "custom.namespace" . }}
 spec:
   parentRefs:
-  - name: proxy-server
+  - name: authorization-gateway
     namespace: {{ include "custom.namespace" . }}
-  hostnames:
-  - {{ .Values.authorization.hostname | quote }}
-  {{- if .Values.authorization.gateway.hosts }}
-  {{- range .Values.authorization.gateway.hosts }}
-  - {{ tpl . $ | quote }}
-  {{- end }}
-  {{- end }}
   rules:
   - matches:
     - path:
