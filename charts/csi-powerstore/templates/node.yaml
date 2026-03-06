@@ -342,8 +342,6 @@ spec:
               value: "{{ .Values.podmonAPIPort }}"
             - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_TIMEOUT
               value: {{ .Values.podmon.arrayConnectivityTimeout | default "10s" | quote }}
-            - name: CSI_RETRIEVER_ENDPOINT
-              value: /var/run/csi/csi_retriever.sock
             {{- if hasKey .Values.node "fsCheck" }}
             - name: X_CSI_FS_CHECK_ENABLED
               value: "{{ .Values.node.fsCheck.enabled }}"
