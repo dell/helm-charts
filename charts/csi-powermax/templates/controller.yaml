@@ -103,7 +103,7 @@ rules:
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
   {{- end}}
   # Permissions for Storage Capacity
-  {{- $vgsnapshotEnabled := include "csi-powermax.isVgsnapshotEnabled" . | eq "true" }}
+  {{- $vgsnapshotEnabled := include "csi-powermax.isVgsnapshotEnabled" . | eq "false" }}
   {{- if $vgsnapshotEnabled }}
   - apiGroups: ["groupsnapshot.storage.k8s.io"]
     resources: ["volumegroupsnapshotclasses"]

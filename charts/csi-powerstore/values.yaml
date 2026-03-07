@@ -149,8 +149,8 @@ controller:
     # Allowed values:
     #   true: Enable volumegroup snapshot feature-gate on snapshotter sidecar
     #   false: Disable volumegroup snapshot feature-gate on snapshotter sidecar
-    # Default value: true
-    enabled: true
+    # Default value: false
+    enabled: false
 
   # snapshot: allows to enable/disable snapshot feature
   # snapshot CRDs needs to be installed before enabling this feature

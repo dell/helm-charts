@@ -222,8 +222,8 @@ controller:
       # Allowed values:
       #   true: enable volume group snapshot feature
       #   false: disable volume group snapshot feature
-      # Default value: true
-      enabled: true
+      # Default value: false
+      enabled: false
 
   resizer:
     # enabled: Enable/Disable volume expansion feature
