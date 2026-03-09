@@ -102,8 +102,8 @@ rules:
     resources: ["configmaps"]
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
   {{- end}}
-  # Permissions for Storage Capacity
-  {{- $vgsnapshotEnabled := include "csi-powermax.isVgsnapshotEnabled" . | eq "false" }}
+  # Permissions for volume group snapshots
+  {{- $vgsnapshotEnabled := include "csi-powermax.isVgsnapshotEnabled" . | eq "true" }}
   {{- if $vgsnapshotEnabled }}
   - apiGroups: ["groupsnapshot.storage.k8s.io"]
     resources: ["volumegroupsnapshotclasses"]
@@ -115,6 +115,7 @@ rules:
     resources: ["volumegroupsnapshotcontents/status"]
     verbs: ["update", "patch"]
   {{- end }}
+  # Permissions for Storage Capacity
   {{- if eq (include "csi-powermax.isStorageCapacitySupported" .) "true" }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["csistoragecapacities"]
