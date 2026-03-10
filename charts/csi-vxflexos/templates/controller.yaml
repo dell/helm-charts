@@ -72,7 +72,7 @@ rules:
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshots", "volumesnapshots/status"]
     verbs: ["get", "list"]
-  # Permissions for volume group snapshot
+  # Permissions for volume group snapshots
   {{- $vgsnapshotEnabled := include "csi-vxflexos.isVgsnapshotEnabled" . | eq "true" }}
   {{- if $vgsnapshotEnabled }}
   - apiGroups: ["groupsnapshot.storage.k8s.io"]
