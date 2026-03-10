@@ -1,0 +1,51 @@
+{{- if and .Values.gatewayMonitoring.enabled .Values.gatewayMonitoring.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Release.Name }}-gateway-alerts
+  namespace: {{ default .Release.Namespace .Values.gatewayMonitoring.prometheusRule.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-gateway-alerts
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: gateway-monitoring
+    {{- with .Values.gatewayMonitoring.prometheusRule.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  groups:
+    - name: powerflex-gateway.rules
+      rules:
+        - alert: PowerFlexGatewayDown
+          expr: powerflex_gateway_up == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "PowerFlex gateway {{ "{{" }} $labels.system_id {{ "}}" }} is unreachable"
+            description: >-
+              Gateway {{ "{{" }} $labels.endpoint {{ "}}" }} for system
+              {{ "{{" }} $labels.system_id {{ "}}" }} has been unreachable for more than 2 minutes.
+
+        - alert: PowerFlexGatewayAuthFailure
+          expr: powerflex_gateway_auth_up == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PowerFlex gateway authentication failing for {{ "{{" }} $labels.system_id {{ "}}" }}"
+            description: >-
+              Authentication probe for gateway {{ "{{" }} $labels.endpoint {{ "}}" }} (system
+              {{ "{{" }} $labels.system_id {{ "}}" }}) has been failing for more than 5 minutes.
+
+        - alert: PowerFlexGatewayHighProbeErrorRate
+          expr: |
+            rate(powerflex_gateway_probe_errors_total[5m]) > 0.1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High probe error rate for PowerFlex gateway {{ "{{" }} $labels.system_id {{ "}}" }}"
+            description: >-
+              Gateway {{ "{{" }} $labels.endpoint {{ "}}" }} is experiencing a high probe error rate
+              (reason: {{ "{{" }} $labels.reason {{ "}}" }}).
+{{- end }}

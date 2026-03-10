@@ -424,3 +424,65 @@ authorization:
 interfaceNames:
   # worker1: interface1
   # worker2: interface2
+
+# gatewayMonitoring: PowerFlex Gateway Health Monitoring via Prometheus
+# When enabled, the driver probes each configured gateway on a regular interval
+# and exposes Prometheus metrics at :<port>/metrics.
+gatewayMonitoring:
+  # enabled: opt-in to gateway health monitoring
+  # Allowed values: true, false
+  # Default value: false
+  enabled: false
+
+  # port: TCP port for the Prometheus metrics HTTP server
+  # Allowed values: any valid port number
+  # Default value: 2112
+  port: 2112
+
+  # interval: how often to probe each gateway
+  # Allowed values: Go duration string (e.g. 30s, 1m)
+  # Default value: 30s
+  interval: 30s
+
+  # timeout: per-probe HTTP timeout
+  # Allowed values: Go duration string (e.g. 5s, 10s)
+  # Default value: 5s
+  timeout: 5s
+
+  # authProbe: enable authentication probe in addition to version probe
+  # Allowed values: true, false
+  # Default value: true
+  authProbe: true
+
+  # serviceMonitor: configure a Prometheus Operator ServiceMonitor resource
+  serviceMonitor:
+    # enabled: create a ServiceMonitor for automatic scrape discovery
+    # Allowed values: true, false
+    # Default value: false
+    enabled: false
+
+    # interval: how often Prometheus scrapes the /metrics endpoint
+    # Allowed values: Go duration string (e.g. 30s, 1m)
+    # Default value: 30s
+    interval: 30s
+
+    # namespace: namespace where Prometheus is installed (for ServiceMonitor label matching)
+    # Default value: "" (same namespace as driver)
+    namespace: ""
+
+    # additionalLabels: extra labels to add to the ServiceMonitor for Prometheus discovery
+    additionalLabels: {}
+
+  # prometheusRule: configure a Prometheus Operator PrometheusRule for alerting
+  prometheusRule:
+    # enabled: create alerting rules for gateway availability
+    # Allowed values: true, false
+    # Default value: false
+    enabled: false
+
+    # namespace: namespace where the PrometheusRule will be created
+    # Default value: "" (same namespace as driver)
+    namespace: ""
+
+    # additionalLabels: extra labels to add to the PrometheusRule
+    additionalLabels: {}

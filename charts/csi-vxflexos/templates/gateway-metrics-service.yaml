@@ -1,0 +1,20 @@
+{{- if .Values.gatewayMonitoring.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-gateway-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-gateway-metrics
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: gateway-monitoring
+spec:
+  selector:
+    app: {{ .Release.Name }}-controller
+  ports:
+    - name: metrics
+      port: {{ .Values.gatewayMonitoring.port }}
+      targetPort: {{ .Values.gatewayMonitoring.port }}
+      protocol: TCP
+  type: ClusterIP
+{{- end }}
