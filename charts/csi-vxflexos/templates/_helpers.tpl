@@ -16,3 +16,18 @@ Return true if storage capacity tracking is enabled and is supported based on k8
   {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return true if volumeGroupSnapshot is enabled and properly configured
+*/}}
+{{- define "csi-vxflexos.isVgsnapshotEnabled" -}}
+{{- if hasKey .Values.controller "volumeGroupSnapshot" -}}
+  {{- if (eq .Values.controller.volumeGroupSnapshot.enabled true) -}}
+      {{- true -}}
+  {{- else -}}
+      {{- false -}}
+  {{- end -}}
+{{- else -}}
+  {{- false -}}
+{{- end -}}
+{{- end -}}
