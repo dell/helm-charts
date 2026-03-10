@@ -1,0 +1,26 @@
+{{- if and .Values.gatewayMonitoring.enabled .Values.gatewayMonitoring.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-gateway-metrics
+  namespace: {{ default .Release.Namespace .Values.gatewayMonitoring.serviceMonitor.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-gateway-metrics
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: gateway-monitoring
+    {{- with .Values.gatewayMonitoring.serviceMonitor.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}-gateway-metrics
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: metrics
+      interval: {{ .Values.gatewayMonitoring.serviceMonitor.interval }}
+      path: /metrics
+      scheme: http
+{{- end }}
