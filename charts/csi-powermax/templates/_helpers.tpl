@@ -7,10 +7,17 @@
 {{- end -}}
 {{- end -}}
 
+{{/*
+Return true if volumeGroupSnapshot is enabled and properly configured
+*/}}
 {{- define "csi-powermax.isVgsnapshotEnabled" -}}
-{{- if hasKey .Values.controller "snapshot" -}}
-  {{- if and (hasKey .Values.controller.snapshot "volumeGroupSnapshot") (eq .Values.controller.snapshot.volumeGroupSnapshot.enabled true) -}}
+{{- if hasKey .Values.controller "volumeGroupSnapshot" -}}
+  {{- if (eq .Values.controller.volumeGroupSnapshot.enabled true) -}}
       {{- true -}}
+  {{- else -}}
+      {{- false -}}
   {{- end -}}
+{{- else -}}
+  {{- false -}}
 {{- end -}}
 {{- end -}}
