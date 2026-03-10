@@ -27,7 +27,7 @@ For any issues, questions or feedback, please contact [Dell support](https://www
 $ helm repo add dell https://dell.github.io/helm-charts
 ```
 
-For documentation, please visit [Container Storage Modules documentation](https://dell.github.io/csm-docs/docs/deployment/helm).
+For documentation, please visit [Container Storage Modules documentation](https://dell.github.io/csm-docs/docs/getting-started).
 
 ## Contributing to an Existing Chart
 
