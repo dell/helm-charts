@@ -23,7 +23,7 @@
 driverName: "csi-powerstore.dellemc.com"
 # "version" is used to verify the values file matches driver version
 # Not recommend to change
-version: v2.16.0
+version: v2.17.0
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
@@ -128,6 +128,20 @@ podmonAPIPort: 8083
 # Default value: 120s
 apiTimeout: "120s"
 
+# fsCheck: configure automatic file system check before mount
+fsCheck:
+  # enabled: Enable/Disable automatic file system check before mount
+  # Allowed values:
+  #   true: enable file system check
+  #   false: disable file system check
+  # Default value: false
+  enabled: false
+
+  # mode: Controls the file system check mode
+  # Allowed values: "checkOnly", "checkAndRepair"
+  # Default value: "checkOnly"
+  mode: "checkOnly"
+
 # controller: configure controller specific parameters
 controller:
   # controllerCount: defines the number of csi-powerstore controller pods to deploy to
@@ -144,13 +158,13 @@ controller:
 
   # vgsnapshot: allows to configure volumegroup snapshots
   # volumegroupsnapshot CRDs must be installed before installing driver
-  vgsnapshot:
+  volumeGroupSnapshot:
     # enabled: Enable/Disable native container orchestrator volume group snapshot capabilities
     # Allowed values:
     #   true: Enable volumegroup snapshot feature-gate on snapshotter sidecar
     #   false: Disable volumegroup snapshot feature-gate on snapshotter sidecar
-    # Default value: true
-    enabled: true
+    # Default value: false
+    enabled: false
 
   # snapshot: allows to enable/disable snapshot feature
   # snapshot CRDs needs to be installed before enabling this feature

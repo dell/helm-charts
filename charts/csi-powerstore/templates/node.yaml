@@ -57,6 +57,9 @@ rules:
   - apiGroups: [""]
     resources: ["services"]
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "update", "patch"]
   {{- if hasKey .Values "podmon" }}
   {{- if eq .Values.podmon.enabled true }}
   - apiGroups: [""]
@@ -339,6 +342,12 @@ spec:
               value: "{{ .Values.podmonAPIPort }}"
             - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_TIMEOUT
               value: {{ .Values.podmon.arrayConnectivityTimeout | default "10s" | quote }}
+            {{- if hasKey .Values "fsCheck" }}
+            - name: X_CSI_FS_CHECK_ENABLED
+              value: "{{ .Values.fsCheck.enabled }}"
+            - name: X_CSI_FS_CHECK_MODE
+              value: "{{ .Values.fsCheck.mode }}"
+            {{- end }}
           ports:
             - containerPort: 2050
           volumeMounts:
