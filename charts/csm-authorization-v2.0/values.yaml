@@ -55,10 +55,10 @@ authorization:
   gateway:
     gatewayClassName: nginx
 
-    # additional hostnames for TLS certificate SANs
+    # additional hostnames for routing
     hosts:
       []
-      # - extra-hostname.example.com
+      # - authorization-gateway-nginx.{{ include "custom.namespace" . }}.svc.cluster.local
 
     # listener port (default 443)
     port: 443

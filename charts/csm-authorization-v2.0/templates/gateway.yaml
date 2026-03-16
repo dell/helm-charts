@@ -2,7 +2,7 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: authorization-gateway
+  name: {{ include "custom.namespace" . }}-gateway
   namespace: {{ include "custom.namespace" . }}
   {{- if .Values.authorization.gateway.annotations }}
   annotations:
@@ -31,7 +31,7 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: authorization-gateway
+  name: {{ include "custom.namespace" . }}-gateway
   namespace: {{ include "custom.namespace" . }}
   {{- if .Values.authorization.gateway.annotations }}
   annotations:
@@ -61,11 +61,11 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: authorization-gateway
+  name: {{ include "custom.namespace" . }}-gateway
   namespace: {{ include "custom.namespace" . }}
 spec:
   parentRefs:
-  - name: authorization-gateway
+  - name: {{ include "custom.namespace" . }}-gateway
     namespace: {{ include "custom.namespace" . }}
   rules:
   - matches:

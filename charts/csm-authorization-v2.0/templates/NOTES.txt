@@ -10,4 +10,3 @@ The NGINX Gateway Fabric data-plane service is:
 
 authorization.proxyHost value for a CSI Driver:
 - authorization-gateway-nginx.{{ include "custom.namespace" . }}.svc.cluster.local:443 (through the Gateway, with TLS)
-- proxy-server.{{ include "custom.namespace" . }}.svc.cluster.local:8080 (direct, without TLS)
