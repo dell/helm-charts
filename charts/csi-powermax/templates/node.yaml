@@ -354,6 +354,12 @@ spec:
               value: /app/tls
             - name: X_CSI_DYNAMIC_SG_ENABLED
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
+            {{- if hasKey .Values "fsCheck" }}
+            - name: X_CSI_FS_CHECK_ENABLED
+              value: "{{ .Values.fsCheck.enabled }}"
+            - name: X_CSI_FS_CHECK_MODE
+              value: "{{ .Values.fsCheck.mode }}"
+            {{- end }}
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/powermax.emc.dell.com
