@@ -20,7 +20,7 @@
 ########################
 csi-powerstore:
   enabled: false
-  version: "v2.16.0"
+  version: "v2.16.1"
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
@@ -29,7 +29,7 @@ csi-powerstore:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.11.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.2.0
     snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
     resizer:
@@ -37,7 +37,7 @@ csi-powerstore:
     registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.16.0
     healthmonitor:
-      image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.16.0
+      image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.17.0
 
     # CSM sidecars
     replication:
@@ -147,18 +147,18 @@ csi-powermax:
       - endpoint: https://backup-1.unisphe.re:8443
   #    - endpoint: https://primary-2.unisphe.re:8443
   #    - endpoint: https://backup-2.unisphe.re:8443
-  version: "v2.16.1"
+  version: "v2.16.2"
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
-      image: quay.io/dell/container-storage-modules/csi-powermax:v2.16.1
+      image: quay.io/dell/container-storage-modules/csi-powermax:v2.16.2
     csireverseproxy:
-      image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.15.1
+      image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.15.2
     # CSI sidecars
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.11.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.2.0
     snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
     resizer:
@@ -166,7 +166,7 @@ csi-powermax:
     registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.16.0
     healthmonitor:
-      image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.16.0
+      image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.17.0
     # CSM sidecars
     replication:
       image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.14.0
@@ -218,7 +218,7 @@ csi-powermax:
 ########################
 csi-isilon:
   enabled: false
-  version: "v2.16.0"
+  version: "v2.16.1"
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
@@ -227,7 +227,7 @@ csi-isilon:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.11.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.2.0
     snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
     resizer:
@@ -235,7 +235,7 @@ csi-isilon:
     registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.16.0
     healthmonitor:
-      image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.16.0
+      image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.17.0
     # CSM sidecars
     replication:
       image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.14.0
@@ -317,11 +317,11 @@ csi-isilon:
 ########################
 csi-vxflexos:
   enabled: false
-  version: v2.16.0
+  version: v2.16.1
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
-      image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.16.0
+      image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.16.1
     # "powerflexSdc" defines the SDC image for init container.
     powerflexSdc:
       image: quay.io/dell/storage/powerflex/sdc:5.0
@@ -329,7 +329,7 @@ csi-vxflexos:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.11.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.2.0
     snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
     resizer:
@@ -337,7 +337,7 @@ csi-vxflexos:
     registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.16.0
     healthmonitor:
-      image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.16.0
+      image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.17.0
     # CSM sidecars
     replication:
       image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.14.0
@@ -437,7 +437,7 @@ csi-vxflexos:
 ########################
 csi-unity:
   enabled: false
-  version: "v2.16.0"
+  version: "v2.16.1"
   images:
     # "driver" defines the container image, used for the driver container.
     driver:
@@ -446,7 +446,7 @@ csi-unity:
     attacher:
       image: registry.k8s.io/sig-storage/csi-attacher:v4.11.0
     provisioner:
-      image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
+      image: registry.k8s.io/sig-storage/csi-provisioner:v6.2.0
     snapshotter:
       image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
     resizer:
@@ -454,7 +454,7 @@ csi-unity:
     registrar:
       image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.16.0
     healthmonitor:
-      image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.16.0
+      image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.17.0
     # CSM sidecars
     podmon:
       image: quay.io/dell/container-storage-modules/podmon:v1.15.0
