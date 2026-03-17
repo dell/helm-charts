@@ -149,6 +149,20 @@ customDriverName:
 # Default value: "ext4"
 defaultFsType: ext4
 
+# fsCheck: configure automatic file system check before mount
+fsCheck:
+  # enabled: Enable/Disable automatic file system check before mount
+  # Allowed values:
+  #   true: enable file system check
+  #   ***REMOVED***: disable file system check
+  # Default value: ***REMOVED***
+  enabled: ***REMOVED***
+
+  # mode: Controls the file system check mode
+  # Allowed values: "checkOnly", "checkAndRepair"
+  # Default value: "checkOnly"
+  mode: "checkOnly"
+
 # imagePullPolicy: Policy to determine if the image should be pulled prior to starting the container.
 # Allowed values:
 #  Always: Always pull the image.
