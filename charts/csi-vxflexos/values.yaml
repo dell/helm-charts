@@ -11,7 +11,7 @@ version: v2.17.0
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.16.0
+    image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.16.1
   # "powerflexSdc" defines the SDC image for init container.
   powerflexSdc:
     image: quay.io/dell/storage/powerflex/sdc:5.0
@@ -19,7 +19,7 @@ images:
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.11.0
   provisioner:
-    image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
+    image: registry.k8s.io/sig-storage/csi-provisioner:v6.2.0
   snapshotter:
     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
   resizer:
@@ -27,7 +27,7 @@ images:
   registrar:
     image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.16.0
   healthmonitor:
-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.16.0
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.17.0
   # CSM sidecars
   replication:
     image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.14.0
