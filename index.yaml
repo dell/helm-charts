@@ -1305,6 +1305,33 @@ entries:
     version: 2.7.0
   csi-powermax:
   - apiVersion: v2
+    appVersion: 2.16.2
+    created: "2026-03-17T21:37:16.945690517Z"
+    dependencies:
+    - condition: required
+      name: csireverseproxy
+      repository: ""
+      version: 2.15.2
+    description: 'PowerMax CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a PowerMax
+      StorageClass. '
+    digest: 762fbafc0cbe9eb2bb97135ca256d6fa10b96d21791d563f37df1c16e3c47f1f
+    home: https://github.com/dell/csi-powermax
+    icon: https://avatars1.githubusercontent.com/u/20958494?s=200&v=4
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.24.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-powermax
+    sources:
+    - https://github.com/dell/csi-powermax
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-powermax-2.16.2/csi-powermax-2.16.2.tgz
+    version: 2.16.2
+  - apiVersion: v2
     appVersion: 2.16.1
     created: "2026-02-20T09:33:40.986031353Z"
     dependencies:
@@ -2338,6 +2365,25 @@ entries:
     - https://github.com/dell/helm-charts/releases/download/csi-unity-2.7.0/csi-unity-2.7.0.tgz
     version: 2.7.0
   csi-vxflexos:
+  - apiVersion: v2
+    appVersion: 2.16.1
+    created: "2026-03-17T21:37:17.093953061Z"
+    description: 'VxFlex OS CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a VxFlex
+      OS StorageClass. '
+    digest: da37a939f90e3ab2760ef100fb0e49fdafa4d24b9df19f53728912745c5545f0
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.24.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-vxflexos
+    sources:
+    - https://github.com/dell/csi-vxflexos
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-vxflexos-2.16.1/csi-vxflexos-2.16.1.tgz
+    version: 2.16.1
   - apiVersion: v2
     appVersion: 2.16.0
     created: "2026-01-27T18:01:02.374657431Z"
@@ -3926,4 +3972,4 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/karavi-topology-0.1.0/karavi-topology-0.1.0.tgz
     version: 0.1.0
-generated: "2026-02-20T09:34:32.087338626Z"
+generated: "2026-03-17T21:37:17.094412771Z"
