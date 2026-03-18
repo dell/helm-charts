@@ -11,7 +11,7 @@ version: v2.17.0
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.16.0
+    image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.16.1
   # "powerflexSdc" defines the SDC image for init container.
   powerflexSdc:
     image: quay.io/dell/storage/powerflex/sdc:5.0
