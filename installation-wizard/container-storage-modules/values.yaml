@@ -52,7 +52,7 @@ csi-powerstore:
       image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.4.0
   ## Controller ATTRIBUTES
   controller:
-    controllerCount: 1
+    controllerCount: 2
     healthMonitor:
       enabled: false
     nodeSelector:
