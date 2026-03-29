@@ -421,6 +421,80 @@ authorization:
   # Default value: "true"
   skipCertificateValidation: true
 
+# metrics: configuration for driver metrics and monitoring
+metrics:
+  # enabled: Enable/Disable the shared Prometheus metrics HTTP server.
+  # This is the master switch for the metrics endpoint.  Gateway monitoring
+  # (metrics.gatewayMonitoring.enabled) only takes effect when this is true; setting
+  # metrics.gatewayMonitoring.enabled=true without metrics.enabled=true has no effect.
+  # Type: bool
+  # Default: false
+  # Effect: When true, the controller Deployment receives X_CSI_METRICS_ENABLED=true,
+  #         X_CSI_METRICS_PORT, and a metrics Service is created.
+  enabled: false
+
+  # port: Port on which the shared driver metrics endpoint is exposed.
+  # This port serves gateway monitoring metrics and any other driver-supplied metrics.
+  # Type: integer
+  # Default: 9090
+  # Effect: Passed as X_CSI_METRICS_PORT to the driver container; used as targetPort in the Service.
+  port: 9090
+
+  # tlsCertSecret: Name of a Kubernetes TLS Secret whose "tls.crt" and "tls.key" entries
+  # are used to serve the metrics endpoint over HTTPS instead of plain HTTP.
+  # Leave empty (the default) to use plain HTTP.
+  # The Secret must exist in the same namespace as the driver and contain the keys
+  # "tls.crt" (PEM-encoded certificate) and "tls.key" (PEM-encoded private key).
+  # Type: string
+  # Default: "" (disabled — plain HTTP)
+  # Example: tlsCertSecret: "powerflex-metrics-tls"
+  tlsCertSecret: ""
+
+  # gatewayMonitoring: configuration for PowerFlex Gateway health monitoring
+  # When enabled, the CSI controller pod exposes a Prometheus-scrapable /metrics
+  # endpoint that reports the availability of each configured PowerFlex Gateway.
+  gatewayMonitoring:
+    # enabled: Enable/Disable gateway monitoring feature.
+    # Requires metrics.enabled=true — if metrics.enabled is false this has no effect.
+    # Type: bool
+    # Default: false
+    # Effect: When true (and metrics.enabled is true), the controller Deployment receives
+    #         X_CSI_GATEWAY_MONITORING_ENABLED=true, and (optionally) a ServiceMonitor is created.
+    enabled: false
+
+    # leaderElectionEnabled: Enable/Disable gateway monitoring leader election.
+    # Type: bool
+    # Default: true
+    # Effect: When true, the controller Deployment receives X_CSI_GATEWAY_MONITORING_LEADER_ELECTION_ENABLED=true,
+    #         and only one controller will monitor the gateway.
+    leaderElectionEnabled: true
+
+    # pollInterval: How frequently the leader controller probes each gateway endpoint.
+    # Type: string (Go duration, e.g. "30s", "1m")
+    # Default: "30s"
+    # Effect: Passed as X_CSI_GATEWAY_MONITORING_POLL_INTERVAL to the driver container.
+    pollInterval: "30s"
+
+  # serviceMonitor: Controls optional Prometheus Operator ServiceMonitor creation.
+  serviceMonitor:
+    # enabled: When true, a ServiceMonitor CR is created for automatic Prometheus Operator integration.
+    # Type: bool
+    # Default: false
+    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+    enabled: false
+
+    # interval: Prometheus scrape interval for the metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "30s", "1m")
+    # Default: "30s"
+    interval: "30s"
+
+    # insecureSkipVerify: Controls TLS certificate verification when scraping metrics.
+    # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
+    # Type: bool
+    # Default: false
+    # Effect: When true, Prometheus will skip TLS certificate verification.
+    insecureSkipVerify: false
+
 interfaceNames:
   # worker1: interface1
   # worker2: interface2
