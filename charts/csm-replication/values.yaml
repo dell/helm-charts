@@ -32,6 +32,13 @@ retryIntervalMax: 5m
 # Default value: "false"
 disablePVCRemap: "false"
 
+# enableKubevirtPVCRemap: Enable KubeVirt PVC remapping functionality
+# When enabled, the replication controller will handle DataVolume dependencies
+# during PVC remap for KubeVirt-backed PVCs.
+# Allowed values: "true", "false"
+# Default value: "false"
+enableKubevirtPVCRemap: "false"
+
 # allowPvcCreationOnTarget: It Creates PVC on target cluster using replicated PV.
 # Allowed values:
 #   true: It creates a PVC on target cluster against replicated PV
