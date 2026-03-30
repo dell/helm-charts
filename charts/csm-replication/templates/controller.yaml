@@ -294,6 +294,7 @@ spec:
       containers:
         - args:
             - disable-pvc-remap={{ .Values.disablePVCRemap }}
+            - enable-kubevirt-pvc-remap={{ .Values.enableKubevirtPVCRemap }}
             - allow-pvc-creation-on-target={{ .Values.allowPvcCreationOnTarget }}
             - prefix=replication.storage.dell.com
         {{- if eq .Values.leaderElection "true" }}
