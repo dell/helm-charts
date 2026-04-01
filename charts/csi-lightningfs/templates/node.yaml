@@ -93,24 +93,24 @@ spec:
             allowPrivilegeEscalation: true
           image: "{{ required "Must provide the driver image repository." .Values.images.driver.image }}"
           args:
-            - "--driver-config=/lightning-config/driver-config-params.yaml"
+            - "--driver-config=/lightningfs-config/driver-config-params.yaml"
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: CSI_ENDPOINT
               value: {{ .Values.kubeletConfigDir }}/plugins/lightningfs.emc.dell.com/csi_sock
             - name: X_CSI_MODE
               value: node
-            - name: CSI_LIGHTNING_CLIENT_MOUNTPOINT
+            - name: CSI_LIGHTNINGFS_CLIENT_MOUNTPOINT
               value: "{{ .Values.clientMountPoint }}"
-            - name: X_CSI_LIGHTNING_AUTOPROBE
+            - name: X_CSI_LIGHTNINGFS_AUTOPROBE
               value: "true"
-            - name: X_CSI_LIGHTNING_ALLOW_MULTI_POD_ACCESS
+            - name: X_CSI_LIGHTNINGFS_ALLOW_MULTI_POD_ACCESS
               value: {{ .Values.allowRWOMultiPodAccess | default "false" | lower | quote }}
             - name: X_CSI_PRIVATE_MOUNT_DIR
               value: "{{ .Values.kubeletConfigDir }}/plugins/lightningfs.emc.dell.com/disks"
             - name: X_CSI_EPHEMERAL_STAGING_PATH
               value: "{{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi/pv/"
-            - name: X_CSI_LIGHTNING_NODENAME
+            - name: X_CSI_LIGHTNINGFS_NODENAME
               valueFrom:
                 fieldRef:
                   apiVersion: v1
@@ -133,8 +133,8 @@ spec:
             - name: certs
               mountPath: /certs
               readOnly: true
-            - name: lightning-config
-              mountPath: /lightning-config
+            - name: lightningfs-config
+              mountPath: /lightningfs-config
         - name: registrar
           image: {{ required "Must provide the CSI registrar container image." .Values.images.registrar.image }}
           args:
@@ -189,6 +189,6 @@ spec:
                     - key: cert-{{ $e }}
                       path: cert-{{ $e }}
 {{- end }}
-        - name: lightning-config
+        - name: lightningfs-config
           configMap:
               name: {{ .Release.Name }}-config-params

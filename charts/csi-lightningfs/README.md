@@ -55,7 +55,7 @@ CSI Driver for Dell LightningFS is part of the CSM (Container Storage Modules) s
 
 ## Provisioning
 
-1. Create a storage class using the template provided (lightning.yaml) under `samples/storageclass` folder.
+1. Create a storage class using the template provided (lightningfs.yaml) under `samples/storageclass` folder.
 2. Note the following attributes in the storage class yaml file:
     - `pfs`: The name of the folder to be created by the CSI driver under the clientMountPoint (specified in my-values.yaml above). Default is PFS.
     - `volumePathPermission`: The permission for the volume path. Default is 0750, but can be changed to desired value.

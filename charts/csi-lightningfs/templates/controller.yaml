@@ -175,18 +175,18 @@ spec:
             allowPrivilegeEscalation: true
           image: "{{ required "Must provide the driver image repository." .Values.images.driver.image }}"
           args:
-            - "--driver-config=/lightning-config/driver-config-params.yaml"
+            - "--driver-config=/lightningfs-config/driver-config-params.yaml"
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: CSI_ENDPOINT
               value: /var/run/csi/csi.sock
             - name: X_CSI_MODE
               value: controller
-            - name: CSI_LIGHTNING_CLIENT_MOUNTPOINT
+            - name: CSI_LIGHTNINGFS_CLIENT_MOUNTPOINT
               value: "{{ .Values.clientMountPoint }}"
-            - name: X_CSI_LIGHTNING_VOLUME_PATH_PERMISSION
+            - name: X_CSI_LIGHTNINGFS_VOLUME_PATH_PERMISSION
               value: "{{ .Values.volumePathPermission }}"
-            - name: X_CSI_LIGHTNING_AUTOPROBE
+            - name: X_CSI_LIGHTNINGFS_AUTOPROBE
               value: "true"
             - name: SSL_CERT_DIR
               value: /certs
@@ -202,8 +202,8 @@ spec:
             - name: certs
               mountPath: /certs
               readOnly: true
-            - name: lightning-config
-              mountPath: /lightning-config
+            - name: lightningfs-config
+              mountPath: /lightningfs-config
             - name: noderoot
               mountPath: /noderoot
       volumes:
@@ -223,6 +223,6 @@ spec:
 {{- end }}
         - name: socket-dir
           emptyDir:
-        - name: lightning-config
+        - name: lightningfs-config
           configMap:
               name: {{ .Release.Name }}-config-params
