@@ -1,12 +1,28 @@
 The CSM Authorization deployment has been successfully installed.
+{{- if eq .Values.openshift true }}
 
-Execute the following commands in your shell to print the URL of the CSM Authorization Gateway:
+Execute the following commands in your shell to get the OpenShift Ingress URL:
 
-export GATEWAY_IP=$(kubectl get gateway authorization-gateway --namespace {{ include "custom.namespace" . }} -o jsonpath="{.status.addresses[0].value}")
-echo https://$GATEWAY_IP
+oc get ingress {{ include "custom.namespace" . }}-gateway --namespace {{ include "custom.namespace" . }}
 
-The NGINX Gateway Fabric data-plane service is:
-  authorization-gateway-nginx.{{ include "custom.namespace" . }}.svc.cluster.local
+LoadBalancer host rules for proxy-server:
+- {{ .Values.authorization.hostname }}
+- router-internal-default.openshift-ingress.svc.cluster.local
 
-authorization.proxyHost value for a CSI Driver:
-- authorization-gateway-nginx.{{ include "custom.namespace" . }}.svc.cluster.local:443 (through the Gateway, with TLS)
+authorization.proxyHost value for a CSI Driver examples:
+- router-internal-default.openshift-ingress.svc.cluster.local:443 (CSI Driver in the same cluster as CSM Authorization)
+{{- else }}
+
+Execute the following commands in your shell to print the URL of the CSM Authorization NodePort LoadBalancer:
+
+export NODE_PORT=$(kubectl get --namespace {{ include "custom.namespace" . }} -o jsonpath="{.spec.ports[0].nodePort}" service {{ include "custom.namespace" . }}-gateway-nginx)
+export NODE_IP=$(kubectl get nodes --namespace {{ include "custom.namespace" . }} -o jsonpath="{.items[0].status.addresses[0].address}")
+echo https://$NODE_IP:$NODE_PORT
+
+LoadBalancer host rules for proxy-server:
+- {{ .Values.authorization.hostname }}
+- {{ include "custom.namespace" . }}-gateway-nginx.{{ include "custom.namespace" . }}.svc.cluster.local
+
+authorization.proxyHost value for a CSI Driver examples:
+- {{ include "custom.namespace" . }}-gateway-nginx.{{ include "custom.namespace" . }}.svc.cluster.local:443 (CSI Driver in the same cluster as CSM Authorization)
+{{- end }}

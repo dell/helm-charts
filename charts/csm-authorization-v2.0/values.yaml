@@ -52,10 +52,13 @@ authorization:
   openTelemetryCollectorAddress: ""
 
   # gateway configuration for proxy-server
+  # NOTE: For OpenShift, this section configures the Ingress resource (not Gateway API)
   gateway:
     gatewayClassName: nginx
 
     # additional hostnames for routing
+    # For Kubernetes: use the NGINX Gateway Fabric service, e.g., authorization-gateway-nginx.<namespace>.svc.cluster.local
+    # For OpenShift: use the OpenShift Router service, e.g., router-internal-default.openshift-ingress.svc.cluster.local
     hosts:
       []
       # - authorization-gateway-nginx.{{ include "custom.namespace" . }}.svc.cluster.local
