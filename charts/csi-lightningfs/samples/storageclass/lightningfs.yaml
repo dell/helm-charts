@@ -6,7 +6,7 @@ provisioner: csi-lightningfs.dellemc.com
 reclaimPolicy: Delete
 parameters:
   # The name of the Parallel File System (PFS) to use.
-  # Example: PFS1
+  # Default value: PFS
   pfs: PFS
 
   # The permission for the volume path.
@@ -22,4 +22,4 @@ parameters:
 #   WaitForFirstConsumer: will delay the binding and provisioning of a PersistentVolume
 #   until a Pod using the PersistentVolumeClaim is created
 # Default value: Immediate
-volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
