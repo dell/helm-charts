@@ -1,14 +1,7 @@
 # Installation of Dell CSI Driver for Dell LightningFS
 
-**Repository for CSI Driver for Dell LightningFS**
-
 ## Description
 CSI Driver for Dell LightningFS is part of the CSM (Container Storage Modules) suite of Kubernetes storage enablers for Dell products. Helm charts are used to install the CSI driver.
-
-
-## Repository
-
-- https://github.com/dell/csi-lightningfs
 
 ## Prerequisites
 
@@ -57,12 +50,12 @@ CSI Driver for Dell LightningFS is part of the CSM (Container Storage Modules) s
 
 1. Create a storage class using the template provided (lightningfs.yaml) under `samples/storageclass` folder.
 2. Note the following attributes in the storage class yaml file:
-    - `pfs`: The name of the folder to be created by the CSI driver under the clientMountPoint (specified in my-values.yaml above). Default is PFS.
+    - `pfs`: The name of the folder to be created by the CSI driver under the `clientMountPoint` (specified in my-values.yaml above). Default is "PFS".
     - `volumePathPermission`: The permission for the volume path. Default is 0750, but can be changed to desired value.
-    - `volumeBindingMode`: The volume binding mode. Default is "WaitForFirstConsumer", but can be changed to desired value.
+    - `volumeBindingMode`: The volume binding mode. One of "WaitForFirstConsumer" or "Immediate". Default is "WaitForFirstConsumer".
 3. Run the following command to create the storage class:
     ```bash
-      kubectl apply -f samples/storageclass/storageclass.yaml
+      kubectl apply -f samples/storageclass/lightningfs.yaml
     ```
 4. Storage class is now ready to be used when provisioning volumes.
 
@@ -70,4 +63,4 @@ CSI Driver for Dell LightningFS is part of the CSM (Container Storage Modules) s
 
 This software contains the intellectual property of Dell Inc. or is licensed to Dell Inc. from third parties. Use of this software and the intellectual property contained therein is expressly limited to the terms and conditions of the License Agreement under which it is provided by or on behalf of Dell Inc. or its subsidiaries.
 
-Copyright © 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+Copyright © 2026 Dell Inc. or its subsidiaries. All Rights Reserved.

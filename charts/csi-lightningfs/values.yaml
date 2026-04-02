@@ -38,7 +38,7 @@ logLevel: "info"
 # IfNotPresent: Only pull the image if it does not already exist on the node.
 # Never: Never pull the image.
 # Default value: IfNotPresent
-imagePullPolicy: Always
+imagePullPolicy: IfNotPresent
 
 # "defaultFsType" is used to set the default FS type which will be used
 # for mount volumes if FsType is not specified in the storage class
@@ -50,7 +50,6 @@ defaultFsType: ext4
 # Ensure that the config.yaml file is present at this path.
 # Default value: /var/lib/kubelet
 kubeletConfigDir: /var/lib/kubelet
-# kubeletConfigDir: /var/snap/microk8s/common/var/lib/kubelet
 
 # fsGroupPolicy: Defines if the underlying volume supports changing ownership and permission of the volume before being mounted.
 # Allowed values:
@@ -78,12 +77,12 @@ controller:
   # the Kubernetes release.
   # Allowed values: n, where n > 0
   # Default value: None
-  controllerCount: 1
+  controllerCount: 2
 
   # volumeNamePrefix: Prefix of PersistentVolume names created
   # Allowed values: string
-  # Default value: None
-  volumeNamePrefix: csilng
+  # Default value: csivol
+  volumeNamePrefix: csivol
 
   # nodeSelector: Define node selection constraints for controller pods.
   # For the pod to be eligible to run on a node, the node must have each
