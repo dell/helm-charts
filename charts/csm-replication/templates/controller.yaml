@@ -133,6 +133,14 @@ rules:
   - apiGroups: [ "snapshot.storage.k8s.io" ]
     resources: [ "volumesnapshots" ]
     verbs: [ "get", "list", "watch", "update", "create", "delete" ]
+  - apiGroups:
+      - cdi.kubevirt.io
+    resources:
+      - datavolumes
+    verbs:
+      - get
+      - update
+      - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -180,6 +188,14 @@ rules:
       - list
       - update
       - watch
+  - apiGroups:
+      - cdi.kubevirt.io
+    resources:
+      - datavolumes
+    verbs:
+      - get
+      - update
+      - delete
 ---
 # RoleBinding for Driver-specific Role
 kind: RoleBinding
@@ -293,14 +309,15 @@ spec:
       serviceAccountName: dell-replication-controller-sa
       containers:
         - args:
-            - disable-pvc-remap={{ .Values.disablePVCRemap }}
-            - allow-pvc-creation-on-target={{ .Values.allowPvcCreationOnTarget }}
-            - prefix=replication.storage.dell.com
+            - --disable-pvc-remap={{ .Values.disablePVCRemap }}
+            - --enable-kubevirt-pvc-remap={{ .Values.enableKubevirtPVCRemap }}
+            - --allow-pvc-creation-on-target={{ .Values.allowPvcCreationOnTarget }}
+            - --prefix=replication.storage.dell.com
         {{- if eq .Values.leaderElection "true" }}
-            - enable-leader-election
+            - --enable-leader-election
         {{ end }}
-            - retry-interval-start {{ .Values.retryIntervalMin }}
-            - retry-interval-max {{ .Values.retryIntervalMax }}
+            - --retry-interval-start={{ .Values.retryIntervalMin }}
+            - --retry-interval-max={{ .Values.retryIntervalMax }}
           command:
             - /dell-replication-controller
           env:
