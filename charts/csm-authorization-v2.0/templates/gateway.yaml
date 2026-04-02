@@ -1,32 +1,55 @@
 {{- if eq .Values.openshift true }}
-apiVersion: route.openshift.io/v1
-kind: Route
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: {{ include "custom.namespace" . }}-gateway
+  name: proxy-server
   namespace: {{ include "custom.namespace" . }}
-  {{- if .Values.authorization.gateway.annotations }}
   annotations:
+    route.openshift.io/termination: "edge"
+    {{- if .Values.authorization.gateway.annotations }}
     {{- range $key, $value := .Values.authorization.gateway.annotations }}
     {{ $key }}: {{ tpl $value $ | quote }}
     {{- end }}
-  {{- end }}
-spec:
-  host: {{ .Values.authorization.hostname }}
-  port:
-    targetPort: 8080
-  tls:
-    termination: edge
-    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
-    certificate: |
-      {{ .Values.authorization.certificate | nindent 6 }}
-    key: |
-      {{ .Values.authorization.privateKey | nindent 6 }}
     {{- end }}
-  to:
-    kind: Service
-    name: proxy-server
-    weight: 100
-  wildcardPolicy: None
+spec:
+  tls:
+  - hosts:
+      - {{ .Values.authorization.hostname }}
+      {{- if .Values.authorization.gateway.hosts }}
+      {{- range .Values.authorization.gateway.hosts }}
+      - {{ tpl . $ }}
+      {{- end }}
+      {{- end }}
+    {{- if and (.Values.authorization.certificate) (.Values.authorization.privateKey) }}
+    secretName: user-provided-tls
+    {{- else }}
+    secretName: karavi-selfsigned-tls
+    {{- end }}
+  rules:
+  - host: {{ .Values.authorization.hostname }}
+    http:
+      paths:
+        - backend:
+            service:
+              name: proxy-server
+              port:
+                number: 8080
+          path: /
+          pathType: Prefix
+  {{- if .Values.authorization.gateway.hosts }}
+  {{- range .Values.authorization.gateway.hosts }}
+  - host: {{ tpl . $ }}
+    http:
+      paths:
+        - backend:
+            service:
+              name: proxy-server
+              port:
+                number: 8080
+          path: /
+          pathType: Prefix
+  {{- end }}
+  {{- end }}
 {{- else }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
@@ -67,6 +90,13 @@ spec:
   parentRefs:
   - name: {{ include "custom.namespace" . }}-gateway
     namespace: {{ include "custom.namespace" . }}
+  hostnames:
+  - {{ .Values.authorization.hostname | quote }}
+  {{- if .Values.authorization.gateway.hosts }}
+  {{- range .Values.authorization.gateway.hosts }}
+  - {{ tpl . $ | quote }}
+  {{- end }}
+  {{- end }}
   rules:
   - matches:
     - path:
