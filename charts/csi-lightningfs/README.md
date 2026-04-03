@@ -52,7 +52,7 @@ CSI Driver for Dell LightningFS is part of the CSM (Container Storage Modules) s
 2. Note the following attributes in the storage class yaml file:
     - `pfs`: The name of the folder to be created by the CSI driver under the `clientMountPoint` (specified in my-values.yaml above). Default is "PFS".
     - `volumePathPermission`: The permission for the volume path. Default is 0750, but can be changed to desired value.
-    - `volumeBindingMode`: The volume binding mode. One of "WaitForFirstConsumer" or "Immediate". Default is "WaitForFirstConsumer".
+    - `volumeBindingMode`: The volume binding mode. One of "WaitForFirstConsumer" or "Immediate". Default is "Immediate".
 3. Run the following command to create the storage class:
     ```bash
       kubectl apply -f samples/storageclass/lightningfs.yaml
