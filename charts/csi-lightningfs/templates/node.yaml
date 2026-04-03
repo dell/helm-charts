@@ -1,0 +1,194 @@
+# yamllint disable-file
+# This file is not valid YAML because it is a Helm template
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "{{ .Release.Name }}-node"
+  namespace: {{ .Release.Namespace }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: "{{ .Release.Name }}-node"
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumes" ]
+    verbs: [ "create", "delete", "get", "list", "watch", "update" ]
+  - apiGroups: [ "" ]
+    resources: [ "persistentvolumesclaims" ]
+    verbs: [ "get", "list", "watch", "update" ]
+  - apiGroups: [ "" ]
+    resources: [ "events" ]
+    verbs: [ "get", "list", "watch", "create", "update", "patch" ]
+  - apiGroups: [ "" ]
+    resources: [ "nodes" ]
+    verbs: [ "get", "list", "watch", "update", "patch" ]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "volumeattachments" ]
+    verbs: [ "get", "list", "watch", "update" ]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "storageclasses" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "volumeattachments" ]
+    verbs: [ "get", "list", "watch", "update" ]
+  - apiGroups: [ "security.openshift.io" ]
+    resourceNames: [ "privileged" ]
+    resources: [ "securitycontextconstraints" ]
+    verbs: [ "use" ]
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: "{{ .Release.Name }}-node"
+subjects:
+  - kind: ServiceAccount
+    name: "{{ .Release.Name }}-node"
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: "{{ .Release.Name }}-node"
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: "{{ .Release.Name }}-node"
+  namespace: {{ .Release.Namespace }}
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}-node"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}-node"
+    spec:
+      serviceAccountName: "{{ .Release.Name }}-node"
+      {{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret | quote }}
+      {{- end }}
+      {{- if .Values.node.nodeSelector }}
+      nodeSelector:
+      {{- toYaml .Values.node.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.node.tolerations }}
+      tolerations:
+      {{- toYaml .Values.node.tolerations | nindent 8 }}
+      {{- end }}
+      hostIPC: true
+      hostNetwork: true
+      dnsPolicy: {{ .Values.node.dnsPolicy }}
+      containers:
+        - name: driver
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN"]
+            allowPrivilegeEscalation: true
+          image: "{{ required "Must provide the driver image repository." .Values.images.driver.image }}"
+          args:
+            - "--driver-config=/lightningfs-config/driver-config-params.yaml"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: CSI_ENDPOINT
+              value: {{ .Values.kubeletConfigDir }}/plugins/lightningfs.emc.dell.com/csi_sock
+            - name: X_CSI_MODE
+              value: node
+            - name: CSI_LIGHTNINGFS_CLIENT_MOUNTPOINT
+              value: "{{ .Values.clientMountPoint }}"
+            - name: X_CSI_LIGHTNINGFS_AUTOPROBE
+              value: "true"
+            - name: X_CSI_LIGHTNINGFS_ALLOW_MULTI_POD_ACCESS
+              value: {{ .Values.allowRWOMultiPodAccess | default "false" | lower | quote }}
+            - name: X_CSI_PRIVATE_MOUNT_DIR
+              value: "{{ .Values.kubeletConfigDir }}/plugins/lightningfs.emc.dell.com/disks"
+            - name: X_CSI_EPHEMERAL_STAGING_PATH
+              value: "{{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi/pv/"
+            - name: X_CSI_LIGHTNINGFS_NODENAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: SSL_CERT_DIR
+              value: /certs
+          volumeMounts:
+            - name: driver-path
+              mountPath: {{ .Values.kubeletConfigDir }}/plugins/lightningfs.emc.dell.com
+            - name: volumedevices-path
+              mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
+              mountPropagation: "Bidirectional"
+            - name: pods-path
+              mountPath: {{ .Values.kubeletConfigDir }}/pods
+              mountPropagation: "Bidirectional"
+            - name: dev
+              mountPath: /dev
+            - name: noderoot
+              mountPath: /noderoot
+            - name: certs
+              mountPath: /certs
+              readOnly: true
+            - name: lightningfs-config
+              mountPath: /lightningfs-config
+        - name: registrar
+          image: {{ required "Must provide the CSI registrar container image." .Values.images.registrar.image }}
+          args:
+            - "--v=5"
+            - "--csi-address=$(ADDRESS)"
+            - --kubelet-registration-path={{ .Values.kubeletConfigDir }}/plugins/lightningfs.emc.dell.com/csi_sock
+          env:
+            - name: ADDRESS
+              value: /csi/csi_sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: registration-dir
+              mountPath: /registration
+            - name: driver-path
+              mountPath: /csi
+      volumes:
+        - name: registration-dir
+          hostPath:
+            path: {{ .Values.kubeletConfigDir }}/plugins_registry/
+            type: DirectoryOrCreate
+        - name: driver-path
+          hostPath:
+            path: {{ .Values.kubeletConfigDir }}/plugins/lightningfs.emc.dell.com
+            type: DirectoryOrCreate
+        - name: volumedevices-path
+          hostPath:
+            path: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
+            type: DirectoryOrCreate
+        - name: pods-path
+          hostPath:
+            path: {{ .Values.kubeletConfigDir }}/pods
+            type: Directory
+        - name: dev
+          hostPath:
+            path: /dev
+            type: Directory
+        - name: noderoot
+          hostPath:
+            path: /
+            type: Directory
+        - name: certs
+          projected:
+            sources:
+{{- range $i, $e := until (int .Values.certSecretCount ) }}
+              - secret:
+                  name: {{ print $.Release.Name "-certs-" $e }}
+                  items:
+                    - key: cert-{{ $e }}
+                      path: cert-{{ $e }}
+{{- end }}
+        - name: lightningfs-config
+          configMap:
+              name: {{ .Release.Name }}-config-params
