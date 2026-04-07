@@ -63,11 +63,9 @@ spec:
               description: status defines the observed state of CSMRole
               properties:
                 conditions:
-                  description: |-
-                    conditions represent the current state of the CSMRole resource.
-                    Each condition has a unique type and reflects the status of a specific aspect of the resource.
-
-                    Role.status.conditions.type are: "Available", "NotAvailable", and "UnKnown"
+                  description:
+                    'Role.status.conditions.type are: "Available", "NotAvailable",
+                    and "UnKnown"'
                   items:
                     description:
                       Condition contains details for one aspect of the current
