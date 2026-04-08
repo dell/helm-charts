@@ -421,6 +421,20 @@ authorization:
   # Default value: "true"
   skipCertificateValidation: true
 
+# spaceReclamation: Settings for space reclamation (fstrim/blkdiscard)
+# Reclaims unused storage blocks from Persistent Volumes.
+# Allowed Values:
+#   enabled: "true"/"false" - enable/disable space reclamation
+#   schedule: cron expression for reclamation schedule
+#   maxConcurrentVolumes: max number of concurrent reclamation operations per node
+#   timeoutSeconds: timeout for each reclamation operation in seconds
+# Default values shown below
+spaceReclamation:
+  enabled: false
+  schedule: "0 2 * * 0"
+  maxConcurrentVolumes: 2
+  timeoutSeconds: 3600
+
 interfaceNames:
   # worker1: interface1
   # worker2: interface2
