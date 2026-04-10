@@ -1,6 +1,6 @@
 name: redis-csm
-redisPassword:
 redisUsername:
+redisPassword:
 redisSecretProviderClass:
   secretProviderClassName:
   redisSecretName:
