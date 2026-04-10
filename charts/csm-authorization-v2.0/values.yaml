@@ -6,6 +6,9 @@ openshift: false
 # if enabled, NGINX Gateway Fabric controller will be deployed
 nginx-gateway-fabric:
   enabled: true
+  nginx:
+    service:
+      externalTrafficPolicy: Cluster
 
 # if enabled, cert-manager will be deployed
 # if cert-manager is already deployed, keep this false
