@@ -1,0 +1,25 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: lightningfs
+provisioner: csi-lightningfs.dellemc.com
+reclaimPolicy: Delete
+parameters:
+  # The name of the Parallel File System (PFS) to use.
+  # Default value: PFS
+  pfs: PFS
+
+  # The permission for the volume path.
+  # This overrides volumePathPermission defined in the helm chart.
+  # Allowed values: valid octal mode number.
+  # Default value: 0750
+  volumePathPermission: "0750"
+
+# volumeBindingMode controls when volume binding and dynamic provisioning should occur.
+# Allowed values:
+#   Immediate: indicates that volume binding and dynamic provisioning occurs once the
+#   PersistentVolumeClaim is created
+#   WaitForFirstConsumer: will delay the binding and provisioning of a PersistentVolume
+#   until a Pod using the PersistentVolumeClaim is created
+# Default value: Immediate
+volumeBindingMode: Immediate
