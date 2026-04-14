@@ -1,0 +1,179 @@
+---
+# "version" is used to verify the values file matches driver version
+# Not recommend to change
+version: v1.0.0
+
+# "images" defines every container images used for the driver and its sidecars.
+#  To use your own images, or a private registry, change the values here.
+images:
+  # "driver" defines the container image, used for the driver container.
+  driver:
+    image: quay.io/dell/container-storage-modules/csi-lightningfs:v1.0.0
+  # CSI sidecars
+  attacher:
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.11.0
+  provisioner:
+    image: registry.k8s.io/sig-storage/csi-provisioner:v6.1.1
+  registrar:
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.16.0
+  healthmonitor:
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.16.0
+
+# Represents number of certificate secrets, which user is going to create for ssl authentication. (csi-lightningfs-certs-0..csi-lightningfs-certs-n)
+# If user does not use certificate, set to 0
+certSecretCount: 0
+
+# imagePullSecret: The name of the secret that contains the credentials for pulling the CSI driver image.
+# Default value: ""
+imagePullSecret: ""
+
+# LogLevel is used to set the logging level of the driver.
+# Allowed values: "error", "warn", "info", "debug"
+# Default value: "info"
+logLevel: "info"
+
+# imagePullPolicy: Policy to determine if the image should be pulled prior to starting the container.
+# Allowed values:
+# Always: Always pull the image.
+# IfNotPresent: Only pull the image if it does not already exist on the node.
+# Never: Never pull the image.
+# Default value: IfNotPresent
+imagePullPolicy: IfNotPresent
+
+# "defaultFsType" is used to set the default FS type which will be used
+# for mount volumes if FsType is not specified in the storage class
+# Allowed values: ext4, xfs
+# Default value: ext4
+defaultFsType: ext4
+
+# Specify kubelet config dir path.
+# Ensure that the config.yaml file is present at this path.
+# Default value: /var/lib/kubelet
+kubeletConfigDir: /var/lib/kubelet
+
+# fsGroupPolicy: Defines if the underlying volume supports changing ownership and permission of the volume before being mounted.
+# Allowed values:
+#   ReadWriteOnceWithFSType: supports volume ownership and permissions change only if the fsType is defined
+#   and the volume's accessModes contains ReadWriteOnce.
+#   File: kubernetes may use fsGroup to change permissions and ownership of the volume
+#   to match user requested fsGroup in the pod's security policy regardless of fstype or access mode.
+#   None: volumes will be mounted with no modifications.
+# Default value: ReadWriteOnceWithFSType
+fsGroupPolicy: ReadWriteOnceWithFSType
+
+# clientMountPoint: # the mount point for the PFS (or in the future other volumes)
+clientMountPoint: /mnt/data
+
+# volumePathPermissions: The permission for the volume path.
+# This value acts as a default value for volumePathPermission.
+# Allowed values: valid octal mode number.
+# Default value: 0750
+volumePathPermission: "0750"
+
+# To set nodeSelectors and tolerations for controller.
+# controller: configure controller pod specific parameters
+controller:
+  # controllerCount: defines the number of csi-lightningfs controller pods to deploy to
+  # the Kubernetes release.
+  # Allowed values: n, where n > 0
+  # Default value: None
+  controllerCount: 2
+
+  # volumeNamePrefix: Prefix of PersistentVolume names created
+  # Allowed values: string
+  # Default value: csivol
+  volumeNamePrefix: csivol
+
+  # nodeSelector: Define node selection constraints for controller pods.
+  # For the pod to be eligible to run on a node, the node must have each
+  # of the indicated key-value pairs as labels.
+  # Leave as blank to consider all nodes
+  # Allowed values: map of key-value pairs
+  # Default value: None
+  nodeSelector:
+  # Uncomment if nodes you wish to use have the node-role.kubernetes.io/master taint
+  #  node-role.kubernetes.io/master: ""
+  # Uncomment if nodes you wish to use have the node-role.kubernetes.io/control-plane taint
+  #  node-role.kubernetes.io/control-plane: ""
+
+  # tolerations: Define tolerations for the controllers, if required.
+  # Leave as blank to install controller on worker nodes
+  # Default value: None
+  tolerations:
+  # Uncomment if nodes you wish to use have the node-role.kubernetes.io/master taint
+  #  - key: "node-role.kubernetes.io/master"
+  #    operator: "Exists"
+  #    effect: "NoExecute"
+  # Uncomment if nodes you wish to use have the node-role.kubernetes.io/control-plane taint
+  #  - key: "node-role.kubernetes.io/control-plane"
+  #    operator: "Exists"
+  #    effect: "NoSchedule"
+
+  healthMonitor:
+    # enabled: Enable/Disable health monitor of CSI volumes- volume state, volume condition
+    # Allowed values:
+    #   true: enable checking of health condition of CSI volumes
+    #   false: disable checking of health condition of CSI volumes
+    # Default value: None
+    enabled: false
+
+    # interval: Interval of monitoring volume health condition
+    # Allowed values: Number followed by unit of time (s,m,h)
+    # Default value: 60s
+    interval: 60s
+
+# node: configure node pod specific parameters
+node:
+  # dnsPolicy : Define the DNS Policy of the Node service.
+  # ClusterFirstWithHostNet is the recommended and default DNS policy for the driver.
+  # Prior to v1.6 of the driver, the default DNS policy was ClusterFirst.
+  # In certain scenarios, users might need to change the default dnsPolicy.
+  # Default value: None
+  dnsPolicy: "ClusterFirstWithHostNet"
+
+  healthMonitor:
+    # enabled: Enable/Disable health monitor of CSI Volumes - volume usage
+    # Allowed values:
+    #   true: enable checking of health condition of CSI volumes
+    #   false: disable checking of health condition of CSI volumes
+    # Default value: None
+    enabled: false
+
+  # nodeSelector: Define node selection constraints for node pods.
+  # For the pod to be eligible to run on a node, the node must have each
+  # of the indicated key-value pairs as labels.
+  # Leave as blank to consider all nodes
+  # Allowed values: map of key-value pairs
+  # Default value: None
+  nodeSelector:
+  # Uncomment if nodes you wish to use have the node-role.kubernetes.io/master taint
+  #  node-role.kubernetes.io/master: ""
+  # Uncomment if nodes you wish to use have the node-role.kubernetes.io/control-plane taint
+  #  node-role.kubernetes.io/control-plane: ""
+
+  # tolerations: Define tolerations for the node daemonset, if required.
+  # Default value: None
+  tolerations:
+  # Uncomment if nodes you wish to use have the node-role.kubernetes.io/master taint
+  #  - key: "node-role.kubernetes.io/master"
+  #    operator: "Exists"
+  #    effect: "NoExecute"
+  # Uncomment if nodes you wish to use have the node-role.kubernetes.io/control-plane taint
+  #  - key: "node-role.kubernetes.io/control-plane"
+  #    operator: "Exists"
+  #    effect: "NoExecute"
+  #  - key: "node.kubernetes.io/memory-pressure"
+  #    operator: "Exists"
+  #    effect: "NoExecute"
+  #  - key: "node.kubernetes.io/disk-pressure"
+  #    operator: "Exists"
+  #    effect: "NoExecute"
+  #  - key: "node.kubernetes.io/network-unavailable"
+  #    operator: "Exists"
+  #    effect: "NoExecute"
+
+# allowRWOMultiPodAccess - Flag to enable sharing of volumes across multiple pods within the same node in RWO access mode.
+# Allowed values: boolean
+# Default value: "false"
+# Examples : "true" , "false"
+allowRWOMultiPodAccess: "false"
