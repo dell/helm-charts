@@ -1347,6 +1347,25 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/csi-isilon-2.7.0/csi-isilon-2.7.0.tgz
     version: 2.7.0
+  csi-lightningfs:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2026-04-14T17:58:55.850792153Z"
+    description: 'LightningFS CSI (Container Storage Interface) driver Kubernetes
+      integration. This chart includes everything required to provision via CSI as
+      well as a LightningFS storage class '
+    digest: 7f234102746fa32ca33edf11e98018f12f611021fee8e7a1a213d690122d4de1
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.24.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-lightningfs
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-lightningfs-1.0.0/csi-lightningfs-1.0.0.tgz
+    version: 1.0.0
   csi-powermax:
   - apiVersion: v2
     appVersion: 2.16.2
@@ -4016,4 +4035,4 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/karavi-topology-0.1.0/karavi-topology-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-17T21:38:14.493704315Z"
+generated: "2026-04-14T17:58:55.851235411Z"
