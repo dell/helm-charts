@@ -57,6 +57,14 @@ rules:
     resources: [ "pods" ]
     verbs: [ "get", "list", "watch", "update", "patch" ]
   {{- end}}
+  # below for CSM-DR
+  {{- if hasKey .Values "disasterRecovery" }}
+  {{- if eq .Values.disasterRecovery.enabled true}}
+  - apiGroups: ["dr.storage.dell.com"]
+    resources: ["volumejournals"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  {{- end }}
+  {{- end }}
    #below for podmon
   {{- if hasKey .Values "podmon" }}
   {{- if eq .Values.podmon.enabled true }}
@@ -309,6 +317,17 @@ spec:
             - name: X_CSI_HEALTH_MONITOR_ENABLED
               value: "{{ .Values.node.healthMonitor.enabled }}"
             {{- end }}
+            {{- end }}
+            {{- if hasKey .Values "disasterRecovery"}}
+            - name: X_CSM_DR_ENABLED
+              value: "{{ .Values.disasterRecovery.enabled}}"
+            - name: X_CSM_DR_BIND_PORT
+              value: "{{ .Values.disasterRecovery.bindPort | default "8082" }}"
+            {{- else }}
+            - name: X_CSM_DR_ENABLED
+              value: "true"
+            - name: X_CSM_DR_BIND_PORT
+              value: "8082"
             {{- end }}
             {{- if hasKey .Values.node "topologyControl" }}
             {{- if eq .Values.node.topologyControl.enabled true }}

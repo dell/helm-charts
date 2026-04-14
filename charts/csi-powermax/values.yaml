@@ -562,5 +562,16 @@ podmon:
       - "--mode=node"
       - "--leaderelection=false"
       - "--driver-config-params=/powermax-config-params/driver-config-params.yaml"
-      - "--driverPodLabelValue=dell-storage"
-      - "--ignoreVolumelessPods=false"
+
+# Enable installation of Custom Resource Definitions (CRDs) required for Disaster Recovery.
+# This is necessary when using the PowerMax Metro feature.
+# Set `enabled` to `true` to install the Disaster Recovery CRDs.
+disasterRecovery:
+  # Possible values:
+  #   true  - Installs the Disaster Recovery CRDs.
+  #   false - Does not install the Disaster Recovery CRDs.
+  enabled: false
+  # bindPort: Defines the port for the Disaster Recovery service
+  # Allowed values: Any valid and free port
+  # Default value: 8082
+  bindPort: 8082

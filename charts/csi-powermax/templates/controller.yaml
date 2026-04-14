@@ -102,6 +102,14 @@ rules:
     resources: ["configmaps"]
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
   {{- end}}
+  # below for CSM-DR
+  {{- if hasKey .Values "disasterRecovery" }}
+  {{- if eq .Values.disasterRecovery.enabled true}}
+  - apiGroups: ["dr.storage.dell.com"]
+    resources: ["volumejournals"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  {{- end }}
+  {{- end }}
   # Permissions for volume group snapshots
   {{- $vgsnapshotEnabled := include "csi-powermax.isVgsnapshotEnabled" . | eq "true" }}
   {{- if $vgsnapshotEnabled }}
@@ -525,6 +533,17 @@ spec:
             - name: X_CSI_HEALTH_MONITOR_ENABLED
               value: "{{ .Values.controller.healthMonitor.enabled }}"
             {{- end }}
+            {{- end }}
+            {{- if hasKey .Values "disasterRecovery" }}
+            - name: X_CSM_DR_ENABLED
+              value: "{{ .Values.disasterRecovery.enabled}}"
+            - name: X_CSM_DR_BIND_PORT
+              value: "{{ .Values.disasterRecovery.bindPort | default "8082" }}"
+            {{- else }}
+            - name: X_CSM_DR_ENABLED
+              value: "true"
+            - name: X_CSM_DR_BIND_PORT
+              value: "8082"
             {{- end }}
             - name: X_CSI_VSPHERE_ENABLED
               value: "{{ .Values.vSphere.enabled }}"
