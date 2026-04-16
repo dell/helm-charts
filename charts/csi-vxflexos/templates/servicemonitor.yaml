@@ -1,5 +1,4 @@
-{{- if hasKey .Values "metrics" }}
-{{- if eq .Values.metrics.enabled true }}
+{{- if eq (include "csi-vxflexos.isMetricsEnabled" .) "true" }}
 {{- if hasKey .Values.metrics "serviceMonitor" }}
 {{- if eq .Values.metrics.serviceMonitor.enabled true }}
 ---
@@ -29,7 +28,6 @@ spec:
         # alternatively configure ca, cert, and keySecret for full verification.
         insecureSkipVerify: {{ .Values.metrics.serviceMonitor.insecureSkipVerify | default false }}
       {{- end }}
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

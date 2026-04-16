@@ -463,8 +463,7 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
-            {{- if hasKey .Values "metrics" }}
-            {{- if eq .Values.metrics.enabled true }}
+            {{- if eq (include "csi-vxflexos.isMetricsEnabled" .) "true" }}
             - name: X_CSI_METRICS_ENABLED
               value: "true"
             - name: X_CSI_METRICS_PORT
@@ -478,15 +477,10 @@ spec:
             {{- if eq .Values.metrics.gatewayMonitoring.enabled true }}
             - name: X_CSI_GATEWAY_MONITORING_ENABLED
               value: "true"
-            {{- $leaderElect := true }}
-            {{- if hasKey .Values.metrics.gatewayMonitoring "leaderElectionEnabled" }}
-            {{- $leaderElect = .Values.metrics.gatewayMonitoring.leaderElectionEnabled }}
-            {{- end }}
             - name: X_CSI_GATEWAY_MONITORING_LEADER_ELECTION_ENABLED
-              value: {{ $leaderElect | quote }}
+              value: {{ include "csi-vxflexos.gatewayMonitoringLeaderElect" . }}
             - name: X_CSI_GATEWAY_MONITORING_POLL_INTERVAL
               value: "{{ .Values.metrics.gatewayMonitoring.pollInterval | default "30s" }}"
-            {{- end }}
             {{- end }}
             {{- end }}
           volumeMounts:
@@ -501,13 +495,11 @@ spec:
               mountPath: /certs
               readOnly: true
 {{- end}}
-{{- if hasKey .Values "metrics" }}
-{{- if eq .Values.metrics.enabled true }}
+{{- if eq (include "csi-vxflexos.isMetricsEnabled" .) "true" }}
 {{- if .Values.metrics.tlsCertSecret }}
             - name: metrics-tls
               mountPath: /etc/metrics-tls
               readOnly: true
-{{- end }}
 {{- end }}
 {{- end }}
       volumes:
@@ -543,12 +535,10 @@ spec:
                       path: cert-{{ $e }}
 {{- end }}
 {{- end }}
-{{- if hasKey .Values "metrics" }}
-{{- if eq .Values.metrics.enabled true }}
+{{- if eq (include "csi-vxflexos.isMetricsEnabled" .) "true" }}
 {{- if .Values.metrics.tlsCertSecret }}
         - name: metrics-tls
           secret:
             secretName: {{ .Values.metrics.tlsCertSecret }}
-{{- end }}
 {{- end }}
 {{- end }}

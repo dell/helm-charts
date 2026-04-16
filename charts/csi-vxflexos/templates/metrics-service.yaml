@@ -1,5 +1,4 @@
-{{- if hasKey .Values "metrics" }}
-{{- if eq .Values.metrics.enabled true }}
+{{- if eq (include "csi-vxflexos.isMetricsEnabled" .) "true" }}
 ---
 # Service exposing the shared driver metrics endpoint for Prometheus scraping.
 # Created when metrics.enabled is true.
@@ -19,5 +18,4 @@ spec:
       targetPort: {{ .Values.metrics.port | default 9090 }}
       protocol: TCP
   type: ClusterIP
-{{- end }}
 {{- end }}
