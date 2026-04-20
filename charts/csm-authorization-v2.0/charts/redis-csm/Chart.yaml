@@ -1,5 +1,5 @@
 apiVersion: v2
-name: redis-csm
+name: redis
 description: Helm Chart for Redis with Sentinels
 type: application
 version: 0.1.0
