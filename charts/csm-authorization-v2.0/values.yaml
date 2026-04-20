@@ -76,7 +76,6 @@ authorization:
 
 redis:
   name: redis-csm
-  # Redis credentials are required
   redisUsername:
   redisPassword:
   sentinel: sentinel
@@ -87,6 +86,20 @@ redis:
       image: redis:7.4.2-alpine
     commander:
       image: rediscommander/redis-commander:latest
+
+redis-csm:
+  redis:
+    name: redis-csm
+    redisUsername:
+    redisPassword:
+    sentinel: sentinel
+    rediscommander: rediscommander
+    replicas: 5
+    images:
+      redis:
+        image: redis:7.4.2-alpine
+      commander:
+        image: rediscommander/redis-commander:latest
 
 vault:
   - identifier: vault0
