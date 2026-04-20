@@ -29,7 +29,10 @@ spec:
     metadata:
       labels:
         app: {{ .Values.redis.name }}
-      annotations: {}
+      annotations:
+        {{- if or .Values.redisPassword .Values.redis.redisPassword }}
+        checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
+        {{- end }}
     spec:
       initContainers:
       - name: config
@@ -110,7 +113,10 @@ spec:
       labels:
         app: {{ .Values.redis.rediscommander }}
         tier: backend
-      annotations: {}
+      annotations:
+        {{- if or .Values.redisPassword .Values.redis.redisPassword }}
+        checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
+        {{- end }}
     spec:
       containers:
       - name: {{ .Values.redis.rediscommander }}
