@@ -75,20 +75,18 @@ authorization:
   storageCapacityPollInterval: 30m
 
 redis:
-  name: redis-csm
-  # Redis credentials are required
-  redisUsername:
-  redisPassword:
-  redisSecretProviderClass:
-    redisSecretName:
-  sentinel: sentinel
-  rediscommander: rediscommander
-  replicas: 5
-  images:
-    redis:
-      image: redis:7.4.2-alpine
-    commander:
-      image: rediscommander/redis-commander:latest
+  redis:
+    name: redis-csm
+    redisUsername:
+    redisPassword:
+    sentinel: sentinel
+    rediscommander: rediscommander
+    replicas: 5
+    images:
+      redis:
+        image: redis:7.4.2-alpine
+      commander:
+        image: rediscommander/redis-commander:latest
 
 vault:
   - identifier: vault0
