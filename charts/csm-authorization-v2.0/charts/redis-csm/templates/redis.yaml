@@ -29,8 +29,7 @@ spec:
     metadata:
       labels:
         app: {{ .Values.redis.name }}
-      annotations:
-        checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
+      annotations: {}
     spec:
       initContainers:
       - name: config
@@ -111,8 +110,7 @@ spec:
       labels:
         app: {{ .Values.redis.rediscommander }}
         tier: backend
-      annotations:
-        checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
+      annotations: {}
     spec:
       containers:
       - name: {{ .Values.redis.rediscommander }}

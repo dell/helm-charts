@@ -12,8 +12,7 @@ spec:
     metadata:
       labels:
         app: {{ .Values.redis.sentinel }}
-      annotations:
-        checksum/secret: {{ include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum }}
+      annotations: {}
     spec:
       initContainers:
       - name: config
