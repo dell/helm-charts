@@ -76,6 +76,11 @@ authorization:
 
 redis:
   name: redis-csm
+  # Redis credentials are required
+  redisUsername:
+  redisPassword:
+  redisSecretProviderClass:
+    redisSecretName:
   sentinel: sentinel
   rediscommander: rediscommander
   replicas: 5
