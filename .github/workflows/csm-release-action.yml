@@ -6,8 +6,8 @@
 #
 #  http://www.apache.org/licenses/LICENSE-2.0
 
-# This Github action will create a Github release for the csm installation wizard
-name: Release CSM Installation Wizard
+# This Github action will create a Github release for the container-storage-modules
+name: Release Container Storage Modules
 
 # Triggers the action when a chart release has been created and deployed
 on:
@@ -22,8 +22,8 @@ permissions:
   contents: write
 
 jobs:
-  # This job will perform a helm release of the installation wizard chart if it has been updated
-  release-installation-wizard:
+  # This job will perform a helm release of the conatiner-storage-modules chart if it has been updated
+  release-container-storage-modules:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }} && ${{ github.event.release.action == 'released' }}
     steps:
@@ -67,5 +67,5 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
-          charts_dir: installation-wizard
+          charts_dir: container-storage-modules
           skip_existing: true

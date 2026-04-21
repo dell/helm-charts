@@ -508,7 +508,10 @@ metrics:
     # Default: false
     # Effect: When true, Prometheus will skip TLS certificate verification.
     insecureSkipVerify: false
+<<<<<<< HEAD
 >>>>>>> fbcc448 (Fstrim Update for PowerFlex.)
+=======
+>>>>>>> 2b0a605 (Merge branch 'main' into usr/schmam1/feat-space-reclamation)
 
 interfaceNames:
   # worker1: interface1

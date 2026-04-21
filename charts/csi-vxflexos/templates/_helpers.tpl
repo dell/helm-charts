@@ -18,6 +18,21 @@ Return true if storage capacity tracking is enabled and is supported based on k8
 {{- end -}}
 
 {{/*
+Return true if metrics is enabled
+*/}}
+{{- define "csi-vxflexos.isMetricsEnabled" -}}
+{{- if hasKey .Values "metrics" -}}
+  {{- if (eq .Values.metrics.enabled true) -}}
+      {{- true -}}
+  {{- else -}}
+      {{- false -}}
+  {{- end -}}
+{{- else -}}
+  {{- false -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return true if volumeGroupSnapshot is enabled and properly configured
 */}}
 {{- define "csi-vxflexos.isVgsnapshotEnabled" -}}
@@ -30,4 +45,20 @@ Return true if volumeGroupSnapshot is enabled and properly configured
 {{- else -}}
   {{- false -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Return the leader election value for PowerFlex Gateway Monitoring.
+Defaults to "true" when leaderElectionEnabled is not explicitly set.
+*/}}
+{{- define "csi-vxflexos.gatewayMonitoringLeaderElect" -}}
+  {{- $leaderElect := true -}}
+  {{- if hasKey .Values "metrics" -}}
+    {{- if hasKey .Values.metrics "gatewayMonitoring" -}}
+      {{- if hasKey .Values.metrics.gatewayMonitoring "leaderElectionEnabled" -}}
+        {{- $leaderElect = .Values.metrics.gatewayMonitoring.leaderElectionEnabled -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $leaderElect | quote -}}
 {{- end -}}
