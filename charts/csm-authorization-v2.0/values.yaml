@@ -76,6 +76,8 @@ authorization:
 
 redis:
   name: redis-csm
+  redisUsername:
+  redisPassword:
   sentinel: sentinel
   rediscommander: rediscommander
   replicas: 5
