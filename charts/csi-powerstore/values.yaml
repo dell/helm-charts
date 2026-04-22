@@ -142,6 +142,20 @@ fsCheck:
   # Default value: "checkOnly"
   mode: "checkOnly"
 
+# spaceReclamation: Settings for space reclamation (fstrim/blkdiscard)
+# Reclaims unused storage blocks from Persistent Volumes.
+# Allowed Values:
+#   enabled: "true"/"***REMOVED***" - enable/disable space reclamation
+#   schedule: cron expression for reclamation schedule
+#   maxConcurrentVolumes: max number of concurrent reclamation operations per node
+#   timeoutSeconds: timeout for each reclamation operation in seconds
+# Default values shown below
+spaceReclamation:
+  enabled: ***REMOVED***
+  schedule: "0 2 * * 0"
+  maxConcurrentVolumes: 2
+  timeoutSeconds: 3600
+
 # controller: configure controller specific parameters
 controller:
   # controllerCount: defines the number of csi-powerstore controller pods to deploy to
