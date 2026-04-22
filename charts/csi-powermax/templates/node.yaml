@@ -360,6 +360,16 @@ spec:
             - name: X_CSI_FS_CHECK_MODE
               value: "{{ .Values.fsCheck.mode }}"
             {{- end }}
+            {{- if hasKey .Values "spaceReclamation" }}
+            - name: X_CSI_SPACE_RECLAMATION_ENABLED
+              value: "{{ .Values.spaceReclamation.enabled }}"
+            - name: X_CSI_SPACE_RECLAMATION_SCHEDULE
+              value: "{{ .Values.spaceReclamation.schedule }}"
+            - name: X_CSI_SPACE_RECLAMATION_MAX_CONCURRENT
+              value: "{{ .Values.spaceReclamation.maxConcurrentVolumes }}"
+            - name: X_CSI_SPACE_RECLAMATION_TIMEOUT
+              value: "{{ .Values.spaceReclamation.timeoutSeconds }}"
+            {{- end }}
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/powermax.emc.dell.com
