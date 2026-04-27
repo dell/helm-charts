@@ -246,6 +246,10 @@ spec:
               value: /certs
             - name: X_CSI_POWERFLEX_NODE_CHROOT_PATH
               value: /noderoot
+            - name: X_CSI_DRIVER_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             {{- if hasKey .Values.node "healthMonitor" }}
             - name: X_CSI_HEALTH_MONITOR_ENABLED
               value: "{{ .Values.node.healthMonitor.enabled }}"
