@@ -65,7 +65,11 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
+  {{- if .Values.karaviMetricsPowermax.enabled }}
   name: {{ .Chart.Name }}-selfsigned-issuer
+  {{- else }}
+  name: selfsigned-issuer
+  {{- end }}
   namespace: {{ include "custom.namespace" . }}
 spec:
   selfSigned: {}
@@ -100,8 +104,10 @@ spec:
   issuerRef:
   {{- if and (.Values.otelCollector.certificateFile) (.Values.otelCollector.privateKeyFile) }}
     name: otel-collector-issuer
-  {{- else }}
+  {{- else if .Values.karaviMetricsPowermax.enabled }}
     name: {{ .Chart.Name }}-selfsigned-issuer
+  {{- else }}
+    name: selfsigned-issuer
   {{- end }}
     kind: Issuer
     group: cert-manager.io
@@ -135,8 +141,10 @@ spec:
   issuerRef:
   {{- if and (.Values.karaviMetricsPowerstore.certificateFile) (.Values.karaviMetricsPowerstore.privateKeyFile) }}
     name: karavi-metrics-powerstore-issuer
-  {{- else }}
+  {{- else if .Values.karaviMetricsPowermax.enabled }}
     name: {{ .Chart.Name }}-selfsigned-issuer
+  {{- else }}
+    name: selfsigned-issuer
   {{- end }}
     kind: Issuer
     group: cert-manager.io
