@@ -154,7 +154,7 @@ spaceReclamation:
   enabled: false
   schedule: "0 2 * * 0"
   maxConcurrentVolumes: 2
-  timeoutSeconds: 3600
+  timeoutSeconds: 14400
 
 # controller: configure controller specific parameters
 controller:
