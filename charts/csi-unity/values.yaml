@@ -3,7 +3,7 @@
 
 # version: version of this values file
 # Note: Do not change this value
-# Examples : "v2.16.0" , "nightly"
+# Examples : "v2.17.0" , "nightly"
 version: "v2.17.0"
 
 images:
