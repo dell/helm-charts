@@ -8,7 +8,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ .Release.Name }}-gateway-monitoring
+  name: {{ .Release.Name }}-metrics-monitor
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Release.Name }}-controller
