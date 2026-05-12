@@ -6,8 +6,8 @@
 #
 #  http://www.apache.org/licenses/LICENSE-2.0
 
-# This Github action will re-release Helm charts and container-storage-modules
-name: Re-release Helm Charts
+# This Github action will manually package and upload Helm charts and container-storage-modules
+name: Manually Package and Upload Helm Charts
 
 # Invocable as a manual workflow
 on:
@@ -16,8 +16,8 @@ on:
       version:
         description: 'Release version. E.g. 1.17.0'
         required: true
-      deleted_packages:
-        description: 'Comma-separated list of deleted chart packages to re-release. E.g. csi-powermax,csi-unity'
+      charts:
+        description: 'Comma-separated list of chart packages to package and upload. E.g. csi-powermax,csi-unity'
         required: true
 
 permissions:
@@ -45,11 +45,6 @@ jobs:
           echo "$PWD" >> $GITHUB_PATH
           rm cr.tar.gz
 
-      - name: Delete local release tags
-        run: |
-          git tag -l | xargs git tag -d || true
-          echo "Deleted all local release tags"
-
       - name: Create/update release branch from main
         run: |
           branch_name=release-v${{ inputs.version }}
@@ -68,10 +63,10 @@ jobs:
         run: |
           mkdir -p .cr-release-packages
 
-      - name: Package deleted charts
-        if: ${{ inputs.deleted_packages != '' }}
+      - name: Package charts
+        if: ${{ inputs.charts != '' }}
         run: |
-          PACKAGES="${{ inputs.deleted_packages }}"
+          PACKAGES="${{ inputs.charts }}"
 
           IFS=',' read -ra PACKAGES_ARRAY <<< "$PACKAGES"
           for chart_name in "${PACKAGES_ARRAY[@]}"; do
@@ -91,9 +86,9 @@ jobs:
             fi
           done
 
-      - name: Delete existing GitHub releases for re-release
+      - name: Delete existing GitHub releases
         run: |
-          # Delete existing releases/tags for packages we're about to re-release
+          # Delete existing releases/tags for packages we're about to upload
           for pkg in .cr-release-packages/*.tgz; do
             if [ -f "$pkg" ]; then
               tag_name=$(basename "$pkg" .tgz)
@@ -107,12 +102,12 @@ jobs:
             fi
           done
 
-      - name: Upload deleted charts to GitHub Releases
+      - name: Upload charts to GitHub Releases
         run: |
-          # Upload deleted charts first
+          # Upload charts
           cr upload --owner ${{ github.repository_owner }} --git-repo ${{ github.event.repository.name }} --token ${{ secrets.GITHUB_TOKEN }} --package-path .cr-release-packages
 
-      - name: Package container-storage-modules (after deleted charts are released)
+      - name: Package container-storage-modules (after charts are released)
         run: |
           # Clean the package directory
           rm -rf .cr-release-packages/*
