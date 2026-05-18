@@ -6,7 +6,7 @@
 #
 #  http://www.apache.org/licenses/LICENSE-2.0
 
-#
+# Workflow to perform version updates to the csm helm charts
 name: Update CSM versions
 
 on:
