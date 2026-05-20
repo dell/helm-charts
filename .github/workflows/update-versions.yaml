@@ -49,6 +49,7 @@ jobs:
           csi_powermax=$(extract_value 'csi-powermax')
           csi_vxflexos=$(extract_value 'csi-vxflexos')
           csi_unity=$(extract_value 'csi-unity')
+          csi_lightningfs=$(extract_value 'csi-lightningfs')
           cosi=$(extract_value 'cosi')
           
           # Module versions
@@ -90,6 +91,7 @@ jobs:
             echo "CSI_POWERMAX=$csi_powermax"
             echo "CSI_VXFLEXOS=$csi_vxflexos"
             echo "CSI_UNITY=$csi_unity"
+            echo "CSI_LIGHTNINGFS=$csi_lightningfs"
             echo "COSI=$cosi"
           
             # Modules
