@@ -85,7 +85,7 @@ infer_version_from_component() {
     csm-authorization-role)       result="${CSM_AUTHORIZATION:-}" ;;
     csm-authorization-storage)    result="${CSM_AUTHORIZATION:-}" ;;
     csm-authorization-controller) result="${CSM_AUTHORIZATION:-}" ;;
-    csireverseproxy) result="${CSIREVERSEPROXY:-}" ;;
+    csireverseproxy)  result="${CSIREVERSEPROXY:-}" ;;
     csipowermax-reverseproxy) result="${CSIREVERSEPROXY:-}" ;;
     karavi-observability) result="${KARAVI_OBSERVABILITY:-}" ;;
     karavi-metrics-powerflex) result="${KARAVI_METRICS_POWERFLEX:-}" ;;
@@ -134,14 +134,36 @@ infer_chart_version_from_name() {
     cosi)                  result="${COSI:-}" ;;
     csi-isilon)            result="${CSI_POWERSCALE:-}" ;;
     csi-lightningfs)       result="${CSI_LIGHTNINGFS:-}" ;;
-    csi-powerstore)        result="${CSI_POWERSTORE:-}" ;;
     csi-powermax)          result="${CSI_POWERMAX:-}" ;;
+    csi-powerstore)        result="${CSI_POWERSTORE:-}" ;;
     csi-vxflexos)          result="${CSI_VXFLEXOS:-}" ;;
     csi-unity)             result="${CSI_UNITY:-}" ;;
-    csm-authorization*)    result="${CSM_AUTHORIZATION:-}" ;;
-    csm-disaster-recovery) result="${CSM_VERSION:-}" ;;
-    csm-replication)       result="${CSM_REPLICATION:-}" ;;
-    karavi-observability)  result="${KARAVI_OBSERVABILITY:-}" ;;
+    csm-authorization*)       result="${CSM_AUTHORIZATION:-}" ;;
+    csm-disaster-recovery)    result="${CSM_DISASTER_RECOVERY:-}" ;;
+    csm-replication)          result="${CSM_REPLICATION:-}" ;;
+    karavi-observability)     result="${KARAVI_OBSERVABILITY:-}" ;;
+    container-storage-modules) result="${CONTAINER_STORAGE_MODULES:-}" ;;
+  esac
+  echo "$result"
+}
+
+# Map Chart.yaml dependency names to their version env var
+infer_dependency_version() {
+  local name=$1 result=""
+  case "$name" in
+    cosi)                      result="${COSI:-}" ;;
+    csi-isilon)                result="${CSI_POWERSCALE:-}" ;;
+    csi-lightningfs)           result="${CSI_LIGHTNINGFS:-}" ;;
+    csi-powermax)              result="${CSI_POWERMAX:-}" ;;
+    csi-powerstore)            result="${CSI_POWERSTORE:-}" ;;
+    csi-vxflexos)              result="${CSI_VXFLEXOS:-}" ;;
+    csi-unity)                 result="${CSI_UNITY:-}" ;;
+    csireverseproxy)           result="${CSIREVERSEPROXY:-}" ;;
+    csm-authorization*)        result="${CSM_AUTHORIZATION:-}" ;;
+    csm-disaster-recovery)     result="${CSM_DISASTER_RECOVERY:-}" ;;
+    csm-replication)           result="${CSM_REPLICATION:-}" ;;
+    karavi-observability)      result="${KARAVI_OBSERVABILITY:-}" ;;
+    container-storage-modules) result="${CONTAINER_STORAGE_MODULES:-}" ;;
   esac
   echo "$result"
 }
@@ -158,6 +180,21 @@ parse_image_string() {
   repo=$(echo "$1" | sed 's/:.*//')
   tag=$(echo "$1" | sed 's/.*://')
   echo "$repo|$tag"
+}
+
+# Update top-level Chart.yaml fields (version, appVersion) using sed to preserve formatting
+update_chart_field() {
+  local file=$1 field=$2 value=$3 label=$4
+  local old tmp
+  old=$(grep "^${field}:" "$file" | head -1 | sed 's/^[^:]*:[[:space:]]*//' | tr -d '"')
+  [[ "$(strip_v "$old")" == "$(strip_v "$value")" ]] && return 0
+  tmp=$(mktemp)
+  if [[ "$field" == "appVersion" ]]; then
+    sed "s|^${field}:.*|${field}: \"${value}\"|" "$file" > "$tmp" && mv "$tmp" "$file"
+  else
+    sed "s|^${field}:.*|${field}: ${value}|" "$file" > "$tmp" && mv "$tmp" "$file"
+  fi
+  log_change "$label ($field)" "$old" "$value"
 }
 
 # Update YAML
@@ -199,14 +236,24 @@ update_dependencies() {
 
     require_non_empty "dependency name" "$name"
 
-    inferred=$(infer_version_from_component "$name")
+    inferred=$(infer_dependency_version "$name")
     if [[ -z "$inferred" ]]; then
-      warn "$chart_dir: unknown dependency '$name' in $chart_file; using chart version '$default_version'"
-      inferred="$default_version"
+      warn "$chart_dir: no version mapping for dependency '$name' in $chart_file; skipping"
+      continue
     fi
     version=$(normalize_version "$inferred")
+    old=$(yq e ".dependencies[$i].version" "$chart_file")
+    [[ "$(strip_v "$old")" == "$(strip_v "$version")" ]] && continue
 
-    update_field "$chart_file" "dependencies[$i].version" "$version" "$chart_dir dependency"
+    local tmp
+    tmp=$(mktemp)
+    awk -v dep="$name" -v ver="$version" -v found=0 '
+      /^[[:space:]]*- name:/ { in_dep = ($NF == dep && !found) }
+      in_dep && /^[[:space:]]*version:/ { sub(/version:.*/, "version: " ver); in_dep = 0; found = 1 }
+      { print }
+    ' "$chart_file" > "$tmp" && mv "$tmp" "$chart_file"
+
+    log_change "$chart_dir dependency ($name)" "$old" "$version"
   done
 }
 
@@ -214,7 +261,13 @@ update_dependencies() {
 # MAIN LOOP
 # --------------------------------------------------
 
-mapfile -t CHARTS < <(find charts -mindepth 1 -maxdepth 1 -type d | sort)
+mapfile -t CHARTS < <(
+  { find charts -name 'Chart.yaml'
+    find container-storage-modules -name 'Chart.yaml' 2>/dev/null
+  } | grep -v '/charts/redis/' \
+    | sed 's|/Chart.yaml$||' \
+    | sort
+)
 
 for chart_dir in "${CHARTS[@]}"; do
   echo ""
@@ -244,8 +297,8 @@ for chart_dir in "${CHARTS[@]}"; do
   require_non_empty "chart version ($chart_dir)" "$chart_version"
 
   # Update Chart.yaml
-  update_field "$chart_file" "version" "$chart_version" "$chart_dir"
-  update_field "$chart_file" "appVersion" "$chart_version" "$chart_dir"
+  update_chart_field "$chart_file" "version" "$chart_version" "$chart_dir"
+  update_chart_field "$chart_file" "appVersion" "$chart_version" "$chart_dir"
 
   # Dependencies
   update_dependencies "$chart_file" "$chart_dir" "$chart_version"
@@ -266,9 +319,19 @@ for chart_dir in "${CHARTS[@]}"; do
         warn "$chart_dir: unknown image component '$component' at $values_file:$path; leaving as-is"
         continue
       fi
-      new_value="${repo}:$(normalize_version "$inferred")"
+      old_tag=${parsed#*|}
+      if [[ "$old_tag" == v* ]]; then
+        new_tag="v$(normalize_version "$inferred")"
+      else
+        new_tag="$(normalize_version "$inferred")"
+      fi
+      new_value="${repo}:${new_tag}"
 
-      update_field "$values_file" "$path" "$new_value" "$chart_dir image"
+      if [[ "$value" != "$new_value" ]]; then
+        tmp=$(mktemp)
+        sed "s|${value}|${new_value}|" "$values_file" > "$tmp" && mv "$tmp" "$values_file"
+        log_change "$chart_dir image ($path)" "$value" "$new_value"
+      fi
 
     done < <(detect_flat_images "$values_file")
   fi
