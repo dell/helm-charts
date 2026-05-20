@@ -127,28 +127,8 @@ infer_version_from_component() {
   echo "$result"
 }
 
-# Map chart directory name to its version env var
-infer_chart_version_from_name() {
-  local name=$1 result=""
-  case "$name" in
-    cosi)                  result="${COSI:-}" ;;
-    csi-isilon)            result="${CSI_POWERSCALE:-}" ;;
-    csi-lightningfs)       result="${CSI_LIGHTNINGFS:-}" ;;
-    csi-powermax)          result="${CSI_POWERMAX:-}" ;;
-    csi-powerstore)        result="${CSI_POWERSTORE:-}" ;;
-    csi-vxflexos)          result="${CSI_VXFLEXOS:-}" ;;
-    csi-unity)             result="${CSI_UNITY:-}" ;;
-    csm-authorization*)       result="${CSM_AUTHORIZATION:-}" ;;
-    csm-disaster-recovery)    result="${CSM_DISASTER_RECOVERY:-}" ;;
-    csm-replication)          result="${CSM_REPLICATION:-}" ;;
-    karavi-observability)     result="${KARAVI_OBSERVABILITY:-}" ;;
-    container-storage-modules) result="${CONTAINER_STORAGE_MODULES:-}" ;;
-  esac
-  echo "$result"
-}
-
-# Map Chart.yaml dependency names to their version env var
-infer_dependency_version() {
+# Map a chart directory name or Chart.yaml dependency name to its version env var
+infer_version_from_name() {
   local name=$1 result=""
   case "$name" in
     cosi)                      result="${COSI:-}" ;;
@@ -236,7 +216,7 @@ update_dependencies() {
 
     require_non_empty "dependency name" "$name"
 
-    inferred=$(infer_dependency_version "$name")
+    inferred=$(infer_version_from_name "$name")
     if [[ -z "$inferred" ]]; then
       warn "$chart_dir: no version mapping for dependency '$name' in $chart_file; skipping"
       continue
@@ -282,7 +262,7 @@ for chart_dir in "${CHARTS[@]}"; do
 
   # ---- Primary: infer from chart name
   chart_name=$(basename "$chart_dir")
-  raw=$(infer_chart_version_from_name "$chart_name")
+  raw=$(infer_version_from_name "$chart_name")
   [[ -n "$raw" ]] && chart_version=$(normalize_version "$raw")
 
   # ---- Fallback: existing version from Chart.yaml (keeps unknown charts stable)
