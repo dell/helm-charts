@@ -10,6 +10,8 @@
 
 set -euo pipefail
 
+trap 'echo "ERROR: ${BASH_SOURCE[0]} failed at line ${LINENO}: ${BASH_COMMAND}" >&2' ERR
+
 SUMMARY_FILE="version-summary.txt"
 > "$SUMMARY_FILE"
 
@@ -29,8 +31,9 @@ log_change() {
   old_clean=$(strip_v "$old")
   new_clean=$(strip_v "$new")
 
-  [[ "$old_clean" != "$new_clean" ]] && \
+  if [[ "$old_clean" != "$new_clean" ]]; then
     echo "$name: $old → $new" | tee -a "$SUMMARY_FILE"
+  fi
 }
 
 require_file() {
@@ -55,14 +58,15 @@ warn() {
 # Example:
 # quay.io/dell/container-storage-modules/csi-isilon:v2.17.0 → csi-isilon
 extract_component() {
-  basename "$1"
+  basename -- "$1"
 }
 
 infer_version_from_component() {
-  local component=$1 result=""
+  local component=$1 result="" known=true
 
   case "$component" in
     csi-isilon) result="${CSI_POWERSCALE:-}" ;;
+    csi-lightningfs) result="${CSI_LIGHTNINGFS:-}" ;;
     csi-powerstore) result="${CSI_POWERSTORE:-}" ;;
     csi-powermax) result="${CSI_POWERMAX:-}" ;;
     csi-vxflexos) result="${CSI_VXFLEXOS:-}" ;;
@@ -70,11 +74,22 @@ infer_version_from_component() {
     cosi) result="${COSI:-}" ;;
 
     csm-replication) result="${CSM_REPLICATION:-}" ;;
+    dell-replication-controller) result="${CSM_REPLICATION:-}" ;;
+    dell-csi-replicator) result="${CSM_REPLICATION:-}" ;;
     karavi-resiliency) result="${KARAVI_RESILIENCY:-}" ;;
+    podmon) result="${KARAVI_RESILIENCY:-}" ;;
     csm-authorization) result="${CSM_AUTHORIZATION:-}" ;;
+    csm-authorization-sidecar)    result="${CSM_AUTHORIZATION:-}" ;;
+    csm-authorization-proxy)      result="${CSM_AUTHORIZATION:-}" ;;
+    csm-authorization-tenant)     result="${CSM_AUTHORIZATION:-}" ;;
+    csm-authorization-role)       result="${CSM_AUTHORIZATION:-}" ;;
+    csm-authorization-storage)    result="${CSM_AUTHORIZATION:-}" ;;
+    csm-authorization-controller) result="${CSM_AUTHORIZATION:-}" ;;
     csireverseproxy) result="${CSIREVERSEPROXY:-}" ;;
+    csipowermax-reverseproxy) result="${CSIREVERSEPROXY:-}" ;;
     karavi-observability) result="${KARAVI_OBSERVABILITY:-}" ;;
     karavi-metrics-powerflex) result="${KARAVI_METRICS_POWERFLEX:-}" ;;
+    csm-metrics-powerflex) result="${KARAVI_METRICS_POWERFLEX:-}" ;;
     csm-metrics-powerstore) result="${CSM_METRICS_POWERSTORE:-}" ;;
     csm-metrics-powerscale) result="${CSM_METRICS_POWERSCALE:-}" ;;
     csm-metrics-powermax) result="${CSM_METRICS_POWERMAX:-}" ;;
@@ -93,68 +108,49 @@ infer_version_from_component() {
     nginx-unprivileged) result="${NGINX_UNPRIVILEGED:-}" ;;
     grafana) result="${GRAFANA:-}" ;;
     prometheus) result="${PROMETHEUS:-}" ;;
+    opa) result="${OPENPOLICYAGENT_OPA:-}" ;;
     openpolicyagent-opa) result="${OPENPOLICYAGENT_OPA:-}" ;;
+    kube-mgmt) result="${OPENPOLICYAGENT_KUBE_MGMT:-}" ;;
     openpolicyagent-kube-mgmt) result="${OPENPOLICYAGENT_KUBE_MGMT:-}" ;;
     redis) result="${REDIS:-}" ;;
 
     *)
-      result=""
+      known=false
       ;;
   esac
 
-  if [[ -z "$result" ]]; then
-    case "$component" in
-      csi-isilon) echo "ERROR: Missing required env var CSI_POWERSCALE for component '$component'" >&2; exit 1 ;;
-      csi-powerstore) echo "ERROR: Missing required env var CSI_POWERSTORE for component '$component'" >&2; exit 1 ;;
-      csi-powermax) echo "ERROR: Missing required env var CSI_POWERMAX for component '$component'" >&2; exit 1 ;;
-      csi-vxflexos) echo "ERROR: Missing required env var CSI_VXFLEXOS for component '$component'" >&2; exit 1 ;;
-      csi-unity) echo "ERROR: Missing required env var CSI_UNITY for component '$component'" >&2; exit 1 ;;
-      cosi) echo "ERROR: Missing required env var COSI for component '$component'" >&2; exit 1 ;;
-      csm-replication) echo "ERROR: Missing required env var CSM_REPLICATION for component '$component'" >&2; exit 1 ;;
-      karavi-resiliency) echo "ERROR: Missing required env var KARAVI_RESILIENCY for component '$component'" >&2; exit 1 ;;
-      csm-authorization) echo "ERROR: Missing required env var CSM_AUTHORIZATION for component '$component'" >&2; exit 1 ;;
-      csireverseproxy) echo "ERROR: Missing required env var CSIREVERSEPROXY for component '$component'" >&2; exit 1 ;;
-      karavi-observability) echo "ERROR: Missing required env var KARAVI_OBSERVABILITY for component '$component'" >&2; exit 1 ;;
-      karavi-metrics-powerflex) echo "ERROR: Missing required env var KARAVI_METRICS_POWERFLEX for component '$component'" >&2; exit 1 ;;
-      csm-metrics-powerstore) echo "ERROR: Missing required env var CSM_METRICS_POWERSTORE for component '$component'" >&2; exit 1 ;;
-      csm-metrics-powerscale) echo "ERROR: Missing required env var CSM_METRICS_POWERSCALE for component '$component'" >&2; exit 1 ;;
-      csm-metrics-powermax) echo "ERROR: Missing required env var CSM_METRICS_POWERMAX for component '$component'" >&2; exit 1 ;;
-      csi-resizer) echo "ERROR: Missing required env var CSI_RESIZER for component '$component'" >&2; exit 1 ;;
-      csi-provisioner) echo "ERROR: Missing required env var CSI_PROVISIONER for component '$component'" >&2; exit 1 ;;
-      csi-attacher) echo "ERROR: Missing required env var CSI_ATTACHER for component '$component'" >&2; exit 1 ;;
-      csi-snapshotter) echo "ERROR: Missing required env var CSI_SNAPSHOTTER for component '$component'" >&2; exit 1 ;;
-      csi-node-driver-registrar) echo "ERROR: Missing required env var CSI_NODE_DRIVER_REGISTRAR for component '$component'" >&2; exit 1 ;;
-      csi-external-health-monitor-controller) echo "ERROR: Missing required env var CSI_EXTERNAL_HEALTH_MONITOR_CONTROLLER for component '$component'" >&2; exit 1 ;;
-      csi-metadata-retriever) echo "ERROR: Missing required env var CSI_METADATA_RETRIEVER for component '$component'" >&2; exit 1 ;;
-      opentelemetry-collector) echo "ERROR: Missing required env var OPENTELEMETRY_COLLECTOR for component '$component'" >&2; exit 1 ;;
-      nginx-unprivileged) echo "ERROR: Missing required env var NGINX_UNPRIVILEGED for component '$component'" >&2; exit 1 ;;
-      grafana) echo "ERROR: Missing required env var GRAFANA for component '$component'" >&2; exit 1 ;;
-      prometheus) echo "ERROR: Missing required env var PROMETHEUS for component '$component'" >&2; exit 1 ;;
-      openpolicyagent-opa) echo "ERROR: Missing required env var OPENPOLICYAGENT_OPA for component '$component'" >&2; exit 1 ;;
-      openpolicyagent-kube-mgmt) echo "ERROR: Missing required env var OPENPOLICYAGENT_KUBE_MGMT for component '$component'" >&2; exit 1 ;;
-      redis) echo "ERROR: Missing required env var REDIS for component '$component'" >&2; exit 1 ;;
-      *)
-        echo ""
-        return 0
-        ;;
-    esac
+  if [[ "$known" == true ]] && [[ -z "$result" ]]; then
+    echo "ERROR: Missing required env var for known component '$component'" >&2
+    exit 1
   fi
 
+  echo "$result"
+}
+
+# Map chart directory name to its version env var
+infer_chart_version_from_name() {
+  local name=$1 result=""
+  case "$name" in
+    cosi)                  result="${COSI:-}" ;;
+    csi-isilon)            result="${CSI_POWERSCALE:-}" ;;
+    csi-lightningfs)       result="${CSI_LIGHTNINGFS:-}" ;;
+    csi-powerstore)        result="${CSI_POWERSTORE:-}" ;;
+    csi-powermax)          result="${CSI_POWERMAX:-}" ;;
+    csi-vxflexos)          result="${CSI_VXFLEXOS:-}" ;;
+    csi-unity)             result="${CSI_UNITY:-}" ;;
+    csm-authorization*)    result="${CSM_AUTHORIZATION:-}" ;;
+    csm-disaster-recovery) result="${CSM_VERSION:-}" ;;
+    csm-replication)       result="${CSM_REPLICATION:-}" ;;
+    karavi-observability)  result="${KARAVI_OBSERVABILITY:-}" ;;
+  esac
   echo "$result"
 }
 
 # Detect images
 detect_flat_images() {
   local file=$1
-
-  yq e -o=json '
-    paths(.. | select(tag == "!!str")) as $p
-    | select(getpath($p) | test("^[^[:space:]]+:[^[:space:]]+$"))
-    | {
-        path: ($p | join(".")),
-        value: getpath($p)
-      }
-  ' "$file" 2>/dev/null | jq -c '.'
+  yq e -o=json '.' "$file" 2>/dev/null \
+    | jq -c 'paths(strings) as $p | select(getpath($p) | (test("^[a-zA-Z0-9][^[:space:]]*:[^[:space:]]+$") and (test("://") | not))) | {path: ($p | map(tostring) | join(".")), value: getpath($p)}'
 }
 
 # Parse image string
@@ -175,11 +171,14 @@ update_field() {
     exit 1
   }
 
-  yq e -i ".$path = \"$value\"" "$file" || {
+  local tmp
+  tmp=$(mktemp)
+  yq e ".$path = \"$value\"" "$file" > "$tmp" || {
     echo "Failed update: $path"
+    rm -f "$tmp"
     exit 1
   }
-
+  mv "$tmp" "$file"
 
   log_change "$label ($path)" "$old" "$value"
 }
@@ -228,37 +227,21 @@ for chart_dir in "${CHARTS[@]}"; do
 
   chart_version=""
 
-  # ---- Infer from flat images
-  if [[ -f "$values_file" ]]; then
-    while IFS= read -r entry; do
-      [[ -z "$entry" ]] && continue
-      value=$(echo "$entry" | jq -r '.value')
+  # ---- Primary: infer from chart name
+  chart_name=$(basename "$chart_dir")
+  raw=$(infer_chart_version_from_name "$chart_name")
+  [[ -n "$raw" ]] && chart_version=$(normalize_version "$raw")
 
-      parsed=$(parse_image_string "$value")
-      repo=${parsed%|*}
-      component=$(extract_component "$repo")
-
-      inferred_version=$(infer_version_from_component "$component")
-      if [[ -n "$inferred_version" ]]; then
-        chart_version="$inferred_version"
-        break
-      fi
-      warn "$chart_dir: unknown image component '$component' in $values_file; skipping for chart version inference"
-    done < <(detect_flat_images "$values_file")
-  fi
-
-  # ---- fallback Chart.yaml
+  # ---- Fallback: existing version from Chart.yaml (keeps unknown charts stable)
   if [[ -z "$chart_version" ]]; then
     raw=$(detect_chart_version "$chart_file")
-    [[ -n "$raw" ]] && chart_version=$(strip_v "$raw")
+    if [[ -n "$raw" ]]; then
+      chart_version=$(strip_v "$raw")
+      warn "$chart_dir: no version mapping for chart '$chart_name'; keeping existing version $chart_version"
+    fi
   fi
 
-  # ---- fallback global
-  [[ -z "$chart_version" ]] && chart_version="${CSM_VERSION:-}"
-
   require_non_empty "chart version ($chart_dir)" "$chart_version"
-
-  chart_version=$(normalize_version "$chart_version")
 
   # Update Chart.yaml
   update_field "$chart_file" "version" "$chart_version" "$chart_dir"
