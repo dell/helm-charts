@@ -42,6 +42,7 @@ jobs:
           }
 
           csm_version=$(extract_value 'csm-version')
+          csm_chart=$(extract_value 'container-storage-modules')
           
           # Driver versions
           csi_powerscale=$(extract_value 'csi-powerscale')
@@ -85,6 +86,7 @@ jobs:
           # Export to GitHub env
           {
             echo "CSM_VERSION=$csm_version"
+            echo "CONTAINER_STORAGE_MODULES=$csm_chart"
           
             # Drivers
             echo "CSI_POWERSCALE=$csi_powerscale"
