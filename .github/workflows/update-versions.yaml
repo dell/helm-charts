@@ -129,7 +129,13 @@ jobs:
           path: helm-charts
           ref: ${{ inputs.target-branch }}
 
+      - name: Install yq
+        run: |
+          go install github.com/mikefarah/yq/v4@latest
+
       - name: Apply version updates
+        working-directory: helm-charts
+        shell: bash
         run: |
           bash ./.github/scripts/apply-helm-versions.sh
 
@@ -137,13 +143,14 @@ jobs:
         uses: actions/create-github-app-token@v3.1.1
         id: generate-token
         with:
-          app-id: ${{ vars.CSM_RELEASE_APP_ID }}
+          client-id: ${{ vars.CSM_RELEASE_APP_ID }}
           private-key: ${{ secrets.CSM_RELEASE_APP_PRIVATE_KEY }}
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.generate-token.outputs.token }}
+          path: helm-charts
           base: ${{ inputs.target-branch }}
           branch: "csm-${{ env.CSM_VERSION }}-update"
           commit-message: "Update components for csm ${{ env.CSM_VERSION }}"
