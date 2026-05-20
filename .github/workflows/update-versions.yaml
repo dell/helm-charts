@@ -62,6 +62,7 @@ jobs:
           csm_metrics_powerstore=$(extract_value 'csm-metrics-powerstore')
           csm_metrics_powerscale=$(extract_value 'csm-metrics-powerscale')
           csm_metrics_powermax=$(extract_value 'csm-metrics-powermax')
+          csm_disaster_recovery=$(extract_value 'csm-disaster-recovery')
           
           # Third Party
           opentelemetry_collector=$(extract_value 'opentelemetry-collector')
@@ -104,6 +105,7 @@ jobs:
             echo "CSM_METRICS_POWERSTORE=$csm_metrics_powerstore"
             echo "CSM_METRICS_POWERSCALE=$csm_metrics_powerscale"
             echo "CSM_METRICS_POWERMAX=$csm_metrics_powermax"
+            echo "CSM_DISASTER_RECOVERY=$csm_disaster_recovery"
           
             # Third party
             echo "OPENTELEMETRY_COLLECTOR=$opentelemetry_collector"
