@@ -153,7 +153,7 @@ jobs:
           rm version-summary.txt
 
       - name: Generate GitHub App Token
-        uses: actions/create-github-app-token@v3.1.1
+        uses: actions/create-github-app-token@v3.2.0
         id: generate-token
         with:
           client-id: ${{ vars.CSM_RELEASE_APP_ID }}
