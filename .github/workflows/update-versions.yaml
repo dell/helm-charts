@@ -54,7 +54,7 @@ jobs:
           }
 
           csm_version=$(extract_value 'csm-version')
-          csm_chart=$(extract_value 'container-storage-modules')
+          csm_chart=$(extract_value 'csm-helm-chart')
           
           # Driver versions
           csi_powerscale=$(extract_value 'csi-powerscale')
