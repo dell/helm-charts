@@ -11,6 +11,17 @@ name: Update CSM versions
 
 on:
   workflow_call:
+    inputs:
+      source-branch:
+        description: "Branch to checkout from csm repository (default: main)"
+        required: false
+        type: string
+        default: main
+      target-branch:
+        description: "Target branch for PR in helm-charts (default: main)"
+        required: false
+        type: string
+        default: main
   workflow_dispatch:
     inputs:
       source-branch:
