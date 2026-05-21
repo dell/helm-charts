@@ -10,6 +10,7 @@
 name: Update CSM versions
 
 on:
+  workflow_call:
   workflow_dispatch:
     inputs:
       source-branch:
