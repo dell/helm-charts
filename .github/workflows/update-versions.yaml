@@ -170,6 +170,8 @@ jobs:
         with:
           client-id: ${{ vars.CSM_RELEASE_APP_ID }}
           private-key: ${{ secrets.CSM_RELEASE_APP_PRIVATE_KEY }}
+          owner: dell
+          repositories: helm-charts
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v8
