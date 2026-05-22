@@ -1,0 +1,193 @@
+# Copyright (c) 2026 Dell Inc., or its subsidiaries. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+
+# Workflow to perform version updates to the csm helm charts
+name: Update CSM versions
+
+on:
+  workflow_call:
+    inputs:
+      source-branch:
+        description: "Branch to checkout from csm repository (default: main)"
+        required: false
+        type: string
+        default: main
+      target-branch:
+        description: "Target branch for PR in helm-charts (default: main)"
+        required: false
+        type: string
+        default: main
+  workflow_dispatch:
+    inputs:
+      source-branch:
+        description: "Branch to checkout from csm repository (default: main)"
+        required: false
+        type: string
+        default: main
+      target-branch:
+        description: "Target branch for PR in helm-charts (default: main)"
+        required: false
+        type: string
+        default: main
+
+jobs:
+  csm-version-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout csm repository
+        uses: actions/checkout@v6
+        with:
+          repository: dell/csm
+          path: csm
+          ref: ${{ inputs.source-branch }}
+
+      - name: Read values from csm-versions.yaml
+        id: read_values
+        run: |
+          extract_value() {
+            grep -E "^$1" csm/config/csm-versions.yaml | cut -d ':' -f 2 | tr -d '[:space:]'
+          }
+
+          csm_version=$(extract_value 'csm-version')
+          csm_chart=$(extract_value 'csm-helm-chart')
+          
+          # Driver versions
+          csi_powerscale=$(extract_value 'csi-powerscale')
+          csi_powerstore=$(extract_value 'csi-powerstore')
+          csi_powermax=$(extract_value 'csi-powermax')
+          csi_vxflexos=$(extract_value 'csi-vxflexos')
+          csi_unity=$(extract_value 'csi-unity')
+          csi_lightningfs=$(extract_value 'csi-lightningfs')
+          cosi=$(extract_value 'cosi')
+          
+          # Module versions
+          csm_replication=$(extract_value 'csm-replication')
+          karavi_resiliency=$(extract_value 'karavi-resiliency')
+          csm_authorization=$(extract_value 'csm-authorization')
+          csireverseproxy=$(extract_value 'csireverseproxy')
+          karavi_observability=$(extract_value 'karavi-observability')
+          karavi_metrics_powerflex=$(extract_value 'karavi-metrics-powerflex')
+          csm_metrics_powerstore=$(extract_value 'csm-metrics-powerstore')
+          csm_metrics_powerscale=$(extract_value 'csm-metrics-powerscale')
+          csm_metrics_powermax=$(extract_value 'csm-metrics-powermax')
+          csm_disaster_recovery=$(extract_value 'csm-disaster-recovery')
+          
+          # Third Party
+          opentelemetry_collector=$(extract_value 'opentelemetry-collector')
+          nginx_unprivileged=$(extract_value 'nginx-unprivileged')
+          grafana=$(extract_value 'grafana')
+          prometheus=$(extract_value 'prometheus')
+          openpolicyagent_opa=$(extract_value 'openpolicyagent-opa')
+          openpolicyagent_kube_mgmt=$(extract_value 'openpolicyagent-kube-mgmt')
+          redis=$(extract_value 'redis')
+          
+          # Sidecars
+          csi_resizer=$(extract_value 'csi-resizer')
+          csi_provisioner=$(extract_value 'csi-provisioner')
+          csi_node_driver_registrar=$(extract_value 'csi-node-driver-registrar')
+          csi_attacher=$(extract_value 'csi-attacher')
+          csi_external_health_monitor_controller=$(extract_value 'csi-external-health-monitor-controller')
+          csi_snapshotter=$(extract_value 'csi-snapshotter')
+          csi_metadata_retriever=$(extract_value 'csi-metadata-retriever')
+
+          # Export to GitHub env
+          {
+            echo "CSM_VERSION=$csm_version"
+            echo "CONTAINER_STORAGE_MODULES=$csm_chart"
+          
+            # Drivers
+            echo "CSI_POWERSCALE=$csi_powerscale"
+            echo "CSI_POWERSTORE=$csi_powerstore"
+            echo "CSI_POWERMAX=$csi_powermax"
+            echo "CSI_VXFLEXOS=$csi_vxflexos"
+            echo "CSI_UNITY=$csi_unity"
+            echo "CSI_LIGHTNINGFS=$csi_lightningfs"
+            echo "COSI=$cosi"
+          
+            # Modules
+            echo "CSM_REPLICATION=$csm_replication"
+            echo "KARAVI_RESILIENCY=$karavi_resiliency"
+            echo "CSM_AUTHORIZATION=$csm_authorization"
+            echo "CSIREVERSEPROXY=$csireverseproxy"
+            echo "KARAVI_OBSERVABILITY=$karavi_observability"
+            echo "KARAVI_METRICS_POWERFLEX=$karavi_metrics_powerflex"
+            echo "CSM_METRICS_POWERSTORE=$csm_metrics_powerstore"
+            echo "CSM_METRICS_POWERSCALE=$csm_metrics_powerscale"
+            echo "CSM_METRICS_POWERMAX=$csm_metrics_powermax"
+            echo "CSM_DISASTER_RECOVERY=$csm_disaster_recovery"
+          
+            # Third party
+            echo "OPENTELEMETRY_COLLECTOR=$opentelemetry_collector"
+            echo "NGINX_UNPRIVILEGED=$nginx_unprivileged"
+            echo "GRAFANA=$grafana"
+            echo "PROMETHEUS=$prometheus"
+            echo "OPENPOLICYAGENT_OPA=$openpolicyagent_opa"
+            echo "OPENPOLICYAGENT_KUBE_MGMT=$openpolicyagent_kube_mgmt"
+            echo "REDIS=$redis"
+          
+            # Sidecars
+            echo "CSI_RESIZER=$csi_resizer"
+            echo "CSI_PROVISIONER=$csi_provisioner"
+            echo "CSI_NODE_DRIVER_REGISTRAR=$csi_node_driver_registrar"
+            echo "CSI_ATTACHER=$csi_attacher"
+            echo "CSI_EXTERNAL_HEALTH_MONITOR_CONTROLLER=$csi_external_health_monitor_controller"
+            echo "CSI_SNAPSHOTTER=$csi_snapshotter"
+            echo "CSI_METADATA_RETRIEVER=$csi_metadata_retriever"
+          } >> "$GITHUB_ENV"
+
+      - name: Checkout helm charts
+        uses: actions/checkout@v6
+        with:
+          repository: dell/helm-charts
+          path: helm-charts
+          ref: ${{ inputs.target-branch }}
+
+      - name: Install yq
+        run: |
+          go install github.com/mikefarah/yq/v4@latest
+
+      - name: Apply version updates
+        id: apply-versions
+        working-directory: helm-charts
+        shell: bash
+        run: |
+          bash ./.github/scripts/apply-helm-versions.sh
+          {
+            echo 'summary<<EOF'
+            cat version-summary.txt
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+          rm version-summary.txt
+
+      - name: Generate GitHub App Token
+        uses: actions/create-github-app-token@v3.2.0
+        id: generate-token
+        with:
+          client-id: ${{ vars.CSM_RELEASE_APP_ID }}
+          private-key: ${{ secrets.CSM_RELEASE_APP_PRIVATE_KEY }}
+          owner: dell
+          repositories: helm-charts
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          path: helm-charts
+          base: ${{ inputs.target-branch }}
+          branch: "csm-${{ env.CSM_VERSION }}-update"
+          commit-message: "Update components for csm ${{ env.CSM_VERSION }}"
+          title: "Update CSM components for CSM ${{ env.CSM_VERSION }}"
+          body: |
+            ${{ steps.apply-versions.outputs.summary }}
+
+            ---
+            Versions sourced from `csm/config/csm-versions.yaml` on branch `${{ inputs.source-branch }}`
+            Auto-generated by [helm-charts](https://github.com/dell/helm-charts) actions.
+          sign-commits: true
+          delete-branch: true
+    

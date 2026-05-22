@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Dell Inc., or its subsidiaries. All Rights Reserved.
+# Copyright (c) 2025-2026 Dell Inc., or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ jobs:
     name: CSM Chart Linter
     runs-on: ubuntu-latest
     steps:
-      # Check out the repo
       - name: Checkout
         uses: actions/checkout@v6
         with:
@@ -48,5 +47,58 @@ jobs:
           fi
 
       - name: Run chart-testing linter
-        if: steps.modified-charts.outputs.modified == 'true'
+        if: ${{ steps.modified-charts.outputs.modified == 'true' }}
         run: ct lint --config ct.yaml
+
+  lint-images:
+    name: Lint CSM images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: "0"
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          echo "files=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | tr '\n' ' ')" >> $GITHUB_OUTPUT
+
+      - name: Lint image tags
+        run: |
+          FAIL=0
+          BASE="${{ github.base_ref }}"
+
+          for file in ${{ steps.changed-files.outputs.files }}; do
+            [[ ! -f "$file" ]] && continue
+
+            # Get the file as it existed on the base branch
+            OLD=$(git show "origin/${BASE}:${file}" 2>/dev/null || true)
+            [[ -z "$OLD" ]] && continue  # new file — no baseline to compare against
+
+            echo "Checking $file"
+
+            while IFS= read -r img; do
+              repo="${img%:*}"
+              new_tag="${img##*:}"
+
+              # Find the old tag for this exact repo in the base version of the file
+              old_tag=$(printf '%s\n' "$OLD" \
+                        | grep -F "${repo}:" \
+                        | head -1 | rev | cut -d: -f1 | rev \
+                        | tr -d '"' | awk '{print $1}')
+              [[ -z "$old_tag" ]] && continue  # image not in base — nothing to compare
+
+              if [[ "$old_tag" == v* ]] && [[ "$new_tag" != v* ]]; then
+                echo "  ERROR: '${repo}' dropped 'v' prefix (:${old_tag} -> :${new_tag})"
+                FAIL=1
+              fi
+            done < <(grep -Eo 'image:[[:space:]]*[a-zA-Z0-9][a-zA-Z0-9./_-]*:[a-zA-Z0-9._-]+' "$file" \
+                     | sed 's/image:[[:space:]]*//')
+          done
+
+          if [[ "$FAIL" -ne 0 ]]; then
+            echo "Image tag linting failed"
+            exit 1
+          fi
+          echo "✅ Image tag linting passed"
