@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Dell Inc., or its subsidiaries. All Rights Reserved.
+# Copyright (c) 2026 Dell Inc., or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,20 +45,6 @@ jobs:
           echo "$PWD" >> $GITHUB_PATH
           rm cr.tar.gz
 
-      - name: Create/update release branch from main
-        run: |
-          branch_name=release-v${{ inputs.version }}
-          # Fetch origin
-          git fetch origin
-          # Check if branch exists
-          if git ls-remote --heads origin $branch_name | grep $branch_name; then
-            echo "Branch $branch_name already exists. Deleting it."
-            git push origin --delete $branch_name || true
-          fi
-          # Create branch from main
-          git checkout -b $branch_name
-          git push origin $branch_name
-
       - name: Create package directory
         run: |
           mkdir -p .cr-release-packages
@@ -72,10 +58,16 @@ jobs:
           for chart_name in "${PACKAGES_ARRAY[@]}"; do
             chart_name=$(echo "$chart_name" | xargs) # trim whitespace
             echo "Processing chart: $chart_name"
-            
+
+            # Skip container-storage-modules here - it's handled separately
+            if [ "$chart_name" = "container-storage-modules" ]; then
+              echo "Skipping container-storage-modules in this step (handled separately)"
+              continue
+            fi
+
             # Find the chart directory
             chart_dir=$(find charts -name "Chart.yaml" -exec grep -l "^name: $chart_name$" {} \; | head -1 | xargs -r dirname)
-            
+
             if [ -n "$chart_dir" ]; then
               echo "Building dependencies for $chart_dir..."
               helm dependency build "$chart_dir" || echo "No dependencies to build"
@@ -104,14 +96,28 @@ jobs:
 
       - name: Upload charts to GitHub Releases
         run: |
-          # Upload charts
-          cr upload --owner ${{ github.repository_owner }} --git-repo ${{ github.event.repository.name }} --token ${{ secrets.GITHUB_TOKEN }} --package-path .cr-release-packages
+          # Upload the packaged charts to GitHub Releases
+          # Skip if directory is empty (e.g., when only container-storage-modules is in input)
+          if [ -n "$(ls -A .cr-release-packages/*.tgz 2>/dev/null)" ]; then
+            cr upload --owner ${{ github.repository_owner }} --git-repo ${{ github.event.repository.name }} --token ${{ secrets.GITHUB_TOKEN }} --package-path .cr-release-packages
+          else
+            echo "No charts to upload in .cr-release-packages"
+          fi
 
-      - name: Package container-storage-modules (after charts are released)
+      - name: Package container-storage-modules (after dependencies are released)
+        if: |
+          contains(inputs.charts, 'csi-powerstore') ||
+          contains(inputs.charts, 'csi-powermax') ||
+          contains(inputs.charts, 'csi-isilon') ||
+          contains(inputs.charts, 'csi-vxflexos') ||
+          contains(inputs.charts, 'csi-unity') ||
+          contains(inputs.charts, 'csm-replication') ||
+          contains(inputs.charts, 'karavi-observability') ||
+          contains(inputs.charts, 'container-storage-modules')
         run: |
           # Clean the package directory
           rm -rf .cr-release-packages/*
-          
+
           if [ -d "container-storage-modules" ]; then
             for chart in container-storage-modules/*/; do
               if [ -d "$chart" ]; then
@@ -125,6 +131,15 @@ jobs:
           fi
 
       - name: Upload container-storage-modules to GitHub Releases
+        if: |
+          contains(inputs.charts, 'csi-powerstore') ||
+          contains(inputs.charts, 'csi-powermax') ||
+          contains(inputs.charts, 'csi-isilon') ||
+          contains(inputs.charts, 'csi-vxflexos') ||
+          contains(inputs.charts, 'csi-unity') ||
+          contains(inputs.charts, 'csm-replication') ||
+          contains(inputs.charts, 'karavi-observability') ||
+          contains(inputs.charts, 'container-storage-modules')
         run: |
           # Upload container-storage-modules
           cr upload --owner ${{ github.repository_owner }} --git-repo ${{ github.event.repository.name }} --token ${{ secrets.GITHUB_TOKEN }} --package-path .cr-release-packages
