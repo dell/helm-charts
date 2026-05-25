@@ -507,6 +507,18 @@ spec:
               value: "true"
             - name: CSI_AUTO_ROUND_OFF_FILESYSTEM_SIZE
               value: "{{ .Values.allowAutoRoundOffFilesystemSize | default true }}"
+            {{- if eq (include "csi-powerstore.isMetricsEnabled" .) "true" }}
+            - name: X_CSI_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_METRICS_PORT
+              value: "{{ .Values.metrics.port | default 8443 }}"
+            {{- if .Values.metrics.tlsCertSecret }}
+            - name: X_CSI_METRICS_TLS_CERT_FILE
+              value: "/etc/metrics-tls/tls.crt"
+            - name: X_CSI_METRICS_TLS_KEY_FILE
+              value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
@@ -519,6 +531,13 @@ spec:
               mountPath: /certs
               readOnly: true
             {{- end }}
+{{- if eq (include "csi-powerstore.isMetricsEnabled" .) "true" }}
+{{- if .Values.metrics.tlsCertSecret }}
+            - name: metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+{{- end }}
+{{- end }}
       {{- if hasKey .Values "authorization" }}
       {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
@@ -587,5 +606,12 @@ spec:
                   items:
                     - key: cert-{{ $e }}
                       path: cert-{{ $e }}
+{{- end }}
+{{- end }}
+{{- if eq (include "csi-powerstore.isMetricsEnabled" .) "true" }}
+{{- if .Values.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          secret:
+            secretName: {{ .Values.metrics.tlsCertSecret }}
 {{- end }}
 {{- end }}

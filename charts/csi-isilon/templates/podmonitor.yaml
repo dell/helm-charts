@@ -1,0 +1,30 @@
+{{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+{{- if hasKey .Values.metrics "podMonitor" }}
+{{- if eq .Values.metrics.podMonitor.enabled true }}
+---
+# PodMonitor for Prometheus Operator integration with node DaemonSet pods.
+# Created when metrics.enabled AND metrics.podMonitor.enabled are true.
+# Requires the Prometheus Operator CRDs to be installed in the cluster.
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ .Release.Name }}-node-metrics-monitor
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-node
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-node
+  podMetricsEndpoints:
+    - port: metrics
+      interval: {{ .Values.metrics.podMonitor.interval | default "30s" }}
+      path: /metrics
+      {{- if .Values.metrics.tls.certSecretName }}
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: {{ .Values.metrics.podMonitor.insecureSkipVerify | default false }}
+      {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

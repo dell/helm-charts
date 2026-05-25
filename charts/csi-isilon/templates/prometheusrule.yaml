@@ -1,0 +1,21 @@
+{{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+{{- if hasKey .Values.metrics "prometheusRule" }}
+{{- if eq .Values.metrics.prometheusRule.enabled true }}
+---
+# PrometheusRule for Prometheus Operator alerting/recording rules.
+# Created when metrics.enabled AND metrics.prometheusRule.enabled are true.
+# Requires the Prometheus Operator CRDs to be installed in the cluster.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Release.Name }}-metrics-rules
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  groups:
+    - name: {{ .Release.Name }}.rules
+      rules: []
+{{- end }}
+{{- end }}
+{{- end }}

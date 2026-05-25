@@ -370,6 +370,18 @@ spec:
             - name: X_CSI_SPACE_RECLAMATION_TIMEOUT
               value: "{{ .Values.spaceReclamation.timeoutSeconds }}"
             {{- end }}
+            {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
+            - name: X_CSI_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_METRICS_PORT
+              value: "{{ .Values.metrics.port | default 8443 }}"
+            {{- if .Values.metrics.tlsCertSecret }}
+            - name: X_CSI_METRICS_TLS_CERT_FILE
+              value: "/etc/metrics-tls/tls.crt"
+            - name: X_CSI_METRICS_TLS_KEY_FILE
+              value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- end }}
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/powermax.emc.dell.com
@@ -407,6 +419,13 @@ spec:
               {{- end }}
             - name: tls-secret
               mountPath: /app/tls
+{{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
+{{- if .Values.metrics.tlsCertSecret }}
+            - name: metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+{{- end }}
+{{- end }}
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           args:
@@ -594,3 +613,10 @@ spec:
         - name: tls-secret
           secret:
             secretName: {{ .Values.csireverseproxy.tlsSecret }}
+        {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
+        {{- if .Values.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          secret:
+            secretName: {{ .Values.metrics.tlsCertSecret }}
+        {{- end }}
+        {{- end }}

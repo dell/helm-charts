@@ -358,6 +358,18 @@ spec:
             - name: X_CSI_SPACE_RECLAMATION_TIMEOUT
               value: "{{ .Values.spaceReclamation.timeoutSeconds }}"
             {{- end }}
+            {{- if eq (include "csi-powerstore.isMetricsEnabled" .) "true" }}
+            - name: X_CSI_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_METRICS_PORT
+              value: "{{ .Values.metrics.port | default 8443 }}"
+            {{- if .Values.metrics.tlsCertSecret }}
+            - name: X_CSI_METRICS_TLS_CERT_FILE
+              value: "/etc/metrics-tls/tls.crt"
+            - name: X_CSI_METRICS_TLS_KEY_FILE
+              value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- end }}
           ports:
             - containerPort: 2050
           volumeMounts:
@@ -396,6 +408,13 @@ spec:
               mountPath: /certs
               readOnly: true
             {{- end }}
+{{- if eq (include "csi-powerstore.isMetricsEnabled" .) "true" }}
+{{- if .Values.metrics.tlsCertSecret }}
+            - name: metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+{{- end }}
+{{- end }}
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -510,5 +529,12 @@ spec:
                   items:
                     - key: cert-{{ $e }}
                       path: cert-{{ $e }}
+{{- end }}
+{{- end }}
+{{- if eq (include "csi-powerstore.isMetricsEnabled" .) "true" }}
+{{- if .Values.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          secret:
+            secretName: {{ .Values.metrics.tlsCertSecret }}
 {{- end }}
 {{- end }}

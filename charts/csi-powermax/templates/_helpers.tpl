@@ -1,4 +1,19 @@
 
+{{/*
+Return true if metrics is enabled
+*/}}
+{{- define "csi-powermax.isMetricsEnabled" -}}
+{{- if hasKey .Values "metrics" -}}
+  {{- if (eq .Values.metrics.enabled true) -}}
+      {{- true -}}
+  {{- else -}}
+      {{- false -}}
+  {{- end -}}
+{{- else -}}
+  {{- false -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "csi-powermax.isStorageCapacitySupported" -}}
 {{- if eq .Values.storageCapacity.enabled true -}}
   {{- if and (eq .Capabilities.KubeVersion.Major "1") (ge (trimSuffix "+" .Capabilities.KubeVersion.Minor) "24") -}}

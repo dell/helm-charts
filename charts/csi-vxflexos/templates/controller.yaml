@@ -471,7 +471,7 @@ spec:
             - name: X_CSI_METRICS_ENABLED
               value: "true"
             - name: X_CSI_METRICS_PORT
-              value: "{{ .Values.metrics.port | default 9090 }}"
+              value: "{{ .Values.metrics.port | default 8443 }}"
             {{- if .Values.metrics.tlsCertSecret }}
             - name: X_CSI_METRICS_TLS_CERT_FILE
               value: "/etc/metrics-tls/tls.crt"
