@@ -15,6 +15,11 @@ spec:
   - name: karavi-metrics-powerscale
     port: 8080
     targetPort: 8080
+  {{- if and (hasKey .Values.karaviMetricsPowerscale "prometheusMetrics") (eq .Values.karaviMetricsPowerscale.prometheusMetrics.enabled true) }}
+  - name: metrics
+    port: {{ .Values.karaviMetricsPowerscale.prometheusMetrics.port | default 8443 }}
+    targetPort: metrics
+  {{- end }}
   selector:
     app.kubernetes.io/name: karavi-metrics-powerscale
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -62,6 +67,14 @@ spec:
               fieldPath: metadata.namespace
         - name: TLS_ENABLED
           value: "true"
+        - name: PROMETHEUS_METRICS_ENABLED
+          value: {{ .Values.karaviMetricsPowerscale.prometheusMetrics.enabled | default false | quote }}
+        {{- if eq (.Values.karaviMetricsPowerscale.prometheusMetrics.enabled | default false) true }}
+        ports:
+        - name: metrics
+          containerPort: {{ .Values.karaviMetricsPowerscale.prometheusMetrics.port | default 8443 }}
+          protocol: TCP
+        {{- end }}
         volumeMounts:
         - name: isilon-creds
           mountPath: /isilon-creds

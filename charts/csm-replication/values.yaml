@@ -54,3 +54,13 @@ allowPvcCreationOnTarget: "false"
 #  - ip: "10.10.10.11"
 #    hostnames:
 #      - "foo.baz"
+
+# metrics: Optional Prometheus Operator integration for replication controller metrics.
+metrics:
+  serviceMonitor:
+    # enabled: Creates a ServiceMonitor for dell-replication-controller metrics endpoint.
+    enabled: false
+    # interval: Prometheus scrape interval.
+    interval: "30s"
+    # insecureSkipVerify: Skip TLS verification for controller-runtime self-signed cert endpoint.
+    insecureSkipVerify: false

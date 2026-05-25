@@ -1,0 +1,20 @@
+{{- if and (hasKey .Values "metrics") (hasKey .Values.metrics "storageService") (hasKey .Values.metrics.storageService "serviceMonitor") (eq .Values.metrics.storageService.serviceMonitor.enabled true) }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: storage-service
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app: storage-service
+spec:
+  selector:
+    matchLabels:
+      app: storage-service
+  namespaceSelector:
+    matchNames:
+      - {{ include "custom.namespace" . }}
+  endpoints:
+    - port: promhttp
+      path: /metrics
+      interval: {{ .Values.metrics.storageService.serviceMonitor.interval | default "30s" }}
+{{- end }}

@@ -15,6 +15,11 @@ spec:
   - name: karavi-metrics-powerstore
     port: 9090
     targetPort: 9090
+  {{- if and (hasKey .Values.karaviMetricsPowerstore "prometheusMetrics") (eq .Values.karaviMetricsPowerstore.prometheusMetrics.enabled true) }}
+  - name: metrics
+    port: {{ .Values.karaviMetricsPowerstore.prometheusMetrics.port | default 8443 }}
+    targetPort: metrics
+  {{- end }}
   selector:
     app.kubernetes.io/name: karavi-metrics-powerstore
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -58,6 +63,14 @@ spec:
           value: "true"
         - name: X_CSI_POWERSTORE_API_TIMEOUT
           value: "{{ .Values.karaviMetricsPowerstore.apiTimeout }}"
+        - name: PROMETHEUS_METRICS_ENABLED
+          value: {{ .Values.karaviMetricsPowerstore.prometheusMetrics.enabled | default false | quote }}
+        {{- if eq (.Values.karaviMetricsPowerstore.prometheusMetrics.enabled | default false) true }}
+        ports:
+        - name: metrics
+          containerPort: {{ .Values.karaviMetricsPowerstore.prometheusMetrics.port | default 8443 }}
+          protocol: TCP
+        {{- end }}
         volumeMounts:
         - name: karavi-metrics-powerstore-secret-volume
           mountPath: "/certs"

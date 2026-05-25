@@ -1,0 +1,25 @@
+{{- if and .Values.karaviMetricsPowerstore.enabled (hasKey .Values.karaviMetricsPowerstore "prometheusMetrics") (eq .Values.karaviMetricsPowerstore.prometheusMetrics.enabled true) (hasKey .Values.karaviMetricsPowerstore.prometheusMetrics "serviceMonitor") (eq .Values.karaviMetricsPowerstore.prometheusMetrics.serviceMonitor.enabled true) }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: karavi-metrics-powerstore
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app.kubernetes.io/name: karavi-metrics-powerstore
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: karavi-metrics-powerstore
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+      - {{ include "custom.namespace" . }}
+  endpoints:
+    - port: metrics
+      interval: {{ .Values.karaviMetricsPowerstore.prometheusMetrics.serviceMonitor.interval | default "30s" }}
+      path: /metrics
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: {{ .Values.karaviMetricsPowerstore.prometheusMetrics.serviceMonitor.insecureSkipVerify | default false }}
+{{- end }}

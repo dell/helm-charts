@@ -71,6 +71,13 @@ karaviMetricsPowerstore:
   endpoint: karavi-metrics-powerstore
   service:
     type: ClusterIP
+  prometheusMetrics:
+    enabled: false
+    port: 8443
+    serviceMonitor:
+      enabled: false
+      interval: "30s"
+      insecureSkipVerify: false
   logLevel: INFO
   logFormat: text
   zipkin:
@@ -119,6 +126,13 @@ karaviMetricsPowerscale:
   endpoint: karavi-metrics-powerscale
   service:
     type: ClusterIP
+  prometheusMetrics:
+    enabled: false
+    port: 8443
+    serviceMonitor:
+      enabled: false
+      interval: "30s"
+      insecureSkipVerify: false
   logLevel: INFO
   logFormat: text
   # isiClientOptions to access Powerscale OneFS API server

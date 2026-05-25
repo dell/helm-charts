@@ -154,3 +154,12 @@ storageSystemCredentials:
   #   - secret-1
   #   - secret-2
   #   - secret-3
+
+# metrics: Optional Prometheus Operator integration for csm-authorization metrics endpoints.
+metrics:
+  storageService:
+    serviceMonitor:
+      # enabled: Creates ServiceMonitor for storage-service `/metrics` endpoint (port 2112).
+      enabled: false
+      # interval: Prometheus scrape interval.
+      interval: "30s"
