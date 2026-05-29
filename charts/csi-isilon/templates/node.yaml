@@ -178,6 +178,12 @@ spec:
           command: ["/csi-isilon"]
           args:
             - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
+          {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+          ports:
+            - containerPort: {{ .Values.metrics.port | default 8443 }}
+              name: metrics
+              protocol: TCP
+          {{- end }}
           securityContext:
             privileged: true
             capabilities:

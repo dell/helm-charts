@@ -20,7 +20,7 @@ spec:
     - port: metrics
       interval: {{ .Values.metrics.podMonitor.interval | default "30s" }}
       path: /metrics
-      {{- if .Values.metrics.tls.certSecretName }}
+      {{- if .Values.metrics.tlsCertSecret }}
       scheme: https
       tlsConfig:
         insecureSkipVerify: {{ .Values.metrics.podMonitor.insecureSkipVerify | default false }}

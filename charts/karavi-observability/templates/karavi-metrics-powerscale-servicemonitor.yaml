@@ -19,7 +19,11 @@ spec:
     - port: metrics
       interval: {{ .Values.karaviMetricsPowerscale.prometheusMetrics.serviceMonitor.interval | default "30s" }}
       path: /metrics
+      {{- if .Values.karaviMetricsPowerscale.prometheusMetrics.tlsCertSecret }}
       scheme: https
       tlsConfig:
         insecureSkipVerify: {{ .Values.karaviMetricsPowerscale.prometheusMetrics.serviceMonitor.insecureSkipVerify | default false }}
+      {{- else }}
+      scheme: http
+      {{- end }}
 {{- end }}
