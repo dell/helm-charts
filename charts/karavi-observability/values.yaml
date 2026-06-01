@@ -129,6 +129,7 @@ karaviMetricsPowerscale:
   prometheusMetrics:
     enabled: false
     port: 8443
+    tlsCertSecret: ""
     serviceMonitor:
       enabled: false
       interval: "30s"
