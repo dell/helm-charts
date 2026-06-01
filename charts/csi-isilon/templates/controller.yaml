@@ -332,7 +332,7 @@ spec:
             - "--enable-node-watcher=true"
             - "--monitor-interval={{ .Values.controller.healthMonitor.interval | default "60s" }}"
             - "--timeout=180s"
-            - "--http-endpoint=:8080"
+            - "--http-endpoint=:8084"
             {{- if hasKey .Values.controller "leaderElection" }}
             {{- if hasKey .Values.controller.leaderElection "leaderElectionRenewDeadline" }}
             - "--leader-election-renew-deadline={{ .Values.controller.leaderElection.leaderElectionRenewDeadline }}"
