@@ -27,8 +27,6 @@ For any issues, questions or feedback, please contact [Dell support](https://www
 $ helm repo add dell https://dell.github.io/helm-charts
 ```
 
-For documentation, please visit [Container Storage Modules documentation](https://dell.github.io/csm-docs/docs/getting-started).
-
 ## Contributing to an Existing Chart
 
 We'd love for you to contribute to an existing Chart that you find provides a useful application or service for Kubernetes. Please read our [Contribution Guide](docs/CONTRIBUTING.md) for more information on how you can contribute Charts.
