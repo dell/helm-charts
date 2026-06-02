@@ -509,8 +509,8 @@ metrics:
     # Type: string (duration, e.g. "25s")
     cacheTTL: "25s"
 
-  # powerscale: PowerScale-specific collector tuning.
-  powerscale:
+  # array: Array-specific collector tuning.
+  array:
     # rateLimit: Maximum array API requests per second.
     # Type: integer
     rateLimit: 100
@@ -524,19 +524,3 @@ metrics:
       # resetTimeout: How long the circuit stays open before allowing a retry.
       resetTimeout: "30s"
 
-  # resources: Resource requests and limits for the metrics server sidecar.
-  resources:
-    requests:
-      cpu: "10m"
-      memory: "32Mi"
-    limits:
-      cpu: "100m"
-      memory: "64Mi"
-
-  # prometheusRule: Controls optional Prometheus Operator PrometheusRule creation.
-  prometheusRule:
-    # enabled: When true, a PrometheusRule CR is created for alerting/recording rules.
-    # Type: bool
-    # Default: false
-    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
-    enabled: false
