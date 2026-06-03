@@ -505,6 +505,18 @@ spec:
               value: "true"
             - name: X_CSI_METRICS_PORT
               value: "{{ .Values.metrics.port | default 8443 }}"
+            - name: X_CSI_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.metrics.collection.interval | default "30s" }}"
+            - name: X_CSI_METRICS_COLLECTION_CACHE_TTL
+              value: "{{ .Values.metrics.collection.cacheTTL | default "25s" }}"
+            - name: X_CSI_METRICS_ARRAY_RATE_LIMIT
+              value: "{{ .Values.metrics.array.rateLimit | default 100 }}"
+            - name: X_CSI_METRICS_ARRAY_TIMEOUT
+              value: "{{ .Values.metrics.array.timeout | default "30s" }}"
+            - name: X_CSI_METRICS_ARRAY_CB_THRESHOLD
+              value: "{{ .Values.metrics.array.circuitBreaker.threshold | default 3 }}"
+            - name: X_CSI_METRICS_ARRAY_CB_RESET_TIMEOUT
+              value: "{{ .Values.metrics.array.circuitBreaker.resetTimeout | default "30s" }}"
             {{- if .Values.metrics.tlsCertSecret }}
             - name: X_CSI_METRICS_TLS_CERT_FILE
               value: "/etc/metrics-tls/tls.crt"
