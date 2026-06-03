@@ -132,6 +132,9 @@ rules:
   - apiGroups: [""]
     resources: ["persistentvolumeclaims"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["csiaddons.openshift.io"]
+    resources: ["csiaddonsnodes"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
   {{- end}}
   # Permissions for Storage Capacity
   {{- if eq (include "csi-powermax.isStorageCapacitySupported" .) "true" }}
@@ -345,7 +348,6 @@ spec:
             - "--controller-port=9809"
             - "--pod=$(POD_NAME)"
             - "--namespace=$(POD_NAMESPACE)"
-            - "--leader-election"
           env:
             - name: CSI_ADDONS_ENDPOINT
               value: /var/run/csi/csi-addons.sock
