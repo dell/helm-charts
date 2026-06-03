@@ -57,7 +57,7 @@ global:
   #
   # Note:
   # - Sidecar deployments: Auth token is optional (trusted boundary)
-  # - Standalone deployments: Auth token is mandatory (enforced by reverse proxy startup validation)
+  # - Standalone deployments: The authentication token will be considered if provided; otherwise, the process will continue without the token.
   proxyAuthToken:
     # enabled: Enable/Disable shared auth token authentication
     # Allowed values:
