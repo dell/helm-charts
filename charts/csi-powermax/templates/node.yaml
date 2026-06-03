@@ -354,6 +354,10 @@ spec:
               value: /app/tls
             - name: X_CSI_DYNAMIC_SG_ENABLED
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
+            {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+            - name: X_CSI_REVPROXY_AUTH_TOKEN_FILE
+              value: /etc/proxy-auth-token/token
+            {{- end }}
             {{- if hasKey .Values "fsCheck" }}
             - name: X_CSI_FS_CHECK_ENABLED
               value: "{{ .Values.fsCheck.enabled }}"
@@ -407,6 +411,11 @@ spec:
               {{- end }}
             - name: tls-secret
               mountPath: /app/tls
+            {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+            - name: proxy-auth-token
+              mountPath: /etc/proxy-auth-token
+              readOnly: true
+            {{- end }}
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           args:
@@ -594,3 +603,8 @@ spec:
         - name: tls-secret
           secret:
             secretName: {{ .Values.csireverseproxy.tlsSecret }}
+        {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+        - name: proxy-auth-token
+          secret:
+            secretName: {{ .Values.global.proxyAuthToken.secretName }}
+        {{- end }}
