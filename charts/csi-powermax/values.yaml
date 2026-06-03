@@ -51,6 +51,25 @@ global:
   # Default value: "" <empty>
   transportProtocol: ""
 
+  # proxyAuthToken: Shared authentication token between the CSI driver and the reverse proxy.
+  # When enabled, the driver sends the token in an X-Proxy-Auth-Token header, and the
+  # reverse proxy validates it. Both containers mount the same Kubernetes Secret.
+  #
+  # Note:
+  # - Sidecar deployments: Auth token is optional (trusted boundary)
+  # - Standalone deployments: Auth token is mandatory (enforced by reverse proxy startup validation)
+  proxyAuthToken:
+    # enabled: Enable/Disable shared auth token authentication
+    # Allowed values:
+    #   true: enable proxy auth token
+    #   false: disable proxy auth token
+    # Default value: false
+    enabled: false
+    # secretName: Name of the Kubernetes Secret that contains the shared auth token.
+    # The secret must have a key named "token" whose value is the shared token string.
+    # Default value: "proxy-auth-token"
+    secretName: "proxy-auth-token"
+
   # DEPRECATION NOTICE: The storageArrays parameter has been deprecated in this helm chart
   # and will be removed in a future release. It remains for backward compatibility only.
   # storageArrays have been migrated to the 'secret' format. Please refer to the official
