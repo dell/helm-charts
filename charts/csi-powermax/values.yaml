@@ -115,7 +115,7 @@ images:
     image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.17.0
   # CSI Addons sidecar
   csiAddons:
-    image: quay.io/csiaddons/k8s-sidecar:v0.12.0
+    image: quay.io/csiaddons/k8s-sidecar:v0.14.0
   # CSM sidecars
   replication:
     image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.15.0
