@@ -576,11 +576,3 @@ metrics:
       threshold: 3
       # resetTimeout: How long the circuit stays open before allowing a retry.
       resetTimeout: "30s"
-
-  # prometheusRule: Controls optional Prometheus Operator PrometheusRule creation.
-  prometheusRule:
-    # enabled: When true, a PrometheusRule CR is created for alerting/recording rules.
-    # Type: bool
-    # Default: false
-    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
-    enabled: false
