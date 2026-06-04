@@ -332,7 +332,7 @@ spec:
             - "--enable-node-watcher=true"
             - "--monitor-interval={{ .Values.controller.healthMonitor.interval | default "60s" }}"
             - "--timeout=180s"
-            - "--http-endpoint=:8084"
+            - "--http-endpoint=:8080"
             {{- if hasKey .Values.controller "leaderElection" }}
             {{- if hasKey .Values.controller.leaderElection "leaderElectionRenewDeadline" }}
             - "--leader-election-renew-deadline={{ .Values.controller.leaderElection.leaderElectionRenewDeadline }}"
@@ -356,7 +356,7 @@ spec:
             - "--csi-address={{ $driverSockPath }}"
             - "--volume-name-prefix={{ required "Must provide a value to prefix to driver created volume names" .Values.controller.volumeNamePrefix }}"
             {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
-            - "--http-endpoint=:8080"
+            - "--http-endpoint=:8084"
             {{- end }}
             - "--volume-name-uuid-length=10"
             - "--worker-threads=5"
