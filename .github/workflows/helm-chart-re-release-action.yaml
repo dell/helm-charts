@@ -1,0 +1,145 @@
+# Copyright (c) 2026 Dell Inc., or its subsidiaries. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+
+# This Github action will manually package and upload Helm charts and container-storage-modules
+name: Manually Package and Upload Helm Charts
+
+# Invocable as a manual workflow
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version. E.g. 1.17.0'
+        required: true
+      charts:
+        description: 'Comma-separated list of chart packages to package and upload. E.g. csi-powermax,csi-unity'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  re-release-container-storage-modules:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out code
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'v3.16.1'
+
+      - name: Install chart-releaser
+        run: |
+          curl -sSLo cr.tar.gz https://github.com/helm/chart-releaser/releases/download/v1.7.0/chart-releaser_1.7.0_linux_amd64.tar.gz
+          tar -xzf cr.tar.gz
+          echo "$PWD" >> $GITHUB_PATH
+          rm cr.tar.gz
+
+      - name: Create package directory
+        run: |
+          mkdir -p .cr-release-packages
+
+      - name: Package charts
+        if: ${{ inputs.charts != '' }}
+        run: |
+          PACKAGES="${{ inputs.charts }}"
+
+          IFS=',' read -ra PACKAGES_ARRAY <<< "$PACKAGES"
+          for chart_name in "${PACKAGES_ARRAY[@]}"; do
+            chart_name=$(echo "$chart_name" | xargs) # trim whitespace
+            echo "Processing chart: $chart_name"
+
+            # Skip container-storage-modules here - it's handled separately
+            if [ "$chart_name" = "container-storage-modules" ]; then
+              echo "Skipping container-storage-modules in this step (handled separately)"
+              continue
+            fi
+
+            # Find the chart directory
+            chart_dir=$(find charts -name "Chart.yaml" -exec grep -l "^name: $chart_name$" {} \; | head -1 | xargs -r dirname)
+
+            if [ -n "$chart_dir" ]; then
+              echo "Building dependencies for $chart_dir..."
+              helm dependency build "$chart_dir" || echo "No dependencies to build"
+              echo "Packaging $chart_dir..."
+              helm package "$chart_dir" -d .cr-release-packages
+            else
+              echo "Warning: Chart directory not found for $chart_name"
+            fi
+          done
+
+      - name: Delete existing GitHub releases
+        run: |
+          # Delete existing releases/tags for packages we're about to upload
+          for pkg in .cr-release-packages/*.tgz; do
+            if [ -f "$pkg" ]; then
+              tag_name=$(basename "$pkg" .tgz)
+              echo "Deleting existing release/tag: $tag_name"
+              # Delete the release
+              curl -s -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                https://api.github.com/repos/${{ github.repository }}/releases/tags/$tag_name || true
+              # Delete the tag
+              curl -s -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                https://api.github.com/repos/${{ github.repository }}/git/refs/tags/$tag_name || true
+            fi
+          done
+
+      - name: Upload charts to GitHub Releases
+        run: |
+          # Upload the packaged charts to GitHub Releases
+          # Skip if directory is empty (e.g., when only container-storage-modules is in input)
+          if [ -n "$(ls -A .cr-release-packages/*.tgz 2>/dev/null)" ]; then
+            cr upload --owner ${{ github.repository_owner }} --git-repo ${{ github.event.repository.name }} --token ${{ secrets.GITHUB_TOKEN }} --package-path .cr-release-packages
+          else
+            echo "No charts to upload in .cr-release-packages"
+          fi
+
+      - name: Package container-storage-modules (after dependencies are released)
+        if: |
+          contains(inputs.charts, 'csi-powerstore') ||
+          contains(inputs.charts, 'csi-powermax') ||
+          contains(inputs.charts, 'csi-isilon') ||
+          contains(inputs.charts, 'csi-vxflexos') ||
+          contains(inputs.charts, 'csi-unity') ||
+          contains(inputs.charts, 'csm-replication') ||
+          contains(inputs.charts, 'karavi-observability') ||
+          contains(inputs.charts, 'container-storage-modules')
+        run: |
+          # Clean the package directory
+          rm -rf .cr-release-packages/*
+
+          if [ -d "container-storage-modules" ]; then
+            for chart in container-storage-modules/*/; do
+              if [ -d "$chart" ]; then
+                chart_name=$(basename "$chart")
+                echo "Building dependencies for container-storage-modules/$chart_name..."
+                helm dependency build "$chart"
+                echo "Packaging container-storage-modules/$chart_name..."
+                helm package "$chart" -d .cr-release-packages
+              fi
+            done
+          fi
+
+      - name: Upload container-storage-modules to GitHub Releases
+        if: |
+          contains(inputs.charts, 'csi-powerstore') ||
+          contains(inputs.charts, 'csi-powermax') ||
+          contains(inputs.charts, 'csi-isilon') ||
+          contains(inputs.charts, 'csi-vxflexos') ||
+          contains(inputs.charts, 'csi-unity') ||
+          contains(inputs.charts, 'csm-replication') ||
+          contains(inputs.charts, 'karavi-observability') ||
+          contains(inputs.charts, 'container-storage-modules')
+        run: |
+          # Upload container-storage-modules
+          cr upload --owner ${{ github.repository_owner }} --git-repo ${{ github.event.repository.name }} --token ${{ secrets.GITHUB_TOKEN }} --package-path .cr-release-packages
