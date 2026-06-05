@@ -317,8 +317,8 @@ node:
   sdc:
     # enabled: Enable/Disable SDC
     enabled: true
-    # sdcHostDrvCfgPath: Host path to the SDC drv_cfg utility
-    # Default value: /opt/emc/scaleio/sdc/bin
+    # sdcHostDrvCfgPath: Specifies the host path where the SDC drv_cfg utility is installed on the node.
+    # Defaults to "/opt/emc/scaleio/sdc/bin". Override this if host uses a different installation path.
     sdcHostDrvCfgPath: "/opt/emc/scaleio/sdc/bin"
     # sdcSFTPRepo: Enable/Disable SFTP/private repository details
     sdcSFTPRepo:
