@@ -319,7 +319,7 @@ node:
     enabled: true
     # sdcHostDrvCfgPath: Host path to the SDC drv_cfg utility
     # Default value: /opt/emc/scaleio/sdc/bin
-    sdcHostDrvCfgPath: ""
+    sdcHostDrvCfgPath: "/opt/emc/scaleio/sdc/bin"
     # sdcSFTPRepo: Enable/Disable SFTP/private repository details
     sdcSFTPRepo:
       enabled: false
