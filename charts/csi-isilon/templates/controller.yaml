@@ -266,6 +266,9 @@ spec:
             - "--leader-election"
             - "--timeout=120s"
             - "--v=5"
+            {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+            - "--http-endpoint=:8082"
+            {{- end }}
             {{- if hasKey .Values.controller "leaderElection" }}
             {{- if hasKey .Values.controller.leaderElection "leaderElectionRenewDeadline" }}
             - "--leader-election-renew-deadline={{ .Values.controller.leaderElection.leaderElectionRenewDeadline }}"
@@ -290,6 +293,9 @@ spec:
             - "--v=5"
             - "--leader-election"
             - "--timeout=180s"
+            {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+            - "--http-endpoint=:8081"
+            {{- end }}
             {{- if hasKey .Values.controller "leaderElection" }}
             {{- if hasKey .Values.controller.leaderElection "leaderElectionRenewDeadline" }}
             - "--leader-election-renew-deadline={{ .Values.controller.leaderElection.leaderElectionRenewDeadline }}"
@@ -349,6 +355,9 @@ spec:
           args:
             - "--csi-address={{ $driverSockPath }}"
             - "--volume-name-prefix={{ required "Must provide a value to prefix to driver created volume names" .Values.controller.volumeNamePrefix }}"
+            {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+            - "--http-endpoint=:8084"
+            {{- end }}
             - "--volume-name-uuid-length=10"
             - "--worker-threads=5"
             - "--timeout=120s"
@@ -392,6 +401,9 @@ spec:
             - "--timeout=120s"
             - "--v=5"
             - "--snapshot-name-prefix={{ required "Must privided a Snapshot Name Prefix" .Values.controller.snapshot.snapNamePrefix }}"
+            {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+            - "--http-endpoint=:8083"
+            {{- end }}
             - "--leader-election"
             {{- if hasKey .Values.controller "leaderElection" }}
             {{- if hasKey .Values.controller.leaderElection "leaderElectionRenewDeadline" }}
@@ -415,6 +427,12 @@ spec:
           command: [ "/csi-isilon" ]
           args:
             - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
+          {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+          ports:
+            - containerPort: {{ .Values.metrics.port | default 8443 }}
+              name: metrics
+              protocol: TCP
+          {{- end }}
           env:
             - name: CSI_ENDPOINT
               value: "{{ $driverSockPath }}"
@@ -482,6 +500,30 @@ spec:
               value: /isilon-configs/config
             - name: X_CSI_MAX_PATH_LIMIT
               value: "{{ .Values.maxPathLen }}"
+            {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+            - name: X_CSI_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_METRICS_PORT
+              value: "{{ .Values.metrics.port | default 8443 }}"
+            - name: X_CSI_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.metrics.collection.interval | default "30s" }}"
+            - name: X_CSI_METRICS_COLLECTION_CACHE_TTL
+              value: "{{ .Values.metrics.collection.cacheTTL | default "25s" }}"
+            - name: X_CSI_METRICS_ARRAY_RATE_LIMIT
+              value: "{{ .Values.metrics.array.rateLimit | default 100 }}"
+            - name: X_CSI_METRICS_ARRAY_TIMEOUT
+              value: "{{ .Values.metrics.array.timeout | default "30s" }}"
+            - name: X_CSI_METRICS_ARRAY_CB_THRESHOLD
+              value: "{{ .Values.metrics.array.circuitBreaker.threshold | default 3 }}"
+            - name: X_CSI_METRICS_ARRAY_CB_RESET_TIMEOUT
+              value: "{{ .Values.metrics.array.circuitBreaker.resetTimeout | default "30s" }}"
+            {{- if .Values.metrics.tlsCertSecret }}
+            - name: X_CSI_METRICS_TLS_CERT_FILE
+              value: "/etc/metrics-tls/tls.crt"
+            - name: X_CSI_METRICS_TLS_KEY_FILE
+              value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
@@ -492,6 +534,13 @@ spec:
               mountPath: /isilon-configs
             - name: csi-isilon-config-params
               mountPath: /csi-isilon-config-params
+{{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+{{- if .Values.metrics.tlsCertSecret }}
+            - name: metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+{{- end }}
+{{- end }}
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
@@ -547,6 +596,13 @@ spec:
         - name: csi-isilon-config-params
           configMap:
              name: {{ .Release.Name }}-config-params
+        {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+        {{- if .Values.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          secret:
+            secretName: {{ .Values.metrics.tlsCertSecret }}
+        {{- end }}
+        {{- end }}
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
         {{- if $authorizationConfigSecret }}

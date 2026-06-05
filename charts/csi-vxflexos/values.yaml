@@ -450,9 +450,9 @@ metrics:
   # port: Port on which the shared driver metrics endpoint is exposed.
   # This port serves gateway monitoring metrics and any other driver-supplied metrics.
   # Type: integer
-  # Default: 9090
+  # Default: 8443
   # Effect: Passed as X_CSI_METRICS_PORT to the driver container; used as targetPort in the Service.
-  port: 9090
+  port: 8443
 
   # tlsCertSecret: Name of a Kubernetes TLS Secret whose "tls.crt" and "tls.key" entries
   # are used to serve the metrics endpoint over HTTPS instead of plain HTTP.
@@ -508,6 +508,33 @@ metrics:
     # Default: false
     # Effect: When true, Prometheus will skip TLS certificate verification.
     insecureSkipVerify: false
+
+  # podMonitor: Controls optional Prometheus Operator PodMonitor creation for node DaemonSet pods.
+  podMonitor:
+    # enabled: When true, a PodMonitor CR is created for scraping metrics from node pods.
+    # Type: bool
+    # Default: false
+    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+    enabled: false
+
+    # interval: Prometheus scrape interval for the node metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "30s", "1m")
+    # Default: "30s"
+    interval: "30s"
+
+    # insecureSkipVerify: Controls TLS certificate verification when scraping node metrics.
+    # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
+    # Type: bool
+    # Default: false
+    insecureSkipVerify: false
+
+  # prometheusRule: Controls optional Prometheus Operator PrometheusRule creation.
+  prometheusRule:
+    # enabled: When true, a PrometheusRule CR is created for alerting/recording rules.
+    # Type: bool
+    # Default: false
+    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+    enabled: false
 
 interfaceNames:
   # worker1: interface1
