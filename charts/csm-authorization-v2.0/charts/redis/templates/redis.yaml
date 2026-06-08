@@ -81,6 +81,12 @@ spec:
             echo "masterauth $REDIS_PASSWORD" >> /etc/redis/redis.conf
             echo "requirepass $REDIS_PASSWORD" >> /etc/redis/redis.conf
 
+            # Announce this pod's stable DNS name so Sentinel tracks hostnames, not IPs
+            MY_FQDN="$(hostname).{{ .Values.name }}.{{ include "custom.namespace" . }}.svc.cluster.local"
+            echo "replica-announce-ip $MY_FQDN" >> /etc/redis/redis.conf
+            echo "replica-announce-port 6379" >> /etc/redis/redis.conf
+            echo "Announcing as $MY_FQDN"
+
             MASTER_FOUND="false"
             MAX_RETRIES=5
 
@@ -100,7 +106,7 @@ spec:
                   echo "Sentinel reports master at $MASTER_HOST:$MASTER_PORT"
 
                   # configure replicaof directive for replica pods only
-                  if [ "$(hostname -f)" != "$MASTER_HOST" ]; then
+                  if [ "$MY_FQDN" != "$MASTER_HOST" ]; then
                     echo "replicaof $MASTER_HOST $MASTER_PORT" >> /etc/redis/redis.conf
                   fi
 
