@@ -564,6 +564,10 @@ spec:
               value: /app/tls
             - name: X_CSI_DYNAMIC_SG_ENABLED
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
+            {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+            - name: X_CSI_REVPROXY_AUTH_TOKEN_FILE
+              value: /etc/proxy-auth-token/token
+            {{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
@@ -580,6 +584,11 @@ spec:
               {{- end }}
             - name: tls-secret
               mountPath: /app/tls
+            {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+            - name: proxy-auth-token
+              mountPath: /etc/proxy-auth-token
+              readOnly: true
+            {{- end }}
         {{- if eq .Values.csireverseproxy.deployAsSidecar true }}
         - name: reverseproxy
           image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy.image }}
@@ -600,6 +609,8 @@ spec:
               value: config.yaml
               {{- end }}
             - name: X_CSI_REVPROXY_IN_CLUSTER
+              value: "true"
+            - name: DeployAsSidecar
               value: "true"
             - name: X_CSI_REVPROXY_TLS_CERT_DIR
               value: /app/tls
@@ -649,6 +660,11 @@ spec:
         - name: powermax-config-params
           configMap:
             name: {{ .Release.Name }}-config-params
+        {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+        - name: proxy-auth-token
+          secret:
+            secretName: {{ .Values.global.proxyAuthToken.secretName }}
+        {{- end }}
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
         {{- if $authorizationConfigSecret }}

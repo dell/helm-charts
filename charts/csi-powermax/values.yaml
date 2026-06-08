@@ -51,6 +51,25 @@ global:
   # Default value: "" <empty>
   transportProtocol: ""
 
+  # proxyAuthToken: Shared authentication token between the CSI driver and the reverse proxy.
+  # When enabled, the driver sends the token in an X-Proxy-Auth-Token header, and the
+  # reverse proxy validates it. Both containers mount the same Kubernetes Secret.
+  #
+  # Note:
+  # - Sidecar deployments: Authentication is considered secure within the trusted boundary; hence, auth tokens are not implemented.
+  # - Standalone deployments: The authentication token will be considered if provided; otherwise, the process will continue without the token.
+  proxyAuthToken:
+    # enabled: Enable/Disable shared auth token authentication
+    # Allowed values:
+    #   true: enable proxy auth token
+    #   false: disable proxy auth token
+    # Default value: false
+    enabled: false
+    # secretName: Name of the Kubernetes Secret that contains the shared auth token.
+    # The secret must have a key named "token" whose value is the shared token string.
+    # Default value: "proxy-auth-token"
+    secretName: "proxy-auth-token"
+
   # DEPRECATION NOTICE: The storageArrays parameter has been deprecated in this helm chart
   # and will be removed in a future release. It remains for backward compatibility only.
   # storageArrays have been migrated to the 'secret' format. Please refer to the official
@@ -90,16 +109,16 @@ global:
 
 # Current version of the driver
 # Don't modify this value as this value will be used by the install script
-version: "v2.17.0"
+version: "v2.17.1"
 
 # "images" defines every container images used for the driver and its sidecars.
 #  To use your own images, or a private registry, change the values here.
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-powermax:v2.17.0
+    image: quay.io/dell/container-storage-modules/csi-powermax:v2.17.1
   csireverseproxy:
-    image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.16.0
+    image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.16.1
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.11.0
