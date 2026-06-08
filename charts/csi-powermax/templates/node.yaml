@@ -633,3 +633,4 @@ spec:
           secret:
             secretName: {{ .Values.global.proxyAuthToken.secretName }}
         {{- end }}
+        {{- end }}
