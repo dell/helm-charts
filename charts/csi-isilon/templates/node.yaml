@@ -30,12 +30,10 @@ rules:
     resourceNames: [ "privileged" ]
     resources: [ "securitycontextconstraints" ]
     verbs: [ "use" ]
-  {{- if hasKey .Values "podmon" }}
-  {{- if eq .Values.podmon.enabled true }}
+  {{- if or (eq (include "csi-isilon.isMetricsEnabled" .) "true") (and (hasKey .Values "podmon") (eq .Values.podmon.enabled true)) }}
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["get", "list", "watch"]
-  {{ end }}
   {{ end }}
 ---
 kind: ClusterRoleBinding
