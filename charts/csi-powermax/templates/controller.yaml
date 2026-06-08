@@ -579,6 +579,7 @@ spec:
             - name: X_CSI_REVPROXY_AUTH_TOKEN_FILE
               value: /etc/proxy-auth-token/token
             {{- end }}
+            {{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
