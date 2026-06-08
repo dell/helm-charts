@@ -468,7 +468,7 @@ spec:
                   name: {{ .Release.Name }}-config
                   key: MDM
             - name: HOST_DRV_CFG_PATH
-              value: /opt/emc/scaleio/sdc/bin
+              value: {{ .Values.node.sdc.sdcHostDrvCfgPath }}
           volumeMounts:
             - name: dev
               mountPath: /dev
@@ -545,7 +545,7 @@ spec:
             type: DirectoryOrCreate
         - name: scaleio-path-opt
           hostPath:
-            path: /opt/emc/scaleio/sdc/bin
+            path: {{ .Values.node.sdc.sdcHostDrvCfgPath }}
             type: DirectoryOrCreate
         {{- if eq .Values.node.sdc.sdcSFTPRepo.enabled true }}
         - name: sftp-keys
@@ -572,7 +572,7 @@ spec:
         - name: host-opt-emc-path
           hostPath:
             path: /opt/emc
-            type: Directory
+            type: DirectoryOrCreate
         - name: vxflexos-config
           secret:
             secretName: {{ .Release.Name }}-config
