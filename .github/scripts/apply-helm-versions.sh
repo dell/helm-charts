@@ -32,9 +32,12 @@ log_change() {
   new_clean=$(strip_v "$new")
 
   if [[ "$old_clean" != "$new_clean" ]]; then
-    echo "$name: $old → $new" | tee -a "$SUMMARY_FILE"
+    echo "  $name: $old → $new"
+    CHART_CHANGED=true
   fi
 }
+
+CHART_CHANGED=false
 
 require_file() {
   if [[ ! -f "$1" ]]; then
@@ -162,6 +165,36 @@ parse_image_string() {
   echo "$repo|$tag"
 }
 
+# Update top-level version: field in values.yaml, preserving v-prefix and quote style
+update_values_version() {
+  local file=$1 version=$2 chart_dir=$3
+
+  [[ -f "$file" ]] || return 0
+  grep -qE '^version:' "$file" || return 0
+
+  local raw_line old new_value
+  raw_line=$(grep '^version:' "$file" | head -1)
+  old=$(echo "$raw_line" | sed 's/^[^:]*:[[:space:]]*//' | tr -d '"')
+
+  [[ "$(strip_v "$old")" == "$(strip_v "$version")" ]] && return 0
+
+  if [[ "$old" == v* ]]; then
+    new_value="v$(normalize_version "$version")"
+  else
+    new_value="$(normalize_version "$version")"
+  fi
+
+  local tmp
+  tmp=$(mktemp)
+  if echo "$raw_line" | grep -q '"'; then
+    sed "s|^version:.*|version: \"${new_value}\"|" "$file" > "$tmp" && mv "$tmp" "$file"
+  else
+    sed "s|^version:.*|version: ${new_value}|" "$file" > "$tmp" && mv "$tmp" "$file"
+  fi
+
+  log_change "$chart_dir values.yaml (version)" "$old" "$new_value"
+}
+
 # Update top-level Chart.yaml fields (version, appVersion) using sed to preserve formatting
 update_chart_field() {
   local file=$1 field=$2 value=$3 label=$4
@@ -258,6 +291,9 @@ for chart_dir in "${CHARTS[@]}"; do
 
   require_file "$chart_file"
 
+  CHART_CHANGED=false
+  old_chart_version=$(grep "^version:" "$chart_file" | head -1 | sed 's/^[^:]*:[[:space:]]*//' | tr -d '"')
+
   chart_version=""
 
   # ---- Primary: infer from chart name
@@ -314,6 +350,13 @@ for chart_dir in "${CHARTS[@]}"; do
       fi
 
     done < <(detect_flat_images "$values_file")
+  fi
+
+  # values.yaml top-level version field
+  update_values_version "$values_file" "$chart_version" "$chart_dir"
+
+  if [[ "$CHART_CHANGED" == true ]]; then
+    echo "$chart_dir: ${old_chart_version:-unknown} → $chart_version" >> "$SUMMARY_FILE"
   fi
 done
 
