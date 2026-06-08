@@ -699,5 +699,6 @@ spec:
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
-        {{ end }}
-        {{ end }}
+        {{- end }}
+        {{- end }}
+        {{- end }}

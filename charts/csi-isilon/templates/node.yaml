@@ -402,8 +402,8 @@ spec:
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
-        {{ end }}
-        {{ end }}
+        {{- end }}
+        {{- end }}
         {{- if hasKey .Values "podmon" }}
         {{- if eq .Values.podmon.enabled true }}
         - name: usr-bin
@@ -418,5 +418,5 @@ spec:
           hostPath:
             path: /var/run
             type: Directory
-        {{ end }}
-        {{ end }}
+        {{- end }}
+        {{- end }}
