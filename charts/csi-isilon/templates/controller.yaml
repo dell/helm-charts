@@ -98,6 +98,12 @@ rules:
     resources: ["csistoragecapacities"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
   {{- end }}
+  # below for CPU/memory metrics collection from Kubernetes Metrics API
+  {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  {{- end }}
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
