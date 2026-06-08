@@ -523,4 +523,3 @@ metrics:
       threshold: 3
       # resetTimeout: How long the circuit stays open before allowing a retry.
       resetTimeout: "30s"
-
