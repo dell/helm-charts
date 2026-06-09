@@ -2,12 +2,12 @@
 ########################
 # version: version of this values file
 # Note: Do not change this value
-version: "v2.17.0"
+version: "v2.17.1"
 
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-isilon:v2.17.0
+    image: quay.io/dell/container-storage-modules/csi-isilon:v2.17.1
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.11.0
@@ -326,8 +326,8 @@ skipCertificateValidation: true
 # Allowed values:
 #   0: enables basic Authentication
 #   1: enables session-based Authentication
-# Default value: 0
-isiAuthType: 0
+# Default value: 1
+isiAuthType: 1
 
 # isiAccessZone: The name of the access zone a volume can be created in.
 # If storageclass is missing with AccessZone parameter, then value of isiAccessZone is used for the same.
