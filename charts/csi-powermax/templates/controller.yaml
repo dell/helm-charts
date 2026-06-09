@@ -623,6 +623,22 @@ spec:
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
             - name: X_CSI_CSIADDONS_REPLICATION_ENABLED
               value: "{{ .Values.csiAddonsReplication.enabled }}"
+            {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
+            - name: X_CSI_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_METRICS_PORT
+              value: "{{ .Values.metrics.port | default 8443 }}"
+            {{- if .Values.metrics.tlsCertSecret }}
+            - name: X_CSI_METRICS_TLS_CERT_FILE
+              value: "/etc/metrics-tls/tls.crt"
+            - name: X_CSI_METRICS_TLS_KEY_FILE
+              value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+            - name: X_CSI_REVPROXY_AUTH_TOKEN_FILE
+              value: /etc/proxy-auth-token/token
+            {{- end }}
+            {{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
@@ -639,6 +655,18 @@ spec:
               {{- end }}
             - name: tls-secret
               mountPath: /app/tls
+            {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
+            {{- if .Values.metrics.tlsCertSecret }}
+            - name: metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+            {{- end }}
+            {{- end }}
+            {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+            - name: proxy-auth-token
+              mountPath: /etc/proxy-auth-token
+              readOnly: true
+            {{- end }}
         {{- if eq .Values.csireverseproxy.deployAsSidecar true }}
         - name: reverseproxy
           image: {{ required "Must provided an image for reverseproxy container." .Values.images.csireverseproxy.image }}
@@ -659,6 +687,8 @@ spec:
               value: config.yaml
               {{- end }}
             - name: X_CSI_REVPROXY_IN_CLUSTER
+              value: "true"
+            - name: DeployAsSidecar
               value: "true"
             - name: X_CSI_REVPROXY_TLS_CERT_DIR
               value: /app/tls
@@ -708,6 +738,17 @@ spec:
         - name: powermax-config-params
           configMap:
             name: {{ .Release.Name }}-config-params
+        {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
+        {{- if .Values.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          secret:
+            secretName: {{ .Values.metrics.tlsCertSecret }}
+        {{- end }}
+        {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+        - name: proxy-auth-token
+          secret:
+            secretName: {{ .Values.global.proxyAuthToken.secretName }}
+        {{- end }}
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
         {{- if $authorizationConfigSecret }}
@@ -718,5 +759,6 @@ spec:
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
-        {{ end }}
-        {{ end }}
+        {{- end }}
+        {{- end }}
+        {{- end }}

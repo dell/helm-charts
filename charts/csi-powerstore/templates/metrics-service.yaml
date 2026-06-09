@@ -1,4 +1,4 @@
-{{- if eq (include "csi-vxflexos.isMetricsEnabled" .) "true" }}
+{{- if eq (include "csi-powerstore.isMetricsEnabled" .) "true" }}
 ---
 # Service exposing the shared driver metrics endpoint for Prometheus scraping.
 # Created when metrics.enabled is true.

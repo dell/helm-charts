@@ -51,6 +51,25 @@ global:
   # Default value: "" <empty>
   transportProtocol: ""
 
+  # proxyAuthToken: Shared authentication token between the CSI driver and the reverse proxy.
+  # When enabled, the driver sends the token in an X-Proxy-Auth-Token header, and the
+  # reverse proxy validates it. Both containers mount the same Kubernetes Secret.
+  #
+  # Note:
+  # - Sidecar deployments: Authentication is considered secure within the trusted boundary; hence, auth tokens are not implemented.
+  # - Standalone deployments: The authentication token will be considered if provided; otherwise, the process will continue without the token.
+  proxyAuthToken:
+    # enabled: Enable/Disable shared auth token authentication
+    # Allowed values:
+    #   true: enable proxy auth token
+    #   false: disable proxy auth token
+    # Default value: false
+    enabled: false
+    # secretName: Name of the Kubernetes Secret that contains the shared auth token.
+    # The secret must have a key named "token" whose value is the shared token string.
+    # Default value: "proxy-auth-token"
+    secretName: "proxy-auth-token"
+
   # DEPRECATION NOTICE: The storageArrays parameter has been deprecated in this helm chart
   # and will be removed in a future release. It remains for backward compatibility only.
   # storageArrays have been migrated to the 'secret' format. Please refer to the official
@@ -592,3 +611,67 @@ podmon:
       - "--driver-config-params=/powermax-config-params/driver-config-params.yaml"
       - "--driverPodLabelValue=dell-storage"
       - "--ignoreVolumelessPods=false"
+
+# metrics: configuration for driver metrics and monitoring
+metrics:
+  # enabled: Enable/Disable the shared Prometheus metrics HTTP server.
+  # Type: bool
+  # Default: false
+  # Effect: When true, the controller Deployment receives X_CSI_METRICS_ENABLED=true,
+  #         X_CSI_METRICS_PORT, and a metrics Service is created.
+  enabled: false
+
+  # port: Port on which the shared driver metrics endpoint is exposed.
+  # Type: integer
+  # Default: 8443
+  # Effect: Passed as X_CSI_METRICS_PORT to the driver container; used as targetPort in the Service.
+  port: 8443
+
+  # tlsCertSecret: Name of a Kubernetes TLS Secret whose "tls.crt" and "tls.key" entries
+  # are used to serve the metrics endpoint over HTTPS instead of plain HTTP.
+  # Leave empty (the default) to use plain HTTP.
+  # Type: string
+  # Default: "" (disabled - plain HTTP)
+  tlsCertSecret: ""
+
+  # serviceMonitor: Controls optional Prometheus Operator ServiceMonitor creation.
+  serviceMonitor:
+    # enabled: When true, a ServiceMonitor CR is created for automatic Prometheus Operator integration.
+    # Type: bool
+    # Default: false
+    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+    enabled: false
+    # interval: Prometheus scrape interval for the metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "30s", "1m")
+    # Default: "30s"
+    interval: "30s"
+    # insecureSkipVerify: Controls TLS certificate verification when scraping metrics.
+    # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
+    # Type: bool
+    # Default: false
+    insecureSkipVerify: false
+
+  # podMonitor: Controls optional Prometheus Operator PodMonitor creation for node DaemonSet pods.
+  podMonitor:
+    # enabled: When true, a PodMonitor CR is created for scraping metrics from node pods.
+    # Type: bool
+    # Default: false
+    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+    enabled: false
+    # interval: Prometheus scrape interval for the node metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "30s", "1m")
+    # Default: "30s"
+    interval: "30s"
+    # insecureSkipVerify: Controls TLS certificate verification when scraping node metrics.
+    # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
+    # Type: bool
+    # Default: false
+    insecureSkipVerify: false
+
+  # prometheusRule: Controls optional Prometheus Operator PrometheusRule creation.
+  prometheusRule:
+    # enabled: When true, a PrometheusRule CR is created for alerting/recording rules.
+    # Type: bool
+    # Default: false
+    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+    enabled: false

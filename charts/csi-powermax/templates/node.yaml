@@ -354,6 +354,10 @@ spec:
               value: /app/tls
             - name: X_CSI_DYNAMIC_SG_ENABLED
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
+            {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+            - name: X_CSI_REVPROXY_AUTH_TOKEN_FILE
+              value: /etc/proxy-auth-token/token
+            {{- end }}
             {{- if hasKey .Values "fsCheck" }}
             - name: X_CSI_FS_CHECK_ENABLED
               value: "{{ .Values.fsCheck.enabled }}"
@@ -369,6 +373,18 @@ spec:
               value: "{{ .Values.spaceReclamation.maxConcurrentVolumes }}"
             - name: X_CSI_SPACE_RECLAMATION_TIMEOUT
               value: "{{ .Values.spaceReclamation.timeoutSeconds }}"
+            {{- end }}
+            {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
+            - name: X_CSI_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_METRICS_PORT
+              value: "{{ .Values.metrics.port | default 8443 }}"
+            {{- if .Values.metrics.tlsCertSecret }}
+            - name: X_CSI_METRICS_TLS_CERT_FILE
+              value: "/etc/metrics-tls/tls.crt"
+            - name: X_CSI_METRICS_TLS_KEY_FILE
+              value: "/etc/metrics-tls/tls.key"
+            {{- end }}
             {{- end }}
           volumeMounts:
             - name: driver-path
@@ -407,6 +423,18 @@ spec:
               {{- end }}
             - name: tls-secret
               mountPath: /app/tls
+            {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
+            {{- if .Values.metrics.tlsCertSecret }}
+            - name: metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+            {{- end }}
+            {{- end }}
+            {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+            - name: proxy-auth-token
+              mountPath: /etc/proxy-auth-token
+              readOnly: true
+            {{- end }}
         - name: registrar
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           args:
@@ -594,3 +622,15 @@ spec:
         - name: tls-secret
           secret:
             secretName: {{ .Values.csireverseproxy.tlsSecret }}
+        {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
+        {{- if .Values.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          secret:
+            secretName: {{ .Values.metrics.tlsCertSecret }}
+        {{- end }}
+        {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
+        - name: proxy-auth-token
+          secret:
+            secretName: {{ .Values.global.proxyAuthToken.secretName }}
+        {{- end }}
+        {{- end }}

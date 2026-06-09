@@ -30,12 +30,10 @@ rules:
     resourceNames: [ "privileged" ]
     resources: [ "securitycontextconstraints" ]
     verbs: [ "use" ]
-  {{- if hasKey .Values "podmon" }}
-  {{- if eq .Values.podmon.enabled true }}
+  {{- if or (eq (include "csi-isilon.isMetricsEnabled" .) "true") (and (hasKey .Values "podmon") (eq .Values.podmon.enabled true)) }}
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["get", "list", "watch"]
-  {{ end }}
   {{ end }}
 ---
 kind: ClusterRoleBinding
@@ -178,6 +176,12 @@ spec:
           command: ["/csi-isilon"]
           args:
             - "--driver-config-params=/csi-isilon-config-params/driver-config-params.yaml"
+          {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+          ports:
+            - containerPort: {{ .Values.metrics.port | default 8443 }}
+              name: metrics
+              protocol: TCP
+          {{- end }}
           securityContext:
             privileged: true
             capabilities:
@@ -242,6 +246,30 @@ spec:
             {{ end }}
             - name: X_CSI_MAX_PATH_LIMIT
               value: "{{ .Values.maxPathLen }}"
+            {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+            - name: X_CSI_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_METRICS_PORT
+              value: "{{ .Values.metrics.port | default 8443 }}"
+            - name: X_CSI_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.metrics.collection.interval | default "30s" }}"
+            - name: X_CSI_METRICS_COLLECTION_CACHE_TTL
+              value: "{{ .Values.metrics.collection.cacheTTL | default "25s" }}"
+            - name: X_CSI_METRICS_ARRAY_RATE_LIMIT
+              value: "{{ .Values.metrics.array.rateLimit | default 100 }}"
+            - name: X_CSI_METRICS_ARRAY_TIMEOUT
+              value: "{{ .Values.metrics.array.timeout | default "30s" }}"
+            - name: X_CSI_METRICS_ARRAY_CB_THRESHOLD
+              value: "{{ .Values.metrics.array.circuitBreaker.threshold | default 3 }}"
+            - name: X_CSI_METRICS_ARRAY_CB_RESET_TIMEOUT
+              value: "{{ .Values.metrics.array.circuitBreaker.resetTimeout | default "30s" }}"
+            {{- if .Values.metrics.tlsCertSecret }}
+            - name: X_CSI_METRICS_TLS_CERT_FILE
+              value: "/etc/metrics-tls/tls.crt"
+            - name: X_CSI_METRICS_TLS_KEY_FILE
+              value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- end }}
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/csi-isilon
@@ -259,6 +287,13 @@ spec:
               mountPath: /isilon-configs
             - name: csi-isilon-config-params
               mountPath: /csi-isilon-config-params
+{{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+{{- if .Values.metrics.tlsCertSecret }}
+            - name: metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+{{- end }}
+{{- end }}
         - name: registrar{{ $csiSidecarSuffix }}
           image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -350,6 +385,13 @@ spec:
         - name: csi-isilon-config-params
           configMap:
              name: {{ .Release.Name }}-config-params
+        {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+        {{- if .Values.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          secret:
+            secretName: {{ .Values.metrics.tlsCertSecret }}
+        {{- end }}
+        {{- end }}
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
         {{- if $authorizationConfigSecret }}
@@ -360,8 +402,8 @@ spec:
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
-        {{ end }}
-        {{ end }}
+        {{- end }}
+        {{- end }}
         {{- if hasKey .Values "podmon" }}
         {{- if eq .Values.podmon.enabled true }}
         - name: usr-bin
@@ -376,5 +418,5 @@ spec:
           hostPath:
             path: /var/run
             type: Directory
-        {{ end }}
-        {{ end }}
+        {{- end }}
+        {{- end }}
