@@ -7,12 +7,6 @@ data:
   driver-config-params.yaml: |
     CSI_LOG_LEVEL: "{{ .Values.logLevel }}"
     CSI_LOG_FORMAT: "{{ .Values.logFormat }}"
-    {{ if .Values.podmon.enabled }}
-    PODMON_CONTROLLER_LOG_LEVEL: "{{ .Values.logLevel }}"
-    PODMON_CONTROLLER_LOG_FORMAT: "{{ .Values.logFormat }}"
-    PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
-    PODMON_NODE_LOG_FORMAT: "{{ .Values.logFormat }}"
-    {{ end }}
     interfaceNames:
       {{- range $node, $interfaces := .Values.interfaceNames }}
       {{ $node }}: "{{ $interfaces }}"

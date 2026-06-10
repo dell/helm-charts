@@ -10,9 +10,3 @@ data:
     MAX_UNITY_VOLUMES_PER_NODE: "{{ .Values.maxUnityVolumesPerNode }}"
     SYNC_NODE_INFO_TIME_INTERVAL: "{{ .Values.syncNodeInfoInterval }}"
     TENANT_NAME: "{{ .Values.tenantName }}"
-    {{ if .Values.podmon.enabled }}
-    PODMON_CONTROLLER_LOG_LEVEL: "{{ .Values.logLevel }}"
-    PODMON_CONTROLLER_LOG_FORMAT: "TEXT"
-    PODMON_NODE_LOG_LEVEL: "{{ .Values.logLevel }}"
-    PODMON_NODE_LOG_FORMAT: "TEXT"
-    {{ end }}
