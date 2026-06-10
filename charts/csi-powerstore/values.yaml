@@ -33,17 +33,17 @@ images:
     image: quay.io/dell/container-storage-modules/csi-powerstore:v2.17.0
   # CSI sidecars
   attacher:
-    image: registry.k8s.io/sig-storage/csi-attacher:v4.11.0
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.12.0
   provisioner:
-    image: registry.k8s.io/sig-storage/csi-provisioner:v6.2.0
+    image: registry.k8s.io/sig-storage/csi-provisioner:v6.3.0
   snapshotter:
-    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.5.0
+    image: registry.k8s.io/sig-storage/csi-snapshotter:v8.6.0
   resizer:
-    image: registry.k8s.io/sig-storage/csi-resizer:v2.1.0
+    image: registry.k8s.io/sig-storage/csi-resizer:v2.2.0
   registrar:
-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.16.0
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.17.0
   healthmonitor:
-    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.17.0
+    image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.18.0
 
   # CSM sidecars
   replication:
@@ -488,3 +488,91 @@ disasterRecovery:
   # Allowed values: Any valid and free port
   # Default value: 8082
   bindPort: 8082
+
+# metrics: configuration for driver metrics and monitoring
+metrics:
+  # enabled: Enable/Disable the shared Prometheus metrics HTTP server.
+  # Type: bool
+  # Default: false
+  # Effect: When true, the controller Deployment receives X_CSI_METRICS_ENABLED=true,
+  #         X_CSI_METRICS_PORT, and a metrics Service is created.
+  enabled: false
+
+  # port: Port on which the shared driver metrics endpoint is exposed.
+  # Type: integer
+  # Default: 8443
+  # Effect: Passed as X_CSI_METRICS_PORT to the driver container; used as targetPort in the Service.
+  port: 8443
+
+  # tlsCertSecret: Name of a Kubernetes TLS Secret whose "tls.crt" and "tls.key" entries
+  # are used to serve the metrics endpoint over HTTPS instead of plain HTTP.
+  # Leave empty (the default) to use plain HTTP.
+  # Type: string
+  # Default: "" (disabled - plain HTTP)
+  tlsCertSecret: ""
+
+  # serviceMonitor: Controls optional Prometheus Operator ServiceMonitor creation.
+  serviceMonitor:
+    # enabled: When true, a ServiceMonitor CR is created for automatic Prometheus Operator integration.
+    # Type: bool
+    # Default: false
+    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+    enabled: false
+    # interval: Prometheus scrape interval for the metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "30s", "1m")
+    # Default: "30s"
+    interval: "30s"
+    # scrapeTimeout: Prometheus scrape timeout for the metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "10s")
+    # Default: "" (unset)
+    scrapeTimeout: ""
+    # insecureSkipVerify: Controls TLS certificate verification when scraping metrics.
+    # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
+    # Type: bool
+    # Default: false
+    insecureSkipVerify: false
+
+  # podMonitor: Controls optional Prometheus Operator PodMonitor creation for node DaemonSet pods.
+  podMonitor:
+    # enabled: When true, a PodMonitor CR is created for scraping metrics from node pods.
+    # Type: bool
+    # Default: false
+    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+    enabled: false
+    # interval: Prometheus scrape interval for the node metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "30s", "1m")
+    # Default: "30s"
+    interval: "30s"
+    # scrapeTimeout: Prometheus scrape timeout for the node metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "10s")
+    # Default: "" (unset)
+    scrapeTimeout: ""
+    # insecureSkipVerify: Controls TLS certificate verification when scraping node metrics.
+    # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
+    # Type: bool
+    # Default: false
+    insecureSkipVerify: false
+
+  # collection: Controls how frequently metrics are collected.
+  collection:
+    # interval: How often the driver collects metrics from the array.
+    # Type: string (duration, e.g. "30s", "1m")
+    interval: "30s"
+    # cacheTTL: How long collected values are cached before re-querying the array.
+    # Type: string (duration, e.g. "25s")
+    cacheTTL: "25s"
+
+  # array: Array-specific collector tuning.
+  array:
+    # rateLimit: Maximum array API requests per second.
+    # Type: integer
+    rateLimit: 100
+    # timeout: Per-request timeout for array API calls.
+    # Type: string (duration)
+    timeout: "30s"
+    # circuitBreaker: Circuit-breaker settings for array API calls.
+    circuitBreaker:
+      # threshold: Number of consecutive failures before the circuit opens.
+      threshold: 3
+      # resetTimeout: How long the circuit stays open before allowing a retry.
+      resetTimeout: "30s"

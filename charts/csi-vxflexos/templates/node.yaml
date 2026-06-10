@@ -307,6 +307,18 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
+            {{- if eq (include "csi-vxflexos.isMetricsEnabled" .) "true" }}
+            - name: X_CSI_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_METRICS_PORT
+              value: "{{ .Values.metrics.port | default 8443 }}"
+            {{- if .Values.metrics.tlsCertSecret }}
+            - name: X_CSI_METRICS_TLS_CERT_FILE
+              value: "/etc/metrics-tls/tls.crt"
+            - name: X_CSI_METRICS_TLS_KEY_FILE
+              value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- end }}
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/vxflexos.emc.dell.com
@@ -362,6 +374,13 @@ spec:
               mountPath: /certs
               readOnly: true
 {{- end}}
+{{- if eq (include "csi-vxflexos.isMetricsEnabled" .) "true" }}
+{{- if .Values.metrics.tlsCertSecret }}
+            - name: metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+{{- end }}
+{{- end }}
         - name: registrar
           image: {{ required "Must provide the CSI registrar container image." .Values.images.registrar.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -449,7 +468,7 @@ spec:
                   name: {{ .Release.Name }}-config
                   key: MDM
             - name: HOST_DRV_CFG_PATH
-              value: /opt/emc/scaleio/sdc/bin
+              value: {{ .Values.node.sdc.sdcHostDrvCfgPath }}
           volumeMounts:
             - name: dev
               mountPath: /dev
@@ -526,7 +545,7 @@ spec:
             type: DirectoryOrCreate
         - name: scaleio-path-opt
           hostPath:
-            path: /opt/emc/scaleio/sdc/bin
+            path: {{ .Values.node.sdc.sdcHostDrvCfgPath }}
             type: DirectoryOrCreate
         {{- if eq .Values.node.sdc.sdcSFTPRepo.enabled true }}
         - name: sftp-keys
@@ -553,7 +572,7 @@ spec:
         - name: host-opt-emc-path
           hostPath:
             path: /opt/emc
-            type: Directory
+            type: DirectoryOrCreate
         - name: vxflexos-config
           secret:
             secretName: {{ .Release.Name }}-config
@@ -570,6 +589,13 @@ spec:
                   items:
                     - key: cert-{{ $e }}
                       path: cert-{{ $e }}
+{{- end }}
+{{- end }}
+{{- if eq (include "csi-vxflexos.isMetricsEnabled" .) "true" }}
+{{- if .Values.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          secret:
+            secretName: {{ .Values.metrics.tlsCertSecret }}
 {{- end }}
 {{- end }}
 {{- if hasKey .Values "authorization" }}

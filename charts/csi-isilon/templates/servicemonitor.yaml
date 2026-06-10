@@ -1,0 +1,33 @@
+{{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+{{- if hasKey .Values.metrics "serviceMonitor" }}
+{{- if eq .Values.metrics.serviceMonitor.enabled true }}
+---
+# ServiceMonitor for Prometheus Operator integration with the controller Deployment.
+# Created when metrics.enabled AND metrics.serviceMonitor.enabled are true.
+# Requires the Prometheus Operator CRDs to be installed in the cluster.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-metrics-monitor
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-controller
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-controller
+  endpoints:
+    - port: metrics
+      interval: {{ .Values.metrics.serviceMonitor.interval | default "30s" }}
+      {{- if .Values.metrics.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
+      {{- end }}
+      path: /metrics
+      {{- if .Values.metrics.tlsCertSecret }}
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: {{ .Values.metrics.serviceMonitor.insecureSkipVerify | default false }}
+      {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
