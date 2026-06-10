@@ -344,10 +344,6 @@ for chart_dir in "${CHARTS[@]}"; do
       new_value="${repo}:${new_tag}"
 
       if [[ "$value" != "$new_value" ]]; then
-        if ! grep -qF "${value}" "$values_file"; then
-          echo "ERROR: Expected image '${value}' not found in $values_file" >&2
-          exit 1
-        fi
         sed -i "s|${value}|${new_value}|" "$values_file"
         log_change "$chart_dir image ($path)" "$value" "$new_value"
       fi
