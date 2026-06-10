@@ -18,7 +18,7 @@ on:
         type: string
         default: main
       target-branch:
-        description: "Target branch for PR in helm-charts (default: main)"
+        description: "Branch to checkout from helm-charts and base branch for PR (default: main)"
         required: false
         type: string
         default: main
@@ -30,7 +30,7 @@ on:
         type: string
         default: main
       target-branch:
-        description: "Target branch for PR in helm-charts (default: main)"
+        description: "Branch to checkout from helm-charts and base branch for PR (default: main)"
         required: false
         type: string
         default: main
@@ -55,7 +55,7 @@ jobs:
 
           csm_version=$(extract_value 'csm-version')
           csm_chart=$(extract_value 'csm-helm-chart')
-          
+
           # Driver versions
           csi_powerscale=$(extract_value 'csi-powerscale')
           csi_powerstore=$(extract_value 'csi-powerstore')
@@ -64,7 +64,7 @@ jobs:
           csi_unity=$(extract_value 'csi-unity')
           csi_lightningfs=$(extract_value 'csi-lightningfs')
           cosi=$(extract_value 'cosi')
-          
+
           # Module versions
           csm_replication=$(extract_value 'csm-replication')
           karavi_resiliency=$(extract_value 'karavi-resiliency')
@@ -76,7 +76,7 @@ jobs:
           csm_metrics_powerscale=$(extract_value 'csm-metrics-powerscale')
           csm_metrics_powermax=$(extract_value 'csm-metrics-powermax')
           csm_disaster_recovery=$(extract_value 'csm-disaster-recovery')
-          
+
           # Third Party
           opentelemetry_collector=$(extract_value 'opentelemetry-collector')
           nginx_unprivileged=$(extract_value 'nginx-unprivileged')
@@ -85,7 +85,7 @@ jobs:
           openpolicyagent_opa=$(extract_value 'openpolicyagent-opa')
           openpolicyagent_kube_mgmt=$(extract_value 'openpolicyagent-kube-mgmt')
           redis=$(extract_value 'redis')
-          
+
           # Sidecars
           csi_resizer=$(extract_value 'csi-resizer')
           csi_provisioner=$(extract_value 'csi-provisioner')
@@ -99,7 +99,7 @@ jobs:
           {
             echo "CSM_VERSION=$csm_version"
             echo "CONTAINER_STORAGE_MODULES=$csm_chart"
-          
+
             # Drivers
             echo "CSI_POWERSCALE=$csi_powerscale"
             echo "CSI_POWERSTORE=$csi_powerstore"
@@ -108,7 +108,7 @@ jobs:
             echo "CSI_UNITY=$csi_unity"
             echo "CSI_LIGHTNINGFS=$csi_lightningfs"
             echo "COSI=$cosi"
-          
+
             # Modules
             echo "CSM_REPLICATION=$csm_replication"
             echo "KARAVI_RESILIENCY=$karavi_resiliency"
@@ -120,7 +120,7 @@ jobs:
             echo "CSM_METRICS_POWERSCALE=$csm_metrics_powerscale"
             echo "CSM_METRICS_POWERMAX=$csm_metrics_powermax"
             echo "CSM_DISASTER_RECOVERY=$csm_disaster_recovery"
-          
+
             # Third party
             echo "OPENTELEMETRY_COLLECTOR=$opentelemetry_collector"
             echo "NGINX_UNPRIVILEGED=$nginx_unprivileged"
@@ -129,7 +129,7 @@ jobs:
             echo "OPENPOLICYAGENT_OPA=$openpolicyagent_opa"
             echo "OPENPOLICYAGENT_KUBE_MGMT=$openpolicyagent_kube_mgmt"
             echo "REDIS=$redis"
-          
+
             # Sidecars
             echo "CSI_RESIZER=$csi_resizer"
             echo "CSI_PROVISIONER=$csi_provisioner"
@@ -179,7 +179,7 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           path: helm-charts
           base: ${{ inputs.target-branch }}
-          branch: "csm-${{ env.CSM_VERSION }}-update"
+          branch: "test-csm-${{ env.CSM_VERSION }}-update"
           commit-message: "Update components for csm ${{ env.CSM_VERSION }}"
           #title: "Update CSM components for CSM ${{ env.CSM_VERSION }}"
           title: "Test PR: DO NOT MERGE"
