@@ -356,7 +356,11 @@ for chart_dir in "${CHARTS[@]}"; do
   update_values_version "$values_file" "$chart_version" "$chart_dir"
 
   if [[ "$CHART_CHANGED" == true ]]; then
-    echo "$chart_dir: ${old_chart_version:-unknown} → $chart_version" >> "$SUMMARY_FILE"
+    if [[ "$(strip_v "${old_chart_version:-}")" != "$(strip_v "$chart_version")" ]]; then
+      echo "$chart_dir: ${old_chart_version:-unknown} → $chart_version" >> "$SUMMARY_FILE"
+    else
+      echo "$chart_dir: image updates ($chart_version)" >> "$SUMMARY_FILE"
+    fi
   fi
 done
 
