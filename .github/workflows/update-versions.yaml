@@ -22,15 +22,13 @@ on:
         required: false
         type: string
         default: main
+  # Manual trigger
+  # The target-branch is implicitly determined by the "Use workflow from" dropdown
+  # in the GitHub UI. The user selects the branch they want to use.
   workflow_dispatch:
     inputs:
       source-branch:
         description: "Branch to checkout from csm repository (default: main)"
-        required: false
-        type: string
-        default: main
-      target-branch:
-        description: "Branch to checkout from helm-charts and base branch for PR (default: main)"
         required: false
         type: string
         default: main
@@ -145,7 +143,8 @@ jobs:
         with:
           repository: dell/helm-charts
           path: helm-charts
-          ref: ${{ inputs.target-branch }}
+          # If inputs.target-branch is provided, use it. Otherwise, use the dropdown branch from the manual trigger.
+          ref: ${{ inputs.target-branch || github.ref_name }}
 
       - name: Install yq
         run: |
@@ -178,7 +177,7 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
           path: helm-charts
-          base: ${{ inputs.target-branch }}
+          base: ${{ inputs.target-branch || github.ref_name }}
           branch: "test-csm-${{ env.CSM_VERSION }}-update"
           commit-message: "Update components for csm ${{ env.CSM_VERSION }}"
           #title: "Update CSM components for CSM ${{ env.CSM_VERSION }}"
