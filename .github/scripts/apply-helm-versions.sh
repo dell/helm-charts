@@ -32,9 +32,12 @@ log_change() {
   new_clean=$(strip_v "$new")
 
   if [[ "$old_clean" != "$new_clean" ]]; then
-    echo "$name: $old → $new" | tee -a "$SUMMARY_FILE"
+    echo "  $name: $old → $new"
+    CHART_CHANGED=true
   fi
 }
+
+CHART_CHANGED=false
 
 require_file() {
   if [[ ! -f "$1" ]]; then
@@ -151,7 +154,7 @@ infer_version_from_name() {
 # Detect images
 detect_flat_images() {
   local file=$1
-  yq e -o=json '.' "$file" 2>/dev/null \
+  yq e -o=json '.' "$file" \
     | jq -c 'paths(strings) as $p | select(getpath($p) | (test("^[a-zA-Z0-9][^[:space:]]*:[^[:space:]]+$") and (test("://") | not))) | {path: ($p | map(tostring) | join(".")), value: getpath($p)}'
 }
 
@@ -162,17 +165,46 @@ parse_image_string() {
   echo "$repo|$tag"
 }
 
+# Update top-level version: field in values.yaml, preserving v-prefix and quote style
+update_values_version() {
+  local file=$1 version=$2 chart_dir=$3
+
+  [[ -f "$file" ]] || return 0
+  grep -qE '^version:' "$file" || return 0
+
+  local raw_line old new_value
+  raw_line=$(grep '^version:' "$file" | head -1)
+  old=$(echo "$raw_line" | sed 's/^[^:]*:[[:space:]]*//' | tr -d '"')
+
+  [[ "$(strip_v "$old")" == "$(strip_v "$version")" ]] && return 0
+
+  if [[ "$old" == v* ]]; then
+    new_value="v$(normalize_version "$version")"
+  else
+    new_value="$(normalize_version "$version")"
+  fi
+
+  if echo "$raw_line" | grep -q '"'; then
+    # Preserve quotes around version value
+    sed -i "s|^version:.*|version: \"${new_value}\"|" "$file"
+  else
+    # No quotes around version value
+    sed -i "s|^version:.*|version: ${new_value}|" "$file"
+  fi
+
+  log_change "$chart_dir values.yaml (version)" "$old" "$new_value"
+}
+
 # Update top-level Chart.yaml fields (version, appVersion) using sed to preserve formatting
 update_chart_field() {
   local file=$1 field=$2 value=$3 label=$4
-  local old tmp
+  local old
   old=$(grep "^${field}:" "$file" | head -1 | sed 's/^[^:]*:[[:space:]]*//' | tr -d '"')
   [[ "$(strip_v "$old")" == "$(strip_v "$value")" ]] && return 0
-  tmp=$(mktemp)
   if [[ "$field" == "appVersion" ]]; then
-    sed "s|^${field}:.*|${field}: \"${value}\"|" "$file" > "$tmp" && mv "$tmp" "$file"
+    sed -i "s|^${field}:.*|${field}: \"${value}\"|" "$file"
   else
-    sed "s|^${field}:.*|${field}: ${value}|" "$file" > "$tmp" && mv "$tmp" "$file"
+    sed -i "s|^${field}:.*|${field}: ${value}|" "$file"
   fi
   log_change "$label ($field)" "$old" "$value"
 }
@@ -209,7 +241,7 @@ detect_chart_version() {
 update_dependencies() {
   local chart_file=$1 chart_dir=$2 default_version=$3
 
-  DEP_COUNT=$(yq e '.dependencies | length' "$chart_file" 2>/dev/null || echo 0)
+  DEP_COUNT=$(yq e '.dependencies | length' "$chart_file" || echo 0)
 
   for ((i=0; i<DEP_COUNT; i++)); do
     name=$(yq e ".dependencies[$i].name" "$chart_file")
@@ -231,7 +263,8 @@ update_dependencies() {
       /^[[:space:]]*- name:/ { in_dep = ($NF == dep && !found) }
       in_dep && /^[[:space:]]*version:/ { sub(/version:.*/, "version: " ver); in_dep = 0; found = 1 }
       { print }
-    ' "$chart_file" > "$tmp" && mv "$tmp" "$chart_file"
+    ' "$chart_file" > "$tmp" || { rm -f "$tmp"; exit 1; }
+    mv "$tmp" "$chart_file"
 
     log_change "$chart_dir dependency ($name)" "$old" "$version"
   done
@@ -257,6 +290,9 @@ for chart_dir in "${CHARTS[@]}"; do
   values_file="$chart_dir/values.yaml"
 
   require_file "$chart_file"
+
+  CHART_CHANGED=false
+  old_chart_version=$(grep "^version:" "$chart_file" | head -1 | sed 's/^[^:]*:[[:space:]]*//' | tr -d '"')
 
   chart_version=""
 
@@ -308,12 +344,22 @@ for chart_dir in "${CHARTS[@]}"; do
       new_value="${repo}:${new_tag}"
 
       if [[ "$value" != "$new_value" ]]; then
-        tmp=$(mktemp)
-        sed "s|${value}|${new_value}|" "$values_file" > "$tmp" && mv "$tmp" "$values_file"
+        sed -i "s|${value}|${new_value}|" "$values_file"
         log_change "$chart_dir image ($path)" "$value" "$new_value"
       fi
 
     done < <(detect_flat_images "$values_file")
+  fi
+
+  # values.yaml top-level version field
+  update_values_version "$values_file" "$chart_version" "$chart_dir"
+
+  if [[ "$CHART_CHANGED" == true ]]; then
+    if [[ "$(strip_v "${old_chart_version:-}")" != "$(strip_v "$chart_version")" ]]; then
+      echo "$chart_dir: ${old_chart_version:-unknown} → $chart_version" >> "$SUMMARY_FILE"
+    else
+      echo "$chart_dir: image updates ($chart_version)" >> "$SUMMARY_FILE"
+    fi
   fi
 done
 
