@@ -506,6 +506,10 @@ spec:
               value: /isilon-configs/config
             - name: X_CSI_MAX_PATH_LIMIT
               value: "{{ .Values.maxPathLen }}"
+            - name: X_CSI_DRIVER_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
             - name: X_CSI_METRICS_ENABLED
               value: "true"
@@ -528,6 +532,16 @@ spec:
               value: "/etc/metrics-tls/tls.crt"
             - name: X_CSI_METRICS_TLS_KEY_FILE
               value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- if hasKey .Values.metrics "leaderElection" }}
+            - name: X_CSI_METRICS_LEADER_ELECTION_ENABLED
+              value: "{{ .Values.metrics.leaderElection.enabled | default false }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_LEASE_DURATION
+              value: "{{ .Values.metrics.leaderElection.leaseDuration | default "60s" }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_RENEW_DEADLINE
+              value: "{{ .Values.metrics.leaderElection.renewDeadline | default "40s" }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_RETRY_PERIOD
+              value: "{{ .Values.metrics.leaderElection.retryPeriod | default "5s" }}"
             {{- end }}
             {{- end }}
           volumeMounts:
