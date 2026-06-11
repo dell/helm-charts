@@ -411,7 +411,7 @@ storageCapacity:
 
 # Enable this feature only after contact support for additional information
 podmon:
-  enabled: false
+  enabled: true
   controller:
     args:
       - "--csisock=unix:/var/run/csi/csi.sock"
