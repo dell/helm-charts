@@ -115,6 +115,27 @@ rules:
     resources: ["volumegroupsnapshotcontents/status"]
     verbs: ["update", "patch"]
   {{- end }}
+  # below for csi-addons replication
+  {{- if eq .Values.csiAddonsReplication.enabled true}}
+  - apiGroups: ["replication.storage.openshift.io"]
+    resources: ["volumegroupreplications", "volumegroupreplications/status"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+  - apiGroups: ["replication.storage.openshift.io"]
+    resources: ["volumereplicationclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["replication.storage.openshift.io"]
+    resources: ["volumegroupreplicationcontents", "volumegroupreplicationcontents/status"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["csiaddons.openshift.io"]
+    resources: ["csiaddonsnodes"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  {{- end}}
   # Permissions for Storage Capacity
   {{- if eq (include "csi-powermax.isStorageCapacitySupported" .) "true" }}
   - apiGroups: ["storage.k8s.io"]
@@ -315,6 +336,42 @@ spec:
             - name: socket-dir
               mountPath: /var/run/csi
         {{- end }}
+        {{- end }}
+        {{- if eq .Values.csiAddonsReplication.enabled true}}
+        - name: csi-addons
+          image: {{ required "Must provide the CSI Addons sidecar container image." .Values.images.csiAddons.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args:
+            - "--node-id=$(KUBE_NODE_NAME)"
+            - "--v=5"
+            - "--csi-addons-address=$(CSI_ADDONS_ENDPOINT)"
+            - "--controller-port=9809"
+            - "--pod=$(POD_NAME)"
+            - "--namespace=$(POD_NAMESPACE)"
+            - "--pod-uid=$(POD_UID)"
+          env:
+            - name: CSI_ADDONS_ENDPOINT
+              value: /var/run/csi/csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/run/csi
         {{- end }}
         {{- if eq .Values.replication.enabled true}}
         - name: dell-csi-replicator
@@ -564,6 +621,8 @@ spec:
               value: /app/tls
             - name: X_CSI_DYNAMIC_SG_ENABLED
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
+            - name: X_CSI_CSIADDONS_REPLICATION_ENABLED
+              value: "{{ .Values.csiAddonsReplication.enabled }}"
             {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
             - name: X_CSI_METRICS_ENABLED
               value: "true"

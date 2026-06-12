@@ -132,6 +132,9 @@ images:
     image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.17.0
   healthmonitor:
     image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.18.0
+  # CSI Addons sidecar
+  csiAddons:
+    image: quay.io/csiaddons/k8s-sidecar:v0.14.0
   # CSM sidecars
   replication:
     image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.16.0
@@ -479,6 +482,17 @@ modifyHostName: "false"
 # is being done on a Red Hat OpenShift cluster in the Helm Chart
 # Don't modify this value as this value is overridden by the install script
 openshift: false
+
+# CSI Addons replication support
+# Set this to true to enable CSI Addons VolumeGroupReplication via the csi-addons sidecar.
+# CSI Addons CRDs (VolumeGroupReplication, VolumeReplicationClass) must be installed
+# before enabling this feature.
+# Allowed values:
+#   "true" - CSI Addons replication is enabled
+#   "false" - CSI Addons replication is disabled
+# Default value: "false"
+csiAddonsReplication:
+  enabled: false
 
 # CSM module attributes
 # Set this to true to enable replication
