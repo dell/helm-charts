@@ -9,7 +9,7 @@ images:
   # csm.artifactory.cec.lab.emc.com/csm-users/cicd/csi-isilon:nightly
   # quay.io/dell/container-storage-modules/csi-isilon:v2.17.0
   driver:
-    image: quay.io/dell/container-storage-modules/csi-isilon:v2.17.0
+    image: csm.artifactory.cec.lab.emc.com/csm-users/cicd/csi-isilon:nightly
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.12.0
