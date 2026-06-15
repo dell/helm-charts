@@ -47,6 +47,9 @@ rules:
     resources: ["configmaps"]
     verbs: ["get", "update"]
   - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: [""]
     resources: ["events"]
     verbs: ["create", "patch"]
 ---
@@ -421,11 +424,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: MDM
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-config
-                  key: MDM
             - name: MODE
               value: "monitoring"
           volumeMounts:
@@ -442,11 +440,43 @@ spec:
         {{- end }}
       {{- if or (not (hasKey (.Values.node.sdc) "enabled")) (eq .Values.node.sdc.enabled true) }}
       initContainers:
+        - name: mdm-container
+          image: "{{ required "Must provide the driver image repository." .Values.images.driver.image }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command: ["/csi-vxflexos.sh"]
+          args:
+            - "--array-config=/vxflexos-config/config"
+            - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
+          env:
+            - name: X_CSI_MODE
+              value: mdm-info
+            - name: NODENAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: vxflexos-config
+              mountPath: /vxflexos-config
+            - name: vxflexos-config-params
+              mountPath: /vxflexos-config-params
+            - name: mdm-dir
+              mountPath: /data
+{{- if ge (int .Values.certSecretCount) 1 }}
+            - name: certs
+              mountPath: /certs
+              readOnly: true
+{{- end }}
         - name: sdc
           securityContext:
             privileged: true
           image: {{ required "Must provide the PowerFlex SDC container image." .Values.images.powerflexSdc.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              source /data/node_mdms.txt
+              /files/scripts/init.sh
           env:
             {{- if eq .Values.node.sdc.sdcSFTPRepo.enabled true }}
             - name: REPO_ADDRESS
@@ -462,11 +492,6 @@ spec:
                   fieldPath: spec.nodeName
             - name: MODE
               value: "config"
-            - name: MDM
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Release.Name }}-config
-                  key: MDM
             - name: HOST_DRV_CFG_PATH
               value: {{ .Values.node.sdc.sdcHostDrvCfgPath }}
           volumeMounts:
@@ -482,6 +507,8 @@ spec:
               mountPath: /rules.d
             - name: scaleio-path-opt
               mountPath: /host_drv_cfg_path
+            - name: mdm-dir
+              mountPath: /data
             {{- if eq .Values.node.sdc.sdcSFTPRepo.enabled true }}
             - name: sftp-keys
               mountPath: /config/
@@ -573,6 +600,8 @@ spec:
           hostPath:
             path: /opt/emc
             type: DirectoryOrCreate
+        - name: mdm-dir
+          emptyDir: {}
         - name: vxflexos-config
           secret:
             secretName: {{ .Release.Name }}-config
