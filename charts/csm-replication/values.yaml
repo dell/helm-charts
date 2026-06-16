@@ -12,6 +12,11 @@ image: quay.io/dell/container-storage-modules/dell-replication-controller:v1.15.
 # Default value: "info"
 logLevel: "info"
 
+# logFormat: Defines initial log format for controller. This can be changed in runtime
+# Allowed values: "JSON", "TEXT"
+# Default value: "TEXT"
+logFormat: "TEXT"
+
 # leaderElection: Enable leader election for dell-replication-controller manager.
 # Enabling this will ensure there is only one active dell-replication-controller manager.
 # Allowed values: "true", "false"
