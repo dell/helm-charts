@@ -520,12 +520,12 @@ metrics:
     enabled: false
     # leaseDuration: Duration in seconds that the current leader will hold the lease.
     # Type: string (Prometheus duration, e.g. "15s", "30s")
-    # Default: "15s"
-    leaseDuration: "15s"
+    # Default: "60s"
+    leaseDuration: "60s"
     # renewDeadline: Duration in seconds that the leader will attempt to renew the lease.
     # Type: string (Prometheus duration, e.g. "10s", "20s")
-    # Default: "10s"
-    renewDeadline: "10s"
+    # Default: "40s"
+    renewDeadline: "40s"
     # retryPeriod: Duration in seconds that the leader will wait before attempting to acquire the lease.
     # Type: string (Prometheus duration, e.g. "5s", "10s")
     # Default: "5s"

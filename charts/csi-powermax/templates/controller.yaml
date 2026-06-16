@@ -738,6 +738,7 @@ spec:
           secret:
             secretName: {{ .Values.metrics.tlsCertSecret }}
         {{- end }}
+        {{- end }}
         {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
         - name: proxy-auth-token
           secret:
@@ -753,6 +754,5 @@ spec:
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
-        {{- end }}
         {{- end }}
         {{- end }}
