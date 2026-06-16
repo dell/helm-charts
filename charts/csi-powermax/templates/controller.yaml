@@ -617,6 +617,14 @@ spec:
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
             - name: X_CSI_CSIADDONS_REPLICATION_ENABLED
               value: "{{ .Values.csiAddonsReplication.enabled }}"
+            - name: X_CSI_DRIVER_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
             - name: X_CSI_METRICS_ENABLED
               value: "true"
