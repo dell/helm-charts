@@ -206,6 +206,10 @@ metadata:
   {{ end }}
 spec:
   replicas: {{ required "Must provide the number of controller instances to create." .Values.controller.controllerCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
   selector:
     matchLabels:
       name: {{ .Release.Name }}-controller
