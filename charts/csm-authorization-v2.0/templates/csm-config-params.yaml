@@ -7,6 +7,7 @@ data:
   csm-config-params.yaml: |
     CONCURRENT_STORAGE_REQUESTS: {{ .Values.authorization.concurrentStorageRequests }}
     LOG_LEVEL: {{ .Values.authorization.logLevel }}
+    LOG_FORMAT: {{ .Values.authorization.logFormat }}
     STORAGE_CAPACITY_POLL_INTERVAL: {{ .Values.authorization.storageCapacityPollInterval }}
     {{- if (.Values.authorization.zipkin.collectoruri) }}
     zipkin.collectoruri: {{ .Values.authorization.zipkin.collectoruri }}

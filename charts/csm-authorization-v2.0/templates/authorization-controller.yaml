@@ -116,6 +116,13 @@ spec:
         ports:
         - containerPort: 50052
           name: http
+        volumeMounts:
+          - name: csm-config-params
+            mountPath: /etc/karavi-authorization/csm-config-params
+      volumes:
+        - name: csm-config-params
+          configMap:
+            name: csm-config-params
 ---
 apiVersion: v1
 kind: Service

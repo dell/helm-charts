@@ -40,6 +40,9 @@ authorization:
   # log level for csm-authorization
   logLevel: debug
 
+  # log format for csm-authorization (TEXT or JSON)
+  logFormat: TEXT
+
   # number, as a string, of concurrent requests for the storage-service to make to a storage array
   # currently only used with dellctl to list tenant volumes
   concurrentStorageRequests: "10"
