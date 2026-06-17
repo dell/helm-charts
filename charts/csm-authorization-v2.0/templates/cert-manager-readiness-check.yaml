@@ -1,0 +1,86 @@
+{{- if or (not .Values.authorization.certificate) (not .Values.authorization.privateKey) }}
+{{- if index .Values "cert-manager" "enabled" }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cert-manager-readiness-check
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: readiness-check
+        image: curlimages/curl:8.5.0
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Waiting for cert-manager webhook to be ready..."
+          max_attempts=60
+          attempt=0
+ 
+          while [ $attempt -lt $max_attempts ]; do
+            # Test webhook connectivity using curl
+            if curl -k -s --connect-timeout 5 --max-time 10 "https://{{ .Release.Name }}-cert-manager-webhook.{{ include "custom.namespace" . }}.svc:443/validate" 2>/dev/null; then
+              echo "cert-manager webhook is responding!"
+              exit 0
+            fi
+ 
+            echo "Attempt $((attempt + 1))/$max_attempts: Webhook not ready yet, waiting 5 seconds..."
+            sleep 5
+            attempt=$((attempt + 1))
+          done
+ 
+          echo "Timeout waiting for cert-manager webhook to be ready"
+          exit 1
+      serviceAccountName: cert-manager-readiness-check
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cert-manager-readiness-check
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cert-manager-readiness-check
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+rules:
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cert-manager-readiness-check
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+subjects:
+- kind: ServiceAccount
+  name: cert-manager-readiness-check
+  namespace: {{ include "custom.namespace" . }}
+roleRef:
+  kind: Role
+  name: cert-manager-readiness-check
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+{{- end }}
