@@ -35,6 +35,11 @@ rules:
     resources: ["pods"]
     verbs: ["get", "list", "watch"]
   {{ end }}
+  {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  {{- end }}
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -246,6 +251,14 @@ spec:
             {{ end }}
             - name: X_CSI_MAX_PATH_LIMIT
               value: "{{ .Values.maxPathLen }}"
+            - name: X_CSI_DRIVER_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
             - name: X_CSI_METRICS_ENABLED
               value: "true"
