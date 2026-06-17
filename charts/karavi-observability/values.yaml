@@ -149,7 +149,7 @@ karaviMetricsPowerscale:
     skipCertificateValidation: true
 
 karaviMetricsPowermax:
-  image: quay.io/dell/container-storage-modules/csm-metrics-powermax:v1.10.0
+  image: quay.io/dell/container-storage-modules/csm-metrics-powermax:v1.10.1
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powermax.dellemc.com)
