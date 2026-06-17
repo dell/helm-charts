@@ -27,6 +27,9 @@ kind: Issuer
 metadata:
   name: selfsigned-issuer
   namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "10"
 spec:
   selfSigned: {}
 

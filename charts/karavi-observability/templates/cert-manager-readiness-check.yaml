@@ -1,0 +1,121 @@
+{{- if index .Values "cert-manager" "enabled" }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cert-manager-readiness-check
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: readiness-check
+        image: bitnami/kubectl:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Waiting for cert-manager deployments to be available..."
+          kubectl wait --for=condition=Available deployment/{{ .Release.Name }}-cert-manager \
+            -n {{ include "custom.namespace" . }} --timeout=120s
+          kubectl wait --for=condition=Available deployment/{{ .Release.Name }}-cert-manager-cainjector \
+            -n {{ include "custom.namespace" . }} --timeout=120s
+          kubectl wait --for=condition=Available deployment/{{ .Release.Name }}-cert-manager-webhook \
+            -n {{ include "custom.namespace" . }} --timeout=120s
+
+          echo "Waiting for cainjector to populate webhook caBundle..."
+          max_attempts=30
+          attempt=0
+          while [ $attempt -lt $max_attempts ]; do
+            CA_BUNDLE=$(kubectl get mutatingwebhookconfiguration \
+              {{ .Release.Name }}-cert-manager-webhook \
+              -o jsonpath='{.webhooks[0].clientConfig.caBundle}' 2>/dev/null)
+            if [ -n "$CA_BUNDLE" ]; then
+              echo "caBundle is populated. Webhook is fully ready!"
+              exit 0
+            fi
+            echo "Attempt $((attempt + 1))/$max_attempts: caBundle not populated yet, waiting 5s..."
+            sleep 5
+            attempt=$((attempt + 1))
+          done
+          echo "Timeout waiting for caBundle to be populated"
+          exit 1
+      serviceAccountName: cert-manager-readiness-check
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cert-manager-readiness-check
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cert-manager-readiness-check
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cert-manager-readiness-check
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+subjects:
+- kind: ServiceAccount
+  name: cert-manager-readiness-check
+  namespace: {{ include "custom.namespace" . }}
+roleRef:
+  kind: Role
+  name: cert-manager-readiness-check
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cert-manager-readiness-check-{{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+rules:
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources: ["mutatingwebhookconfigurations"]
+  verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cert-manager-readiness-check-{{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+subjects:
+- kind: ServiceAccount
+  name: cert-manager-readiness-check
+  namespace: {{ include "custom.namespace" . }}
+roleRef:
+  kind: ClusterRole
+  name: cert-manager-readiness-check-{{ .Release.Name }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
