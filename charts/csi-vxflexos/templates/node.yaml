@@ -250,6 +250,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: X_CSI_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             {{- if hasKey .Values.node "healthMonitor" }}
             - name: X_CSI_HEALTH_MONITOR_ENABLED
               value: "{{ .Values.node.healthMonitor.enabled }}"
