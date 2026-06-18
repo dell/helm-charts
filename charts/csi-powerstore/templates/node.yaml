@@ -67,6 +67,11 @@ rules:
     verbs: ["get", "list", "watch"]
   {{ end }}
   {{ end }}
+  {{- if eq (include "csi-powerstore.isMetricsEnabled" .) "true" }}
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  {{- end }}
 ---
 # ClusterRoleBinding for Cluster-specific
 kind: ClusterRoleBinding
