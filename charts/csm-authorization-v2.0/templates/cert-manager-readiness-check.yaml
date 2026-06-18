@@ -1,4 +1,3 @@
-{{- if or (not .Values.authorization.certificate) (not .Values.authorization.privateKey) }}
 {{- if index .Values "cert-manager" "enabled" }}
 ---
 apiVersion: batch/v1
@@ -82,5 +81,4 @@ roleRef:
   kind: Role
   name: cert-manager-readiness-check
   apiGroup: rbac.authorization.k8s.io
-{{- end }}
 {{- end }}
