@@ -358,6 +358,16 @@ node:
     # Default value: false
     enabled: false
 
+  # "trimSDCName" defines the truncation of SDC name to 31 characters (PowerFlex limit)
+  # Default value: None
+  trimSDCName:
+    # enabled: Enable/Disable truncation of SDC name to 31 characters (PowerFlex limit)
+    # Allowed values:
+    #   true: enable truncation when SDC name exceeds 31 characters
+    #   false: disable truncation (may cause PowerFlex API error if name > 31 chars)
+    # Default value: false
+    enabled: false
+
 # Storage Capacity Tracking
 # Note: Capacity tracking is supported in kubernetes v1.24 and above, this feature will be automatically disabled in older versions.
 storageCapacity:
