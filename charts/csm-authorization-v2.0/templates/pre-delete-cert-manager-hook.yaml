@@ -1,4 +1,3 @@
-{{- if index .Values "cert-manager" "enabled" }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -67,4 +66,3 @@ spec:
           kubectl delete certificate karavi-auth -n {{ include "custom.namespace" . }} --ignore-not-found=true
           kubectl delete issuer selfsigned -n {{ include "custom.namespace" . }} --ignore-not-found=true
           echo "Cleanup completed"
-{{- end }}
