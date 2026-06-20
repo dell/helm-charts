@@ -120,6 +120,23 @@ rules:
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
   {{- end}}
   {{- end}}
+  # below for csi-addons replication
+  {{- if hasKey .Values.controller "csiAddonsReplication" }}
+  {{- if eq .Values.controller.csiAddonsReplication.enabled true}}
+  - apiGroups: ["replication.storage.openshift.io"]
+    resources: ["volumegroupreplications", "volumegroupreplications/status"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+  - apiGroups: ["replication.storage.openshift.io"]
+    resources: ["volumegroupreplicationcontents", "volumegroupreplicationcontents/status"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["csiaddons.openshift.io"]
+    resources: ["csiaddonsnodes"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: ["authentication.k8s.io"]
+    resources: ["tokenreviews"]
+    verbs: ["create"]
+  {{- end}}
+  {{- end}}
   # Permissions for CSIStorageCapacity
   {{- if eq (include "csi-powerstore.isStorageCapacitySupported" .) "true" }}
   - apiGroups: [ "storage.k8s.io" ]
@@ -397,6 +414,44 @@ spec:
               mountPath: /var/run/csi
         {{- end }}
         {{- end }}
+        {{- if hasKey .Values.controller "csiAddonsReplication" }}
+        {{- if eq .Values.controller.csiAddonsReplication.enabled true}}
+        - name: csi-addons
+          image: {{ required "Must provide the CSI Addons sidecar container image." .Values.images.csiAddons.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args:
+            - "--node-id=$(KUBE_NODE_NAME)"
+            - "--v=5"
+            - "--csi-addons-address=$(CSI_ADDONS_ENDPOINT)"
+            - "--controller-port=9809"
+            - "--pod=$(POD_NAME)"
+            - "--namespace=$(POD_NAMESPACE)"
+            - "--pod-uid=$(POD_UID)"
+          env:
+            - name: CSI_ADDONS_ENDPOINT
+              value: /var/run/csi/csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/run/csi
+        {{- end }}
+        {{- end }}
         - name: csi-metadata-retriever
           image: {{ required "Must provide the CSI Metadata retriever container image." .Values.images.metadataretriever.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -503,14 +558,14 @@ spec:
               value: "{{ .Values.controller.healthMonitor.enabled }}"
             {{- end }}
             {{- end }}
+            {{- if hasKey .Values.controller "csiAddonsReplication" }}
+            - name: X_CSI_CSIADDONS_REPLICATION_ENABLED
+              value: "{{ .Values.controller.csiAddonsReplication.enabled }}"
+            {{- end }}
             - name: GOPOWERSTORE_DEBUG
               value: "true"
             - name: CSI_AUTO_ROUND_OFF_FILESYSTEM_SIZE
               value: "{{ .Values.allowAutoRoundOffFilesystemSize | default true }}"
-            - name: X_CSI_DRIVER_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
             - name: POD_NAME
               valueFrom:
                 fieldRef:

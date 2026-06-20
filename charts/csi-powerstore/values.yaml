@@ -45,6 +45,10 @@ images:
   healthmonitor:
     image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.18.0
 
+  # CSI Addons sidecar
+  csiAddons:
+    image: quay.io/csiaddons/k8s-sidecar:v0.14.0
+
   # CSM sidecars
   replication:
     image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.16.0
@@ -250,6 +254,16 @@ controller:
     # Allowed values: string
     # Default value: replication.storage.dell.com
     replicationPrefix: "replication.storage.dell.com"
+
+  # csiAddonsReplication: allows to configure CSI Addons replication
+  # CSI Addons provides additional capabilities like volume group replication
+  csiAddonsReplication:
+    # enabled: Enable/Disable CSI Addons replication feature
+    # Allowed values:
+    #   true: enable CSI Addons replication feature (install csi-addons sidecar)
+    #   false: disable CSI Addons replication feature (do not install csi-addons sidecar)
+    # Default value: false
+    enabled: false
 
   # nodeSelector: Define node selection constraints for controller pods.
   # For the pod to be eligible to run on a node, the node must have each
