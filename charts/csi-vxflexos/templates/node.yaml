@@ -266,6 +266,10 @@ spec:
               value: "{{ .Values.node.renameSDC.prefix }}"
             {{- end }}
             {{- end }}
+            {{- if hasKey .Values.node "trimSDCName" }}
+            - name: X_CSI_TRIM_SDC_NAME_ENABLED
+              value: "{{ .Values.node.trimSDCName.enabled }}"
+            {{- end }}
             - name: X_CSI_POWERFLEX_KUBE_NODE_NAME
               valueFrom:
                 fieldRef:
