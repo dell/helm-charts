@@ -617,6 +617,14 @@ spec:
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
             - name: X_CSI_CSIADDONS_REPLICATION_ENABLED
               value: "{{ .Values.csiAddonsReplication.enabled }}"
+            - name: X_CSI_DRIVER_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
             - name: X_CSI_METRICS_ENABLED
               value: "true"
@@ -627,6 +635,16 @@ spec:
               value: "/etc/metrics-tls/tls.crt"
             - name: X_CSI_METRICS_TLS_KEY_FILE
               value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- if hasKey .Values.metrics "leaderElection" }}
+            - name: X_CSI_METRICS_LEADER_ELECTION_ENABLED
+              value: "{{ .Values.metrics.leaderElection.enabled | default false }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_LEASE_DURATION
+              value: "{{ .Values.metrics.leaderElection.leaseDuration | default "60s" }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_RENEW_DEADLINE
+              value: "{{ .Values.metrics.leaderElection.renewDeadline | default "40s" }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_RETRY_PERIOD
+              value: "{{ .Values.metrics.leaderElection.retryPeriod | default "5s" }}"
             {{- end }}
             {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
             - name: X_CSI_REVPROXY_AUTH_TOKEN_FILE
@@ -738,6 +756,7 @@ spec:
           secret:
             secretName: {{ .Values.metrics.tlsCertSecret }}
         {{- end }}
+        {{- end }}
         {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
         - name: proxy-auth-token
           secret:
@@ -753,6 +772,5 @@ spec:
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
-        {{- end }}
         {{- end }}
         {{- end }}
