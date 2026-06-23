@@ -5,7 +5,7 @@ metadata:
 driverName: csi-powerstore.dellemc.com
 parameters:
   Description: "Sample VAC file"
-  PerformancePolicyID: "performace-policy-id"
+  PerformancePolicyID: "performance-policy-id"
   ProtectionPolicyID: "protection-policy-id"
   AppType: "Relational_Databases_Other"
   AppTypeOther: "Mongo DB"

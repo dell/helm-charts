@@ -17,9 +17,7 @@ VolumeAttributesClass is a Kubernetes feature that allows modifying volume attri
 Defines a VolumeAttributesClass with unlimited QoS settings for volumes.
 
 ### vac-qos.yaml  
-Defines a VolumeAttributesClass with specific QoS limits:
-- iopsLimit: 500
-- bandwidthLimitInKbps: 1024
+Defines a VolumeAttributesClass with specific QoS limits.
 
 ### pvc-with-vac.yaml
 Sample PersistentVolumeClaim that references a VolumeAttributesClass.
