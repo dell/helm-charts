@@ -19,15 +19,15 @@ authorization:
   # images to use in installation
   images:
     proxyService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-proxy:v2.6.0
+      image: csm.artifactory.cec.lab.emc.com/csm-users/cicd/csm-authorization-proxy:nightly
     tenantService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-tenant:v2.6.0
+      image: csm.artifactory.cec.lab.emc.com/csm-users/cicd/csm-authorization-tenant:nightly
     roleService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-role:v2.6.0
+      image: csm.artifactory.cec.lab.emc.com/csm-users/cicd/csm-authorization-role:nightly
     storageService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-storage:v2.6.0
+      image: csm.artifactory.cec.lab.emc.com/csm-users/cicd/csm-authorization-storage:nightly
     authorizationController:
-      image: quay.io/dell/container-storage-modules/csm-authorization-controller:v2.6.0
+      image: csm.artifactory.cec.lab.emc.com/csm-users/cicd/csm-authorization-controller:nightly
     opa:
       image: docker.io/openpolicyagent/opa:0.70.0
     opaKubeMgmt:
@@ -63,8 +63,7 @@ authorization:
     # For Kubernetes: use the NGINX Gateway Fabric service, e.g., authorization-gateway-nginx.<namespace>.svc.cluster.local
     # For OpenShift: use the OpenShift Router service, e.g., router-internal-default.openshift-ingress.svc.cluster.local
     hosts:
-      []
-      # - authorization-gateway-nginx.{{ include "custom.namespace" . }}.svc.cluster.local
+      - authorization-gateway-nginx.authorization.svc.cluster.local
 
     # listener port (default 443)
     port: 443
@@ -82,8 +81,8 @@ redis:
   # 2. Via a Secret Store CSI driver (specify the SecretProviderClass details below)
   #
   # Option 1: Provide credentials directly
-  redisUsername:
-  redisPassword:
+  redisUsername: "dev"
+  redisPassword: "K@ravi123!"
 
   # Option 2: Use a Secret Store CSI driver
   redisSecretProviderClass:
@@ -132,9 +131,9 @@ config:
 # 2. Using a Kubernetes Secret (for static credentials)
 # Only one of the two can be specified at a time.
 storageSystemCredentials:
-  secretProviderClasses:
-    vault:
-      - secretProviderClassName1
+  # secretProviderClasses:
+    # vault:
+      #- secretProviderClassName1
       # - secretProviderClassName2
       # - secretProviderClassName3
 
@@ -150,7 +149,7 @@ storageSystemCredentials:
     #       - passwordPath: secrets/password3
     #         usernamePath: secrets/username3
 
-  # secrets:
-  #   - secret-1
+  secrets:
+    - storage-secret
   #   - secret-2
   #   - secret-3
