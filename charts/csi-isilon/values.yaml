@@ -12,7 +12,7 @@ images:
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.12.0
   provisioner:
-    image: registry.k8s.io/sig-storage/csi-provisioner:v6.2.0
+    image: registry.k8s.io/sig-storage/csi-provisioner:v6.3.0
   snapshotter:
     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.6.0
   resizer:
@@ -326,8 +326,8 @@ skipCertificateValidation: true
 # Allowed values:
 #   0: enables basic Authentication
 #   1: enables session-based Authentication
-# Default value: 0
-isiAuthType: 0
+# Default value: 1
+isiAuthType: 1
 
 # isiAccessZone: The name of the access zone a volume can be created in.
 # If storageclass is missing with AccessZone parameter, then value of isiAccessZone is used for the same.
@@ -457,6 +457,26 @@ metrics:
   # Type: string
   # Default: "" (disabled - plain HTTP)
   tlsCertSecret: ""
+
+  # leaderElection: Configure leader election for array-level metrics collection.
+  # Only the leader controller will collect array-level metrics to avoid duplicate API calls.
+  leaderElection:
+    # enabled: When true, leader election is enabled for the metrics server.
+    # Type: bool
+    # Default: false
+    enabled: false
+    # leaseDuration: Duration in seconds that the current leader will hold the lease.
+    # Type: string (Prometheus duration, e.g. "15s", "30s")
+    # Default: "60s"
+    leaseDuration: "60s"
+    # renewDeadline: Duration in seconds that the leader will attempt to renew the lease.
+    # Type: string (Prometheus duration, e.g. "10s", "20s")
+    # Default: "40s"
+    renewDeadline: "40s"
+    # retryPeriod: Duration in seconds that the leader will wait before attempting to acquire the lease.
+    # Type: string (Prometheus duration, e.g. "5s", "10s")
+    # Default: "5s"
+    retryPeriod: "5s"
 
   # serviceMonitor: Controls optional Prometheus Operator ServiceMonitor creation.
   serviceMonitor:

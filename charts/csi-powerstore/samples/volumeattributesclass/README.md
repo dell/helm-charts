@@ -1,0 +1,49 @@
+# VolumeAttributesClass Samples
+
+This directory contains sample manifests for using VolumeAttributesClass (VAC) feature with CSI PowerStore driver.
+
+## VolumeAttributesClass Overview
+
+VolumeAttributesClass is a Kubernetes feature that allows modifying volume attributes after volume creation. This feature is available in Kubernetes 1.29+.
+
+## Prerequisites
+
+- Kubernetes 1.29 or later
+- CSI PowerStore driver with VAC support enabled
+- VolumeAttributesClass feature gate enabled in Kubernetes
+
+## Sample Files
+
+### vac-qos-unlimited.yaml
+Defines a VolumeAttributesClass with unlimited QoS settings for volumes.
+
+### vac-qos.yaml  
+Defines a VolumeAttributesClass with specific QoS settings:
+- AccessPolicy: ReadOnly
+- Additional parameters for performance, protection, and application type
+
+### pvc-with-vac.yaml
+Sample PersistentVolumeClaim that references a VolumeAttributesClass.
+
+## Usage
+
+1. Create the VolumeAttributesClass:
+```bash
+kubectl apply -f vac-qos.yaml
+```
+
+2. Create a PVC that references the VolumeAttributesClass:
+```bash
+kubectl apply -f pvc-with-vac.yaml
+```
+
+3. Modify an existing PVC to use a different VolumeAttributesClass:
+```bash
+kubectl patch pvc <pvc-name> --type merge -p '{"spec":{"volumeAttributesClassName":"powerstore-qos-unlimited"}}'
+```
+
+## Notes
+
+- The VolumeAttributesClass modification is applied asynchronously by the CSI resizer sidecar
+- Not all volume attributes may be modifiable depending on the storage array capabilities
+- Refer to the CSI PowerStore driver documentation for supported attributes

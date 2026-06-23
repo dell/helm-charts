@@ -34,6 +34,9 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["storageclasses"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattributesclasses"]
+    verbs: ["get", "list", "watch"]
   - apiGroups: [""]
     resources: ["persistentvolumeclaims/status"]
     verbs: ["update", "patch"]
@@ -115,6 +118,21 @@ rules:
     resources: ["volumegroupsnapshotcontents/status"]
     verbs: ["update", "patch"]
   {{- end }}
+  # below for csi-addons replication
+  {{- if eq .Values.csiAddonsReplication.enabled true}}
+  - apiGroups: ["replication.storage.openshift.io"]
+    resources: ["volumegroupreplications", "volumegroupreplications/status"]
+    verbs: ["get", "list", "watch", "update", "patch"]
+  - apiGroups: ["replication.storage.openshift.io"]
+    resources: ["volumegroupreplicationcontents", "volumegroupreplicationcontents/status"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["csiaddons.openshift.io"]
+    resources: ["csiaddonsnodes"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: ["authentication.k8s.io"]
+    resources: ["tokenreviews"]
+    verbs: ["create"]
+  {{- end}}
   # Permissions for Storage Capacity
   {{- if eq (include "csi-powermax.isStorageCapacitySupported" .) "true" }}
   - apiGroups: ["storage.k8s.io"]
@@ -316,6 +334,42 @@ spec:
               mountPath: /var/run/csi
         {{- end }}
         {{- end }}
+        {{- if eq .Values.csiAddonsReplication.enabled true}}
+        - name: csi-addons
+          image: {{ required "Must provide the CSI Addons sidecar container image." .Values.images.csiAddons.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args:
+            - "--node-id=$(KUBE_NODE_NAME)"
+            - "--v=5"
+            - "--csi-addons-address=$(CSI_ADDONS_ENDPOINT)"
+            - "--controller-port=9809"
+            - "--pod=$(POD_NAME)"
+            - "--namespace=$(POD_NAMESPACE)"
+            - "--pod-uid=$(POD_UID)"
+          env:
+            - name: CSI_ADDONS_ENDPOINT
+              value: /var/run/csi/csi.sock
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /var/run/csi
+        {{- end }}
         {{- if eq .Values.replication.enabled true}}
         - name: dell-csi-replicator
           image: {{ required "Must provide the Dell CSI Replicator Resizer image." .Values.images.replication.image }}
@@ -377,6 +431,7 @@ spec:
             - "--timeout=180s"
             - "--v=5"
             - "--leader-election"
+            - "--feature-gates=VolumeAttributesClass=true"
           env:
             - name: ADDRESS
               value: /var/run/csi/csi.sock
@@ -564,6 +619,16 @@ spec:
               value: /app/tls
             - name: X_CSI_DYNAMIC_SG_ENABLED
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
+            - name: X_CSI_CSIADDONS_REPLICATION_ENABLED
+              value: "{{ .Values.csiAddonsReplication.enabled }}"
+            - name: X_CSI_DRIVER_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
             - name: X_CSI_METRICS_ENABLED
               value: "true"
@@ -574,6 +639,16 @@ spec:
               value: "/etc/metrics-tls/tls.crt"
             - name: X_CSI_METRICS_TLS_KEY_FILE
               value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- if hasKey .Values.metrics "leaderElection" }}
+            - name: X_CSI_METRICS_LEADER_ELECTION_ENABLED
+              value: "{{ .Values.metrics.leaderElection.enabled | default false }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_LEASE_DURATION
+              value: "{{ .Values.metrics.leaderElection.leaseDuration | default "60s" }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_RENEW_DEADLINE
+              value: "{{ .Values.metrics.leaderElection.renewDeadline | default "40s" }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_RETRY_PERIOD
+              value: "{{ .Values.metrics.leaderElection.retryPeriod | default "5s" }}"
             {{- end }}
             {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
             - name: X_CSI_REVPROXY_AUTH_TOKEN_FILE
@@ -685,6 +760,7 @@ spec:
           secret:
             secretName: {{ .Values.metrics.tlsCertSecret }}
         {{- end }}
+        {{- end }}
         {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
         - name: proxy-auth-token
           secret:
@@ -700,6 +776,5 @@ spec:
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
-        {{- end }}
         {{- end }}
         {{- end }}
