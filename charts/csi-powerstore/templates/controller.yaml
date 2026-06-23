@@ -51,6 +51,9 @@ rules:
     resources: [ "storageclasses" ]
     verbs: [ "get", "list", "watch" ]
   - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "volumeattributesclasses" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments" ]
   {{- if hasKey .Values "podmon" }}
   {{- if eq .Values.podmon.enabled true }}
@@ -308,6 +311,7 @@ spec:
             - "--csi-address=$(ADDRESS)"
             - "--v=5"
             - "--leader-election"
+            - "--feature-gates=VolumeAttributesClass=true"
           env:
             - name: ADDRESS
               value: /var/run/csi/csi.sock
@@ -514,10 +518,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: X_CSI_DRIVER_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
             - name: X_CSI_NFS_EXPORT_DIRECTORY
               value: {{ .Values.nfsExportDirectory | default "/var/lib/dell/nfs" }}
             - name: X_CSI_NFS_CLIENT_PORT
