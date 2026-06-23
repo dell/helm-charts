@@ -4,23 +4,20 @@ This directory contains sample manifests for using VolumeAttributesClass (VAC) f
 
 ## VolumeAttributesClass Overview
 
-VolumeAttributesClass is a Kubernetes feature that allows modifying volume attributes after volume creation. This feature is available in Kubernetes 1.29+.
+VolumeAttributesClass is a Kubernetes feature that allows modifying volume attributes after volume creation. This feature is available in Kubernetes 1.29+ with feature gate enabled and 1.34+ automatically.
 
 ## Prerequisites
 
-- Kubernetes 1.29 or later
+- Kubernetes 1.29 or later (with feature gate enabled) or 1.34+ (automatically enabled)
 - CSI PowerStore driver with VAC support enabled
-- VolumeAttributesClass feature gate enabled in Kubernetes
 
 ## Sample Files
 
-### vac-qos-unlimited.yaml
-Defines a VolumeAttributesClass with unlimited QoS settings for volumes.
+### vac-block.yaml
+Defines a VolumeAttributesClass for block volumes.
 
-### vac-qos.yaml  
-Defines a VolumeAttributesClass with specific QoS settings:
-- AccessPolicy: ReadOnly
-- Additional parameters for performance, protection, and application type
+### vac-nfs.yaml  
+Defines a VolumeAttributesClass for file systems:
 
 ### pvc-with-vac.yaml
 Sample PersistentVolumeClaim that references a VolumeAttributesClass.
@@ -29,7 +26,7 @@ Sample PersistentVolumeClaim that references a VolumeAttributesClass.
 
 1. Create the VolumeAttributesClass:
 ```bash
-kubectl apply -f vac-qos.yaml
+kubectl apply -f vac-block.yaml
 ```
 
 2. Create a PVC that references the VolumeAttributesClass:
@@ -39,7 +36,7 @@ kubectl apply -f pvc-with-vac.yaml
 
 3. Modify an existing PVC to use a different VolumeAttributesClass:
 ```bash
-kubectl patch pvc <pvc-name> --type merge -p '{"spec":{"volumeAttributesClassName":"powerstore-qos-unlimited"}}'
+kubectl patch pvc <pvc-name> --type merge -p '{"spec":{"volumeAttributesClassName":"<vac-name>"}}'
 ```
 
 ## Notes

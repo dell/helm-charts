@@ -4,13 +4,12 @@ This directory contains sample manifests for using VolumeAttributesClass (VAC) f
 
 ## VolumeAttributesClass Overview
 
-VolumeAttributesClass is a Kubernetes feature that allows modifying volume attributes after volume creation. This feature is available in Kubernetes 1.29+.
+VolumeAttributesClass is a Kubernetes feature that allows modifying volume attributes after volume creation. This feature is available in Kubernetes 1.29+ with feature gate enabled and 1.34+ automatically.
 
 ## Prerequisites
 
-- Kubernetes 1.29 or later
+- Kubernetes 1.29 or later (with feature gate enabled) or 1.34+ (automatically enabled)
 - CSI PowerFlex driver with VAC support enabled
-- VolumeAttributesClass feature gate enabled in Kubernetes
 
 ## Sample Files
 
@@ -19,8 +18,8 @@ Defines a VolumeAttributesClass with unlimited QoS settings for volumes.
 
 ### vac-qos.yaml  
 Defines a VolumeAttributesClass with specific QoS limits:
-- Max IOPS: 500
-- Max bandwidth: 1024 Kbps
+- iopsLimit: 500
+- bandwidthLimitInKbps: 1024
 
 ### pvc-with-vac.yaml
 Sample PersistentVolumeClaim that references a VolumeAttributesClass.
