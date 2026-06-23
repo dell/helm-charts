@@ -51,6 +51,9 @@ rules:
     resources: [ "storageclasses" ]
     verbs: [ "get", "list", "watch" ]
   - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "volumeattributesclasses" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments" ]
   {{- if hasKey .Values "podmon" }}
   {{- if eq .Values.podmon.enabled true }}
@@ -291,6 +294,7 @@ spec:
             - "--csi-address=$(ADDRESS)"
             - "--v=5"
             - "--leader-election"
+            - "--feature-gates=VolumeAttributesClass=true"
           env:
             - name: ADDRESS
               value: /var/run/csi/csi.sock

@@ -34,6 +34,9 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["storageclasses"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattributesclasses"]
+    verbs: ["get", "list", "watch"]
   - apiGroups: [""]
     resources: ["persistentvolumeclaims/status"]
     verbs: ["update", "patch"]
@@ -428,6 +431,7 @@ spec:
             - "--timeout=180s"
             - "--v=5"
             - "--leader-election"
+            - "--feature-gates=VolumeAttributesClass=true"
           env:
             - name: ADDRESS
               value: /var/run/csi/csi.sock
