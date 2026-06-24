@@ -440,7 +440,7 @@ podmon:
 
   # Metrics configuration for podmon resiliency
   metrics:
-    # enabled: Set to true to expose the metrics endpoint on the podmon containers.
+    # enabled: Set to true to expose the metrics endpoint on the podmon containers
     # Default value: false
     enabled: false
     # port: Port on which the metrics endpoint is exposed. Default for podmon: 8444.
