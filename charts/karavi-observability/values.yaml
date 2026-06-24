@@ -73,6 +73,10 @@ karaviMetricsPowerstore:
     type: ClusterIP
   logLevel: INFO
   logFormat: text
+  # obsMetricsEnabled: enable/disable observability self-metrics (dell_csm_obs_* on port 8080/metrics)
+  # Requires metrics.enabled in the csi-powerstore chart to also be true.
+  # Default value: false
+  obsMetricsEnabled: false
   zipkin:
     uri: ""
     serviceName: metrics-powerstore

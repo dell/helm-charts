@@ -50,6 +50,8 @@ data:
     ZIPKIN_URI: "{{ .Values.karaviMetricsPowerstore.zipkin.uri }}"
     ZIPKIN_SERVICE_NAME: "{{ .Values.karaviMetricsPowerstore.zipkin.serviceName }}"
     ZIPKIN_PROBABILITY: "{{ .Values.karaviMetricsPowerstore.zipkin.probability }}"
+    OBS_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerstore.obsMetricsEnabled }}"
+
 
 {{ end }}
 
