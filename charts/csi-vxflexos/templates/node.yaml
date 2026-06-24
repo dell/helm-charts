@@ -334,7 +334,7 @@ spec:
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/kubernetes.io/csi
               mountPropagation: "Bidirectional"
             - name: scaleio-path-opt
-              mountPath: /opt/emc/scaleio/sdc/bin/
+              mountPath: {{ .Values.node.sdc.sdcHostDrvCfgPath }}
               readOnly: true
             - name: vxflexos-config
               mountPath: /vxflexos-config
