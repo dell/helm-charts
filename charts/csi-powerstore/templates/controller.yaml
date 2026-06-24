@@ -123,9 +123,9 @@ rules:
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
   {{- end}}
   {{- end}}
-  # below for csi-addons replication
   {{- if hasKey .Values.controller "csiAddonsReplication" }}
   {{- if eq .Values.controller.csiAddonsReplication.enabled true}}
+  # below for csi-addons replication
   - apiGroups: ["replication.storage.openshift.io"]
     resources: ["volumegroupreplications", "volumegroupreplications/status"]
     verbs: ["get", "list", "watch", "update", "patch"]

@@ -257,6 +257,8 @@ controller:
 
   # csiAddonsReplication: allows to configure CSI Addons replication
   # CSI Addons provides additional capabilities like volume group replication
+  # CSI Addons CRDs (VolumeGroupReplication, VolumeReplicationClass) must be installed
+  # before enabling this feature.
   csiAddonsReplication:
     # enabled: Enable/Disable CSI Addons replication feature
     # Allowed values:
