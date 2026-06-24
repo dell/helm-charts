@@ -157,6 +157,26 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            {{- if and (hasKey .Values.podmon "metrics") .Values.podmon.metrics.enabled }}
+            - name: X_CSI_RES_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_RES_METRICS_PORT
+              value: "{{ .Values.podmon.metrics.port }}"
+            - name: X_CSI_RES_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.podmon.metrics.collection.interval }}"
+            {{- if .Values.podmon.metrics.tlsCertSecret }}
+            - name: X_CSI_RES_METRICS_TLS_CERT_FILE
+              value: /etc/metrics-tls/tls.crt
+            - name: X_CSI_RES_METRICS_TLS_KEY_FILE
+              value: /etc/metrics-tls/tls.key
+            {{- end }}
+            {{- end }}
+          {{- if and (hasKey .Values.podmon "metrics") .Values.podmon.metrics.enabled }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.podmon.metrics.port }}
+              protocol: TCP
+          {{- end }}
           volumeMounts:
             - name: kubelet-pods
               mountPath: {{ .Values.kubeletConfigDir }}/pods
@@ -175,6 +195,11 @@ spec:
               mountPath: /var/run
             - name: csi-isilon-config-params
               mountPath: /csi-isilon-config-params
+            {{- if and (hasKey .Values.podmon "metrics") .Values.podmon.metrics.enabled .Values.podmon.metrics.tlsCertSecret }}
+            - name: resiliency-metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+            {{- end }}
       {{- end }}
       {{- end }}
         - name: driver
@@ -404,6 +429,11 @@ spec:
           secret:
             secretName: {{ .Values.metrics.tlsCertSecret }}
         {{- end }}
+        {{- end }}
+        {{- if and (hasKey .Values "podmon") .Values.podmon.enabled (hasKey .Values.podmon "metrics") .Values.podmon.metrics.enabled .Values.podmon.metrics.tlsCertSecret }}
+        - name: resiliency-metrics-tls
+          secret:
+            secretName: {{ .Values.podmon.metrics.tlsCertSecret }}
         {{- end }}
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}
