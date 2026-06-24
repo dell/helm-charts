@@ -42,6 +42,9 @@ rules:
     resources: ["storageclasses"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattributesclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments"]
   {{- if hasKey .Values "podmon" }}
   {{- if eq .Values.podmon.enabled true }}
@@ -297,6 +300,7 @@ spec:
             - "--leader-election"
             - "--timeout=120s"
             - "--v=5"
+            - "--feature-gates=VolumeAttributesClass=true"
             {{- if eq (include "csi-isilon.isMetricsEnabled" .) "true" }}
             - "--http-endpoint=:8082"
             {{- end }}
