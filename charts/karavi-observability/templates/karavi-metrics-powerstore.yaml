@@ -1,4 +1,4 @@
-{{ if .Values.karaviMetricsPowerstore.enabled }}
+{{- if .Values.karaviMetricsPowerstore.enabled }}
 {{- $authorizationConfigSecret := lookup "v1" "Secret" .Release.Namespace "karavi-authorization-config" }}
 
 apiVersion: v1
@@ -15,6 +15,11 @@ spec:
   - name: karavi-metrics-powerstore
     port: 9090
     targetPort: 9090
+  {{- if .Values.karaviMetricsPowerstore.metrics.enabled }}
+  - name: obs-metrics
+    port: {{ .Values.karaviMetricsPowerstore.metrics.port }}
+    targetPort: {{ .Values.karaviMetricsPowerstore.metrics.port }}
+  {{- end }}
   selector:
     app.kubernetes.io/name: karavi-metrics-powerstore
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -47,7 +52,19 @@ spec:
       - name: karavi-metrics-powerstore
         image: {{ .Values.karaviMetricsPowerstore.image }}
         resources: {}
+        ports:
+        {{- if .Values.karaviMetricsPowerstore.metrics.enabled }}
+        - name: obs-metrics
+          containerPort: {{ .Values.karaviMetricsPowerstore.metrics.port }}
+          protocol: TCP
+        {{- end }}
         env:
+        - name: OBS_METRICS_ENABLED
+          value: {{ .Values.karaviMetricsPowerstore.metrics.enabled | quote }}
+        - name: OBS_METRICS_PORT
+          value: {{ .Values.karaviMetricsPowerstore.metrics.port | quote }}
+        - name: OBS_METRICS_SCHEME
+          value: {{ if .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}https{{ else }}http{{ end }}
         - name: POWERSTORE_METRICS_ENDPOINT
           value: "{{ .Values.karaviMetricsPowerstore.endpoint }}"
         - name: POWERSTORE_METRICS_NAMESPACE
@@ -58,11 +75,21 @@ spec:
           value: "true"
         - name: X_CSI_POWERSTORE_API_TIMEOUT
           value: "{{ .Values.karaviMetricsPowerstore.apiTimeout }}"
+{{- if .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
+        - name: OBS_METRICS_TLS_CERT
+          value: /certs/obs-tls.crt
+        - name: OBS_METRICS_TLS_KEY
+          value: /certs/obs-tls.key
+{{- end }}
         volumeMounts:
         - name: karavi-metrics-powerstore-secret-volume
           mountPath: "/certs"
         - name: powerstore-config
           mountPath: /powerstore-config
+{{- if .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
+        - name: obs-metrics-tls-secret
+          mountPath: "/certs"
+{{- end }}
         - name: tls-secret
           mountPath: /etc/ssl/certs
           readOnly: true
@@ -113,6 +140,11 @@ spec:
               path: localhost.crt
             - key: tls.key
               path: localhost.key
+{{- if .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
+      - name: obs-metrics-tls-secret
+        secret:
+          secretName: {{ .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
+{{- end }}
       - name: powerstore-config
         secret:
           secretName: powerstore-config
@@ -142,5 +174,46 @@ spec:
       {{ end }}
       restartPolicy: Always
 status: {}
+
+---
+{{- if and .Values.karaviMetricsPowerstore.metrics.enabled .Values.karaviMetricsPowerstore.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: karavi-metrics-powerstore-obs
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app.kubernetes.io/name: karavi-metrics-powerstore
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- with .Values.karaviMetricsPowerstore.metrics.serviceMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: karavi-metrics-powerstore
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+      - {{ include "custom.namespace" . }}
+  endpoints:
+  - port: obs-metrics
+    interval: {{ .Values.karaviMetricsPowerstore.metrics.serviceMonitor.interval }}
+    {{- if .Values.karaviMetricsPowerstore.metrics.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.karaviMetricsPowerstore.metrics.serviceMonitor.scrapeTimeout }}
+    {{- end }}
+    scheme: {{ if .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}https{{ else }}http{{ end }}
+    {{- if .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
+    tlsConfig:
+      insecureSkipVerify: {{ .Values.karaviMetricsPowerstore.metrics.serviceMonitor.insecureSkipVerify }}
+      cert:
+        secret:
+          name: {{ .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
+          key: obs-tls.crt
+      keySecret:
+        name: {{ .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
+          key: obs-tls.key
+    {{- end }}
+{{- end }}
 
 {{ end }}
