@@ -1,6 +1,6 @@
 karaviMetricsPowerflex:
   image: quay.io/dell/container-storage-modules/csm-metrics-powerflex:v1.16.0
-  enabled: false
+  enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-vxflexos.dellemc.com)
   provisionerNames: csi-vxflexos.dellemc.com
@@ -44,7 +44,7 @@ karaviMetricsPowerflex:
     skipCertificateValidation: true
 
 karaviMetricsPowerstore:
-  image: csm.artifactory.cec.lab.emc.com/csm-users/harish_h2/csm-metrics-powerstore:version6
+  image: quay.io/dell/container-storage-modules/csm-metrics-powerstore:v1.16.0
   enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powerstore.dellemc.com)
@@ -127,7 +127,7 @@ karaviMetricsPowerstore:
 
 karaviMetricsPowerscale:
   image: quay.io/dell/container-storage-modules/csm-metrics-powerscale:v1.13.0
-  enabled: false
+  enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-isilon.dellemc.com)
   provisionerNames: csi-isilon.dellemc.com
@@ -182,7 +182,7 @@ karaviMetricsPowerscale:
 
 karaviMetricsPowermax:
   image: quay.io/dell/container-storage-modules/csm-metrics-powermax:v1.11.0
-  enabled: false
+  enabled: true
   collectorAddr: otel-collector:55680
   # comma separated list of provisioner names (ex: csi-powermax.dellemc.com)
   provisionerNames: csi-powermax.dellemc.com
