@@ -326,6 +326,18 @@ controller:
     # Default value: 60s
     interval: 60s
 
+  # csiAddonsReplication: allows to configure CSI Addons replication
+  # CSI Addons provides additional capabilities like volume group replication
+  # CSI Addons CRDs (VolumeGroupReplication, VolumeReplicationClass) must be installed
+  # before enabling this feature.
+  csiAddonsReplication:
+    # enabled: Enable/Disable CSI Addons replication feature
+    # Allowed values:
+    #   true: enable CSI Addons replication feature (install csi-addons sidecar)
+    #   false: disable CSI Addons replication feature (do not install csi-addons sidecar)
+    # Default value: false
+    enabled: false
+
 # node: configure node specific parameters
 node:
   # nodeSelector: Define node selection constraints for node pods.
@@ -482,17 +494,6 @@ modifyHostName: "false"
 # is being done on a Red Hat OpenShift cluster in the Helm Chart
 # Don't modify this value as this value is overridden by the install script
 openshift: false
-
-# CSI Addons replication support
-# Set this to true to enable CSI Addons VolumeGroupReplication via the csi-addons sidecar.
-# CSI Addons CRDs (VolumeGroupReplication, VolumeReplicationClass) must be installed
-# before enabling this feature.
-# Allowed values:
-#   "true" - CSI Addons replication is enabled
-#   "false" - CSI Addons replication is disabled
-# Default value: "false"
-csiAddonsReplication:
-  enabled: false
 
 # CSM module attributes
 # Set this to true to enable replication
