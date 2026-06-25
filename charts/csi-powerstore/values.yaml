@@ -438,6 +438,33 @@ podmon:
       - "--driverPodLabelValue=dell-storage"
       - "--ignoreVolumelessPods=false"
 
+  # Metrics configuration for podmon resiliency
+  metrics:
+    # enabled: Set to true to expose the metrics endpoint on the podmon containers.
+    # Default value: false
+    enabled: false
+    # port: Port on which the metrics endpoint is exposed. Default for podmon: 8444.
+    port: 8444
+    # tlsCertSecret: Name of a Kubernetes TLS Secret (tls.crt / tls.key) used to serve metrics over HTTPS.
+    # When set the operator mounts the secret and configures HTTPS automatically.
+    # Leave unset to serve metrics over plain HTTP.
+    tlsCertSecret: ""
+    # collection: Controls metrics collection cadence inside the resiliency module.
+    collection:
+      interval: 30s
+    # serviceMonitor: Creates a Prometheus Operator ServiceMonitor targeting the controller pods.
+    serviceMonitor:
+      enabled: false
+      interval: 30s
+      scrapeTimeout: ""
+      insecureSkipVerify: false
+    # podMonitor: Creates a Prometheus Operator PodMonitor targeting the node pods.
+    podMonitor:
+      enabled: false
+      interval: 30s
+      scrapeTimeout: ""
+      insecureSkipVerify: false
+
   # arrayConnectivityTimeout: Defines the timeout (in seconds) for podmon array connectivity timeout check
   # Allowed values: Number followed by unit (s,m,h)
   # Examples: 10s, 1m, 1h
