@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cert-manager-cleanup
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cert-manager-cleanup-{{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+rules:
+- apiGroups: ["cert-manager.io"]
+  resources: ["certificates", "issuers"]
+  verbs: ["delete", "get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cert-manager-cleanup-{{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+subjects:
+- kind: ServiceAccount
+  name: cert-manager-cleanup
+  namespace: {{ include "custom.namespace" . }}
+roleRef:
+  kind: ClusterRole
+  name: cert-manager-cleanup-{{ .Release.Name }}
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cert-manager-cleanup
+  namespace: {{ include "custom.namespace" . }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: cert-manager-cleanup
+      containers:
+      - name: cleanup
+        image: bitnami/kubectl:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Deleting certificates otel-collector and karavi-metrics-powerstore in namespace {{ include "custom.namespace" . }}"
+          kubectl delete certificate otel-collector karavi-metrics-powerstore \
+            -n {{ include "custom.namespace" . }} --ignore-not-found
+          echo "Certificates deleted"
+          echo "Deleting issuers selfsigned-issuer and {{ .Chart.Name }}-selfsigned-issuer in namespace {{ include "custom.namespace" . }}"
+          kubectl delete issuer selfsigned-issuer \
+            {{ .Chart.Name }}-selfsigned-issuer \
+            -n {{ include "custom.namespace" . }} --ignore-not-found
+          echo "Issuers deleted"

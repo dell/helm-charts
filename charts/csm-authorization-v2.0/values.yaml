@@ -7,6 +7,8 @@ openshift: false
 nginx-gateway-fabric:
   enabled: true
   nginx:
+    config:
+      # ipFamily: "ipv4"  # Optional: set to "ipv4" (IPv4-only) or "ipv6" (IPv6-only). When unset, nginx uses its default IP family behavior.
     service:
       externalTrafficPolicy: Cluster
 
