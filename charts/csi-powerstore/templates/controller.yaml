@@ -260,16 +260,16 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             {{- if and (hasKey .Values.podmon "metrics") .Values.podmon.metrics.enabled }}
-            - name: X_CSI_RES_METRICS_ENABLED
+            - name: X_CSI_METRICS_ENABLED
               value: "true"
-            - name: X_CSI_RES_METRICS_PORT
+            - name: X_CSI_METRICS_PORT
               value: "{{ .Values.podmon.metrics.port }}"
-            - name: X_CSI_RES_METRICS_COLLECTION_INTERVAL
+            - name: X_CSI_METRICS_COLLECTION_INTERVAL
               value: "{{ .Values.podmon.metrics.collection.interval }}"
             {{- if .Values.podmon.metrics.tlsCertSecret }}
-            - name: X_CSI_RES_METRICS_TLS_CERT_FILE
+            - name: X_CSI_METRICS_TLS_CERT_FILE
               value: /etc/metrics-tls/tls.crt
-            - name: X_CSI_RES_METRICS_TLS_KEY_FILE
+            - name: X_CSI_METRICS_TLS_KEY_FILE
               value: /etc/metrics-tls/tls.key
             {{- end }}
             {{- end }}
