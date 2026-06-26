@@ -42,31 +42,68 @@ spec:
     metadata:
       labels:
         app: role-service
+        {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+        csm-authorization: enabled
+        {{- end }}
     spec:
       serviceAccountName: role-service
       containers:
       - name: role-service
         image: {{ required "Must provide the role-service image." .Values.authorization.images.roleService.image }}
         imagePullPolicy: Always
-        ports:
-        - containerPort: 50051
-          name: grpc
         env:
           - name: NAMESPACE
             value: {{ include "custom.namespace" . }}
+        {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+          - name: X_CSI_METRICS_ENABLED
+            value: "true"
+          - name: X_CSI_METRICS_PORT
+            value: "{{ .Values.metrics.port | default 8443 }}"
+          {{- if .Values.metrics.tlsCertSecret }}
+          - name: X_CSI_METRICS_TLS_CERT_FILE
+            value: "/etc/metrics-tls/tls.crt"
+          - name: X_CSI_METRICS_TLS_KEY_FILE
+            value: "/etc/metrics-tls/tls.key"
+          {{- end }}
+          - name: X_CSI_METRICS_COLLECTION_INTERVAL
+            value: "{{ .Values.metrics.collection.interval | default "30s" }}"
+          - name: X_CSI_METRICS_COLLECTION_CACHE_TTL
+            value: "{{ .Values.metrics.collection.cacheTTL | default "25s" }}
+        {{- end }}
+        ports:
+        - containerPort: 50051
+          name: grpc
+        {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+        - name: metrics
+          containerPort: {{ .Values.metrics.port | default 8443 }}
+        {{- end }}
         volumeMounts:
         - name: csm-config-params
           mountPath: /etc/karavi-authorization/csm-config-params
+        {{- if and (eq (include "csm-authorization.isMetricsEnabled" .) "true") .Values.metrics.tlsCertSecret }}
+        - name: authorization-metrics-tls
+          mountPath: /etc/metrics-tls
+          readOnly: true
+        {{- end }}
       volumes:
       - name: csm-config-params
         configMap:
           name: csm-config-params
+      {{- if and (eq (include "csm-authorization.isMetricsEnabled" .) "true") .Values.metrics.tlsCertSecret }}
+      - name: authorization-metrics-tls
+        secret:
+          secretName: {{ .Values.metrics.tlsCertSecret }}
+      {{- end }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: role-service
   namespace: {{ include "custom.namespace" . }}
+  {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+  labels:
+    csm-authorization: enabled
+  {{- end }}
 spec:
   selector:
     app: role-service
@@ -74,3 +111,8 @@ spec:
   - port: 50051
     targetPort: 50051
     name: grpc
+  {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+  - name: metrics
+    port: {{ .Values.metrics.port | default 8443 }}
+    targetPort: {{ .Values.metrics.port | default 8443 }}
+  {{- end }}

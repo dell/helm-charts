@@ -106,6 +106,9 @@ spec:
     metadata:
       labels:
         app: storage-service
+        {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+        csm-authorization: enabled
+        {{- end }}
       {{- if or (hasKey $storageSecretProviderClasses "conjur") (hasKey $redisSecretProviderClass "conjur") (hasKey $configSecretProviderClass "conjur") }}
       annotations:
         conjur.org/secrets: |
@@ -151,6 +154,22 @@ spec:
               secretKeyRef:
                 name: {{ $redisSecretName | default "redis-csm-secret" }}
                 key: {{ $redisSecretProviderClass.redisPasswordKey | default "password" }}
+        {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+          - name: X_CSI_METRICS_ENABLED
+            value: "true"
+          - name: X_CSI_METRICS_PORT
+            value: "{{ .Values.metrics.port | default 8443 }}"
+          {{- if .Values.metrics.tlsCertSecret }}
+          - name: X_CSI_METRICS_TLS_CERT_FILE
+            value: "/etc/metrics-tls/tls.crt"
+          - name: X_CSI_METRICS_TLS_KEY_FILE
+            value: "/etc/metrics-tls/tls.key"
+          {{- end }}
+          - name: X_CSI_METRICS_COLLECTION_INTERVAL
+            value: "{{ .Values.metrics.collection.interval | default "30s" }}"
+          - name: X_CSI_METRICS_COLLECTION_CACHE_TTL
+            value: "{{ .Values.metrics.collection.cacheTTL | default "25s" }}"
+        {{- end }}
         args:
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
@@ -161,6 +180,10 @@ spec:
           name: grpc
         - containerPort: 2112
           name: promhttp
+        {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+        - name: metrics
+          containerPort: {{ .Values.metrics.port | default 8443 }}
+        {{- end }}
         volumeMounts:
         - name: config-volume
           mountPath: /etc/karavi-authorization/config
@@ -179,6 +202,11 @@ spec:
           mountPath: /etc/csm-authorization/{{ . }}
           readOnly: true
         {{- end }}
+        {{- end }}
+        {{- if and (eq (include "csm-authorization.isMetricsEnabled" .) "true") .Values.metrics.tlsCertSecret }}
+        - name: authorization-metrics-tls
+          mountPath: /etc/metrics-tls
+          readOnly: true
         {{- end }}
       volumes:
       - name: config-volume
@@ -204,12 +232,21 @@ spec:
           secretName: {{ . }}
       {{- end }}
       {{- end }}
+      {{- if and (eq (include "csm-authorization.isMetricsEnabled" .) "true") .Values.metrics.tlsCertSecret }}
+      - name: authorization-metrics-tls
+        secret:
+          secretName: {{ .Values.metrics.tlsCertSecret }}
+      {{- end }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: storage-service
   namespace: {{ include "custom.namespace" . }}
+  {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+  labels:
+    csm-authorization: enabled
+  {{- end }}
 spec:
   selector:
     app: storage-service
@@ -220,3 +257,8 @@ spec:
   - port: 2112
     targetPort: 2112
     name: promhttp
+  {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+  - name: metrics
+    port: {{ .Values.metrics.port | default 8443 }}
+    targetPort: {{ .Values.metrics.port | default 8443 }}
+  {{- end }}

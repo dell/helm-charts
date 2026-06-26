@@ -156,3 +156,78 @@ storageSystemCredentials:
   #   - secret-1
   #   - secret-2
   #   - secret-3
+
+# metrics: configuration for authorization metrics and monitoring
+metrics:
+  # enabled: Enable/Disable the shared Prometheus metrics HTTP server.
+  # Type: bool
+  # Default: false
+  # Effect: When true, the authorization services receive metrics configuration
+  #         and a metrics Service is created.
+  enabled: false
+
+  # port: Port on which the shared authorization metrics endpoint is exposed.
+  # Type: integer
+  # Default: 8443
+  # Effect: Used as targetPort in the Service.
+  port: 8443
+
+  # tlsCertSecret: Name of a Kubernetes TLS Secret whose "tls.crt" and "tls.key" entries
+  # are used to serve the metrics endpoint over HTTPS instead of plain HTTP.
+  # Leave empty (the default) to use plain HTTP.
+  # Type: string
+  # Default: "" (disabled - plain HTTP)
+  tlsCertSecret: ""
+  
+  # collection: Controls how frequently metrics are collected.
+  collection:
+    # interval: How often the authorization services collect metrics.
+    # Type: string (duration, e.g. "30s", "1m")
+    interval: "30s"
+    # cacheTTL: How long collected values are cached before re-collecting.
+    # Type: string (duration, e.g. "25s")
+    cacheTTL: "25s"
+  
+  # serviceMonitor: Controls optional Prometheus Operator ServiceMonitor creation.
+  serviceMonitor:
+    # enabled: When true, a ServiceMonitor CR is created for automatic Prometheus Operator integration.
+    # Type: bool
+    # Default: false
+    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+    enabled: false
+    # interval: Prometheus scrape interval for the metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "30s", "1m")
+    # Default: "30s"
+    interval: "30s"
+    # scrapeTimeout: Prometheus scrape timeout for the metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "10s")
+    # Default: "" (unset)
+    scrapeTimeout: ""
+    # insecureSkipVerify: Controls TLS certificate verification when scraping metrics.
+    # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
+    # Type: bool
+    # Default: false
+    insecureSkipVerify: false
+
+  # podMonitor: Controls optional Prometheus Operator PodMonitor creation for authorization pods.
+  podMonitor:
+    # enabled: When true, a PodMonitor CR is created for scraping metrics from authorization pods.
+    # Type: bool
+    # Default: false
+    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+    enabled: false
+    # interval: Prometheus scrape interval for the authorization metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "30s", "1m")
+    # Default: "30s"
+    interval: "30s"
+    # scrapeTimeout: Prometheus scrape timeout for the authorization metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "10s")
+    # Default: "" (unset)
+    scrapeTimeout: ""
+    # insecureSkipVerify: Controls TLS certificate verification when scraping authorization metrics.
+    # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
+    # Type: bool
+    # Default: false
+    insecureSkipVerify: false
+
+
