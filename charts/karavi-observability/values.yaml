@@ -153,6 +153,38 @@ karaviMetricsPowerscale:
     type: ClusterIP
   logLevel: INFO
   logFormat: text
+  # metrics: configuration for observability self-metrics (dell_csm_obs_* on port /metrics)
+  metrics:
+    # enabled: Enable/Disable observability self-metrics endpoint
+    # Allowed values: true, false
+    # Default value: false
+    enabled: false
+    # port: Port used by observability self-metrics endpoint
+    # Allowed values: 1-65535
+    # Default value: 8443
+    port: 8443
+    # tlsCertSecret: Name of secret containing TLS certificate and key for observability self-metrics
+    # Allowed values: Kubernetes secret name, empty string
+    # Default value: ""
+    tlsCertSecret: ""
+    # serviceMonitor: Configure ServiceMonitor for observability self-metrics
+    serviceMonitor:
+      # enabled: Enable/Disable ServiceMonitor creation for observability self-metrics
+      # Allowed values: true, false
+      # Default value: false
+      enabled: false
+      # interval: Prometheus scrape interval for observability self-metrics
+      # Allowed values: duration string (for example: 15s, 30s, 1m)
+      # Default value: "30s"
+      interval: "30s"
+      # scrapeTimeout: Prometheus scrape timeout for observability self-metrics
+      # Allowed values: duration string, empty string
+      # Default value: ""
+      scrapeTimeout: ""
+      # insecureSkipVerify: Skip TLS certificate verification while scraping observability self-metrics
+      # Allowed values: true, false
+      # Default value: false
+      insecureSkipVerify: false
   # isiClientOptions to access Powerscale OneFS API server
   isiClientOptions:
     # set isiSkipCertificateValidation to true/false to skip/verify OneFS API server's certificates

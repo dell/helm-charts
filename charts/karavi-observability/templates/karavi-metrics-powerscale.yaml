@@ -15,6 +15,11 @@ spec:
   - name: karavi-metrics-powerscale
     port: 8080
     targetPort: 8080
+  {{- if .Values.karaviMetricsPowerscale.metrics.enabled }}
+  - name: obs-metrics
+    port: {{ .Values.karaviMetricsPowerscale.metrics.port }}
+    targetPort: {{ .Values.karaviMetricsPowerscale.metrics.port }}
+  {{- end }}
   selector:
     app.kubernetes.io/name: karavi-metrics-powerscale
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -53,6 +58,12 @@ spec:
       - name: karavi-metrics-powerscale
         image: {{ .Values.karaviMetricsPowerscale.image }}
         resources: {}
+        ports:
+        {{- if .Values.karaviMetricsPowerscale.metrics.enabled }}
+        - name: obs-metrics
+          containerPort: {{ .Values.karaviMetricsPowerscale.metrics.port }}
+          protocol: TCP
+        {{- end }}
         env:
         - name: POWERSCALE_METRICS_ENDPOINT
           value: "{{ .Values.karaviMetricsPowerscale.endpoint }}"
@@ -62,6 +73,12 @@ spec:
               fieldPath: metadata.namespace
         - name: TLS_ENABLED
           value: "true"
+        {{- if and .Values.karaviMetricsPowerscale.metrics.enabled .Values.karaviMetricsPowerscale.metrics.tlsCertSecret }}
+        - name: X_CSI_METRICS_TLS_CERT_FILE
+          value: /etc/metrics-tls/tls.crt
+        - name: X_CSI_METRICS_TLS_KEY_FILE
+          value: /etc/metrics-tls/tls.key
+        {{- end }}
         volumeMounts:
         - name: isilon-creds
           mountPath: /isilon-creds
@@ -70,6 +87,11 @@ spec:
           readOnly: true
         - name: karavi-metrics-powerscale-configmap
           mountPath: /etc/config
+        {{- if and .Values.karaviMetricsPowerscale.metrics.enabled .Values.karaviMetricsPowerscale.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          mountPath: /etc/metrics-tls
+          readOnly: true
+        {{- end }}
       {{- if hasKey .Values.karaviMetricsPowerscale "authorization" }}
       {{- if eq .Values.karaviMetricsPowerscale.authorization.enabled true }}
       - name: karavi-authorization-proxy
@@ -119,6 +141,11 @@ spec:
       - name: karavi-metrics-powerscale-configmap
         configMap:
           name: karavi-metrics-powerscale-configmap
+      {{- if and .Values.karaviMetricsPowerscale.metrics.enabled .Values.karaviMetricsPowerscale.metrics.tlsCertSecret }}
+      - name: metrics-tls
+        secret:
+          secretName: {{ .Values.karaviMetricsPowerscale.metrics.tlsCertSecret }}
+      {{- end }}
       {{- if hasKey .Values.karaviMetricsPowerscale "authorization" }}
       {{- if eq .Values.karaviMetricsPowerscale.authorization.enabled true }}
       {{- if $authorizationConfigSecret }}
@@ -136,5 +163,40 @@ spec:
       {{ end }}
       restartPolicy: Always
 status: {}
+
+---
+{{- if and .Values.karaviMetricsPowerscale.metrics.enabled .Values.karaviMetricsPowerscale.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: karavi-metrics-powerscale-obs-monitor
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app.kubernetes.io/name: karavi-metrics-powerscale
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- with .Values.karaviMetricsPowerscale.metrics.serviceMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: karavi-metrics-powerscale
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+      - {{ include "custom.namespace" . }}
+  endpoints:
+  - port: obs-metrics
+    interval: {{ .Values.karaviMetricsPowerscale.metrics.serviceMonitor.interval }}
+    {{- if .Values.karaviMetricsPowerscale.metrics.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.karaviMetricsPowerscale.metrics.serviceMonitor.scrapeTimeout }}
+    {{- end }}
+    path: /metrics
+    {{- if and .Values.karaviMetricsPowerscale.metrics.enabled .Values.karaviMetricsPowerscale.metrics.tlsCertSecret }}
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: {{ .Values.karaviMetricsPowerscale.metrics.serviceMonitor.insecureSkipVerify }}
+    {{- end }}
+{{- end }}
 
 {{ end }}
