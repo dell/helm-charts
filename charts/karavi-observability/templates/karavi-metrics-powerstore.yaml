@@ -59,11 +59,11 @@ spec:
           protocol: TCP
         {{- end }}
         env:
-        - name: OBS_METRICS_ENABLED
+        - name: X_CSI_OBS_METRICS_ENABLED
           value: {{ .Values.karaviMetricsPowerstore.metrics.enabled | quote }}
-        - name: OBS_METRICS_PORT
+        - name: X_CSI_OBS_METRICS_PORT
           value: {{ .Values.karaviMetricsPowerstore.metrics.port | quote }}
-        - name: OBS_METRICS_SCHEME
+        - name: X_CSI_OBS_METRICS_SCHEME
           value: {{ if .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}https{{ else }}http{{ end }}
         - name: POWERSTORE_METRICS_ENDPOINT
           value: "{{ .Values.karaviMetricsPowerstore.endpoint }}"
@@ -73,14 +73,14 @@ spec:
               fieldPath: metadata.namespace
         - name: TLS_ENABLED
           value: "true"
-        - name: X_CSI_POWERSTORE_API_TIMEOUT
-          value: "{{ .Values.karaviMetricsPowerstore.apiTimeout }}"
-{{- if .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
-        - name: OBS_METRICS_TLS_CERT
+        {{- if .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
+        - name: X_CSI_OBS_METRICS_TLS_CERT
           value: /certs/obs-tls.crt
-        - name: OBS_METRICS_TLS_KEY
+        - name: X_CSI_OBS_METRICS_TLS_KEY
           value: /certs/obs-tls.key
 {{- end }}
+        - name: X_CSI_POWERSTORE_API_TIMEOUT
+          value: "{{ .Values.karaviMetricsPowerstore.apiTimeout }}"
         volumeMounts:
         - name: karavi-metrics-powerstore-secret-volume
           mountPath: "/certs"
@@ -140,11 +140,6 @@ spec:
               path: localhost.crt
             - key: tls.key
               path: localhost.key
-{{- if .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
-      - name: obs-metrics-tls-secret
-        secret:
-          secretName: {{ .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
-{{- end }}
       - name: powerstore-config
         secret:
           secretName: powerstore-config
@@ -157,6 +152,11 @@ spec:
       - name: karavi-metrics-powerstore-configmap
         configMap:
           name: karavi-metrics-powerstore-configmap
+{{- if .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
+      - name: obs-metrics-tls-secret
+        secret:
+          secretName: {{ .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
+{{- end }}
       {{- if hasKey .Values.karaviMetricsPowerstore "authorization" }}
       {{- if eq .Values.karaviMetricsPowerstore.authorization.enabled true }}
       {{- if $authorizationConfigSecret }}
