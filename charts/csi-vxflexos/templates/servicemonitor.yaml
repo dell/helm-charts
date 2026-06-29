@@ -19,6 +19,9 @@ spec:
   endpoints:
     - port: metrics
       interval: {{ .Values.metrics.serviceMonitor.interval | default "30s" }}
+      {{- if .Values.metrics.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
+      {{- end }}
       path: /metrics
       {{- if .Values.metrics.tlsCertSecret }}
       scheme: https

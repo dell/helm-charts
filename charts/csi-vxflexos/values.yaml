@@ -19,7 +19,7 @@ images:
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.12.0
   provisioner:
-    image: registry.k8s.io/sig-storage/csi-provisioner:v6.3.0
+    image: registry.k8s.io/sig-storage/csi-provisioner:v6.2.0
   snapshotter:
     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.6.0
   resizer:
@@ -358,16 +358,6 @@ node:
     # Default value: false
     enabled: false
 
-  # "trimSDCName" defines the truncation of SDC name to 31 characters (PowerFlex limit)
-  # Default value: None
-  trimSDCName:
-    # enabled: Enable/Disable truncation of SDC name to 31 characters (PowerFlex limit)
-    # Allowed values:
-    #   true: enable truncation when SDC name exceeds 31 characters
-    #   false: disable truncation (may cause PowerFlex API error if name > 31 chars)
-    # Default value: false
-    enabled: false
-
 # Storage Capacity Tracking
 # Note: Capacity tracking is supported in kubernetes v1.24 and above, this feature will be automatically disabled in older versions.
 storageCapacity:
@@ -502,6 +492,34 @@ metrics:
     # Effect: Passed as X_CSI_GATEWAY_MONITORING_POLL_INTERVAL to the driver container.
     pollInterval: "30s"
 
+  # leaderElection: configuration for metrics collector leader election.
+  # When enabled, array collectors (storage pool, volume, array health) run only on the leader controller pod.
+  leaderElection:
+    # enabled: Enable/Disable metrics collector leader election.
+    # Type: bool
+    # Default: false
+    # Effect: When true, the controller Deployment receives X_CSI_METRICS_LEADER_ELECTION_ENABLED=true,
+    #         and only one controller will run array collectors.
+    enabled: false
+
+    # leaseDuration: Duration of the leader election lease.
+    # Type: string (Go duration, e.g. "60s", "2m")
+    # Default: "60s"
+    # Effect: Passed as X_CSI_METRICS_LEADER_ELECTION_LEASE_DURATION to the driver container.
+    leaseDuration: "60s"
+
+    # renewDeadline: Duration before the leader must renew its lease.
+    # Type: string (Go duration, e.g. "40s", "1m")
+    # Default: "40s"
+    # Effect: Passed as X_CSI_METRICS_LEADER_ELECTION_RENEW_DEADLINE to the driver container.
+    renewDeadline: "40s"
+
+    # retryPeriod: Duration to wait before retrying to acquire the lease.
+    # Type: string (Go duration, e.g. "5s", "10s")
+    # Default: "5s"
+    # Effect: Passed as X_CSI_METRICS_LEADER_ELECTION_RETRY_PERIOD to the driver container.
+    retryPeriod: "5s"
+
   # serviceMonitor: Controls optional Prometheus Operator ServiceMonitor creation.
   serviceMonitor:
     # enabled: When true, a ServiceMonitor CR is created for automatic Prometheus Operator integration.
@@ -514,6 +532,11 @@ metrics:
     # Type: string (Prometheus duration, e.g. "30s", "1m")
     # Default: "30s"
     interval: "30s"
+
+    # scrapeTimeout: Prometheus scrape timeout for the metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "10s")
+    # Default: "" (unset)
+    scrapeTimeout: ""
 
     # insecureSkipVerify: Controls TLS certificate verification when scraping metrics.
     # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
@@ -534,6 +557,11 @@ metrics:
     # Type: string (Prometheus duration, e.g. "30s", "1m")
     # Default: "30s"
     interval: "30s"
+
+    # scrapeTimeout: Prometheus scrape timeout for the node metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "10s")
+    # Default: "" (unset)
+    scrapeTimeout: ""
 
     # insecureSkipVerify: Controls TLS certificate verification when scraping node metrics.
     # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).

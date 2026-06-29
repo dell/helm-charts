@@ -37,9 +37,6 @@ rules:
     resources: [ "storageclasses" ]
     verbs: [ "get", "list", "watch" ]
   - apiGroups: [ "storage.k8s.io" ]
-    resources: [ "volumeattributesclasses" ]
-    verbs: [ "get", "list", "watch" ]
-  - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments" ]
 {{- if hasKey .Values "podmon" }}
 {{- if eq .Values.podmon.enabled true }}
@@ -66,6 +63,9 @@ rules:
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get", "update"]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshotclasses"]
     verbs: ["get", "list", "watch"]
@@ -362,7 +362,6 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
-            - "--feature-gates=VolumeAttributesClass=true"
             - "--v=5"
             - "--leader-election=true"
           env:
@@ -469,6 +468,14 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: X_CSI_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: X_CSI_POWERFLEX_KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
             {{- if eq (include "csi-vxflexos.isMetricsEnabled" .) "true" }}
@@ -481,6 +488,16 @@ spec:
               value: "/etc/metrics-tls/tls.crt"
             - name: X_CSI_METRICS_TLS_KEY_FILE
               value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- if hasKey .Values.metrics "leaderElection" }}
+            - name: X_CSI_METRICS_LEADER_ELECTION_ENABLED
+              value: "{{ .Values.metrics.leaderElection.enabled | default false }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_LEASE_DURATION
+              value: "{{ .Values.metrics.leaderElection.leaseDuration | default "60s" }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_RENEW_DEADLINE
+              value: "{{ .Values.metrics.leaderElection.renewDeadline | default "40s" }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_RETRY_PERIOD
+              value: "{{ .Values.metrics.leaderElection.retryPeriod | default "5s" }}"
             {{- end }}
             {{- if eq .Values.metrics.gatewayMonitoring.enabled true }}
             - name: X_CSI_GATEWAY_MONITORING_ENABLED

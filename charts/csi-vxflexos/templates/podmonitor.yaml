@@ -19,6 +19,9 @@ spec:
   podMetricsEndpoints:
     - port: metrics
       interval: {{ .Values.metrics.podMonitor.interval | default "30s" }}
+      {{- if .Values.metrics.podMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.metrics.podMonitor.scrapeTimeout }}
+      {{- end }}
       path: /metrics
       {{- if .Values.metrics.tlsCertSecret }}
       scheme: https
