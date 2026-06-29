@@ -499,6 +499,12 @@ spec:
             - name: X_CSI_METRICS_LEADER_ELECTION_RETRY_PERIOD
               value: "{{ .Values.metrics.leaderElection.retryPeriod | default "5s" }}"
             {{- end }}
+            {{- if hasKey .Values.metrics "collection" }}
+            - name: X_CSI_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.metrics.collection.interval | default "30s" }}"
+            - name: X_CSI_METRICS_COLLECTION_CACHE_TTL
+              value: "{{ .Values.metrics.collection.cacheTTL | default "25s" }}"
+            {{- end }}
             {{- if eq .Values.metrics.gatewayMonitoring.enabled true }}
             - name: X_CSI_GATEWAY_MONITORING_ENABLED
               value: "true"
