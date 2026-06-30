@@ -184,9 +184,6 @@ metrics:
     # interval: How often the authorization services collect metrics.
     # Type: string (duration, e.g. "30s", "1m")
     interval: "30s"
-    # cacheTTL: How long collected values are cached before re-collecting.
-    # Type: string (duration, e.g. "25s")
-    cacheTTL: "25s"
   
   # serviceMonitor: Controls optional Prometheus Operator ServiceMonitor creation.
   serviceMonitor:

@@ -167,8 +167,6 @@ spec:
           {{- end }}
           - name: X_CSI_METRICS_COLLECTION_INTERVAL
             value: "{{ .Values.metrics.collection.interval | default "30s" }}"
-          - name: X_CSI_METRICS_COLLECTION_CACHE_TTL
-            value: "{{ .Values.metrics.collection.cacheTTL | default "25s" }}"
         {{- end }}
         args:
           - "--redis-sentinel={{ $str }}"
