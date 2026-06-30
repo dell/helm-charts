@@ -178,13 +178,13 @@ metrics:
   # Type: string
   # Default: "" (disabled - plain HTTP)
   tlsCertSecret: ""
-  
+
   # collection: Controls how frequently metrics are collected.
   collection:
     # interval: How often the authorization services collect metrics.
     # Type: string (duration, e.g. "30s", "1m")
     interval: "30s"
-  
+
   # serviceMonitor: Controls optional Prometheus Operator ServiceMonitor creation.
   serviceMonitor:
     # enabled: When true, a ServiceMonitor CR is created for automatic Prometheus Operator integration.
@@ -205,5 +205,3 @@ metrics:
     # Type: bool
     # Default: false
     insecureSkipVerify: false
-
-
