@@ -289,16 +289,6 @@ spec:
               value: "{{ .Values.controller.replication.metrics.port }}"
             - name: X_CSI_REPLICATION_METRICS_COLLECTION_INTERVAL
               value: "{{ .Values.controller.replication.metrics.collection.interval }}"
-            - name: X_CSI_REPLICATION_PAIR_POLL_FREQUENCY
-              value: "{{ .Values.controller.replication.metrics.replicationPairPollFrequencySeconds }}"
-            - name: X_CSI_REPLICATION_LAG_POLL_FREQUENCY
-              value: "{{ .Values.controller.replication.metrics.replicationLagPollFrequencySeconds }}"
-            - name: X_CSI_REPLICATION_BANDWIDTH_POLL_FREQUENCY
-              value: "{{ .Values.controller.replication.metrics.replicationBandwidthPollFrequencySeconds }}"
-            - name: X_CSI_REPLICATION_SUCCESS_RATE_POLL_FREQUENCY
-              value: "{{ .Values.controller.replication.metrics.replicationSuccessRatePollFrequencySeconds }}"
-            - name: X_CSI_REPLICATION_CLUSTER_METRICS_POLL_FREQUENCY
-              value: "{{ .Values.controller.replication.metrics.clusterMetricsPollFrequencySeconds }}"
             {{- if .Values.controller.replication.metrics.tlsCertSecret }}
             - name: X_CSI_REPLICATION_METRICS_TLS_CERT_FILE
               value: /etc/metrics-tls/tls.crt

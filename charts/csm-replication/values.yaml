@@ -68,30 +68,9 @@ metrics:
   # Default: "" (disabled - plain HTTP)
   tlsCertSecret: ""
 
-  # replicationPairPollFrequencySeconds: Polling frequency to check replication pair status
-  # (active/inactive SyncIQ replication pairs)
-  # Default value: 30
-  replicationPairPollFrequencySeconds: 30
-
-  # replicationLagPollFrequencySeconds: Polling frequency to measure time lag between
-  # source and target replication policies
-  # Default value: 30
-  replicationLagPollFrequencySeconds: 30
-
-  # replicationBandwidthPollFrequencySeconds: Polling frequency to collect current SyncIQ
-  # replication traffic bandwidth
-  # Default value: 30
-  replicationBandwidthPollFrequencySeconds: 30
-
-  # replicationSuccessRatePollFrequencySeconds: Polling frequency to track success rate
-  # for SyncIQ replication operations
-  # Default value: 60
-  replicationSuccessRatePollFrequencySeconds: 60
-
-  # clusterMetricsPollFrequencySeconds: Polling frequency for cluster management metrics
-  # (clusters managed, connectivity status, cross-cluster volume distribution, multi-cluster operations)
-  # Default value: 60
-  clusterMetricsPollFrequencySeconds: 60
+  # collection: Controls metrics collection cadence for replication metrics.
+  collection:
+    interval: 30s
 
   # serviceMonitor: Controls optional Prometheus Operator ServiceMonitor creation.
   serviceMonitor:

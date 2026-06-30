@@ -179,21 +179,6 @@ controller:
       # collection: Controls metrics collection cadence for replication metrics.
       collection:
         interval: 30s
-      # replicationPairPollFrequencySeconds: Polling frequency for replication pair status
-      # (active/inactive SyncIQ replication pairs)
-      replicationPairPollFrequencySeconds: 30
-      # replicationLagPollFrequencySeconds: Polling frequency to measure time lag between
-      # source and target replication policies
-      replicationLagPollFrequencySeconds: 30
-      # replicationBandwidthPollFrequencySeconds: Polling frequency to collect current SyncIQ
-      # replication traffic bandwidth
-      replicationBandwidthPollFrequencySeconds: 30
-      # replicationSuccessRatePollFrequencySeconds: Polling frequency to track success rate
-      # for SyncIQ replication operations
-      replicationSuccessRatePollFrequencySeconds: 60
-      # clusterMetricsPollFrequencySeconds: Polling frequency for cluster management metrics
-      # (clusters managed, connectivity status, cross-cluster volume distribution)
-      clusterMetricsPollFrequencySeconds: 60
       # serviceMonitor: Creates a Prometheus Operator ServiceMonitor targeting the controller pods.
       serviceMonitor:
         enabled: false
