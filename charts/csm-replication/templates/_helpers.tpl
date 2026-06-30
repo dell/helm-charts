@@ -60,3 +60,18 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Return true if replication metrics is enabled
+*/}}
+{{- define "csm-replication.isMetricsEnabled" -}}
+{{- if hasKey .Values "metrics" -}}
+  {{- if (eq .Values.metrics.enabled true) -}}
+      {{- true -}}
+  {{- else -}}
+      {{- false -}}
+  {{- end -}}
+{{- else -}}
+  {{- false -}}
+{{- end -}}
+{{- end -}}
