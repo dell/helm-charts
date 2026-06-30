@@ -282,11 +282,46 @@ spec:
               value: /csi-isilon-config-params
             - name: X_CSI_REPLICATION_CONFIG_FILE_NAME
               value: driver-config-params.yaml
+            {{- if and (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled }}
+            - name: X_CSI_REPLICATION_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_REPLICATION_METRICS_PORT
+              value: "{{ .Values.controller.replication.metrics.port }}"
+            - name: X_CSI_REPLICATION_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.controller.replication.metrics.collection.interval }}"
+            - name: X_CSI_REPLICATION_PAIR_POLL_FREQUENCY
+              value: "{{ .Values.controller.replication.metrics.replicationPairPollFrequencySeconds }}"
+            - name: X_CSI_REPLICATION_LAG_POLL_FREQUENCY
+              value: "{{ .Values.controller.replication.metrics.replicationLagPollFrequencySeconds }}"
+            - name: X_CSI_REPLICATION_BANDWIDTH_POLL_FREQUENCY
+              value: "{{ .Values.controller.replication.metrics.replicationBandwidthPollFrequencySeconds }}"
+            - name: X_CSI_REPLICATION_SUCCESS_RATE_POLL_FREQUENCY
+              value: "{{ .Values.controller.replication.metrics.replicationSuccessRatePollFrequencySeconds }}"
+            - name: X_CSI_REPLICATION_CLUSTER_METRICS_POLL_FREQUENCY
+              value: "{{ .Values.controller.replication.metrics.clusterMetricsPollFrequencySeconds }}"
+            {{- if .Values.controller.replication.metrics.tlsCertSecret }}
+            - name: X_CSI_REPLICATION_METRICS_TLS_CERT_FILE
+              value: /etc/metrics-tls/tls.crt
+            - name: X_CSI_REPLICATION_METRICS_TLS_KEY_FILE
+              value: /etc/metrics-tls/tls.key
+            {{- end }}
+            {{- end }}
+          {{- if and (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled }}
+          ports:
+            - name: repl-metrics
+              containerPort: {{ .Values.controller.replication.metrics.port }}
+              protocol: TCP
+          {{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
             - name: csi-isilon-config-params
               mountPath: /csi-isilon-config-params
+            {{- if and (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled .Values.controller.replication.metrics.tlsCertSecret }}
+            - name: replication-metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+            {{- end }}
         {{- end }}
         {{- end }}
         {{- end }}
@@ -660,6 +695,11 @@ spec:
         - name: resiliency-metrics-tls
           secret:
             secretName: {{ .Values.podmon.metrics.tlsCertSecret }}
+        {{- end }}
+        {{- if and (hasKey .Values.controller "replication") .Values.controller.replication.enabled (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled .Values.controller.replication.metrics.tlsCertSecret }}
+        - name: replication-metrics-tls
+          secret:
+            secretName: {{ .Values.controller.replication.metrics.tlsCertSecret }}
         {{- end }}
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}

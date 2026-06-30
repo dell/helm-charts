@@ -165,6 +165,42 @@ controller:
     # Default value: replication.storage.dell.com
     replicationPrefix: "replication.storage.dell.com"
 
+    # Metrics configuration for replication sidecar (PowerScale SyncIQ)
+    metrics:
+      # enabled: Set to true to expose the metrics endpoint on the replicator sidecar container.
+      # Default value: false
+      enabled: false
+      # port: Port on which the replication metrics endpoint is exposed. Default: 8445.
+      port: 8445
+      # tlsCertSecret: Name of a Kubernetes TLS Secret (tls.crt / tls.key) used to serve metrics over HTTPS.
+      # When set the operator mounts the secret and configures HTTPS automatically.
+      # Leave unset to serve metrics over plain HTTP.
+      tlsCertSecret: ""
+      # collection: Controls metrics collection cadence for replication metrics.
+      collection:
+        interval: 30s
+      # replicationPairPollFrequencySeconds: Polling frequency for replication pair status
+      # (active/inactive SyncIQ replication pairs)
+      replicationPairPollFrequencySeconds: 30
+      # replicationLagPollFrequencySeconds: Polling frequency to measure time lag between
+      # source and target replication policies
+      replicationLagPollFrequencySeconds: 30
+      # replicationBandwidthPollFrequencySeconds: Polling frequency to collect current SyncIQ
+      # replication traffic bandwidth
+      replicationBandwidthPollFrequencySeconds: 30
+      # replicationSuccessRatePollFrequencySeconds: Polling frequency to track success rate
+      # for SyncIQ replication operations
+      replicationSuccessRatePollFrequencySeconds: 60
+      # clusterMetricsPollFrequencySeconds: Polling frequency for cluster management metrics
+      # (clusters managed, connectivity status, cross-cluster volume distribution)
+      clusterMetricsPollFrequencySeconds: 60
+      # serviceMonitor: Creates a Prometheus Operator ServiceMonitor targeting the controller pods.
+      serviceMonitor:
+        enabled: false
+        interval: 30s
+        scrapeTimeout: ""
+        insecureSkipVerify: false
+
   snapshot:
     # enabled: Enable/Disable volume snapshot feature
     # Allowed values:
