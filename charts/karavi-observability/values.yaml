@@ -81,8 +81,8 @@ karaviMetricsPowerstore:
     enabled: false
     # port: Port used by observability self-metrics endpoint
     # Allowed values: 1-65535
-    # Default value: 8080
-    port: 8080
+    # Default value: 8443
+    port: 8443
     # tlsCertSecret: Name of secret containing TLS certificate and key for observability self-metrics
     # Allowed values: Kubernetes secret name, empty string
     # Default value: ""

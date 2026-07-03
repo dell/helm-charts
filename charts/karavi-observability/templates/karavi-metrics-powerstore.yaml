@@ -59,10 +59,6 @@ spec:
           protocol: TCP
         {{- end }}
         env:
-        - name: X_CSI_METRICS_ENABLED
-          value: {{ .Values.karaviMetricsPowerstore.metrics.enabled | quote }}
-        - name: X_CSI_METRICS_PORT
-          value: {{ .Values.karaviMetricsPowerstore.metrics.port | quote }}
         - name: POWERSTORE_METRICS_ENDPOINT
           value: "{{ .Values.karaviMetricsPowerstore.endpoint }}"
         - name: POWERSTORE_METRICS_NAMESPACE
@@ -215,4 +211,4 @@ spec:
     {{- end }}
 {{- end }}
 
-{{ end }}
+{{- end }}
