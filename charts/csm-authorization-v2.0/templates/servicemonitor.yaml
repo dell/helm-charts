@@ -1,0 +1,33 @@
+{{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+{{- if hasKey .Values.authorization.metrics "serviceMonitor" }}
+{{- if eq .Values.authorization.metrics.serviceMonitor.enabled true }}
+---
+# ServiceMonitor for Prometheus Operator integration with the proxy-server Deployment.
+# Created when authorization.metrics.enabled AND authorization.metrics.serviceMonitor.enabled are true.
+# Requires the Prometheus Operator CRDs to be installed in the cluster.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: proxy-server-metrics-monitor
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app: proxy-server
+spec:
+  selector:
+    matchLabels:
+      app: proxy-server
+  endpoints:
+    - port: metrics
+      interval: {{ .Values.authorization.metrics.serviceMonitor.interval | default "30s" }}
+      {{- if .Values.authorization.metrics.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.authorization.metrics.serviceMonitor.scrapeTimeout }}
+      {{- end }}
+      path: /metrics
+      {{- if .Values.authorization.metrics.tlsCertSecret }}
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: {{ .Values.authorization.metrics.serviceMonitor.insecureSkipVerify | default false }}
+      {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
