@@ -7,3 +7,18 @@ By default this is not set so the helm release namespace will be used
 {{- define "custom.namespace" -}}
 	{{ .Values.namespace | default .Release.Namespace }}
 {{- end -}}
+
+{{/*
+Check if metrics are enabled
+*/}}
+{{- define "csm-authorization.isMetricsEnabled" -}}
+	{{- if hasKey .Values "metrics" -}}
+		{{- if hasKey .Values.metrics "enabled" -}}
+			{{- printf "%t" .Values.metrics.enabled -}}
+		{{- else -}}
+			false
+		{{- end -}}
+	{{- else -}}
+		false
+	{{- end -}}
+{{- end -}}
