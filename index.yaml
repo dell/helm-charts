@@ -1166,6 +1166,26 @@ entries:
     version: 0.1.0
   csi-isilon:
   - apiVersion: v2
+    appVersion: 2.17.2
+    created: "2026-07-14T18:26:25.078858293Z"
+    description: 'PowerScale CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as an Isilon
+      StorageClass. '
+    digest: d1a406a5634aff2d753ee20d779afd9ce67fc524832abc3ebdde52af3c057333
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-isilon
+    sources:
+    - https://github.com/dell/csi-isilon
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-isilon-2.17.2/csi-isilon-2.17.2.tgz
+    version: 2.17.2
+  - apiVersion: v2
     appVersion: 2.17.1
     created: "2026-06-18T06:49:34.834196272Z"
     description: 'PowerScale CSI (Container Storage Interface) driver Kubernetes integration.
@@ -1505,6 +1525,33 @@ entries:
     - https://github.com/dell/helm-charts/releases/download/csi-lightningfs-1.0.0/csi-lightningfs-1.0.0.tgz
     version: 1.0.0
   csi-powermax:
+  - apiVersion: v2
+    appVersion: 2.17.2
+    created: "2026-07-14T18:26:25.300006575Z"
+    dependencies:
+    - condition: required
+      name: csireverseproxy
+      repository: ""
+      version: 2.16.1
+    description: 'PowerMax CSI (Container Storage Interface) driver Kubernetes integration.
+      This chart includes everything required to provision via CSI as well as a PowerMax
+      StorageClass. '
+    digest: 2e73c30a74e01b56cdb362484579928640f126212b9a25f7faf0a232dd8aa0f5
+    home: https://github.com/dell/csi-powermax
+    icon: https://avatars1.githubusercontent.com/u/20958494?s=200&v=4
+    keywords:
+    - csi
+    - storage
+    kubeVersion: '>= 1.25.0'
+    maintainers:
+    - name: DellEMC
+    name: csi-powermax
+    sources:
+    - https://github.com/dell/csi-powermax
+    type: application
+    urls:
+    - https://github.com/dell/helm-charts/releases/download/csi-powermax-2.17.2/csi-powermax-2.17.2.tgz
+    version: 2.17.2
   - apiVersion: v2
     appVersion: 2.17.1
     created: "2026-06-18T06:49:35.049564618Z"
@@ -4383,4 +4430,4 @@ entries:
     urls:
     - https://github.com/dell/helm-charts/releases/download/karavi-topology-0.1.0/karavi-topology-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-18T06:50:38.468742007Z"
+generated: "2026-07-14T18:26:25.300445706Z"
