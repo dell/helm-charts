@@ -426,6 +426,10 @@ spec:
               value: "{{ .Values.skipCertificateValidation }}"
             - name: X_CSI_ISI_AUTH_TYPE
               value: "{{ .Values.isiAuthType }}"
+            - name: X_CSI_ALLOWED_NETWORKS
+              value: "{{ .Values.allowedNetworks }}"
+            - name: X_CSI_ALLOWED_NETWORKS_MODE
+              value: "{{ .Values.allowedNetworksMode | default "single" }}"
             - name: X_CSI_VERBOSE
               value: "{{ .Values.verbose }}"
             - name: X_CSI_ISI_PORT
