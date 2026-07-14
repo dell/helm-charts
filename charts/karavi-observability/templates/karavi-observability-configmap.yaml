@@ -50,6 +50,8 @@ data:
     ZIPKIN_URI: "{{ .Values.karaviMetricsPowerstore.zipkin.uri }}"
     ZIPKIN_SERVICE_NAME: "{{ .Values.karaviMetricsPowerstore.zipkin.serviceName }}"
     ZIPKIN_PROBABILITY: "{{ .Values.karaviMetricsPowerstore.zipkin.probability }}"
+    X_CSI_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerstore.metrics.enabled }}"
+    X_CSI_METRICS_PORT: "{{ .Values.karaviMetricsPowerstore.metrics.port }}"
 
 {{ end }}
 
@@ -77,6 +79,8 @@ data:
     POWERSCALE_ISICLIENT_INSECURE: "{{ .Values.karaviMetricsPowerscale.isiClientOptions.isiSkipCertificateValidation }}"
     POWERSCALE_ISICLIENT_AUTH_TYPE: "{{ .Values.karaviMetricsPowerscale.isiClientOptions.isiAuthType }}"
     POWERSCALE_ISICLIENT_VERBOSE: "{{ .Values.karaviMetricsPowerscale.isiClientOptions.isiLogVerbose }}"
+    X_CSI_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerscale.metrics.enabled }}"
+    X_CSI_METRICS_PORT: "{{ .Values.karaviMetricsPowerscale.metrics.port }}"
     LOG_LEVEL: "{{ .Values.karaviMetricsPowerscale.logLevel }}"
     LOG_FORMAT: "{{ .Values.karaviMetricsPowerscale.logFormat }}"
 
