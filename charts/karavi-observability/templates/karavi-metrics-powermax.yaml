@@ -15,6 +15,11 @@ spec:
   - name: karavi-metrics-powermax
     port: 8081
     targetPort: 8081
+  {{- if .Values.karaviMetricsPowermax.metrics.enabled }}
+  - name: obs-metrics
+    port: {{ .Values.karaviMetricsPowermax.metrics.port }}
+    targetPort: {{ .Values.karaviMetricsPowermax.metrics.port }}
+  {{- end }}
   selector:
     app.kubernetes.io/name: karavi-metrics-powermax
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -53,6 +58,12 @@ spec:
       - name: karavi-metrics-powermax
         image: {{ .Values.karaviMetricsPowermax.image }}
         resources: {}
+        {{- if .Values.karaviMetricsPowermax.metrics.enabled }}
+        ports:
+        - name: obs-metrics
+          containerPort: {{ .Values.karaviMetricsPowermax.metrics.port }}
+          protocol: TCP
+        {{- end }}
         env:
         {{- $useRevProxySecret := and (hasKey .Values.karaviMetricsPowermax "useSecret") (.Values.karaviMetricsPowermax.useSecret | default false) }}
         - name: X_CSI_REVPROXY_USE_SECRET
@@ -69,6 +80,12 @@ spec:
           value: "true"
         - name: SSL_CERT_DIR
           value: /certs
+        {{- if and .Values.karaviMetricsPowermax.metrics.enabled .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
+        - name: X_CSI_METRICS_TLS_CERT_FILE
+          value: /etc/metrics-tls/tls.crt
+        - name: X_CSI_METRICS_TLS_KEY_FILE
+          value: /etc/metrics-tls/tls.key
+        {{- end }}
         volumeMounts:
             {{- if and (hasKey .Values.karaviMetricsPowermax "useSecret") (.Values.karaviMetricsPowermax.useSecret | default false) }}
         - name: powermax-reverseproxy-secret
@@ -84,6 +101,11 @@ spec:
           mountPath: /etc/config
         - name: certs
           mountPath: /certs
+        {{- if and .Values.karaviMetricsPowermax.metrics.enabled .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          mountPath: /etc/metrics-tls
+          readOnly: true
+        {{- end }}
       {{- if hasKey .Values.karaviMetricsPowermax "authorization" }}
       {{- if eq .Values.karaviMetricsPowermax.authorization.enabled true }}
       - name: karavi-authorization-proxy
@@ -141,6 +163,11 @@ spec:
       - name: karavi-metrics-powermax-configmap
         configMap:
           name: karavi-metrics-powermax-configmap
+      {{- if and .Values.karaviMetricsPowermax.metrics.enabled .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
+      - name: metrics-tls
+        secret:
+          secretName: {{ .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
+      {{- end }}
      {{- if hasKey .Values.karaviMetricsPowermax "authorization" }}
      {{- if eq .Values.karaviMetricsPowermax.authorization.enabled true }}
       {{- if $authorizationConfigSecret }}
@@ -160,3 +187,45 @@ spec:
 status: {}
 
 {{ end }}
+
+---
+{{- if and .Values.karaviMetricsPowermax.metrics.enabled .Values.karaviMetricsPowermax.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: karavi-metrics-powermax-obs-monitor
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app.kubernetes.io/name: karavi-metrics-powermax
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- with .Values.karaviMetricsPowermax.metrics.serviceMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: karavi-metrics-powermax
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+      - {{ include "custom.namespace" . }}
+  endpoints:
+  - port: obs-metrics
+    interval: {{ .Values.karaviMetricsPowermax.metrics.serviceMonitor.interval }}
+    {{- if .Values.karaviMetricsPowermax.metrics.serviceMonitor.scrapeTimeout }}
+    scrapeTimeout: {{ .Values.karaviMetricsPowermax.metrics.serviceMonitor.scrapeTimeout }}
+    {{- end }}
+    path: /metrics
+    scheme: {{ if .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}https{{ else }}http{{ end }}
+    {{- if .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
+    tlsConfig:
+      insecureSkipVerify: {{ .Values.karaviMetricsPowermax.metrics.serviceMonitor.insecureSkipVerify }}
+      cert:
+        secret:
+          name: {{ .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
+          key: obs-tls.crt
+      keySecret:
+        name: {{ .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
+        key: obs-tls.key
+    {{- end }}
+{{- end }}
