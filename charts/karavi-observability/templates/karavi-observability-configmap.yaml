@@ -106,6 +106,8 @@ data:
     POWERMAX_PERFORMANCE_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowermax.performancePollFrequencySeconds }}"
     POWERMAX_TOPOLOGY_METRICS_ENABLED: "{{ .Values.karaviMetricsPowermax.topologyMetricsEnabled }}"
     POWERMAX_TOPOLOGY_METRICS_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowermax.topologyMetricsPollFrequencySeconds }}"
+    X_CSI_METRICS_ENABLED: "{{ .Values.karaviMetricsPowermax.metrics.enabled }}"
+    X_CSI_METRICS_PORT: "{{ .Values.karaviMetricsPowermax.metrics.port }}"
     LOG_LEVEL: "{{ .Values.karaviMetricsPowermax.logLevel }}"
     LOG_FORMAT: "{{ .Values.karaviMetricsPowermax.logFormat }}"
 
