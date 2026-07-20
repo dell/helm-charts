@@ -83,7 +83,7 @@ authorization:
     # When true, the proxy-server receives X_CSI_METRICS_ENABLED=true,
     # X_CSI_METRICS_PORT, and a metrics Service is created.
     # Default value: false
-    enabled: false
+    enabled: true
 
     # port: Port on which the proxy-server metrics endpoint is exposed.
     # Passed as X_CSI_METRICS_PORT (formatted as ":port") to the proxy-server container
