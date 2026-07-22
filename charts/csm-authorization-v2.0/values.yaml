@@ -77,6 +77,46 @@ authorization:
   # storage capacity poll interval
   storageCapacityPollInterval: 30m
 
+  # metrics: configuration for proxy-server Prometheus metrics
+  metrics:
+    # enabled: Enable/Disable the Prometheus metrics HTTP server on the proxy-server.
+    # When true, the proxy-server receives X_CSI_METRICS_ENABLED=true,
+    # X_CSI_METRICS_PORT, and a metrics Service is created.
+    # Default value: false
+    enabled: true
+
+    # port: Port on which the proxy-server metrics endpoint is exposed.
+    # Passed as X_CSI_METRICS_PORT (formatted as ":port") to the proxy-server container
+    # and used as targetPort in the metrics Service.
+    # Default value: 2112
+    port: 2112
+
+    # tlsCertSecret: Name of a Kubernetes TLS Secret (tls.crt / tls.key) used to
+    # serve the metrics endpoint over HTTPS instead of plain HTTP.
+    # When set, X_CSI_METRICS_TLS_CERT_FILE and X_CSI_METRICS_TLS_KEY_FILE are
+    # injected into the proxy-server container.
+    # Leave empty (default) to use plain HTTP.
+    # Default value: "" (disabled - plain HTTP)
+    tlsCertSecret: ""
+
+    # serviceMonitor: Controls optional Prometheus Operator ServiceMonitor creation.
+    serviceMonitor:
+      # enabled: When true, a ServiceMonitor CR is created for automatic Prometheus
+      # Operator integration targeting the proxy-server pods.
+      # Requires the Prometheus Operator CRDs to be installed in the cluster.
+      # Default value: false
+      enabled: false
+      # interval: Prometheus scrape interval for the metrics endpoint.
+      # Default value: "30s"
+      interval: "30s"
+      # scrapeTimeout: Prometheus scrape timeout for the metrics endpoint.
+      # Default value: "" (unset)
+      scrapeTimeout: ""
+      # insecureSkipVerify: Controls TLS certificate verification when scraping.
+      # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
+      # Default value: false
+      insecureSkipVerify: false
+
 redis:
   name: redis-csm
   # Redis credentials are required and can be provided in one of two ways:

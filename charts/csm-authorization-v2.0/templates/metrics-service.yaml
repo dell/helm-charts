@@ -1,0 +1,21 @@
+{{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+---
+# Service exposing the proxy-server Prometheus metrics endpoint for scraping.
+# Created when authorization.metrics.enabled is true.
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-server-metrics
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app: proxy-server
+spec:
+  selector:
+    app: proxy-server
+  ports:
+    - name: metrics
+      port: {{ .Values.authorization.metrics.port | default 2112 }}
+      targetPort: {{ .Values.authorization.metrics.port | default 2112 }}
+      protocol: TCP
+  type: ClusterIP
+{{- end }}

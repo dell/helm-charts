@@ -157,6 +157,18 @@ spec:
               secretKeyRef:
                 name: {{ $redisSecretName | default "redis-csm-secret" }}
                 key: {{ $redisSecretProviderClass.redisPasswordKey | default "password" }}
+          {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+          - name: X_CSI_METRICS_ENABLED
+            value: "true"
+          - name: X_CSI_METRICS_PORT
+            value: ":{{ .Values.authorization.metrics.port | default 2112 }}"
+          {{- if .Values.authorization.metrics.tlsCertSecret }}
+          - name: X_CSI_METRICS_TLS_CERT_FILE
+            value: "/etc/metrics-tls/tls.crt"
+          - name: X_CSI_METRICS_TLS_KEY_FILE
+            value: "/etc/metrics-tls/tls.key"
+          {{- end }}
+          {{- end }}
         args:
           - "--redis-sentinel={{ $str }}"
           - "--redis-password=$(REDIS_PASSWORD)"
@@ -165,6 +177,11 @@ spec:
           - "--storage-service=storage-service.{{ .Release.Namespace }}.svc.cluster.local:50051"
         ports:
         - containerPort: 8080
+        {{- if eq (include "csm-authorization.isMetricsEnabled" .) "true" }}
+        - name: metrics
+          containerPort: {{ .Values.authorization.metrics.port | default 2112 }}
+          protocol: TCP
+        {{- end }}
         volumeMounts:
         - name: config-volume
           mountPath: /etc/karavi-authorization/config
@@ -174,6 +191,11 @@ spec:
         {{- range $name := $allSPCNames }}
         - name: secrets-store-inline-{{ $name }}
           mountPath: /etc/csm-authorization/{{ $name }}
+          readOnly: true
+        {{- end }}
+        {{- if and (eq (include "csm-authorization.isMetricsEnabled" .) "true") .Values.authorization.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          mountPath: /etc/metrics-tls
           readOnly: true
         {{- end }}
       - name: opa
@@ -208,6 +230,11 @@ spec:
           readOnly: true
           volumeAttributes:
             secretProviderClass: "{{ $name }}"
+      {{- end }}
+      {{- if and (eq (include "csm-authorization.isMetricsEnabled" .) "true") .Values.authorization.metrics.tlsCertSecret }}
+      - name: metrics-tls
+        secret:
+          secretName: {{ .Values.authorization.metrics.tlsCertSecret }}
       {{- end }}
 ---
 apiVersion: v1
