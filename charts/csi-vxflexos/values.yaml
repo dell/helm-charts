@@ -453,9 +453,9 @@ metrics:
   # port: Port on which the shared driver metrics endpoint is exposed.
   # This port serves gateway monitoring metrics and any other driver-supplied metrics.
   # Type: integer
-  # Default: 8443
+  # Default: 9090
   # Effect: Passed as X_CSI_METRICS_PORT to the driver container; used as targetPort in the Service.
-  port: 8443
+  port: 9090
 
   # tlsCertSecret: Name of a Kubernetes TLS Secret whose "tls.crt" and "tls.key" entries
   # are used to serve the metrics endpoint over HTTPS instead of plain HTTP.

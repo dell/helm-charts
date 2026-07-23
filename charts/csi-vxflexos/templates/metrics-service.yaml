@@ -14,8 +14,8 @@ spec:
     name: {{ .Release.Name }}-controller
   ports:
     - name: metrics
-      port: {{ .Values.metrics.port | default 8443 }}
-      targetPort: {{ .Values.metrics.port | default 8443 }}
+      port: {{ .Values.metrics.port | default 9090 }}
+      targetPort: {{ .Values.metrics.port | default 9090 }}
       protocol: TCP
   type: ClusterIP
 {{- end }}
