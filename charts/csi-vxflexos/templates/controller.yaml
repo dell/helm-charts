@@ -509,6 +509,16 @@ spec:
             - name: X_CSI_METRICS_COLLECTION_CACHE_TTL
               value: "{{ .Values.metrics.collection.cacheTTL | default "25s" }}"
             {{- end }}
+            {{- if hasKey .Values.metrics "array" }}
+            - name: X_CSI_METRICS_ARRAY_TIMEOUT
+              value: "{{ .Values.metrics.array.timeout | default "30s" }}"
+            - name: X_CSI_METRICS_ARRAY_RATE_LIMIT
+              value: "{{ .Values.metrics.array.rateLimit | default 100 }}"
+            - name: X_CSI_METRICS_ARRAY_CB_THRESHOLD
+              value: "{{ .Values.metrics.array.circuitBreaker.threshold | default 3 }}"
+            - name: X_CSI_METRICS_ARRAY_CB_RESET_TIMEOUT
+              value: "{{ .Values.metrics.array.circuitBreaker.resetTimeout | default "30s" }}"
+            {{- end }}
             {{- if eq .Values.metrics.gatewayMonitoring.enabled true }}
             - name: X_CSI_GATEWAY_MONITORING_ENABLED
               value: "true"
