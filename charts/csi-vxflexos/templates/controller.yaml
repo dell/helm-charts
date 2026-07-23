@@ -252,7 +252,6 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
-            - "--feature-gates=VolumeAttributesClass=true"
             - "--v=5"
             - "--leader-election=true"
           env:
@@ -366,6 +365,7 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
+            - "--feature-gates=VolumeAttributesClass=true"
             - "--v=5"
             - "--leader-election=true"
           env:
