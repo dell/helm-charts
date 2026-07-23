@@ -19,7 +19,7 @@ images:
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.12.0
   provisioner:
-    image: registry.k8s.io/sig-storage/csi-provisioner:v6.2.0
+    image: registry.k8s.io/sig-storage/csi-provisioner:v6.3.0
   snapshotter:
     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.6.0
   resizer:
@@ -355,6 +355,16 @@ node:
     # Allowed values:
     #  true: Enable SDC approval based on either GUID or IP address, depending on the restricted SDC mode configured in PowerFlex system
     #  false: Disable SDC approval based on either GUID or IP address, depending on the restricted SDC mode configured in PowerFlex system
+    # Default value: false
+    enabled: false
+
+  # "trimSDCName" defines the truncation of SDC name to 31 characters (PowerFlex limit)
+  # Default value: None
+  trimSDCName:
+    # enabled: Enable/Disable truncation of SDC name to 31 characters (PowerFlex limit)
+    # Allowed values:
+    #   true: enable truncation when SDC name exceeds 31 characters
+    #   false: disable truncation (may cause PowerFlex API error if name > 31 chars)
     # Default value: false
     enabled: false
 
