@@ -37,6 +37,9 @@ rules:
     resources: [ "storageclasses" ]
     verbs: [ "get", "list", "watch" ]
   - apiGroups: [ "storage.k8s.io" ]
+    resources: [ "volumeattributesclasses" ]
+    verbs: [ "get", "list", "watch" ]
+  - apiGroups: [ "storage.k8s.io" ]
     resources: [ "volumeattachments" ]
 {{- if hasKey .Values "podmon" }}
 {{- if eq .Values.podmon.enabled true }}
@@ -249,6 +252,7 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
+            - "--feature-gates=VolumeAttributesClass=true"
             - "--v=5"
             - "--leader-election=true"
           env:
