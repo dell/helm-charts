@@ -419,11 +419,38 @@ spec:
               value: /powermax-config-params
             - name: X_CSI_REPLICATION_CONFIG_FILE_NAME
               value: driver-config-params.yaml
+            {{- if hasKey .Values.replication "metrics" }}
+            - name: X_CSI_REPLICATION_METRICS_ENABLED
+              value: "{{ .Values.replication.metrics.enabled | default false }}"
+            - name: X_CSI_REPLICATION_METRICS_PORT
+              value: "{{ .Values.replication.metrics.port | default 8445 }}"
+            {{- if .Values.replication.metrics.collection }}
+            - name: X_CSI_REPLICATION_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.replication.metrics.collection.interval | default "30s" }}"
+            {{- end }}
+            {{- if .Values.replication.metrics.tlsCertSecret }}
+            - name: X_CSI_REPLICATION_METRICS_TLS_CERT_FILE
+              value: /etc/replication-metrics-tls/tls.crt
+            - name: X_CSI_REPLICATION_METRICS_TLS_KEY_FILE
+              value: /etc/replication-metrics-tls/tls.key
+            {{- end }}
+            {{- end }}
+          {{- if and (hasKey .Values.replication "metrics") (.Values.replication.metrics.enabled) }}
+          ports:
+            - containerPort: {{ .Values.replication.metrics.port | default 8445 }}
+              name: repl-metrics
+              protocol: TCP
+          {{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
             - name: powermax-config-params
               mountPath: /powermax-config-params
+            {{- if and (hasKey .Values.replication "metrics") (.Values.replication.metrics.tlsCertSecret) }}
+            - name: replication-metrics-tls
+              mountPath: /etc/replication-metrics-tls
+              readOnly: true
+            {{- end }}
         {{- end }}
         {{- if eq .Values.migration.enabled true}}
         - name: dell-csi-migrator
@@ -796,6 +823,13 @@ spec:
         - name: resiliency-metrics-tls
           secret:
             secretName: {{ .Values.podmon.metrics.tlsCertSecret }}
+        {{- end }}
+        {{- if and (eq .Values.replication.enabled true) (hasKey .Values.replication "metrics") }}
+        {{- if .Values.replication.metrics.tlsCertSecret }}
+        - name: replication-metrics-tls
+          secret:
+            secretName: {{ .Values.replication.metrics.tlsCertSecret }}
+        {{- end }}
         {{- end }}
         {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
         - name: proxy-auth-token

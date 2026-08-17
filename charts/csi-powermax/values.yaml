@@ -514,6 +514,35 @@ replication:
   # Examples: "replication.storage.dell.com", "rdf.storage.dell.com"
   replicationPrefix: "replication.storage.dell.com"
 
+  # Metrics configuration for replication sidecar
+  metrics:
+    # enabled: Enable/Disable replication metrics endpoint on the dell-csi-replicator sidecar
+    # Default value: false
+    enabled: false
+    # port: Port for the replication metrics endpoint
+    # Default value: 8445
+    port: 8445
+    # tlsCertSecret: Name of the TLS secret for replication metrics. Leave empty to disable TLS.
+    # Default value: ""
+    tlsCertSecret: ""
+    collection:
+      # interval: How frequently replication metrics are collected
+      # Default value: "30s"
+      interval: 30s
+    serviceMonitor:
+      # enabled: Enable/Disable ServiceMonitor for Prometheus Operator
+      # Default value: false
+      enabled: false
+      # interval: Scrape interval for the ServiceMonitor
+      # Default value: "30s"
+      interval: 30s
+      # scrapeTimeout: Scrape timeout for the ServiceMonitor
+      # Default value: ""
+      scrapeTimeout: ""
+      # insecureSkipVerify: Skip TLS verification for ServiceMonitor
+      # Default value: false
+      insecureSkipVerify: false
+
 # CSM module attributes
 # Set this to true to enable migration
 # Allowed values:
