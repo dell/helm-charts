@@ -278,6 +278,14 @@ spec:
             {{ end }}
             - name: X_CSI_MAX_PATH_LIMIT
               value: "{{ .Values.maxPathLen }}"
+            - name: X_CSI_ISILON_ENABLE_DRIVER_FSGROUP_CHOWN
+              value: "{{ .Values.fsGroupChown.enabled }}"
+            - name: X_CSI_ISILON_CHOWN_WORKERS
+              value: "{{ .Values.fsGroupChown.workers }}"
+            - name: X_CSI_ISILON_CHOWN_WRITEBATCH
+              value: "{{ .Values.fsGroupChown.writeBatch }}"
+            - name: X_CSI_ISILON_CHOWN_TIMEOUT_SECONDS
+              value: "{{ .Values.fsGroupChown.timeoutSeconds }}"
             - name: X_CSI_DRIVER_NAMESPACE
               valueFrom:
                 fieldRef:
