@@ -282,6 +282,12 @@ spec:
     - name: https
       port: 8443
       targetPort: https
+    {{- if and (hasKey .Values "metrics") .Values.metrics.enabled }}
+    - name: replication-metrics
+      port: {{ .Values.metrics.port | default 8445 }}
+      targetPort: {{ .Values.metrics.port | default 8445 }}
+      protocol: TCP
+    {{- end }}
   selector:
     control-plane: controller-manager
 ---
@@ -339,6 +345,20 @@ spec:
               value: /app/certs
             - name: X_CSI_REPLICATION_CONFIG_FILE_NAME
               value: config
+            {{- if and (hasKey .Values "metrics") .Values.metrics.enabled }}
+            - name: X_CSI_REPLICATION_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_REPLICATION_METRICS_PORT
+              value: "{{ .Values.metrics.port | default 8445 }}"
+            - name: X_CSI_REPLICATION_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.metrics.collection.interval }}"
+            {{- if .Values.metrics.tlsCertSecret }}
+            - name: X_CSI_REPLICATION_METRICS_TLS_CERT_FILE
+              value: /etc/metrics-tls/tls.crt
+            - name: X_CSI_REPLICATION_METRICS_TLS_KEY_FILE
+              value: /etc/metrics-tls/tls.key
+            {{- end }}
+            {{- end }}
           image: {{ .Values.image }}
           imagePullPolicy: Always
           name: manager
@@ -346,11 +366,22 @@ spec:
             requests:
               cpu: 100m
               memory: 100Mi
+          {{- if and (hasKey .Values "metrics") .Values.metrics.enabled }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port | default 8445 }}
+              protocol: TCP
+          {{- end }}
           volumeMounts:
             - mountPath: /app/config
               name: configmap-volume
             - mountPath: /app/certs
               name: cert-dir
+            {{- if and (hasKey .Values "metrics") .Values.metrics.enabled .Values.metrics.tlsCertSecret }}
+            - name: replication-metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+            {{- end }}
       terminationGracePeriodSeconds: 10
       volumes:
         - emptyDir: { }
@@ -359,3 +390,8 @@ spec:
             name: dell-replication-controller-config
             optional: true
           name: configmap-volume
+        {{- if and (hasKey .Values "metrics") .Values.metrics.enabled .Values.metrics.tlsCertSecret }}
+        - name: replication-metrics-tls
+          secret:
+            secretName: {{ .Values.metrics.tlsCertSecret }}
+        {{- end }}
