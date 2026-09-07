@@ -580,3 +580,23 @@ metrics:
       threshold: 3
       # resetTimeout: How long the circuit stays open before allowing a retry.
       resetTimeout: "30s"
+
+# fsGroupChown: Configure driver-side recursive fsGroup chown for export-backed volumes.
+# This is only used when fsGroupPolicy is ReadWriteOnceWithFSType and the volume's fsType is set.
+fsGroupChown:
+  # enabled: Enable the driver's parallel recursive chown for export-backed volumes.
+  # When disabled, the driver falls back to a sequential recursive chown within the configured timeout.
+  # Default value: true
+  enabled: true
+
+  # workers: Number of parallel os.Chown workers for recursive fsGroup application.
+  # Default value: 8
+  workers: 8
+
+  # writeBatch: Number of completed file paths to buffer before writing the resumable state file.
+  # Default value: 1000
+  writeBatch: 1000
+
+  # timeoutSeconds: Per-NodeStageVolume/NodePublishVolume timeout for recursive chown in seconds.
+  # Default value: 30
+  timeoutSeconds: 30

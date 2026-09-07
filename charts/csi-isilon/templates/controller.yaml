@@ -22,6 +22,8 @@ rules:
   {{- else }}
     verbs: ["get", "list", "watch"]
   {{- end }}
+  {{- else }}
+    verbs: ["get", "list", "watch"]
   {{- end }}
   - apiGroups: [""]
     resources: ["persistentvolumes"]
