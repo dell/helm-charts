@@ -46,6 +46,19 @@ enableKubevirtPVCRemap: "false"
 # Default value: false
 allowPvcCreationOnTarget: "false"
 
+# Metrics configuration for replication controller
+metrics:
+  enabled: false
+  port: 8445
+  tlsCertSecret: ""
+  collection:
+    interval: "30s"
+  serviceMonitor:
+    enabled: false
+    interval: "30s"
+    scrapeTimeout: ""
+    insecureSkipVerify: false
+
 # HostAliases: Optional features that allows <hostname:IP> entries injection into pod's /etc/hosts file
 # hostAliases:
 #  - ip: "10.10.10.10"

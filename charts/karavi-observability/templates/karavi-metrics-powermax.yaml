@@ -58,12 +58,6 @@ spec:
       - name: karavi-metrics-powermax
         image: {{ .Values.karaviMetricsPowermax.image }}
         resources: {}
-        {{- if .Values.karaviMetricsPowermax.metrics.enabled }}
-        ports:
-        - name: obs-metrics
-          containerPort: {{ .Values.karaviMetricsPowermax.metrics.port }}
-          protocol: TCP
-        {{- end }}
         env:
         {{- $useRevProxySecret := and (hasKey .Values.karaviMetricsPowermax "useSecret") (.Values.karaviMetricsPowermax.useSecret | default false) }}
         - name: X_CSI_REVPROXY_USE_SECRET
@@ -163,11 +157,11 @@ spec:
       - name: karavi-metrics-powermax-configmap
         configMap:
           name: karavi-metrics-powermax-configmap
-      {{- if and .Values.karaviMetricsPowermax.metrics.enabled .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
+        {{- if and .Values.karaviMetricsPowermax.metrics.enabled .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
       - name: metrics-tls
         secret:
           secretName: {{ .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
-      {{- end }}
+        {{- end }}
      {{- if hasKey .Values.karaviMetricsPowermax "authorization" }}
      {{- if eq .Values.karaviMetricsPowermax.authorization.enabled true }}
       {{- if $authorizationConfigSecret }}
@@ -220,12 +214,5 @@ spec:
     {{- if .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
     tlsConfig:
       insecureSkipVerify: {{ .Values.karaviMetricsPowermax.metrics.serviceMonitor.insecureSkipVerify }}
-      cert:
-        secret:
-          name: {{ .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
-          key: obs-tls.crt
-      keySecret:
-        name: {{ .Values.karaviMetricsPowermax.metrics.tlsCertSecret }}
-        key: obs-tls.key
     {{- end }}
 {{- end }}

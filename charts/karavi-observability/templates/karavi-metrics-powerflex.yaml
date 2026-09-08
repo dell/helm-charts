@@ -15,6 +15,11 @@ spec:
   - name: karavi-metrics-powerflex
     port: 2222
     targetPort: 2222
+  {{- if .Values.karaviMetricsPowerflex.metrics.enabled }}
+  - name: obs-metrics
+    port: {{ .Values.karaviMetricsPowerflex.metrics.port }}
+    targetPort: {{ .Values.karaviMetricsPowerflex.metrics.port }}
+  {{- end }}
   selector:
     app.kubernetes.io/name: karavi-metrics-powerflex
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -53,6 +58,12 @@ spec:
       - name: karavi-metrics-powerflex
         image: {{ .Values.karaviMetricsPowerflex.image }}
         resources: {}
+        {{- if .Values.karaviMetricsPowerflex.metrics.enabled }}
+        ports:
+        - name: obs-metrics
+          containerPort: {{ .Values.karaviMetricsPowerflex.metrics.port }}
+          protocol: TCP
+        {{- end }}
         env:
         - name: POWERFLEX_METRICS_ENDPOINT
           value: "{{ .Values.karaviMetricsPowerflex.endpoint }}"
@@ -62,6 +73,18 @@ spec:
               fieldPath: metadata.namespace
         - name: TLS_ENABLED
           value: "true"
+        {{- if .Values.karaviMetricsPowerflex.metrics.enabled }}
+        - name: X_CSI_METRICS_ENABLED
+          value: "{{ .Values.karaviMetricsPowerflex.metrics.enabled }}"
+        - name: X_CSI_METRICS_PORT
+          value: "{{ .Values.karaviMetricsPowerflex.metrics.port }}"
+        {{- if .Values.karaviMetricsPowerflex.metrics.tlsCertSecret }}
+        - name: X_CSI_METRICS_TLS_CERT_FILE
+          value: /etc/metrics-tls/tls.crt
+        - name: X_CSI_METRICS_TLS_KEY_FILE
+          value: /etc/metrics-tls/tls.key
+        {{- end }}
+        {{- end }}
         volumeMounts:
         - name: vxflexos-config
           mountPath: /vxflexos-config
@@ -70,6 +93,11 @@ spec:
           readOnly: true
         - name: karavi-metrics-powerflex-configmap
           mountPath: /etc/config
+        {{- if and .Values.karaviMetricsPowerflex.metrics.enabled .Values.karaviMetricsPowerflex.metrics.tlsCertSecret }}
+        - name: metrics-tls
+          mountPath: /etc/metrics-tls
+          readOnly: true
+        {{- end }}
       {{- if hasKey .Values.karaviMetricsPowerflex "authorization" }}
       {{- if eq .Values.karaviMetricsPowerflex.authorization.enabled true }}
       - name: karavi-authorization-proxy
@@ -119,6 +147,11 @@ spec:
       - name: karavi-metrics-powerflex-configmap
         configMap:
           name: karavi-metrics-powerflex-configmap
+      {{- if and .Values.karaviMetricsPowerflex.metrics.enabled .Values.karaviMetricsPowerflex.metrics.tlsCertSecret }}
+      - name: metrics-tls
+        secret:
+          secretName: {{ .Values.karaviMetricsPowerflex.metrics.tlsCertSecret }}
+      {{- end }}
      {{- if hasKey .Values.karaviMetricsPowerflex "authorization" }}
      {{- if eq .Values.karaviMetricsPowerflex.authorization.enabled true }}
       {{- if $authorizationConfigSecret }}

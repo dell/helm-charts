@@ -39,6 +39,8 @@ rules:
   {{- else }}
     verbs: ["get", "list", "watch"]
   {{- end }}
+  {{- else }}
+    verbs: ["get", "list", "watch"]
   {{- end }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["storageclasses"]
@@ -54,6 +56,8 @@ rules:
   {{- else }}
     verbs: ["get", "list", "watch", "patch"]
   {{- end }}
+  {{- else }}
+    verbs: ["get", "list", "watch", "patch"]
   {{- end }}
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments/status"]
@@ -284,11 +288,34 @@ spec:
               value: /csi-isilon-config-params
             - name: X_CSI_REPLICATION_CONFIG_FILE_NAME
               value: driver-config-params.yaml
+{{- if and .Values.controller.replication.enabled (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled }}
+            - name: X_CSI_REPLICATION_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_REPLICATION_METRICS_PORT
+              value: "{{ .Values.controller.replication.metrics.port | default 8445 }}"
+            - name: X_CSI_REPLICATION_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.controller.replication.metrics.collection.interval | default "30s" }}"
+{{- if .Values.controller.replication.metrics.tlsCertSecret }}
+            - name: X_CSI_REPLICATION_METRICS_TLS_CERT_FILE
+              value: /etc/replication-metrics-tls/tls.crt
+            - name: X_CSI_REPLICATION_METRICS_TLS_KEY_FILE
+              value: /etc/replication-metrics-tls/tls.key
+{{- end }}
+          ports:
+            - name: repl-metrics
+              containerPort: {{ .Values.controller.replication.metrics.port | default 8445 }}
+              protocol: TCP
+{{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
             - name: csi-isilon-config-params
               mountPath: /csi-isilon-config-params
+{{- if and .Values.controller.replication.enabled (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled .Values.controller.replication.metrics.tlsCertSecret }}
+            - name: replication-metrics-tls
+              mountPath: /etc/replication-metrics-tls
+              readOnly: true
+{{- end }}
         {{- end }}
         {{- end }}
         {{- end }}
@@ -503,12 +530,28 @@ spec:
               value: "{{ .Values.isiVolumePathPermissions }}"
             - name: X_CSI_ISI_IGNORE_UNRESOLVABLE_HOSTS
               value: "{{ .Values.ignoreUnresolvableHosts }}"
+            - name: X_CSI_ISI_NFS_MOUNT_FQDN
+              value: "{{ .Values.nfsMountFQDN }}"
+            - name: X_CSI_ISI_NFS_TRANSPORT_SECURITY
+              value: "{{ .Values.nfsTransportSecurity }}"
+            - name: X_CSI_ISI_TLS_HANDSHAKE_TIMEOUT_SECONDS
+              value: "{{ .Values.tlsHandshakeTimeoutSeconds }}"
             - name: X_CSI_ISI_NO_PROBE_ON_START
               value: "{{ .Values.noProbeOnStart }}"
             - name: X_CSI_PODMON_ENABLED
               value: "{{ .Values.podmon.enabled }}"
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
+            {{- if .Values.podmonAPITokenSecret }}
+            - name: X_CSI_PODMON_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.podmonAPITokenSecret.name }}
+                  key: {{ .Values.podmonAPITokenSecret.key | default "podmon-api-token" }}
+            {{- else if .Values.podmonAPIToken }}
+            - name: X_CSI_PODMON_API_TOKEN
+              value: "{{ .Values.podmonAPIToken }}"
+            {{- end }}
             {{- if eq .Values.podmon.enabled true }}
               {{- range $key, $value := .Values.podmon.controller.args }}
                 {{- if contains "--arrayConnectivityPollRate" $value }}
@@ -666,6 +709,13 @@ spec:
         - name: resiliency-metrics-tls
           secret:
             secretName: {{ .Values.podmon.metrics.tlsCertSecret }}
+        {{- end }}
+        {{- if hasKey .Values.controller "replication" }}
+        {{- if and .Values.controller.replication.enabled (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled .Values.controller.replication.metrics.tlsCertSecret }}
+        - name: replication-metrics-tls
+          secret:
+            secretName: {{ .Values.controller.replication.metrics.tlsCertSecret }}
+        {{- end }}
         {{- end }}
         {{- if hasKey .Values "authorization" }}
         {{- if eq .Values.authorization.enabled true }}

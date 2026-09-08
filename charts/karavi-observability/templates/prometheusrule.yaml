@@ -1,0 +1,55 @@
+{{- with .Values.karaviMetricsPowerflex }}
+{{- if .enabled }}
+{{- with .metrics }}
+{{- if .enabled }}
+{{- with .prometheusRule }}
+{{- if .enabled }}
+{{ include "karavi.prometheusRule" (dict "driverName" "powerflex" "moduleLabel" "metrics-powerflex" "platformLabel" "system_id" "jobPattern" "karavi-metrics-powerflex.*" "root" $) }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- with .Values.karaviMetricsPowerstore }}
+{{- if .enabled }}
+{{- with .metrics }}
+{{- if .enabled }}
+{{- with .prometheusRule }}
+{{- if .enabled }}
+{{ include "karavi.prometheusRule" (dict "driverName" "powerstore" "moduleLabel" "metrics-powerstore" "platformLabel" "global_id" "jobPattern" "karavi-metrics-powerstore.*" "root" $) }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- with .Values.karaviMetricsPowerscale }}
+{{- if .enabled }}
+{{- with .metrics }}
+{{- if .enabled }}
+{{- with .prometheusRule }}
+{{- if .enabled }}
+{{ include "karavi.prometheusRule" (dict "driverName" "powerscale" "moduleLabel" "metrics-powerscale" "platformLabel" "cluster_name" "jobPattern" "karavi-metrics-powerscale.*" "root" $) }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- with .Values.karaviMetricsPowermax }}
+{{- if .enabled }}
+{{- with .metrics }}
+{{- if .enabled }}
+{{- with .prometheusRule }}
+{{- if .enabled }}
+{{ include "karavi.prometheusRule" (dict "driverName" "powermax" "moduleLabel" "metrics-powermax" "platformLabel" "array_id" "jobPattern" "karavi-metrics-powermax.*" "root" $) }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
