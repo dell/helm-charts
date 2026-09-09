@@ -182,6 +182,9 @@ rules:
   - apiGroups: ["apps"]
     resources: ["replicasets"]
     verbs: ["get"]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list"]
 ---
 # RoleBinding for Driver-specific Role
 kind: RoleBinding
@@ -419,11 +422,38 @@ spec:
               value: /powermax-config-params
             - name: X_CSI_REPLICATION_CONFIG_FILE_NAME
               value: driver-config-params.yaml
+            {{- if hasKey .Values.replication "metrics" }}
+            - name: X_CSI_REPLICATION_METRICS_ENABLED
+              value: "{{ .Values.replication.metrics.enabled | default false }}"
+            - name: X_CSI_REPLICATION_METRICS_PORT
+              value: "{{ .Values.replication.metrics.port | default 8445 }}"
+            {{- if .Values.replication.metrics.collection }}
+            - name: X_CSI_REPLICATION_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.replication.metrics.collection.interval | default "30s" }}"
+            {{- end }}
+            {{- if .Values.replication.metrics.tlsCertSecret }}
+            - name: X_CSI_REPLICATION_METRICS_TLS_CERT_FILE
+              value: /etc/replication-metrics-tls/tls.crt
+            - name: X_CSI_REPLICATION_METRICS_TLS_KEY_FILE
+              value: /etc/replication-metrics-tls/tls.key
+            {{- end }}
+            {{- end }}
+          {{- if and (hasKey .Values.replication "metrics") (.Values.replication.metrics.enabled) }}
+          ports:
+            - containerPort: {{ .Values.replication.metrics.port | default 8445 }}
+              name: repl-metrics
+              protocol: TCP
+          {{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
             - name: powermax-config-params
               mountPath: /powermax-config-params
+            {{- if and (hasKey .Values.replication "metrics") (.Values.replication.metrics.tlsCertSecret) }}
+            - name: replication-metrics-tls
+              mountPath: /etc/replication-metrics-tls
+              readOnly: true
+            {{- end }}
         {{- end }}
         {{- if eq .Values.migration.enabled true}}
         - name: dell-csi-migrator
@@ -569,6 +599,10 @@ spec:
               value: {{ .Values.global.portGroups | toJson }}
             - name: X_CSI_TRANSPORT_PROTOCOL
               value: {{ .Values.global.transportProtocol | default "" }}
+            - name: X_CSI_POWERMAX_HOST_MGMT_MODE
+              value: {{ .Values.global.hostManagementMode | default "create" }}
+            - name: X_CSI_POWERMAX_HOST_ADOPTION_MIN_OVERLAP_RATIO
+              value: {{ .Values.global.hostAdoptionMinOverlapRatio | default "0.5" | quote }}
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
@@ -644,10 +678,26 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmon.podmonAPIPort }}"
+            {{- if .Values.podmon.podmonAPITokenSecret }}
+            - name: X_CSI_PODMON_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.podmon.podmonAPITokenSecret.name }}
+                  key: {{ .Values.podmon.podmonAPITokenSecret.key | default "podmon-api-token" }}
+            {{- else if .Values.podmon.podmonAPIToken }}
+            - name: X_CSI_PODMON_API_TOKEN
+              value: "{{ .Values.podmon.podmonAPIToken }}"
+            {{- end }}
             - name: X_CSI_REVPROXY_TLS_CERT_DIR
               value: /app/tls
             - name: X_CSI_DYNAMIC_SG_ENABLED
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
+            {{- if hasKey .Values "multiArrayZone" }}
+            - name: X_CSI_CAPACITY_POLL_INTERVAL
+              value: {{ .Values.multiArrayZone.capacityPollInterval | default "5m" | quote }}
+            - name: X_CSI_CAPACITY_THRESHOLD_FULL
+              value: "{{- if hasKey .Values.multiArrayZone "capacityThresholdFull" }}{{ .Values.multiArrayZone.capacityThresholdFull }}{{ else }}100{{ end }}"
+            {{- end }}
             {{- if hasKey .Values.controller "csiAddonsReplication" }}
             - name: X_CSI_CSIADDONS_REPLICATION_ENABLED
               value: "{{ .Values.controller.csiAddonsReplication.enabled }}"
@@ -796,6 +846,13 @@ spec:
         - name: resiliency-metrics-tls
           secret:
             secretName: {{ .Values.podmon.metrics.tlsCertSecret }}
+        {{- end }}
+        {{- if and (eq .Values.replication.enabled true) (hasKey .Values.replication "metrics") }}
+        {{- if .Values.replication.metrics.tlsCertSecret }}
+        - name: replication-metrics-tls
+          secret:
+            secretName: {{ .Values.replication.metrics.tlsCertSecret }}
+        {{- end }}
         {{- end }}
         {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
         - name: proxy-auth-token

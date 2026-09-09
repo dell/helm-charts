@@ -66,6 +66,9 @@ rules:
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get", "update"]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshotclasses"]
     verbs: ["get", "list", "watch"]
@@ -194,6 +197,7 @@ spec:
     metadata:
       labels:
         name: {{ .Release.Name }}-controller
+        app: {{ .Release.Name }}-controller
       annotations:
         kubectl.kubernetes.io/default-container: "driver"
     spec:
@@ -237,11 +241,39 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: X_CSI_METRICS_ENABLED
+              value: {{ include "csi-vxflexos.isResiliencyMetricsEnabled" . | quote }}
+            - name: X_CSI_METRICS_PORT
+              value: "{{ .Values.podmon.metrics.port }}"
+            - name: X_CSI_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.podmon.metrics.collection.interval }}"
+            {{- if eq (include "csi-vxflexos.isResiliencyMetricsTLSEnabled" .) "true" }}
+            - name: X_CSI_METRICS_TLS_CERT_FILE
+              value: /etc/metrics-tls/tls.crt
+            - name: X_CSI_METRICS_TLS_KEY_FILE
+              value: /etc/metrics-tls/tls.key
+            {{- else }}
+            - name: X_CSI_METRICS_TLS_CERT_FILE
+              value: ""
+            - name: X_CSI_METRICS_TLS_KEY_FILE
+              value: ""
+            {{- end }}
+          {{- if eq (include "csi-vxflexos.isResiliencyMetricsEnabled" .) "true" }}
+          ports:
+            - name: resiliency-metrics
+              containerPort: {{ .Values.podmon.metrics.port }}
+              protocol: TCP
+          {{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
             - name: vxflexos-config-params
               mountPath: /vxflexos-config-params
+            {{- if eq (include "csi-vxflexos.isResiliencyMetricsTLSEnabled" .) "true" }}
+            - name: resiliency-metrics-tls
+              mountPath: /etc/metrics-tls
+              readOnly: true
+            {{- end }}
 {{- end }}
 {{- end }}
         - name: attacher
@@ -278,11 +310,34 @@ spec:
               value: /vxflexos-config-params
             - name: X_CSI_REPLICATION_CONFIG_FILE_NAME
               value: driver-config-params.yaml
+{{- if and .Values.controller.replication.enabled (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled }}
+            - name: X_CSI_REPLICATION_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_REPLICATION_METRICS_PORT
+              value: "{{ .Values.controller.replication.metrics.port | default 8445 }}"
+            - name: X_CSI_REPLICATION_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.controller.replication.metrics.collection.interval | default "30s" }}"
+{{- if .Values.controller.replication.metrics.tlsCertSecret }}
+            - name: X_CSI_REPLICATION_METRICS_TLS_CERT_FILE
+              value: /etc/replication-metrics-tls/tls.crt
+            - name: X_CSI_REPLICATION_METRICS_TLS_KEY_FILE
+              value: /etc/replication-metrics-tls/tls.key
+{{- end }}
+          ports:
+            - name: repl-metrics
+              containerPort: {{ .Values.controller.replication.metrics.port | default 8445 }}
+              protocol: TCP
+{{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
             - name: vxflexos-config-params
               mountPath: /vxflexos-config-params
+{{- if and .Values.controller.replication.enabled (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled .Values.controller.replication.metrics.tlsCertSecret }}
+            - name: replication-metrics-tls
+              mountPath: /etc/replication-metrics-tls
+              readOnly: true
+{{- end }}
         {{- end }}
         {{- end }}
         - name: provisioner
@@ -469,18 +524,58 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: X_CSI_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
+            {{- if .Values.podmonAPITokenSecret }}
+            - name: X_CSI_PODMON_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.podmonAPITokenSecret.name }}
+                  key: {{ .Values.podmonAPITokenSecret.key | default "podmon-api-token" }}
+            {{- else if .Values.podmonAPIToken }}
+            - name: X_CSI_PODMON_API_TOKEN
+              value: "{{ .Values.podmonAPIToken }}"
+            {{- end }}
             {{- if eq (include "csi-vxflexos.isMetricsEnabled" .) "true" }}
             - name: X_CSI_METRICS_ENABLED
               value: "true"
             - name: X_CSI_METRICS_PORT
-              value: "{{ .Values.metrics.port | default 8443 }}"
+              value: "{{ .Values.metrics.port | default 9090 }}"
             {{- if .Values.metrics.tlsCertSecret }}
             - name: X_CSI_METRICS_TLS_CERT_FILE
               value: "/etc/metrics-tls/tls.crt"
             - name: X_CSI_METRICS_TLS_KEY_FILE
               value: "/etc/metrics-tls/tls.key"
+            {{- end }}
+            {{- if hasKey .Values.metrics "leaderElection" }}
+            - name: X_CSI_METRICS_LEADER_ELECTION_ENABLED
+              value: "{{ .Values.metrics.leaderElection.enabled | default false }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_LEASE_DURATION
+              value: "{{ .Values.metrics.leaderElection.leaseDuration | default "60s" }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_RENEW_DEADLINE
+              value: "{{ .Values.metrics.leaderElection.renewDeadline | default "40s" }}"
+            - name: X_CSI_METRICS_LEADER_ELECTION_RETRY_PERIOD
+              value: "{{ .Values.metrics.leaderElection.retryPeriod | default "5s" }}"
+            {{- end }}
+            {{- if hasKey .Values.metrics "collection" }}
+            - name: X_CSI_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.metrics.collection.interval | default "30s" }}"
+            - name: X_CSI_METRICS_COLLECTION_CACHE_TTL
+              value: "{{ .Values.metrics.collection.cacheTTL | default "25s" }}"
+            {{- end }}
+            {{- if hasKey .Values.metrics "array" }}
+            - name: X_CSI_METRICS_ARRAY_TIMEOUT
+              value: "{{ .Values.metrics.array.timeout | default "30s" }}"
+            - name: X_CSI_METRICS_ARRAY_RATE_LIMIT
+              value: "{{ .Values.metrics.array.rateLimit | default 100 }}"
+            - name: X_CSI_METRICS_ARRAY_CB_THRESHOLD
+              value: "{{ .Values.metrics.array.circuitBreaker.threshold | default 3 }}"
+            - name: X_CSI_METRICS_ARRAY_CB_RESET_TIMEOUT
+              value: "{{ .Values.metrics.array.circuitBreaker.resetTimeout | default "30s" }}"
             {{- end }}
             {{- if eq .Values.metrics.gatewayMonitoring.enabled true }}
             - name: X_CSI_GATEWAY_MONITORING_ENABLED
@@ -548,5 +643,19 @@ spec:
         - name: metrics-tls
           secret:
             secretName: {{ .Values.metrics.tlsCertSecret }}
+{{- end }}
+{{- end }}
+{{- if eq (include "csi-vxflexos.isResiliencyMetricsEnabled" .) "true" }}
+{{- if eq (include "csi-vxflexos.isResiliencyMetricsTLSEnabled" .) "true" }}
+        - name: resiliency-metrics-tls
+          secret:
+            secretName: {{ .Values.podmon.metrics.tlsCertSecret }}
+{{- end }}
+{{- end }}
+{{- if hasKey .Values.controller "replication" }}
+{{- if and .Values.controller.replication.enabled (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled .Values.controller.replication.metrics.tlsCertSecret }}
+        - name: replication-metrics-tls
+          secret:
+            secretName: {{ .Values.controller.replication.metrics.tlsCertSecret }}
 {{- end }}
 {{- end }}

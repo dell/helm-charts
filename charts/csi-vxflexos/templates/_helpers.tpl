@@ -1,4 +1,8 @@
 {{/*
+Copyright © 2026 Dell Inc. or its subsidiaries. All Rights Reserved.
+*/}}
+
+{{/*
 Return true if storage capacity tracking is enabled and is supported based on k8s version
 */}}
 {{- define "csi-vxflexos.isStorageCapacitySupported" -}}
@@ -44,6 +48,28 @@ Return true if volumeGroupSnapshot is enabled and properly configured
   {{- end -}}
 {{- else -}}
   {{- false -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return true if podmon resiliency metrics is enabled
+*/}}
+{{- define "csi-vxflexos.isResiliencyMetricsEnabled" -}}
+{{- if and (hasKey .Values "podmon") (hasKey .Values.podmon "metrics") .Values.podmon.metrics.enabled -}}
+{{- true -}}
+{{- else -}}
+{{- false -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return true if podmon resiliency metrics TLS is enabled
+*/}}
+{{- define "csi-vxflexos.isResiliencyMetricsTLSEnabled" -}}
+{{- if and (include "csi-vxflexos.isResiliencyMetricsEnabled" .) (hasKey .Values.podmon.metrics "tlsCertSecret") .Values.podmon.metrics.tlsCertSecret -}}
+{{- true -}}
+{{- else -}}
+{{- false -}}
 {{- end -}}
 {{- end -}}
 

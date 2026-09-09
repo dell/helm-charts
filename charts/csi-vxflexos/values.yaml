@@ -14,7 +14,7 @@ images:
     image: quay.io/dell/container-storage-modules/csi-vxflexos:v2.18.0
   # "powerflexSdc" defines the SDC image for init container.
   powerflexSdc:
-    image: quay.io/dell/storage/powerflex/sdc:5.1
+    image: quay.io/dell/storage/powerflex/sdc:5.1.0.2
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.12.0
@@ -169,6 +169,26 @@ spaceReclamation:
 # Default value: 8083
 podmonAPIPort: 8083
 
+# podmonAPIToken: Shared secret token for authenticating podmon API requests
+# When set, the driver will require Bearer token authentication on /array-status endpoints
+# Allowed values: Any string (recommend using a randomly generated token)
+# Security note: podmon API is HTTP; use this token only on trusted cluster-internal networks.
+# For production, use podmonAPITokenSecret to source this value from a Kubernetes Secret.
+# Default value: "" (empty - authentication disabled for backward compatibility)
+podmonAPIToken: ""
+
+# podmonAPITokenSecret: Kubernetes Secret containing the podmon API token
+# When set, the token will be sourced from the specified Secret instead of podmonAPIToken value
+# Allowed values:
+#   name: Secret name (required)
+#   key: Secret key containing the token (required, default: "podmon-api-token")
+# Example:
+#   podmonAPITokenSecret:
+#     name: my-podmon-secret
+#     key: api-token
+# Default value: null (use podmonAPIToken value instead)
+podmonAPITokenSecret: null
+
 # "controller" allows to configure controller specific parameters
 controller:
   # replication: allows to configure replication
@@ -190,6 +210,19 @@ controller:
     # Allowed values: string
     # Default value: replication.storage.dell.com
     replicationPrefix: "replication.storage.dell.com"
+
+    # Metrics configuration for replication sidecar
+    metrics:
+      enabled: false
+      port: 8445
+      tlsCertSecret: ""
+      collection:
+        interval: 30s
+      serviceMonitor:
+        enabled: false
+        interval: 30s
+        scrapeTimeout: ""
+        insecureSkipVerify: false
 
   healthMonitor:
     # enabled: Enable/Disable health monitor of CSI volumes
@@ -427,6 +460,45 @@ podmon:
       - "--driverPodLabelValue=dell-storage"
       - "--ignoreVolumelessPods=false"
 
+  # metrics: configuration for podmon resiliency metrics
+  metrics:
+    # enabled: Set to true to expose the metrics endpoint on the podmon containers.
+    # Default value: false
+    enabled: false
+    # port: Port on which the metrics endpoint is exposed. Default for podmon: 8444.
+    port: 8444
+    # tlsCertSecret: Name of a Kubernetes TLS Secret (tls.crt / tls.key) used to serve metrics over HTTPS.
+    # When set the chart mounts the secret and configures HTTPS automatically.
+    # Leave unset to serve metrics over plain HTTP.
+    tlsCertSecret: ""
+    # collection: Controls metrics collection cadence inside the resiliency module.
+    collection:
+      interval: 30s
+    # serviceMonitor: Creates a Prometheus Operator ServiceMonitor targeting the controller pods.
+    serviceMonitor:
+      enabled: false
+      interval: 30s
+      scrapeTimeout: ""
+      insecureSkipVerify: false
+    # podMonitor: Creates a Prometheus Operator PodMonitor targeting the node pods.
+    podMonitor:
+      enabled: false
+      interval: 30s
+      scrapeTimeout: ""
+      insecureSkipVerify: false
+    # prometheusRule: Controls optional Prometheus Operator PrometheusRule creation for resiliency alerts.
+    prometheusRule:
+      # enabled: When true, a PrometheusRule CR is created for resiliency alerting rules.
+      # Type: bool
+      # Default: true
+      # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+      enabled: true
+      # connectivitySuccessRatio: Minimum acceptable connectivity success ratio as percentage (0-100).
+      # Used by RES-02 (CSMResiliencyConnectivityLost) alert threshold.
+      # Type: integer
+      # Default: 90 (alert fires when connectivity drops below 90%)
+      connectivitySuccessRatio: 90
+
 # CSM module attributes
 # authorization: enable csm-authorization for RBAC
 # Deploy and configure authorization before installing driver
@@ -463,9 +535,9 @@ metrics:
   # port: Port on which the shared driver metrics endpoint is exposed.
   # This port serves gateway monitoring metrics and any other driver-supplied metrics.
   # Type: integer
-  # Default: 8443
+  # Default: 9090
   # Effect: Passed as X_CSI_METRICS_PORT to the driver container; used as targetPort in the Service.
-  port: 8443
+  port: 9090
 
   # tlsCertSecret: Name of a Kubernetes TLS Secret whose "tls.crt" and "tls.key" entries
   # are used to serve the metrics endpoint over HTTPS instead of plain HTTP.
@@ -502,6 +574,66 @@ metrics:
     # Effect: Passed as X_CSI_GATEWAY_MONITORING_POLL_INTERVAL to the driver container.
     pollInterval: "30s"
 
+  # leaderElection: configuration for metrics collector leader election.
+  # When enabled, array collectors (storage pool, volume, array health) run only on the leader controller pod.
+  leaderElection:
+    # enabled: Enable/Disable metrics collector leader election.
+    # Type: bool
+    # Default: false
+    # Effect: When true, the controller Deployment receives X_CSI_METRICS_LEADER_ELECTION_ENABLED=true,
+    #         and only one controller will run array collectors.
+    enabled: false
+
+    # leaseDuration: Duration of the leader election lease.
+    # Type: string (Go duration, e.g. "60s", "2m")
+    # Default: "60s"
+    # Effect: Passed as X_CSI_METRICS_LEADER_ELECTION_LEASE_DURATION to the driver container.
+    leaseDuration: "60s"
+
+    # renewDeadline: Duration before the leader must renew its lease.
+    # Type: string (Go duration, e.g. "40s", "1m")
+    # Default: "40s"
+    # Effect: Passed as X_CSI_METRICS_LEADER_ELECTION_RENEW_DEADLINE to the driver container.
+    renewDeadline: "40s"
+
+    # retryPeriod: Duration to wait before retrying to acquire the lease.
+    # Type: string (Go duration, e.g. "5s", "10s")
+    # Default: "5s"
+    # Effect: Passed as X_CSI_METRICS_LEADER_ELECTION_RETRY_PERIOD to the driver container.
+    retryPeriod: "5s"
+
+  # collection: Controls how frequently metrics are collected.
+  collection:
+    # interval: How often the driver collects metrics from the array.
+    # Type: string (duration, e.g. "30s", "1m")
+    # Default: "30s"
+    interval: "30s"
+    # cacheTTL: How long collected values are cached before re-querying the array.
+    # Type: string (duration, e.g. "25s")
+    # Default: "25s"
+    cacheTTL: "25s"
+
+  # array: Array-specific collector tuning.
+  array:
+    # rateLimit: Maximum array API requests per second.
+    # Type: integer
+    # Default: 100
+    rateLimit: 100
+    # timeout: Per-request timeout for array API calls.
+    # Type: string (duration)
+    # Default: "30s"
+    timeout: "30s"
+    # circuitBreaker: Circuit-breaker settings for array API calls.
+    circuitBreaker:
+      # threshold: Number of consecutive failures before the circuit opens.
+      # Type: integer
+      # Default: 3
+      threshold: 3
+      # resetTimeout: How long the circuit stays open before allowing a retry.
+      # Type: string (duration)
+      # Default: "30s"
+      resetTimeout: "30s"
+
   # serviceMonitor: Controls optional Prometheus Operator ServiceMonitor creation.
   serviceMonitor:
     # enabled: When true, a ServiceMonitor CR is created for automatic Prometheus Operator integration.
@@ -514,6 +646,11 @@ metrics:
     # Type: string (Prometheus duration, e.g. "30s", "1m")
     # Default: "30s"
     interval: "30s"
+
+    # scrapeTimeout: Prometheus scrape timeout for the metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "10s")
+    # Default: "" (unset)
+    scrapeTimeout: ""
 
     # insecureSkipVerify: Controls TLS certificate verification when scraping metrics.
     # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
@@ -535,19 +672,88 @@ metrics:
     # Default: "30s"
     interval: "30s"
 
+    # scrapeTimeout: Prometheus scrape timeout for the node metrics endpoint.
+    # Type: string (Prometheus duration, e.g. "10s")
+    # Default: "" (unset)
+    scrapeTimeout: ""
+
     # insecureSkipVerify: Controls TLS certificate verification when scraping node metrics.
     # Only used when metrics.tlsCertSecret is set (HTTPS endpoint).
     # Type: bool
     # Default: false
     insecureSkipVerify: false
 
-  # prometheusRule: Controls optional Prometheus Operator PrometheusRule creation.
+  # prometheusRule: Controls optional Prometheus Operator PrometheusRule creation for driver-level alerts.
   prometheusRule:
-    # enabled: When true, a PrometheusRule CR is created for alerting/recording rules.
+    # enabled: When true, a PrometheusRule CR is created for driver alerting/recording rules.
     # Type: bool
     # Default: false
     # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
     enabled: false
+
+    # Alerting threshold parameters for the 26 PowerFlex CSI driver alert rules.
+    # All values are numeric (int or float) — never quoted strings.
+    # Override with --set metrics.prometheusRule.<param>=<value> or in a custom values file.
+
+    # volumeOperationFailureThreshold: PF-01..08 threshold — minimum number of operation failures in 5 minutes
+    # above which a volume-operation alert fires.
+    # Type: integer (count)
+    # Default: 3
+    volumeOperationFailureThreshold: 3
+
+    # poolCapacityWarningPercent: PF-13 threshold — pool utilization % above which a warning fires.
+    # Type: integer (percent, 0–100)
+    # Default: 80
+    poolCapacityWarningPercent: 80
+
+    # poolCapacityCriticalPercent: PF-14 threshold — pool utilization % above which a critical alert fires.
+    # Type: integer (percent, 0–100)
+    # Default: 90
+    poolCapacityCriticalPercent: 90
+
+    # thinRatioWarningThreshold: PF-15 threshold — thin provisioning ratio above which a warning fires.
+    # Type: float (ratio: thin_allocated / physical_capacity)
+    # Default: 0.8
+    thinRatioWarningThreshold: 0.8
+
+    # dataReductionDegradedThreshold: PF-16 threshold — data reduction ratio below which a warning fires.
+    # Type: float (multiplier: e.g., 1.5 = 1.5x reduction)
+    # Default: 1.5
+    dataReductionDegradedThreshold: 1.5
+
+    # rcgLagWarningSeconds: PF-20 threshold — persistent replication lag in seconds above which a warning fires.
+    # Type: integer (seconds)
+    # Default: 300
+    rcgLagWarningSeconds: 300
+
+    # rcgBandwidthWarningKBps: PF-21 threshold — RCG transmit bandwidth in KB/s below which a warning fires.
+    # The guard (rcg_activity_state == 1) ensures this only fires when the RCG is actively replicating.
+    # Type: integer (KB/s)
+    # Default: 10240 (10 MB/s)
+    rcgBandwidthWarningKBps: 10240
+
+    # rcgLatencyWarningSeconds: PF-22 threshold — RCG transmit latency in seconds above which a warning fires.
+    # Type: float (seconds)
+    # Default: 5.0
+    rcgLatencyWarningSeconds: 5.0
+
+    # cpuWarningThreshold: PF-11 threshold — driver pod CPU usage % above which a warning fires.
+    # Type: integer (percent, 0–100)
+    # Default: 80
+    cpuWarningThreshold: 80
+
+    # memoryWarningThreshold: PF-12 threshold — driver pod memory usage in bytes above which a warning fires.
+    # Type: integer (bytes)
+    # Default: 2147483648 (2 GiB)
+    memoryWarningThreshold: 2147483648
+
+    # restartCountThreshold: PF-10 threshold — number of driver pod restart transitions in a 15-minute window
+    # above which a crash-loop warning fires. Uses changes() (counts value transitions) rather than delta()
+    # because changes() is resilient to staleness gaps caused by container restarts — delta() can return
+    # NaN when the series goes stale after a pod death and recovers after a gap.
+    # Type: integer (count)
+    # Default: 3
+    restartCountThreshold: 3
 
 interfaceNames:
   # worker1: interface1

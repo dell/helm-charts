@@ -1,0 +1,311 @@
+rule_files:
+  - alert-rules.yaml
+
+evaluation_interval: 1m
+
+tests:
+  - interval: 1m
+    input_series: []
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: AuthorizationServiceDown
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              platform: csm-authorization
+              component: authorization
+            exp_annotations:
+              summary: "CSM Authorization proxy is down"
+              description: "The CSM Authorization proxy has been down or unscrapable for more than 5 minutes."
+              runbook_url: ""
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_up{}'
+        values: '1+0x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: AuthorizationServiceDown
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_request_total{storage_type="powerstore",tenant="t1",status="failure"}'
+        values: '0+15x7'
+      - series: 'dell_csm_auth_request_total{storage_type="powerstore",tenant="t1",status="success"}'
+        values: '0+85x7'
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: HighAuthorizationFailureRate
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              platform: csm-authorization
+              component: authorization
+              storage_type: powerstore
+              tenant: t1
+            exp_annotations:
+              summary: "High CSM Authorization failure rate"
+              description: "The CSM Authorization failure rate is above 0.10 for storage type powerstore and tenant t1."
+              runbook_url: ""
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_request_total{storage_type="powerstore",tenant="t1",status="failure"}'
+        values: '0+5x7'
+      - series: 'dell_csm_auth_request_total{storage_type="powerstore",tenant="t1",status="success"}'
+        values: '0+95x7'
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: HighAuthorizationFailureRate
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_request_total{storage_type="powerstore",tenant="t1",status="failure"}'
+        values: '0+11x7'
+      - series: 'dell_csm_auth_request_total{storage_type="powerstore",tenant="t1",status="success"}'
+        values: '0+89x7'
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: HighAuthorizationFailureRate
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              platform: csm-authorization
+              component: authorization
+              storage_type: powerstore
+              tenant: t1
+            exp_annotations:
+              summary: "High CSM Authorization failure rate"
+              description: "The CSM Authorization failure rate is above 0.10 for storage type powerstore and tenant t1."
+              runbook_url: ""
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_token_validation_total{result="failure",reason="expired"}'
+        values: '1+2x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: TokenValidationFailure
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              platform: csm-authorization
+              component: authorization
+              result: failure
+              reason: expired
+            exp_annotations:
+              summary: "CSM Authorization token validation failure"
+              description: "Token validation failures have been detected with reason expired."
+              runbook_url: ""
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_token_validation_total{result="success"}'
+        values: '1+5x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: TokenValidationFailure
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_role_access_total{role="admin",storage_type="powerstore",decision="deny"}'
+        values: '1+1x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: UnauthorizedAccessAttempts
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              platform: csm-authorization
+              component: authorization
+              role: admin
+              storage_type: powerstore
+              decision: deny
+            exp_annotations:
+              summary: "Unauthorized CSM Authorization access attempt"
+              description: "Role admin denied access for storage type powerstore. PowerScale is excluded because its role-access path is handled separately."
+              runbook_url: ""
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_role_access_total{role="admin",storage_type="powerstore",decision="allow"}'
+        values: '1+5x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: UnauthorizedAccessAttempts
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_credential_shield_total{storage_type="powerstore",status="failure"}'
+        values: '0+1x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: CredentialShieldingBreach
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              platform: csm-authorization
+              component: authorization
+              storage_type: powerstore
+              status: failure
+            exp_annotations:
+              summary: "CSM Authorization credential shielding breach"
+              description: "Credential shielding failed for storage type powerstore. Storage credentials may have been exposed."
+              runbook_url: ""
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_credential_shield_total{storage_type="powerstore",status="success"}'
+        values: '0+5x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: CredentialShieldingBreach
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_quota_check_total{storage_type="powerstore",tenant="t1",result="denied"}'
+        values: '0+1x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: QuotaAuthorizationFailure
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              platform: csm-authorization
+              component: authorization
+              storage_type: powerstore
+              tenant: t1
+              result: denied
+            exp_annotations:
+              summary: "CSM Authorization quota check denied"
+              description: "Quota check denied for tenant t1 on storage type powerstore. PowerScale is excluded because quota enforcement is handled differently there."
+              runbook_url: ""
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_quota_check_total{storage_type="powerstore",tenant="t1",result="allowed"}'
+        values: '0+10x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: QuotaAuthorizationFailure
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="0.1"}'
+        values: '0+5x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="0.5"}'
+        values: '0+5x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="1.0"}'
+        values: '0+5x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="2.0"}'
+        values: '0+5x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="5.0"}'
+        values: '0+5x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="+Inf"}'
+        values: '0+5x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: HighAuthorizationLatency
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="0.1"}'
+        values: '0+0x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="0.5"}'
+        values: '0+0x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="1.0"}'
+        values: '0+0x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="2.0"}'
+        values: '0+0x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="5.0"}'
+        values: '0+10x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="+Inf"}'
+        values: '0+10x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: HighAuthorizationLatency
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="0.1"}'
+        values: '0+5x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="0.5"}'
+        values: '0+5x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="1.0"}'
+        values: '0+5x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="2.0"}'
+        values: '0+5x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="5.0"}'
+        values: '0+100x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="+Inf"}'
+        values: '0+100x6'
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: HighAuthorizationLatency
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="0.1"}'
+        values: '0+0x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="0.5"}'
+        values: '0+0x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="1.0"}'
+        values: '0+0x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="2.0"}'
+        values: '0+1x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="5.0"}'
+        values: '0+100x6'
+      - series: 'dell_csm_auth_request_duration_seconds_bucket{storage_type="powerstore",tenant="t1",le="+Inf"}'
+        values: '0+100x6'
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: HighAuthorizationLatency
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              platform: csm-authorization
+              component: authorization
+              storage_type: powerstore
+              tenant: t1
+            exp_annotations:
+              summary: "High CSM Authorization request latency"
+              description: "The 0.95 quantile CSM Authorization request latency is above 2.0 seconds for storage type powerstore and tenant t1."
+              runbook_url: ""
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_up{}'
+        values: '0 1 1'
+    alert_rule_test:
+      - eval_time: 1m
+        alertname: AuthorizationServiceRecovery
+        exp_alerts:
+          - exp_labels:
+              severity: info
+              platform: csm-authorization
+              component: authorization
+            exp_annotations:
+              summary: "CSM Authorization proxy has recovered"
+              description: "The CSM Authorization proxy transitioned to healthy within the last minute."
+              runbook_url: ""
+      - eval_time: 2m
+        alertname: AuthorizationServiceRecovery
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_auth_up{}'
+        values: '0 0'
+    alert_rule_test:
+      - eval_time: 1m
+        alertname: AuthorizationServiceRecovery
+        exp_alerts: []

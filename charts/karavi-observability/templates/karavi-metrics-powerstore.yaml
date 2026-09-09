@@ -207,7 +207,7 @@ spec:
           key: obs-tls.crt
       keySecret:
         name: {{ .Values.karaviMetricsPowerstore.metrics.tlsCertSecret }}
-          key: obs-tls.key
+        key: obs-tls.key
     {{- end }}
 {{- end }}
 

@@ -296,6 +296,10 @@ spec:
               value: {{ .Values.global.portGroups | toJson }}
             - name: X_CSI_TRANSPORT_PROTOCOL
               value: {{ .Values.global.transportProtocol | default "" }}
+            - name: X_CSI_POWERMAX_HOST_MGMT_MODE
+              value: {{ .Values.global.hostManagementMode | default "create" }}
+            - name: X_CSI_POWERMAX_HOST_ADOPTION_MIN_OVERLAP_RATIO
+              value: {{ .Values.global.hostAdoptionMinOverlapRatio | default "0.5" | quote }}
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
@@ -380,6 +384,16 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmon.podmonAPIPort }}"
+            {{- if .Values.podmon.podmonAPITokenSecret }}
+            - name: X_CSI_PODMON_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.podmon.podmonAPITokenSecret.name }}
+                  key: {{ .Values.podmon.podmonAPITokenSecret.key | default "podmon-api-token" }}
+            {{- else if .Values.podmon.podmonAPIToken }}
+            - name: X_CSI_PODMON_API_TOKEN
+              value: "{{ .Values.podmon.podmonAPIToken }}"
+            {{- end }}
             - name: X_CSI_REVPROXY_TLS_CERT_DIR
               value: /app/tls
             - name: X_CSI_DYNAMIC_SG_ENABLED
@@ -416,6 +430,12 @@ spec:
               value: "/etc/metrics-tls/tls.key"
             {{- end }}
             {{- end }}
+          {{- if eq (include "csi-powermax.isMetricsEnabled" .) "true" }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.metrics.port | default 8443 }}
+              protocol: TCP
+          {{- end }}
           volumeMounts:
             - name: driver-path
               mountPath: {{ .Values.kubeletConfigDir }}/plugins/powermax.emc.dell.com
@@ -658,12 +678,12 @@ spec:
           secret:
             secretName: {{ .Values.metrics.tlsCertSecret }}
         {{- end }}
-        {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
         {{- if and (hasKey .Values "podmon") .Values.podmon.enabled (hasKey .Values.podmon "metrics") .Values.podmon.metrics.enabled .Values.podmon.metrics.tlsCertSecret }}
         - name: resiliency-metrics-tls
           secret:
             secretName: {{ .Values.podmon.metrics.tlsCertSecret }}
         {{- end }}
+        {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
         - name: proxy-auth-token
           secret:
             secretName: {{ .Values.global.proxyAuthToken.secretName }}

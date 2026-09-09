@@ -1,0 +1,30 @@
+{{- if and .Values.karaviMetricsPowerflex.enabled .Values.karaviMetricsPowerflex.metrics.enabled .Values.karaviMetricsPowerflex.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: karavi-metrics-powerflex-observability
+  namespace: {{ include "custom.namespace" . }}
+  labels:
+    app.kubernetes.io/name: karavi-metrics-powerflex
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  namespaceSelector:
+    matchNames:
+      - {{ include "custom.namespace" . }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: karavi-metrics-powerflex
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  endpoints:
+    - port: obs-metrics
+      path: /metrics
+      interval: {{ .Values.karaviMetricsPowerflex.metrics.serviceMonitor.interval }}
+      {{- if .Values.karaviMetricsPowerflex.metrics.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.karaviMetricsPowerflex.metrics.serviceMonitor.scrapeTimeout }}
+      {{- end }}
+      scheme: {{ if .Values.karaviMetricsPowerflex.metrics.tlsCertSecret }}https{{ else }}http{{ end }}
+      {{- if .Values.karaviMetricsPowerflex.metrics.tlsCertSecret }}
+      tlsConfig:
+        insecureSkipVerify: {{ .Values.karaviMetricsPowerflex.metrics.serviceMonitor.insecureSkipVerify }}
+      {{- end }}
+{{- end }}

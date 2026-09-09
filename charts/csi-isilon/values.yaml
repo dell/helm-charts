@@ -113,6 +113,26 @@ fsGroupPolicy: ReadWriteOnceWithFSType
 # Default value: 8083
 podmonAPIPort: 8083
 
+# podmonAPIToken: Shared secret token for authenticating podmon API requests
+# When set, the driver will require Bearer token authentication on /array-status endpoints
+# Allowed values: Any string (recommend using a randomly generated token)
+# Security note: podmon API is HTTP; use this token only on trusted cluster-internal networks.
+# For production, use podmonAPITokenSecret to source this value from a Kubernetes Secret.
+# Default value: "" (empty - authentication disabled for backward compatibility)
+podmonAPIToken: ""
+
+# podmonAPITokenSecret: Kubernetes Secret containing the podmon API token
+# When set, the token will be sourced from the specified Secret instead of podmonAPIToken value
+# Allowed values:
+#   name: Secret name (required)
+#   key: Secret key containing the token (required, default: "podmon-api-token")
+# Example:
+#   podmonAPITokenSecret:
+#     name: my-podmon-secret
+#     key: api-token
+# Default value: null (use podmonAPIToken value instead)
+podmonAPITokenSecret: null
+
 # maxPathLen: this parameter is used for setting the maximum Path length for the given volume.
 # Default value: 192
 # Examples: 192, 256
@@ -173,6 +193,19 @@ controller:
     # Allowed values: string
     # Default value: replication.storage.dell.com
     replicationPrefix: "replication.storage.dell.com"
+
+    # Metrics configuration for replication sidecar
+    metrics:
+      enabled: false
+      port: 8445
+      tlsCertSecret: ""
+      collection:
+        interval: 30s
+      serviceMonitor:
+        enabled: false
+        interval: 30s
+        scrapeTimeout: ""
+        insecureSkipVerify: false
 
   snapshot:
     # enabled: Enable/Disable volume snapshot feature
@@ -393,6 +426,32 @@ noProbeOnStart: false
 # Default value: false
 autoProbe: true
 
+# nfsMountFQDN: Specify a global default FQDN to use as the NFS mount target instead of the cluster endpoint IP.
+# This is required for NFS over TLS (mTLS) because certificate validation needs an FQDN, not an IP address.
+# This value acts as a fallback default. The per-cluster "nfsMountFQDN" field in the secret takes precedence
+# over this value, and the StorageClass "SmartConnectZoneFQDN" parameter takes highest precedence.
+# Allowed values: A valid FQDN (e.g., "smartconnect.isilon.example.com")
+# Optional: true
+# Default value: None
+nfsMountFQDN: ""
+
+# nfsTransportSecurity: Specify the global default NFS transport security mode.
+# This is the lowest-precedence fallback. The per-cluster "nfsTransportSecurity" field in the secret
+# takes precedence, and the StorageClass "NFSTransportSecurity" parameter takes highest precedence.
+# When set to "tls" or "mtls", the driver validates TLS/mTLS prerequisites on worker nodes at mount time.
+# Allowed values:
+#   "none": no transport security (default NFS behavior)
+#   "tls": NFS over TLS (encryption only)
+#   "mtls": NFS over mutual TLS (encryption + client certificate authentication)
+# Default value: "none"
+nfsTransportSecurity: "none"
+
+# tlsHandshakeTimeoutSeconds: Specify the TLS handshake timeout in seconds for NFS over TLS/mTLS.
+# This timeout applies to the TLS handshake during mount operations when using TLS or mTLS transport security.
+# Allowed values: positive integer (seconds)
+# Default value: 30
+tlsHandshakeTimeoutSeconds: "30"
+
 authorization:
   enabled: false
   # proxyHost: hostname of the csm-authorization server
@@ -472,6 +531,18 @@ podmon:
       interval: 30s
       scrapeTimeout: ""
       insecureSkipVerify: false
+    # prometheusRule: Controls optional Prometheus Operator PrometheusRule creation for resiliency alerts.
+    prometheusRule:
+      # enabled: When true, a PrometheusRule CR is created for resiliency alerting rules.
+      # Type: bool
+      # Default: true
+      # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+      enabled: true
+      # connectivitySuccessRatio: Minimum acceptable connectivity success ratio as percentage (0-100).
+      # Used by RES-02 (CSMResiliencyConnectivityLost) alert threshold.
+      # Type: integer
+      # Default: 90 (alert fires when connectivity drops below 90%)
+      connectivitySuccessRatio: 90
 
 # metrics: configuration for driver metrics and monitoring
 metrics:
@@ -556,6 +627,67 @@ metrics:
     # Type: bool
     # Default: false
     insecureSkipVerify: false
+
+  # prometheusRule: Controls optional Prometheus Operator PrometheusRule creation for alerting.
+  # When enabled, deploys 22 PowerScale-specific alert rules covering volume operations,
+  # driver health, quota capacity, node pool capacity, access control, and NFS performance.
+  prometheusRule:
+    # enabled: When true, a PrometheusRule CR is created with all PowerScale alert rules.
+    # Type: bool
+    # Default: true
+    # Effect: Requires the Prometheus Operator CRDs to be installed in the cluster.
+    #         Auto-deploys when metrics.enabled is true. Set to false to disable bundled alerts.
+    enabled: true
+    # volumeOperationFailureThreshold: Volume operation failure count threshold in 5m window
+    volumeOperationFailureThreshold: 3
+    # quotaWarningThreshold: Quota utilization warning threshold (percent, 0-100).
+    # Type: integer
+    # Default: 80 (triggers warning at 80% quota usage)
+    quotaWarningThreshold: 80
+    # quotaCriticalThreshold: Quota utilization critical threshold (percent, 0-100).
+    # Type: integer
+    # Default: 90 (triggers critical alert at 90% quota usage)
+    quotaCriticalThreshold: 90
+    # nodepoolWarningThreshold: Node pool utilization warning threshold (percent, 0-100).
+    # Type: integer
+    # Default: 80 (triggers warning at 80% node pool usage)
+    nodepoolWarningThreshold: 80
+    # nodepoolCriticalThreshold: Node pool utilization critical threshold (percent, 0-100).
+    # Type: integer
+    # Default: 90 (triggers critical alert at 90% node pool usage)
+    nodepoolCriticalThreshold: 90
+    # apiErrorRateThreshold: API error rate warning threshold (percent, 0-100).
+    # Type: integer
+    # Default: 10 (triggers warning when API error rate exceeds 10%)
+    apiErrorRateThreshold: 10
+    # apiErrorRateWindow: Time window for API error rate calculation.
+    # Type: string (Prometheus duration, e.g. "5m", "10m")
+    # Default: "5m"
+    apiErrorRateWindow: "5m"
+    # cpuWarningThreshold: Driver CPU usage warning threshold (percent, 0-100).
+    # Type: integer
+    # Default: 80 (triggers warning at 80% CPU usage)
+    cpuWarningThreshold: 80
+    # memoryWarningThreshold: Driver memory usage warning threshold (bytes).
+    # Type: integer
+    # Default: 2147483648 (2 GiB in bytes)
+    memoryWarningThreshold: 2147483648
+    # nfsV3LatencyWarningSeconds: NFSv3 P99 latency warning threshold (seconds).
+    # Type: integer
+    # Default: 10 (triggers warning when P99 latency exceeds 10 seconds)
+    nfsV3LatencyWarningSeconds: 10
+    # nfsV4LatencyWarningSeconds: NFSv4 P99 latency warning threshold (seconds).
+    # Type: integer
+    # Default: 10 (triggers warning when P99 latency exceeds 10 seconds)
+    nfsV4LatencyWarningSeconds: 10
+    # driverCrashLoopRestartThreshold: Number of driver restarts to trigger crash loop alert.
+    # Type: integer
+    # Default: 3 (triggers warning after 3 restarts within the window)
+    driverCrashLoopRestartThreshold: 3
+    # driverCrashLoopWindow: Time window for crash loop restart detection.
+    # Type: string (Prometheus duration, e.g. "15m", "30m")
+    # Default: "15m"
+    driverCrashLoopWindow: "15m"
 
   # collection: Controls how frequently metrics are collected.
   collection:

@@ -1,0 +1,37 @@
+groups:
+  - name: csm-replication-alerts
+    rules:
+      - alert: CSMReplicationMetricsStale
+        expr: |
+          dell_csm_repl_metrics_stale{namespace="csm"} == 1
+          or
+          absent(dell_csm_repl_last_collection_timestamp_seconds{namespace="csm"})
+          or
+          (time() - max by (namespace, driver) (dell_csm_repl_last_collection_timestamp_seconds{namespace="csm"})) > 300
+        for: 5m
+        labels:
+          severity: warning
+          component: csm-replication
+          alert_id: REP-06
+          namespace: csm
+        annotations:
+          summary: "CSM Replication metrics stale in namespace {{ $labels.namespace }}"
+          description: "Replication metrics in namespace {{ $labels.namespace }} have not been updated in over 5 minutes. This may indicate monitoring loop failure, CSI gRPC connection loss, or pod scheduling issues."
+          runbook_url: "https://dell.github.io/csm-docs/docs/troubleshooting/replication/#metrics-stale"
+
+      - alert: PowerMaxSRDFStatePersistentlyDegraded
+        expr: |
+          max by (namespace, driver, rg_name, rdf_group, mode) (dell_powermax_srdf_group_state{namespace="csm"}) > 2
+          or
+          max by (namespace, driver, rg_name, rdf_group, mode) (dell_powermax_srdf_group_state{namespace="csm"}) == 0
+        for: 10m
+        labels:
+          severity: critical
+          platform: powermax
+          component: srdf-replication
+          alert_id: REP-10
+          namespace: csm
+        annotations:
+          summary: "PowerMax SRDF group {{ $labels.rdf_group }} persistently in degraded state"
+          description: "SRDF group {{ $labels.rdf_group }} in replication group {{ $labels.rg_name }} (mode: {{ $labels.mode }}) has been in state {{ printf \"%.0f\" $value }} (3=SUSPENDED 4=FAILEDOVER 0=UNKNOWN) for over 10 minutes. Driver: {{ $labels.driver }}. Data protection is at risk."
+          runbook_url: "https://dell.github.io/csm-docs/docs/troubleshooting/powermax/#srdf-replication"

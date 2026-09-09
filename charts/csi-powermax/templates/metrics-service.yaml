@@ -41,3 +41,26 @@ spec:
       protocol: TCP
   type: ClusterIP
 {{- end }}
+{{- if and (eq .Values.replication.enabled true) (hasKey .Values.replication "metrics") }}
+{{- if eq .Values.replication.metrics.enabled true }}
+---
+# Service exposing the replication metrics endpoint for Prometheus scraping.
+# Created when replication.enabled and replication.metrics.enabled are true.
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-replication-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-controller
+spec:
+  selector:
+    name: {{ .Release.Name }}-controller
+  ports:
+    - name: repl-metrics
+      port: {{ .Values.replication.metrics.port | default 8445 }}
+      targetPort: {{ .Values.replication.metrics.port | default 8445 }}
+      protocol: TCP
+  type: ClusterIP
+{{- end }}
+{{- end }}
