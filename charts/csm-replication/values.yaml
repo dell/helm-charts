@@ -58,6 +58,28 @@ metrics:
     interval: "30s"
     scrapeTimeout: ""
     insecureSkipVerify: false
+  # prometheusRule: configures PrometheusRule creation for alert rules
+  # The alert metrics are produced by dell-csi-replicator in the CSI driver controller pod.
+  # Enable replication metrics and its ServiceMonitor in the installed CSI driver chart,
+  # and set metricsNamespace below when that driver is in a different namespace.
+  prometheusRule:
+    # enabled: Enable/Disable PrometheusRule creation
+    # Requires metrics.enabled to also be true
+    # Allowed values: true, false
+    # Default value: false
+    enabled: false
+    # metricsNamespace: Namespace where the CSI driver chart exposes dell-csi-replicator metrics.
+    # Defaults to this chart's release namespace; set it when the CSI driver runs elsewhere.
+    metricsNamespace: ""
+    # rpoThresholdSeconds: lag threshold for REP-01/REP-02 alerts (30-86400 seconds)
+    # Default value: 300 (5 minutes)
+    rpoThresholdSeconds: 300
+    # srdfMinBandwidth: minimum SRDF bandwidth threshold in bytes/s for REP-07 (PowerMax only, 1-1073741824)
+    # Default value: 10485760 (10 MB/s)
+    srdfMinBandwidth: 10485760
+    # srdfLagSeconds: SRDF lag threshold for REP-12 in seconds (PowerMax only, 30-86400)
+    # Default value: 300 (5 minutes)
+    srdfLagSeconds: 300
 
 # HostAliases: Optional features that allows <hostname:IP> entries injection into pod's /etc/hosts file
 # hostAliases:
