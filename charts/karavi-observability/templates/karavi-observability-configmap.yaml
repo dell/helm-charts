@@ -17,9 +17,19 @@ data:
     POWERFLEX_STORAGE_POOL_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerflex.storageClassPoolPollFrequencySeconds }}"
     POWERFLEX_MAX_CONCURRENT_QUERIES: "{{ .Values.karaviMetricsPowerflex.concurrentPowerflexQueries }}"
     POWERFLEX_TOPOLOGY_METRICS_ENABLED: "{{ .Values.karaviMetricsPowerflex.topologyMetricsEnabled }}"
-    POWERFLEX_TOPOLOGY_METRICS_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerflex.topologyMetricsPollFrequencySeconds }}"    
+    POWERFLEX_TOPOLOGY_METRICS_POLL_FREQUENCY: "{{ .Values.karaviMetricsPowerflex.topologyMetricsPollFrequencySeconds }}"
     LOG_LEVEL: "{{ .Values.karaviMetricsPowerflex.logLevel }}"
     LOG_FORMAT: "{{ .Values.karaviMetricsPowerflex.logFormat }}"
+    {{- if .Values.karaviMetricsPowerflex.metrics.enabled }}
+    X_CSI_METRICS_ENABLED: "true"
+    X_CSI_METRICS_PORT: "{{ .Values.karaviMetricsPowerflex.metrics.port }}"
+    {{- if .Values.karaviMetricsPowerflex.metrics.tlsCertSecret }}
+    X_CSI_METRICS_TLS_CERT_FILE: "/etc/metrics-tls/tls.crt"
+    X_CSI_METRICS_TLS_KEY_FILE: "/etc/metrics-tls/tls.key"
+    {{- end }}
+    {{- else }}
+    X_CSI_METRICS_ENABLED: "false"
+    {{- end }}
 
 {{ end }}
 

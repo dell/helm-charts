@@ -1,3 +1,5 @@
+{{/* Copyright © 2026 Dell Inc. or its subsidiaries. All Rights Reserved. */}}
+
 {{/*
 Expand the name of the chart.
 */}}
@@ -60,3 +62,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Check if metrics is enabled for the replication controller.
+*/}}
+{{- define "csm-replication.isMetricsEnabled" -}}
+{{- if and (hasKey .Values "metrics") .Values.metrics.enabled -}}
+    {{- "true" -}}
+{{- else -}}
+    {{- "false" -}}
+{{- end -}}
+{{- end -}}

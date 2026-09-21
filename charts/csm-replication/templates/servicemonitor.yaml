@@ -1,0 +1,30 @@
+{{- if eq (include "csm-replication.isMetricsEnabled" .) "true" }}
+{{- if and (hasKey .Values.metrics "serviceMonitor") .Values.metrics.serviceMonitor.enabled }}
+---
+# Scrapes the standalone replication controller. Replication alert series are scraped
+# from dell-csi-replicator by the CSI driver chart's replication ServiceMonitor.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "csm-replication.fullname" . }}-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "csm-replication.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  endpoints:
+    - port: repl-metrics
+      interval: {{ .Values.metrics.serviceMonitor.interval | default "30s" }}
+      {{- if .Values.metrics.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
+      {{- end }}
+      path: /metrics
+      {{- if .Values.metrics.tlsCertSecret }}
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: {{ .Values.metrics.serviceMonitor.insecureSkipVerify | default false }}
+      {{- end }}
+{{- end }}
+{{- end }}

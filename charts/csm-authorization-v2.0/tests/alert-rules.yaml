@@ -1,0 +1,101 @@
+groups:
+  - name: csm-authorization-alerts
+    rules:
+      - alert: AuthorizationServiceDown
+        expr: dell_csm_auth_up == 0 or absent(dell_csm_auth_up)
+        for: 5m
+        labels:
+          severity: critical
+          platform: csm-authorization
+          component: authorization
+        annotations:
+          summary: "CSM Authorization proxy is down"
+          description: "The CSM Authorization proxy has been down or unscrapable for more than 5 minutes."
+          runbook_url: ""
+
+      - alert: HighAuthorizationFailureRate
+        expr: |
+          sum by (storage_type, tenant) (rate(dell_csm_auth_request_total{status="failure"}[5m])) /
+          sum by (storage_type, tenant) (rate(dell_csm_auth_request_total[5m])) > 0.10
+        for: 5m
+        labels:
+          severity: warning
+          platform: csm-authorization
+          component: authorization
+        annotations:
+          summary: "High CSM Authorization failure rate"
+          description: "The CSM Authorization failure rate is above 0.10 for storage type {{ $labels.storage_type }} and tenant {{ $labels.tenant }}."
+          runbook_url: ""
+
+      - alert: TokenValidationFailure
+        expr: increase(dell_csm_auth_token_validation_total{result="failure"}[5m]) > 0
+        for: 1m
+        labels:
+          severity: warning
+          platform: csm-authorization
+          component: authorization
+        annotations:
+          summary: "CSM Authorization token validation failure"
+          description: "Token validation failures have been detected with reason {{ $labels.reason }}."
+          runbook_url: ""
+
+      - alert: UnauthorizedAccessAttempts
+        expr: increase(dell_csm_auth_role_access_total{decision="deny",storage_type!="powerscale"}[5m]) > 0
+        for: 1m
+        labels:
+          severity: warning
+          platform: csm-authorization
+          component: authorization
+        annotations:
+          summary: "Unauthorized CSM Authorization access attempt"
+          description: "Role {{ $labels.role }} denied access for storage type {{ $labels.storage_type }}. PowerScale is excluded because its role-access path is handled separately."
+          runbook_url: ""
+
+      - alert: CredentialShieldingBreach
+        expr: increase(dell_csm_auth_credential_shield_total{status="failure"}[5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+          platform: csm-authorization
+          component: authorization
+        annotations:
+          summary: "CSM Authorization credential shielding breach"
+          description: "Credential shielding failed for storage type {{ $labels.storage_type }}. Storage credentials may have been exposed."
+          runbook_url: ""
+
+      - alert: QuotaAuthorizationFailure
+        expr: increase(dell_csm_auth_quota_check_total{result="denied",storage_type!="powerscale"}[5m]) > 0
+        for: 1m
+        labels:
+          severity: warning
+          platform: csm-authorization
+          component: authorization
+        annotations:
+          summary: "CSM Authorization quota check denied"
+          description: "Quota check denied for tenant {{ $labels.tenant }} on storage type {{ $labels.storage_type }}. PowerScale is excluded because quota enforcement is handled differently there."
+          runbook_url: ""
+
+      - alert: HighAuthorizationLatency
+        expr: |
+          histogram_quantile(0.95, rate(dell_csm_auth_request_duration_seconds_bucket[5m])) > 2.0
+        for: 5m
+        labels:
+          severity: warning
+          platform: csm-authorization
+          component: authorization
+        annotations:
+          summary: "High CSM Authorization request latency"
+          description: "The 0.95 quantile CSM Authorization request latency is above 2.0 seconds for storage type {{ $labels.storage_type }} and tenant {{ $labels.tenant }}."
+          runbook_url: ""
+
+      - alert: AuthorizationServiceRecovery
+        expr: changes(dell_csm_auth_up[1m]) > 0 and dell_csm_auth_up == 1
+        for: 0m
+        labels:
+          severity: info
+          platform: csm-authorization
+          component: authorization
+        annotations:
+          summary: "CSM Authorization proxy has recovered"
+          description: "The CSM Authorization proxy transitioned to healthy within the last minute."
+          runbook_url: ""

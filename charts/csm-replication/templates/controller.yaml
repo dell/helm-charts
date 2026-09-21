@@ -282,6 +282,12 @@ spec:
     - name: https
       port: 8443
       targetPort: https
+{{- if eq (include "csm-replication.isMetricsEnabled" .) "true" }}
+    - name: repl-metrics
+      port: {{ .Values.metrics.port | default 8445 }}
+      targetPort: {{ .Values.metrics.port | default 8445 }}
+      protocol: TCP
+{{- end }}
   selector:
     control-plane: controller-manager
 ---
@@ -339,9 +345,29 @@ spec:
               value: /app/certs
             - name: X_CSI_REPLICATION_CONFIG_FILE_NAME
               value: config
+{{- if eq (include "csm-replication.isMetricsEnabled" .) "true" }}
+            - name: X_CSI_REPLICATION_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_REPLICATION_METRICS_PORT
+              value: "{{ .Values.metrics.port | default 8445 }}"
+            - name: X_CSI_REPLICATION_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.metrics.collection.interval | default "30s" }}"
+{{- if .Values.metrics.tlsCertSecret }}
+            - name: X_CSI_REPLICATION_METRICS_TLS_CERT_FILE
+              value: /etc/replication-metrics-tls/tls.crt
+            - name: X_CSI_REPLICATION_METRICS_TLS_KEY_FILE
+              value: /etc/replication-metrics-tls/tls.key
+{{- end }}
+{{- end }}
           image: {{ .Values.image }}
           imagePullPolicy: Always
           name: manager
+{{- if eq (include "csm-replication.isMetricsEnabled" .) "true" }}
+          ports:
+            - name: repl-metrics
+              containerPort: {{ .Values.metrics.port | default 8445 }}
+              protocol: TCP
+{{- end }}
           resources:
             requests:
               cpu: 100m
@@ -351,6 +377,11 @@ spec:
               name: configmap-volume
             - mountPath: /app/certs
               name: cert-dir
+{{- if and (eq (include "csm-replication.isMetricsEnabled" .) "true") .Values.metrics.tlsCertSecret }}
+            - name: replication-metrics-tls
+              mountPath: /etc/replication-metrics-tls
+              readOnly: true
+{{- end }}
       terminationGracePeriodSeconds: 10
       volumes:
         - emptyDir: { }
@@ -359,3 +390,8 @@ spec:
             name: dell-replication-controller-config
             optional: true
           name: configmap-volume
+{{- if and (eq (include "csm-replication.isMetricsEnabled" .) "true") .Values.metrics.tlsCertSecret }}
+        - name: replication-metrics-tls
+          secret:
+            secretName: {{ .Values.metrics.tlsCertSecret }}
+{{- end }}

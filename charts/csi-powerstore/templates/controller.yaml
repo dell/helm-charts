@@ -155,6 +155,11 @@ rules:
   - apiGroups: [""]
     resources: ["services"]
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
+  {{- if eq (include "csi-powerstore.isMetricsEnabled" .) "true" }}
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  {{- end }}
 ---
 
 kind: ClusterRoleBinding
@@ -415,11 +420,34 @@ spec:
               value: /powerstore-config-params
             - name: X_CSI_REPLICATION_CONFIG_FILE_NAME
               value: driver-config-params.yaml
+{{- if and .Values.controller.replication.enabled (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled }}
+            - name: X_CSI_REPLICATION_METRICS_ENABLED
+              value: "true"
+            - name: X_CSI_REPLICATION_METRICS_PORT
+              value: "{{ .Values.controller.replication.metrics.port | default 8445 }}"
+            - name: X_CSI_REPLICATION_METRICS_COLLECTION_INTERVAL
+              value: "{{ .Values.controller.replication.metrics.collection.interval | default "30s" }}"
+{{- if .Values.controller.replication.metrics.tlsCertSecret }}
+            - name: X_CSI_REPLICATION_METRICS_TLS_CERT_FILE
+              value: /etc/replication-metrics-tls/tls.crt
+            - name: X_CSI_REPLICATION_METRICS_TLS_KEY_FILE
+              value: /etc/replication-metrics-tls/tls.key
+{{- end }}
+          ports:
+            - name: repl-metrics
+              containerPort: {{ .Values.controller.replication.metrics.port | default 8445 }}
+              protocol: TCP
+{{- end }}
           volumeMounts:
             - name: socket-dir
               mountPath: /var/run/csi
             - name: powerstore-config-params
               mountPath: /powerstore-config-params
+{{- if and .Values.controller.replication.enabled (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled .Values.controller.replication.metrics.tlsCertSecret }}
+            - name: replication-metrics-tls
+              mountPath: /etc/replication-metrics-tls
+              readOnly: true
+{{- end }}
         {{- end }}
         {{- end }}
         {{- if hasKey .Values.controller "healthMonitor" }}
@@ -520,6 +548,8 @@ spec:
               value: {{ .Values.externalAccess }}
             - name: X_CSI_POWERSTORE_EXCLUSIVE_ACCESS
               value: "{{ .Values.exclusiveAccess }}"
+            - name: X_CSI_POWERSTORE_NFS_AUTO_SELECT
+              value: "{{ .Values.nfsAutoSelect }}"
             - name: X_CSI_NFS_ACLS
               value: "{{ .Values.nfsAcls }}"
             {{- if hasKey .Values "disasterRecovery" }}
@@ -567,6 +597,16 @@ spec:
             {{- end }}
             - name: X_CSI_PODMON_API_PORT
               value: "{{ .Values.podmonAPIPort }}"
+            {{- if .Values.podmonAPITokenSecret }}
+            - name: X_CSI_PODMON_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.podmonAPITokenSecret.name }}
+                  key: {{ .Values.podmonAPITokenSecret.key | default "podmon-api-token" }}
+            {{- else if .Values.podmonAPIToken }}
+            - name: X_CSI_PODMON_API_TOKEN
+              value: "{{ .Values.podmonAPIToken }}"
+            {{- end }}
             - name: X_CSI_PODMON_ARRAY_CONNECTIVITY_TIMEOUT
               value: {{ .Values.podmon.arrayConnectivityTimeout | default "10s" | quote}}
             {{- if hasKey .Values.controller "replication" }}
@@ -586,6 +626,12 @@ spec:
             {{- if hasKey .Values.controller "csiAddonsReplication" }}
             - name: X_CSI_CSIADDONS_REPLICATION_ENABLED
               value: "{{ .Values.controller.csiAddonsReplication.enabled }}"
+            {{- end }}
+            {{- if hasKey .Values.disasterRecovery "monitor" }}
+            - name: X_CSI_ALERT_MONITOR_ENABLED
+              value: "{{ .Values.disasterRecovery.monitor.enabled | default true }}"
+            - name: X_CSI_ALERT_MONITOR_POLL_INTERVAL
+              value: "{{ .Values.disasterRecovery.monitor.pollInterval | default "5m" }}"
             {{- end }}
             - name: GOPOWERSTORE_DEBUG
               value: "true"
@@ -733,4 +779,11 @@ spec:
         - name: resiliency-metrics-tls
           secret:
             secretName: {{ .Values.podmon.metrics.tlsCertSecret }}
-        {{- end }}
+{{- end }}
+{{- if hasKey .Values.controller "replication" }}
+{{- if and .Values.controller.replication.enabled (hasKey .Values.controller.replication "metrics") .Values.controller.replication.metrics.enabled .Values.controller.replication.metrics.tlsCertSecret }}
+        - name: replication-metrics-tls
+          secret:
+            secretName: {{ .Values.controller.replication.metrics.tlsCertSecret }}
+{{- end }}
+{{- end }}

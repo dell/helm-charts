@@ -1,0 +1,71 @@
+rule_files:
+  - alert-rules.yaml
+
+evaluation_interval: 1m
+
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_repl_metrics_stale{namespace="csm",driver="csi-powermax"}'
+        values: '0+0x11'
+      - series: 'dell_csm_repl_last_collection_timestamp_seconds{namespace="csm",driver="csi-powermax"}'
+        values: '0+0x11'
+    alert_rule_test:
+      - eval_time: 11m
+        alertname: CSMReplicationMetricsStale
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              component: csm-replication
+              alert_id: REP-06
+              namespace: csm
+              driver: csi-powermax
+            exp_annotations:
+              summary: "CSM Replication metrics stale in namespace csm"
+              description: "Replication metrics in namespace csm have not been updated in over 5 minutes. This may indicate monitoring loop failure, CSI gRPC connection loss, or pod scheduling issues."
+              runbook_url: "https://dell.github.io/csm-docs/docs/troubleshooting/replication/#metrics-stale"
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_csm_repl_metrics_stale{namespace="csm",driver="csi-powermax"}'
+        values: '0+0x11'
+      - series: 'dell_csm_repl_last_collection_timestamp_seconds{namespace="csm",driver="csi-powermax"}'
+        values: '0+60x11'
+    alert_rule_test:
+      - eval_time: 11m
+        alertname: CSMReplicationMetricsStale
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_powermax_srdf_group_state{namespace="csm",driver="csi-powermax",rg_name="rg-1",rdf_group="10",mode="ASYNC"}'
+        values: '1+0x10'
+      - series: 'dell_powermax_srdf_group_state{namespace="other",driver="csi-powermax",rg_name="rg-1",rdf_group="10",mode="ASYNC"}'
+        values: '4+0x10'
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: PowerMaxSRDFStatePersistentlyDegraded
+        exp_alerts: []
+
+  - interval: 1m
+    input_series:
+      - series: 'dell_powermax_srdf_group_state{namespace="csm",driver="csi-powermax",rg_name="rg-1",rdf_group="10",mode="ASYNC"}'
+        values: '4+0x10'
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: PowerMaxSRDFStatePersistentlyDegraded
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              platform: powermax
+              component: srdf-replication
+              alert_id: REP-10
+              namespace: csm
+              driver: csi-powermax
+              rg_name: rg-1
+              rdf_group: 10
+              mode: ASYNC
+            exp_annotations:
+              summary: "PowerMax SRDF group 10 persistently in degraded state"
+              description: "SRDF group 10 in replication group rg-1 (mode: ASYNC) has been in state 4 (3=SUSPENDED 4=FAILEDOVER 0=UNKNOWN) for over 10 minutes. Driver: csi-powermax. Data protection is at risk."
+              runbook_url: "https://dell.github.io/csm-docs/docs/troubleshooting/powermax/#srdf-replication"

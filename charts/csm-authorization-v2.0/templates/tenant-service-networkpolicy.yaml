@@ -1,0 +1,25 @@
+# NetworkPolicy that restricts ingress traffic to the tenant-service.
+# Only allows gRPC traffic (port 50051) from proxy-server and authorization-controller pods.
+# This provides defense-in-depth by limiting which services can call the tenant-service.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tenant-service-restrict
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  podSelector:
+    matchLabels:
+      app: tenant-service
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: proxy-server
+        - podSelector:
+            matchLabels:
+              app: authorization-controller
+      ports:
+        - protocol: TCP
+          port: 50051

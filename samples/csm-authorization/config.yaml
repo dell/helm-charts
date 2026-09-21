@@ -1,2 +1,2 @@
 web:
-  jwtsigningsecret: secret
+  jwtsigningsecret: test-strong-secret-abcdefghijklm

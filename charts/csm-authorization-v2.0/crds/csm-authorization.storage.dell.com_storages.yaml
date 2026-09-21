@@ -39,6 +39,13 @@ spec:
             spec:
               description: spec defines the desired state of Storage
               properties:
+                caCertPEM:
+                  description: |-
+                    CACertPEM is an optional PEM-encoded CA certificate (or certificate chain)
+                    used to verify the storage backend's TLS certificate. When provided, a
+                    custom trust store is built from this value instead of relying solely on
+                    the system's CA bundle.
+                  type: string
                 endpoint:
                   description: |-
                     EndPoint is the storage array endpoint.
