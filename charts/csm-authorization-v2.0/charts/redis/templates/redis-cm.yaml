@@ -5,7 +5,7 @@ metadata:
   namespace: {{ include "custom.namespace" . }}
 data:
   redis.conf: |
-    bind 0.0.0.0
+    bind * -::*
     protected-mode no
     port 6379
     tcp-backlog 511

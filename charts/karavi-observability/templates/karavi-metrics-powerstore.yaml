@@ -120,8 +120,10 @@ spec:
           - name: powerstore-config
             mountPath: /powerstore-config
           {{- end }}
+          {{- if not .Values.karaviMetricsPowerstore.authorization.skipCertificateValidation }}
           - name: proxy-server-root-certificate
             mountPath: /etc/karavi-authorization/root-certificates
+          {{- end }}
           - name: powerstore-config-params
             mountPath: /etc/karavi-authorization
       {{ end }}
@@ -159,9 +161,11 @@ spec:
         secret:
           secretName: powerstore-karavi-authorization-config
       {{- end }}
+      {{- if not .Values.karaviMetricsPowerstore.authorization.skipCertificateValidation }}
       - name: proxy-server-root-certificate
         secret:
           secretName: powerstore-proxy-server-root-certificate
+      {{- end }}
       - name: powerstore-config-params
         configMap:
           name: powerstore-config-params

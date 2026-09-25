@@ -264,7 +264,7 @@ spec:
         {{- if hasKey .Values "podmon" }}
         {{- if eq .Values.podmon.enabled true }}
         - name: podmon
-          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
+          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             {{- toYaml .Values.podmon.controller.args | nindent 12 }}
@@ -317,7 +317,7 @@ spec:
         {{ if .Values.dev.enableTracing }}{{- include "pstore.tracing" . | nindent 8 }}{{ end }}
         {{- end }}
         - name: attacher
-          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher.image }}
+          image: {{ required "Must provide the CSI attacher container image." .Values.images.attacher.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -335,7 +335,7 @@ spec:
         {{- if hasKey .Values.controller "resizer" }}
         {{- if eq .Values.controller.resizer.enabled true }}
         - name: resizer
-          image: {{ required "Must provide the CSI resizer container image." .Values.images.resizer.image }}
+          image: {{ required "Must provide the CSI resizer container image." .Values.images.resizer.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -351,7 +351,7 @@ spec:
         {{end}}
         {{end}}
         - name: provisioner
-          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner.image }}
+          image: {{ required "Must provide the CSI provisioner container image." .Values.images.provisioner.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -383,7 +383,7 @@ spec:
         {{- if hasKey .Values.controller "snapshot" }}
         {{- if eq .Values.controller.snapshot.enabled true }}
         - name: snapshotter
-          image: {{ required "Must provide the CSI snapshotter container image." .Values.images.snapshotter.image }}
+          image: {{ required "Must provide the CSI snapshotter container image." .Values.images.snapshotter.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -402,7 +402,7 @@ spec:
         {{- if hasKey .Values.controller "replication"}}
         {{- if eq .Values.controller.replication.enabled true}}
         - name: dell-csi-replicator
-          image: {{ required "Must provide the Dell CSI Replicator image." .Values.images.replication.image }}
+          image: {{ required "Must provide the Dell CSI Replicator image." .Values.images.replication.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--csi-address=$(ADDRESS)"
@@ -453,7 +453,7 @@ spec:
         {{- if hasKey .Values.controller "healthMonitor" }}
         {{- if eq .Values.controller.healthMonitor.enabled true}}
         - name: csi-external-health-monitor-controller
-          image: {{ required "Must provide the CSI external health monitor controller image." .Values.images.healthmonitor.image }}
+          image: {{ required "Must provide the CSI external health monitor controller image." .Values.images.healthmonitor.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--v=5"
@@ -474,7 +474,7 @@ spec:
         {{- if hasKey .Values.controller "csiAddonsReplication" }}
         {{- if eq .Values.controller.csiAddonsReplication.enabled true}}
         - name: csi-addons
-          image: {{ required "Must provide the CSI Addons sidecar container image." .Values.images.csiAddons.image }}
+          image: {{ required "Must provide the CSI Addons sidecar container image." .Values.images.csiAddons.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--node-id=$(KUBE_NODE_NAME)"
@@ -510,7 +510,7 @@ spec:
         {{- end }}
         {{- end }}
         - name: csi-metadata-retriever
-          image: {{ required "Must provide the CSI Metadata retriever container image." .Values.images.metadataretriever.image }}
+          image: {{ required "Must provide the CSI Metadata retriever container image." .Values.images.metadataretriever.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           command: [ "/csi-metadata-retriever" ]
           env:
@@ -525,7 +525,7 @@ spec:
             - name: socket-dir
               mountPath: /var/run/csi
         - name: driver
-          image: {{ required "Must provide the PowerStore driver image repository." .Values.images.driver.image }}
+          image: {{ required "Must provide the PowerStore driver image repository." .Values.images.driver.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           command: [ "/csi-powerstore" ]
           env:
@@ -702,7 +702,7 @@ spec:
       {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image | quote }}
           env:
             - name: PROXY_HOST
               value: "{{ .Values.authorization.proxyHost }}"
@@ -728,8 +728,10 @@ spec:
             - name: powerstore-config
               mountPath: /powerstore-config
             {{- end }}
+            {{- if not .Values.authorization.skipCertificateValidation }}
             - name: proxy-server-root-certificate
               mountPath: /etc/karavi-authorization/root-certificates
+            {{- end }}
             - name: powerstore-config-params
               mountPath: /etc/karavi-authorization
         {{ end }}
@@ -743,9 +745,11 @@ spec:
           secret:
             secretName: karavi-authorization-config
         {{- end }}
+        {{- if not .Values.authorization.skipCertificateValidation }}
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
+        {{- end }}
         {{ end }}
         {{ end }}
         - name: socket-dir

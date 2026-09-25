@@ -300,6 +300,8 @@ spec:
               value: {{ .Values.global.hostManagementMode | default "create" }}
             - name: X_CSI_POWERMAX_HOST_ADOPTION_MIN_OVERLAP_RATIO
               value: {{ .Values.global.hostAdoptionMinOverlapRatio | default "0.5" | quote }}
+            - name: X_CSI_POWERMAX_NVMETCP_CONN_MODE
+              value: {{ .Values.global.nvmeTcpConnMode | default "driver" }}
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
@@ -398,6 +400,17 @@ spec:
               value: /app/tls
             - name: X_CSI_DYNAMIC_SG_ENABLED
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
+            {{- $rootMetroEnabled := .Values.metroSiteFailureHandlingEnabled | toString | lower -}}
+            {{- $nestedMetroEnabled := "" -}}
+            {{- if hasKey .Values.controller.metro.siteFailureHandling "enabled" }}
+            {{- $nestedMetroEnabled = .Values.controller.metro.siteFailureHandling.enabled | toString | lower -}}
+            {{- end }}
+            {{- $metroEnabled := $rootMetroEnabled -}}
+            {{- if ne $nestedMetroEnabled "" }}
+            {{- $metroEnabled = $nestedMetroEnabled -}}
+            {{- end }}
+            - name: X_CSI_POWERMAX_METRO_SITE_FAILURE_HANDLING_ENABLED
+              value: {{ $metroEnabled | quote }}
             {{- if and (eq .Values.global.proxyAuthToken.enabled true) (not .Values.csireverseproxy.deployAsSidecar) }}
             - name: X_CSI_REVPROXY_AUTH_TOKEN_FILE
               value: /etc/proxy-auth-token/token
@@ -580,8 +593,10 @@ spec:
             - name: powermax-reverseproxy-secret
               mountPath: /powermax-reverseproxy-secret
             {{- end }}
+            {{- if not .Values.authorization.skipCertificateValidation }}
             - name: proxy-server-root-certificate
               mountPath: /etc/karavi-authorization/root-certificates
+            {{- end }}
             - name: powermax-config-params
               mountPath: /etc/karavi-authorization
         {{ end }}
@@ -652,9 +667,11 @@ spec:
           secret:
             secretName: karavi-authorization-config
         {{- end }}
+        {{- if not .Values.authorization.skipCertificateValidation }}
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
+        {{- end }}
       {{ end }}
       {{ end }}
         - name: usr-bin

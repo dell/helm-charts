@@ -532,8 +532,6 @@ spec:
               value: "{{ .Values.ignoreUnresolvableHosts }}"
             - name: X_CSI_ISI_NFS_MOUNT_FQDN
               value: "{{ .Values.nfsMountFQDN }}"
-            - name: X_CSI_ISI_NFS_TRANSPORT_SECURITY
-              value: "{{ .Values.nfsTransportSecurity }}"
             - name: X_CSI_ISI_TLS_HANDSHAKE_TIMEOUT_SECONDS
               value: "{{ .Values.tlsHandshakeTimeoutSeconds }}"
             - name: X_CSI_ISI_NO_PROBE_ON_START
@@ -673,8 +671,10 @@ spec:
             - name: isilon-configs
               mountPath: /isilon-configs
             {{- end }}
+            {{- if not .Values.authorization.skipCertificateValidation }}
             - name: proxy-server-root-certificate
               mountPath: /etc/karavi-authorization/root-certificates
+            {{- end }}
             - name: csi-isilon-config-params
               mountPath: /etc/karavi-authorization
         {{ end }}
@@ -724,8 +724,10 @@ spec:
           secret:
             secretName: karavi-authorization-config
         {{- end }}
+        {{- if not .Values.authorization.skipCertificateValidation }}
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
+        {{- end }}
         {{ end }}
         {{ end }}

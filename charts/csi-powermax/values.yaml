@@ -59,6 +59,20 @@ global:
   #              boot from PowerMax arrays with pre-configured host objects.
   # Default value: "create"
   hostManagementMode: "create"
+  # "nvmeTcpConnMode" controls who owns NVMe/TCP fabric sessions.
+  # Allowed values:
+  #   "driver" - Default. The driver discovers NVMe/TCP targets and establishes
+  #              the fabric sessions itself.
+  #   "host"   - The host owns the sessions. The driver issues no discovery and no
+  #              connect, and uses the sessions the host has already established.
+  #              Staging fails with a precondition error when no eligible session
+  #              exists, and succeeds on retry once the host establishes one.
+  # Applies to every array in the deployment; there is no per-array override.
+  # Requires host automation that establishes source-bound NVMe/TCP sessions and
+  # restores them after a node reboot. That automation is the customer's
+  # responsibility and is not provided by Dell.
+  # Default value: "driver"
+  nvmeTcpConnMode: "driver"
   # "hostAdoptionMinOverlapRatio" controls the minimum overlap ratio for host adoption validation.
   # Allowed values: 0.0 to 1.0
   #   - 0.5 (default) - Directional relaxation with >50% majority for larger HBA counts
@@ -138,20 +152,20 @@ images:
     image: quay.io/dell/container-storage-modules/csipowermax-reverseproxy:v2.17.0
   # CSI sidecars
   attacher:
-    image: registry.k8s.io/sig-storage/csi-attacher:v4.12.0
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.13.0
   provisioner:
     image: registry.k8s.io/sig-storage/csi-provisioner:v6.3.0
   snapshotter:
     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.6.0
   resizer:
-    image: registry.k8s.io/sig-storage/csi-resizer:v2.2.0
+    image: registry.k8s.io/sig-storage/csi-resizer:v2.2.1
   registrar:
-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.17.0
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.18.0
   healthmonitor:
     image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.18.0
   # CSI Addons sidecar
   csiAddons:
-    image: quay.io/csiaddons/k8s-sidecar:v0.14.0
+    image: quay.io/csiaddons/k8s-sidecar:v0.15.0
   # CSM sidecars
   replication:
     image: quay.io/dell/container-storage-modules/dell-csi-replicator:v1.16.0
@@ -255,8 +269,52 @@ maxPowerMaxVolumesPerNode: 0
 # Default value: "false"
 dynamicSGEnabled: "false"
 
+# X_CSI_POWERMAX_METRO_SITE_FAILURE_HANDLING_ENABLED: Enable/Disable SRDF/Metro
+# site-failure handling. When enabled, the driver automatically detects the
+# winning/loser array during a site failure, defers operations that cannot be
+# completed on the offline array, and reconciles them after recovery.
+# Allowed values:
+#   "true"  - Enable Metro site-failure handling
+#   "false" - Disable Metro site-failure handling (default)
+# Default value: "false"
+metroSiteFailureHandlingEnabled: "false"
+# Metro site-failure handling tuning parameters
+metroSiteFailureHandling:
+  stateCheckTimeoutSeconds: 15
+  queueWarningThreshold: 75
+  queueHardLimit: 100
+  reconciliationBackoffSeconds: 5
+
 # controller: configure controller specific parameters
 controller:
+  # Metro site-failure handling configuration
+  metro:
+    siteFailureHandling:
+      # Enable Metro site-failure handling
+      # Allowed values:
+      #   "true"  - Enable Metro site-failure handling
+      #   "false" - Disable Metro site-failure handling (default)
+      # Default value: "false"
+      # Leave empty to use the root metroSiteFailureHandlingEnabled value.
+      enabled: ""
+      # stateCheckTimeoutSeconds: Context timeout for CheckMetroState RDF group
+      # queries. Must be 5–120.
+      # Default value: 15
+      stateCheckTimeoutSeconds: null
+      # queueWarningThreshold: Number of pending deferred operations that
+      # triggers a Kubernetes warning event. Must be 10–1000.
+      # Default value: 75
+      queueWarningThreshold: null
+      # queueHardLimit: Maximum number of deferred operations. New deferrals are
+      # rejected when this limit is reached. Must be 50–10000.
+      # Default value: 100
+      queueHardLimit: null
+      # reconciliationBackoffSeconds: Base backoff (seconds) for retry on
+      # reconciliation failures. Actual delay = base * 2^retry, capped
+      # at 5 minutes. Must be 1–60.
+      # Default value: 5
+      reconciliationBackoffSeconds: null
+
   # controllerCount: Define the number of PowerMax controller nodes
   # to deploy to the Kubernetes release
   # Allowed values: n, where n > 0

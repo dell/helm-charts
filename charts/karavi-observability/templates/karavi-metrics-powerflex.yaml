@@ -128,8 +128,10 @@ spec:
           - name: vxflexos-config
             mountPath: /vxflexos-config
           {{- end }}
+          {{- if not .Values.karaviMetricsPowerflex.authorization.skipCertificateValidation }}
           - name: proxy-server-root-certificate
             mountPath: /etc/karavi-authorization/root-certificates
+          {{- end }}
           - name: vxflexos-config-params
             mountPath: /etc/karavi-authorization
       {{ end }}
@@ -159,9 +161,11 @@ spec:
         secret:
           secretName: karavi-authorization-config
       {{- end }}
+      {{- if not .Values.karaviMetricsPowerflex.authorization.skipCertificateValidation }}
       - name: proxy-server-root-certificate
         secret:
           secretName: proxy-server-root-certificate
+      {{- end }}
       - name: vxflexos-config-params
         configMap:
           name: vxflexos-config-params
