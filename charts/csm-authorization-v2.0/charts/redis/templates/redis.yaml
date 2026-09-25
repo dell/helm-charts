@@ -2,6 +2,8 @@
 {{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
 {{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
 {{- $redisPasswordKey := $redisSecretProviderClass.redisPasswordKey }}
+{{- $ipFamily := .Values.ipFamily | default "" | lower | trim }}
+{{- $ipv6Enabled := or (eq $ipFamily "ipv6") (eq $ipFamily "dual") }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -198,6 +200,30 @@ spec:
         {{- end }}
     spec:
       serviceAccountName: redis
+      {{- if $ipv6Enabled }}
+      initContainers:
+      - name: dns-init
+        image: {{ .Values.images.commander.image }}
+        imagePullPolicy: Always
+        command:
+          - sh
+          - -c
+          - |
+            cat << 'EOF' > /init/dns-fix.js
+            const dns = require('dns');
+            const o = dns.lookup;
+            dns.lookup = function(h, opt, cb) {
+              if (typeof opt === 'function') { cb = opt; opt = {}; }
+              else if (typeof opt === 'number') { opt = { family: opt }; }
+              else if (!opt) { opt = {}; }
+              if (!opt.family || opt.family === 4) { opt = Object.assign({}, opt, { family: 0 }); }
+              return o.call(this, h, opt, cb);
+            };
+            EOF
+        volumeMounts:
+        - name: init-vol
+          mountPath: /init
+      {{- end }}
       containers:
       - name: {{ .Values.rediscommander }}
         image: {{ .Values.images.commander.image }}
@@ -213,6 +239,14 @@ spec:
           {{- end }}
           {{- $str = printf "%s%s-%d.%s.%s.svc.cluster.local:5000" $str $sentinel $i $sentinel $ns -}}
           {{- end }}
+        {{- if $ipv6Enabled }}
+        - name: ADDRESS
+          value: "::"
+        - name: SENTINEL_NAME
+          value: "mymaster"
+        - name: NODE_OPTIONS
+          value: "-r /init/dns-fix.js"
+        {{- end }}
         - name: SENTINELS
           value: {{ $str | quote }}
         - name: K8S_SIGTERM
@@ -257,20 +291,32 @@ spec:
           capabilities:
             drop:
               - ALL
-        {{- if and $redisSecretProviderClassName $redisSecretName }}
+        {{- if or $ipv6Enabled (and $redisSecretProviderClassName $redisSecretName) }}
         volumeMounts:
+        {{- if $ipv6Enabled }}
+        - name: init-vol
+          mountPath: /init
+        {{- end }}
+        {{- if and $redisSecretProviderClassName $redisSecretName }}
         - name: secrets-store-inline-{{ $redisSecretProviderClassName }}
           mountPath: /etc/csm-authorization/{{ $redisSecretProviderClassName }}
           readOnly: true
         {{- end }}
-      {{- if and $redisSecretProviderClassName $redisSecretName }}
+        {{- end }}
+      {{- if or $ipv6Enabled (and $redisSecretProviderClassName $redisSecretName) }}
       volumes:
+      {{- if $ipv6Enabled }}
+      - name: init-vol
+        emptyDir: {}
+      {{- end }}
+      {{- if and $redisSecretProviderClassName $redisSecretName }}
       - name: secrets-store-inline-{{ $redisSecretProviderClassName }}
         csi:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
             secretProviderClass: "{{ $redisSecretProviderClassName }}"
+      {{- end }}
       {{- end }}
 ---
 apiVersion: v1

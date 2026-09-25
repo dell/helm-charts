@@ -154,7 +154,7 @@ spec:
         {{- if eq .Values.authorization.enabled true }}
         - name: karavi-authorization-proxy
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image }}
+          image: {{ required "Must provide the authorization sidecar container image." .Values.images.authorization.image | quote }}
           env:
             - name: PROXY_HOST
               value: "{{ .Values.authorization.proxyHost }}"
@@ -180,8 +180,10 @@ spec:
             - name: powerstore-config
               mountPath: /powerstore-config
             {{- end }}
+            {{- if not .Values.authorization.skipCertificateValidation }}
             - name: proxy-server-root-certificate
               mountPath: /etc/karavi-authorization/root-certificates
+            {{- end }}
             - name: powerstore-config-params
               mountPath: /etc/karavi-authorization
         {{ end }}
@@ -194,7 +196,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image }}
+          image: {{ required "Must provide the podmon container image." .Values.images.podmon.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             {{- toYaml .Values.podmon.node.args | nindent 12 }}
@@ -272,7 +274,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: {{ required "Must provide the Powerstore driver image repository." .Values.images.driver.image }}
+          image: {{ required "Must provide the Powerstore driver image repository." .Values.images.driver.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           command: [ "/csi-powerstore" ]
           env:
@@ -475,7 +477,7 @@ spec:
 {{- end }}
 {{- end }}
         - name: registrar
-          image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image }}
+          image: {{ required "Must provide the CSI node registrar container image." .Values.images.registrar.image | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           args:
             - "--v=5"
@@ -503,9 +505,11 @@ spec:
           secret:
             secretName: karavi-authorization-config
         {{- end }}
+        {{- if not .Values.authorization.skipCertificateValidation }}
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
+        {{- end }}
         {{ end }}
         {{ end }}
         # for Shared NFS

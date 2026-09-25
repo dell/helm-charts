@@ -122,8 +122,10 @@ spec:
           - name: isilon-creds
             mountPath: /isilon-configs
           {{- end }}
+          {{- if not .Values.karaviMetricsPowerscale.authorization.skipCertificateValidation }}
           - name: proxy-server-root-certificate
             mountPath: /etc/karavi-authorization/root-certificates
+          {{- end }}
           - name: isilon-config-params
             mountPath: /etc/karavi-authorization
       {{ end }}
@@ -153,9 +155,11 @@ spec:
         secret:
           secretName: isilon-karavi-authorization-config
       {{- end }}
+      {{- if not .Values.karaviMetricsPowerscale.authorization.skipCertificateValidation }}
       - name: proxy-server-root-certificate
         secret:
           secretName: isilon-proxy-server-root-certificate
+      {{- end }}
       - name: isilon-config-params
         configMap:
           name: isilon-config-params

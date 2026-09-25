@@ -10,15 +10,15 @@ images:
     image: quay.io/dell/container-storage-modules/csi-isilon:v2.18.0
   # CSI sidecars
   attacher:
-    image: registry.k8s.io/sig-storage/csi-attacher:v4.12.0
+    image: registry.k8s.io/sig-storage/csi-attacher:v4.13.0
   provisioner:
     image: registry.k8s.io/sig-storage/csi-provisioner:v6.3.0
   snapshotter:
     image: registry.k8s.io/sig-storage/csi-snapshotter:v8.6.0
   resizer:
-    image: registry.k8s.io/sig-storage/csi-resizer:v2.2.0
+    image: registry.k8s.io/sig-storage/csi-resizer:v2.2.1
   registrar:
-    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.17.0
+    image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.18.0
   healthmonitor:
     image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.18.0
 
@@ -426,28 +426,16 @@ noProbeOnStart: false
 # Default value: false
 autoProbe: true
 
-# nfsMountFQDN: Specify a global default FQDN to use as the NFS mount target instead of the cluster endpoint IP.
-# This is required for NFS over TLS (mTLS) because certificate validation needs an FQDN, not an IP address.
-# This value acts as a fallback default. The per-cluster "nfsMountFQDN" field in the secret takes precedence
-# over this value, and the StorageClass "SmartConnectZoneFQDN" parameter takes highest precedence.
+# nfsMountFQDN: Specify the global fallback FQDN for NFS mount targets.
+# StorageClass SmartConnectZoneFQDN takes precedence, followed by the selected cluster's
+# nfsMountFQDN. NFSTransportSecurity remains explicit and StorageClass-scoped.
 # Allowed values: A valid FQDN (e.g., "smartconnect.isilon.example.com")
 # Optional: true
 # Default value: None
 nfsMountFQDN: ""
 
-# nfsTransportSecurity: Specify the global default NFS transport security mode.
-# This is the lowest-precedence fallback. The per-cluster "nfsTransportSecurity" field in the secret
-# takes precedence, and the StorageClass "NFSTransportSecurity" parameter takes highest precedence.
-# When set to "tls" or "mtls", the driver validates TLS/mTLS prerequisites on worker nodes at mount time.
-# Allowed values:
-#   "none": no transport security (default NFS behavior)
-#   "tls": NFS over TLS (encryption only)
-#   "mtls": NFS over mutual TLS (encryption + client certificate authentication)
-# Default value: "none"
-nfsTransportSecurity: "none"
-
 # tlsHandshakeTimeoutSeconds: Specify the TLS handshake timeout in seconds for NFS over TLS/mTLS.
-# This timeout applies to the TLS handshake during mount operations when using TLS or mTLS transport security.
+# This timeout is applied only by the mTLS mount path.
 # Allowed values: positive integer (seconds)
 # Default value: 30
 tlsHandshakeTimeoutSeconds: "30"

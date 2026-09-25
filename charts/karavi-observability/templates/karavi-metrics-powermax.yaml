@@ -130,8 +130,10 @@ spec:
           - name: powermax-reverseproxy-secret
             mountPath: /powermax-reverseproxy-secret
           {{- end }}
+          {{- if not .Values.karaviMetricsPowermax.authorization.skipCertificateValidation }}
           - name: proxy-server-root-certificate
             mountPath: /etc/karavi-authorization/root-certificates
+          {{- end }}
           - name: powermax-config-params
             mountPath: /etc/karavi-authorization
       {{ end }}
@@ -169,9 +171,11 @@ spec:
         secret:
           secretName: powermax-karavi-authorization-config
       {{- end }}
+      {{- if not .Values.karaviMetricsPowermax.authorization.skipCertificateValidation }}
       - name: proxy-server-root-certificate
         secret:
           secretName: powermax-proxy-server-root-certificate
+      {{- end }}
       - name: powermax-config-params
         configMap:
           name: powermax-config-params

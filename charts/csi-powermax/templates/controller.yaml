@@ -135,6 +135,25 @@ rules:
     verbs: ["create"]
   {{- end}}
   {{- end}}
+  # Permissions for Metro site-failure VolumeJournal CRD.
+  # H-7 fix: these RBAC rules are unconditional (matching the operator config)
+  # so that enabling Metro site-failure handling after initial install does not
+  # require a Helm upgrade just to add permissions. The VolumeJournal CRD RBAC
+  # has no security impact when the feature is disabled — the controller simply
+  # will not create any VolumeJournal resources in that case.
+  - apiGroups: ["dr.storage.dell.com"]
+    resources: ["volumejournals"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["dr.storage.dell.com"]
+    resources: ["volumejournals/status"]
+    verbs: ["get", "patch", "update"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["create"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    resourceNames: ["csi-powermax-metro-journal-queue"]
+    verbs: ["get", "update", "patch", "delete"]
   # Permissions for Storage Capacity
   {{- if eq (include "csi-powermax.isStorageCapacitySupported" .) "true" }}
   - apiGroups: ["storage.k8s.io"]
@@ -529,8 +548,10 @@ spec:
             - name: powermax-reverseproxy-secret
               mountPath: /powermax-reverseproxy-secret
             {{- end }}
+            {{- if not .Values.authorization.skipCertificateValidation }}
             - name: proxy-server-root-certificate
               mountPath: /etc/karavi-authorization/root-certificates
+            {{- end }}
             - name: powermax-config-params
               mountPath: /etc/karavi-authorization
         {{- end }}
@@ -603,6 +624,8 @@ spec:
               value: {{ .Values.global.hostManagementMode | default "create" }}
             - name: X_CSI_POWERMAX_HOST_ADOPTION_MIN_OVERLAP_RATIO
               value: {{ .Values.global.hostAdoptionMinOverlapRatio | default "0.5" | quote }}
+            - name: X_CSI_POWERMAX_NVMETCP_CONN_MODE
+              value: {{ .Values.global.nvmeTcpConnMode | default "driver" }}
             - name: X_CSI_REVPROXY_USE_SECRET
               value: {{ $useRevProxySecret | quote }}
               {{- if $useRevProxySecret }}
@@ -692,11 +715,70 @@ spec:
               value: /app/tls
             - name: X_CSI_DYNAMIC_SG_ENABLED
               value: {{ .Values.dynamicSGEnabled | default "false" | lower | quote }}
+            {{- $rootMetroEnabled := .Values.metroSiteFailureHandlingEnabled | toString | lower -}}
+            {{- $nestedMetroEnabled := "" -}}
+            {{- if hasKey .Values.controller.metro.siteFailureHandling "enabled" }}
+            {{- $nestedMetroEnabled = .Values.controller.metro.siteFailureHandling.enabled | toString | lower -}}
+            {{- end }}
+            {{- $metroEnabled := $rootMetroEnabled -}}
+            {{- if ne $nestedMetroEnabled "" }}
+            {{- $metroEnabled = $nestedMetroEnabled -}}
+            {{- end }}
+            - name: X_CSI_POWERMAX_METRO_SITE_FAILURE_HANDLING_ENABLED
+              value: {{ $metroEnabled | quote }}
+            {{- if eq $metroEnabled "true" }}
+            {{- /* H-6 fix: validate Metro tuning parameters at install time (NFR-3 Req-SEC-C-2).
+                   Out-of-range values are rejected here rather than silently coerced at runtime,
+                   so operators get an immediate actionable error instead of a warn log. */ -}}
+            {{- $timeoutValue := .Values.metroSiteFailureHandling.stateCheckTimeoutSeconds -}}
+            {{- if and (hasKey .Values.controller.metro.siteFailureHandling "stateCheckTimeoutSeconds") (ne .Values.controller.metro.siteFailureHandling.stateCheckTimeoutSeconds nil) }}
+            {{- $timeoutValue = .Values.controller.metro.siteFailureHandling.stateCheckTimeoutSeconds -}}
+            {{- end }}
+            {{- $timeout := ($timeoutValue | int) }}
+            {{- if or (lt $timeout 5) (gt $timeout 120) }}
+            {{- fail (printf "controller.metro.siteFailureHandling.stateCheckTimeoutSeconds must be between 5 and 120 (got %d)" $timeout) }}
+            {{- end }}
+            {{- $queueWarnValue := .Values.metroSiteFailureHandling.queueWarningThreshold -}}
+            {{- if and (hasKey .Values.controller.metro.siteFailureHandling "queueWarningThreshold") (ne .Values.controller.metro.siteFailureHandling.queueWarningThreshold nil) }}
+            {{- $queueWarnValue = .Values.controller.metro.siteFailureHandling.queueWarningThreshold -}}
+            {{- end }}
+            {{- $queueWarn := ($queueWarnValue | int) }}
+            {{- if or (lt $queueWarn 1) (gt $queueWarn 10000) }}
+            {{- fail (printf "controller.metro.siteFailureHandling.queueWarningThreshold must be between 1 and 10000 (got %d)" $queueWarn) }}
+            {{- end }}
+            {{- $queueLimitValue := .Values.metroSiteFailureHandling.queueHardLimit -}}
+            {{- if and (hasKey .Values.controller.metro.siteFailureHandling "queueHardLimit") (ne .Values.controller.metro.siteFailureHandling.queueHardLimit nil) }}
+            {{- $queueLimitValue = .Values.controller.metro.siteFailureHandling.queueHardLimit -}}
+            {{- end }}
+            {{- $queueLimit := ($queueLimitValue | int) }}
+            {{- if or (lt $queueLimit 1) (gt $queueLimit 10000) }}
+            {{- fail (printf "controller.metro.siteFailureHandling.queueHardLimit must be between 1 and 10000 (got %d)" $queueLimit) }}
+            {{- end }}
+            {{- if gt $queueWarn $queueLimit }}
+            {{- fail (printf "controller.metro.siteFailureHandling.queueWarningThreshold (%d) must not exceed queueHardLimit (%d); the warning fires before the hard limit, so warn <= limit is required" $queueWarn $queueLimit) }}
+            {{- end }}
+            {{- $backoffValue := .Values.metroSiteFailureHandling.reconciliationBackoffSeconds -}}
+            {{- if and (hasKey .Values.controller.metro.siteFailureHandling "reconciliationBackoffSeconds") (ne .Values.controller.metro.siteFailureHandling.reconciliationBackoffSeconds nil) }}
+            {{- $backoffValue = .Values.controller.metro.siteFailureHandling.reconciliationBackoffSeconds -}}
+            {{- end }}
+            {{- $backoff := ($backoffValue | int) }}
+            {{- if or (lt $backoff 1) (gt $backoff 300) }}
+            {{- fail (printf "controller.metro.siteFailureHandling.reconciliationBackoffSeconds must be between 1 and 300 (got %d)" $backoff) }}
+            {{- end }}
+            - name: X_CSI_POWERMAX_METRO_STATE_CHECK_TIMEOUT
+              value: {{ $timeout | toString | quote }}
+            - name: X_CSI_POWERMAX_METRO_QUEUE_WARNING_THRESHOLD
+              value: {{ $queueWarn | toString | quote }}
+            - name: X_CSI_POWERMAX_METRO_QUEUE_HARD_LIMIT
+              value: {{ $queueLimit | toString | quote }}
+            - name: X_CSI_POWERMAX_METRO_RECONCILIATION_BACKOFF
+              value: {{ $backoff | toString | quote }}
+            {{- end }}
             {{- if hasKey .Values "multiArrayZone" }}
             - name: X_CSI_CAPACITY_POLL_INTERVAL
               value: {{ .Values.multiArrayZone.capacityPollInterval | default "5m" | quote }}
             - name: X_CSI_CAPACITY_THRESHOLD_FULL
-              value: "{{- if hasKey .Values.multiArrayZone "capacityThresholdFull" }}{{ .Values.multiArrayZone.capacityThresholdFull }}{{ else }}100{{ end }}"
+              value: {{ (.Values.multiArrayZone.capacityThresholdFull | default 100 | toString) | quote }}
             {{- end }}
             {{- if hasKey .Values.controller "csiAddonsReplication" }}
             - name: X_CSI_CSIADDONS_REPLICATION_ENABLED
@@ -866,8 +948,10 @@ spec:
           secret:
             secretName: karavi-authorization-config
         {{- end }}
+        {{- if not .Values.authorization.skipCertificateValidation }}
         - name: proxy-server-root-certificate
           secret:
             secretName: proxy-server-root-certificate
+        {{- end }}
         {{- end }}
         {{- end }}

@@ -8,7 +8,7 @@ nginx-gateway-fabric:
   enabled: true
   nginx:
     config:
-      # ipFamily: "ipv4"  # Optional: set to "ipv4" (IPv4-only) or "ipv6" (IPv6-only). When unset, nginx uses its default IP family behavior.
+      # ipFamily: "ipv4"  # Optional: set to "ipv4" (IPv4-only), "ipv6" (IPv6-only), or "dual" (dual-stack).
     service:
       externalTrafficPolicy: Cluster
 
@@ -33,7 +33,7 @@ authorization:
     opa:
       image: docker.io/openpolicyagent/opa:0.70.0
     opaKubeMgmt:
-      image: openpolicyagent/kube-mgmt:11.0.7
+      image: openpolicyagent/kube-mgmt:11.0.12
 
   # hostname used for TLS certificate SANs and OpenShift Route
   # NOTE: additional hostnames can be configured in authorization.gateway.hosts
@@ -76,6 +76,9 @@ authorization:
 
   # storage capacity poll interval
   storageCapacityPollInterval: 30m
+
+  # controller reconcile interval as a Go duration (for example, 5m or 30s)
+  controllerReconcileInterval: 5m
 
   # metrics: configuration for proxy-server Prometheus metrics
   metrics:
@@ -163,9 +166,12 @@ redis:
   sentinel: sentinel
   rediscommander: rediscommander
   replicas: 5
+  # IP family used by Redis Commander. Keep this aligned with nginx-gateway-fabric.nginx.config.ipFamily.
+  # Set to "ipv6" or "dual" to enable the IPv6 DNS initialization workaround.
+  ipFamily: ""
   images:
     redis:
-      image: redis:8.4.0-alpine
+      image: redis:8.10.1-alpine
     commander:
       image: rediscommander/redis-commander:latest
 
