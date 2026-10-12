@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version. E.g. 1.14.0'
+        description: 'CSM release version. E.g. 1.14.0'
         required: true
 
 jobs:
