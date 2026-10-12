@@ -35,3 +35,18 @@ clusters.
 ## Helm Chart Versioning
 
 For an explanation and examples on versioning/releasing the CSM for Authorization Helm chart, please see the [contributing guide](../../docs/CONTRIBUTING.md#helm-chart-release-strategy).
+
+## Authentication upgrade order
+
+This release enables admin JWT authentication for service-to-service gRPC calls to the storage-service. During a rolling upgrade, older proxy-server and controller instances may send tenant-only tokens or admin tokens without the `admin` role, which the updated services reject.
+
+To avoid mixed-version authentication failures, upgrade the components in this order and wait for each deployment to become ready before continuing:
+
+1. `proxy-server`
+2. `controller`
+3. `role-service`
+4. `storage-service`
+
+Keep all components on the same release while the rollout is in progress. Do not scale down the old version before the replacement component is ready. If the release is managed by the operator, apply the corresponding operator/release configuration update together with this chart upgrade so image versions remain aligned.
+
+After the upgrade, regenerate admin tokens with `GenerateAdminToken`; refreshing an admin token created before this change does not add the new `admin` role claim.

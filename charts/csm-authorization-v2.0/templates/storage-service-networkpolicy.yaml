@@ -1,0 +1,40 @@
+# NetworkPolicy that restricts ingress traffic to the storage-service.
+# Only proxy-server and authorization-controller may reach its gRPC port.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: storage-service-restrict
+  namespace: {{ include "custom.namespace" . }}
+spec:
+  podSelector:
+    matchLabels:
+      app: storage-service
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: proxy-server
+        - podSelector:
+            matchLabels:
+              app: authorization-controller
+      ports:
+        - protocol: TCP
+          port: 50051
+    # Allow in-namespace collectors, namespaces explicitly labeled for metrics,
+    # and the OpenShift monitoring namespaces.
+    - from:
+        - podSelector: {}
+        - namespaceSelector:
+            matchLabels:
+              metrics: enabled
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: openshift-monitoring
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: openshift-user-workload-monitoring
+      ports:
+        - protocol: TCP
+          port: 2112
