@@ -34,9 +34,9 @@ karaviMetricsPowerflex:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.1
     sidecarProxy:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.1
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -160,9 +160,9 @@ karaviMetricsPowerstore:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.1
     sidecarProxy:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.1
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -253,9 +253,9 @@ karaviMetricsPowerscale:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.1
     sidecarProxy:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.1
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:
@@ -347,9 +347,9 @@ karaviMetricsPowermax:
   authorization:
     enabled: false
     # sidecarProxy.image: the container image used for the csm-authorization-sidecar.
-    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.0
+    # Default value: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.1
     sidecarProxy:
-      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.0
+      image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.1
     # proxyHost: hostname of the csm-authorization server
     # Default value: None
     proxyHost:

@@ -2,12 +2,12 @@
 ########################
 # version: version of this values file
 # Note: Do not change this value
-version: "v2.18.0"
+version: "v2.18.1"
 
 images:
   # "driver" defines the container image, used for the driver container.
   driver:
-    image: quay.io/dell/container-storage-modules/csi-isilon:v2.18.0
+    image: quay.io/dell/container-storage-modules/csi-isilon:v2.18.1
   # CSI sidecars
   attacher:
     image: registry.k8s.io/sig-storage/csi-attacher:v4.13.0
@@ -28,7 +28,7 @@ images:
   podmon:
     image: quay.io/dell/container-storage-modules/podmon:v1.17.0
   authorization:
-    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.0
+    image: quay.io/dell/container-storage-modules/csm-authorization-sidecar:v2.6.1
   metadataretriever:
     image: quay.io/dell/container-storage-modules/csi-metadata-retriever:v1.15.0
 
