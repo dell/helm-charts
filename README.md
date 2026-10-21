@@ -13,7 +13,7 @@ You may obtain a copy of the License at
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](docs/CODE_OF_CONDUCT.md)
 [![License](https://img.shields.io/github/license/dell/helm-charts)](LICENSE)
 
-The source for Dell Helm charts [Dell Helm Hub](https://github.com/dell/helm-charts).
+The source for Dell Helm charts is the [Dell Helm Hub](https://github.com/dell/helm-charts).
 
 For more information about installing and using Helm, see the
 [Helm Docs](https://helm.sh/docs/). For a quick introduction to Charts, see the [Chart Guide](https://helm.sh/docs/topics/charts/).
