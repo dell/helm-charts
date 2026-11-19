@@ -1,3 +1,4 @@
+# yamllint disable-file
 {{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
 {{- $redisSecretProviderClassName := $redisSecretProviderClass.secretProviderClassName }}
 {{- $redisSecretName := $redisSecretProviderClass.redisSecretName }}
@@ -125,8 +126,12 @@ spec:
         conjur.org/secrets: |
           {{- if hasKey $redisSecretProviderClass "conjur" }}
           {{- with $redisSecretProviderClass.conjur }}
+          {{- if .usernamePath }}
           - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          {{- end }}
+          {{- if .passwordPath }}
           - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- if hasKey $configSecretProviderClass "conjur" }}

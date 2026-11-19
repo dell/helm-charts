@@ -21,15 +21,15 @@ authorization:
   # images to use in installation
   images:
     proxyService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-proxy:v2.6.1
+      image: quay.io/dell/container-storage-modules/csm-authorization-proxy:v2.6.2
     tenantService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-tenant:v2.6.1
+      image: quay.io/dell/container-storage-modules/csm-authorization-tenant:v2.6.2
     roleService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-role:v2.6.1
+      image: quay.io/dell/container-storage-modules/csm-authorization-role:v2.6.2
     storageService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-storage:v2.6.1
+      image: quay.io/dell/container-storage-modules/csm-authorization-storage:v2.6.2
     authorizationController:
-      image: quay.io/dell/container-storage-modules/csm-authorization-controller:v2.6.1
+      image: quay.io/dell/container-storage-modules/csm-authorization-controller:v2.6.2
     opa:
       image: docker.io/openpolicyagent/opa:0.70.0
     opaKubeMgmt:
@@ -140,12 +140,14 @@ authorization:
 redis:
   name: redis-csm
   # Redis credentials are required and can be provided in one of two ways:
-  # 1. Directly via redisUsername/redisPassword (a Kubernetes secret will be created automatically)
+  # 1. Directly via redisPassword (a Kubernetes secret will be created automatically)
   # 2. Via a Secret Store CSI driver (specify the SecretProviderClass details below)
   #
   # Option 1: Provide credentials directly
-  redisUsername:
   redisPassword:
+  # Optional legacy Redis Commander HTTP username. It is not used by active
+  # Redis clients but remains accepted for backward compatibility.
+  redisUsername:
 
   # Option 2: Use a Secret Store CSI driver
   redisSecretProviderClass:
@@ -153,27 +155,22 @@ redis:
     secretProviderClassName:
     # Name of the Kubernetes secret (created by the Secret Store CSI driver) that contains Redis credentials.
     redisSecretName:
-    # Key in the secret that stores the Redis username.
-    redisUsernameKey:
     # Key in the secret that stores the Redis password.
     redisPasswordKey:
+    # Optional legacy Redis Commander username key.
+    redisUsernameKey:
 
-    # Paths for Conjur secrets that store the Redis username and password.
+    # Paths for Conjur secrets. passwordPath is required when Conjur is used;
+    # usernamePath is optional legacy Redis Commander material.
     # conjur:
     #   passwordPath: secrets/redis-password
     #   usernamePath: secrets/redis-username
 
   sentinel: sentinel
-  rediscommander: rediscommander
   replicas: 5
-  # IP family used by Redis Commander. Keep this aligned with nginx-gateway-fabric.nginx.config.ipFamily.
-  # Set to "ipv6" or "dual" to enable the IPv6 DNS initialization workaround.
-  ipFamily: ""
   images:
     redis:
       image: redis:8.10.1-alpine
-    commander:
-      image: rediscommander/redis-commander:latest
 
 # Optional:
 # Config secret configuration:
