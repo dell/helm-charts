@@ -1,3 +1,4 @@
+# yamllint disable-file
 {{- $storageSecretProviderClasses := .Values.storageSystemCredentials.secretProviderClasses | default dict }}
 
 {{- $redisSecretProviderClass := .Values.redis.redisSecretProviderClass | default dict }}
@@ -119,8 +120,12 @@ spec:
           {{- end }}
           {{- if hasKey $redisSecretProviderClass "conjur" }}
           {{- with $redisSecretProviderClass.conjur }}
+          {{- if .usernamePath }}
           - {{ .usernamePath }}: {{ .usernamePath | quote }}
+          {{- end }}
+          {{- if .passwordPath }}
           - {{ .passwordPath }}: {{ .passwordPath | quote }}
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- if hasKey $configSecretProviderClass "conjur" }}

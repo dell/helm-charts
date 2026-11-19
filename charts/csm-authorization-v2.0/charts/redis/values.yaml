@@ -1,19 +1,19 @@
 name: redis-csm
-redisUsername:
 redisPassword:
+# Optional legacy Redis Commander HTTP username; not used by active clients.
+redisUsername:
 redisSecretProviderClass:
   secretProviderClassName:
   redisSecretName:
-  redisUsernameKey:
   redisPasswordKey:
+  # Optional legacy Redis Commander username key.
+  redisUsernameKey:
   conjur:
     passwordPath:
+    # Optional legacy Redis Commander username path.
     usernamePath:
 sentinel: sentinel
-rediscommander: rediscommander
 replicas: 5
 images:
   redis:
     image: redis:8.2.0-alpine
-  commander:
-    image: rediscommander/redis-commander:latest

@@ -16,21 +16,17 @@ For complete deployment instructions, refer to the [Container Storage Modules do
 
 ## IPv4 and IPv6 installation
 
-Set the NGINX Gateway Fabric and Redis Commander IP-family values to the same
-value. The Redis value enables the IPv6 DNS initialization workaround used by
-the Operator installation for `ipv6` and `dual` deployments.
+Set the NGINX Gateway Fabric IP-family value for IPv4-only, IPv6-only, or
+dual-stack deployments.
 
 ```bash
 helm upgrade --install csm-authorization dell/csm-authorization \
   --namespace csm-authorization --create-namespace \
-  --set nginx-gateway-fabric.nginx.config.ipFamily=ipv6 \
-  --set redis.ipFamily=ipv6
+  --set nginx-gateway-fabric.nginx.config.ipFamily=ipv6
 ```
 
-Use `ipv4` instead of `ipv6` for an IPv4-only cluster. The chart supports
-`dual` for the NGINX and Redis Commander configuration, although the chart's
-standard single-family installation should be used for IPv4-only or IPv6-only
-clusters.
+Use `ipv4` instead of `ipv6` for an IPv4-only cluster. The chart also supports
+`dual` for dual-stack deployments.
 
 ## Helm Chart Versioning
 
