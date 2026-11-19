@@ -21,15 +21,15 @@ authorization:
   # images to use in installation
   images:
     proxyService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-proxy:v2.6.1
+      image: quay.io/dell/container-storage-modules/csm-authorization-proxy:v2.6.2
     tenantService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-tenant:v2.6.1
+      image: quay.io/dell/container-storage-modules/csm-authorization-tenant:v2.6.2
     roleService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-role:v2.6.1
+      image: quay.io/dell/container-storage-modules/csm-authorization-role:v2.6.2
     storageService:
-      image: quay.io/dell/container-storage-modules/csm-authorization-storage:v2.6.1
+      image: quay.io/dell/container-storage-modules/csm-authorization-storage:v2.6.2
     authorizationController:
-      image: quay.io/dell/container-storage-modules/csm-authorization-controller:v2.6.1
+      image: quay.io/dell/container-storage-modules/csm-authorization-controller:v2.6.2
     opa:
       image: docker.io/openpolicyagent/opa:0.70.0
     opaKubeMgmt:
